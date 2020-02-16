@@ -16,6 +16,7 @@ class DemoGame : Game {
     lateinit var camera: Camera
 
     lateinit var buffer: Buffer
+    lateinit var color: Buffer
     lateinit var program: ShaderProgram
 
     override fun create() {
@@ -23,6 +24,8 @@ class DemoGame : Game {
         program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
         program.createAttrib("aVertexPosition")
+        program.createAttrib("aVertexColor")
+
         program.createUniform("uProjectionMatrix")
         program.createUniform("uModelViewMatrix")
 
@@ -33,9 +36,20 @@ class DemoGame : Game {
             -1.0 v2 -1.0
         )
 
+        val colors = floatArrayOf(
+            1.0f,  1.0f,  1.0f,  1.0f,    // blanc
+            1.0f,  0.0f,  0.0f,  1.0f,    // rouge
+            0.0f,  1.0f,  0.0f,  1.0f,    // vert
+            0.0f,  0.0f,  1.0f,  1.0f    // bleu
+        )
+
         buffer = gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer)
         gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(positions.asFloatArray()), GL.STATIC_DRAW);
+
+        color = gl.createBuffer()
+        gl.bindBuffer(GL.ARRAY_BUFFER, color)
+        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(colors), GL.STATIC_DRAW);
 
         camera.translate(0, 0, -6)
 
@@ -57,6 +71,18 @@ class DemoGame : Game {
             offset = 0
         )
         gl.enableVertexAttribArray(program.getAttrib("aVertexPosition"))
+
+        // set buffer to attribute
+        gl.bindBuffer(GL.ARRAY_BUFFER, color)
+        gl.vertexAttribPointer(
+            index = program.getAttrib("aVertexColor"),
+            size = 4,
+            type = GL.FLOAT,
+            normalized = false,
+            stride = 0,
+            offset = 0
+        )
+        gl.enableVertexAttribArray(program.getAttrib("aVertexColor"))
 
         gl.useProgram(program)
 

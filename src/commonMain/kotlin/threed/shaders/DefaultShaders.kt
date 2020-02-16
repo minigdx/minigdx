@@ -4,19 +4,26 @@ object DefaultShaders {
 
     val vertexShader = """
         attribute vec4 aVertexPosition;
+        attribute vec4 aVertexColor;
 
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
         
+        varying lowp vec4 vColor;
+        
         void main() {
             gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+            
+            vColor = aVertexColor;
         }
     """.trimIndent()
 
     val fragmentShader = """
+        varying lowp vec4 vColor;
+        
         void main() {
-              // white
-              gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+              // see vertex shader
+              gl_FragColor = vColor;
         }
     """.trimIndent()
 }
