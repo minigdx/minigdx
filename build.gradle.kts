@@ -22,6 +22,11 @@ kotlin {
     *  To find out how to configure the targets, please follow the link:
     *  https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-targets */
 
+    js {
+        this.useCommonJs()
+        this.browser
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -32,6 +37,13 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+            }
+        }
+
+        js().compilations["main"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("stdlib-js"))
+                // implementation(npm("babylonjs", "4.0.3"))
             }
         }
     }
