@@ -43,7 +43,6 @@ kotlin {
         js().compilations["main"].defaultSourceSet {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                // implementation(npm("babylonjs", "4.0.3"))
             }
         }
     }

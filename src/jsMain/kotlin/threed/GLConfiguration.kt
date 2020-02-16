@@ -18,7 +18,10 @@ actual class GLConfiguration actual constructor() {
                 ?: throw RuntimeException("<canvas> with id '${canvasId}' not found")
 
         val context = canvas?.getContext("webgl") as WebGLRenderingContext
-        return WebGL(context)
+        return WebGL(context, Canvas(
+            width = canvas!!.clientWidth,
+            height = canvas!!.clientHeight
+        ))
     }
 
     actual fun mainLoop(game: Game) {

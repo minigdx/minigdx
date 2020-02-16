@@ -1,5 +1,11 @@
 package threed
 
+import threed.buffer.Buffer
+import threed.buffer.DataSource
+import threed.math.Matrix4
+import threed.shaders.Shader
+import threed.shaders.ShaderProgram
+import threed.shaders.Uniform
 
 typealias Percent = Number
 typealias ByteMask = Int
@@ -12,10 +18,53 @@ fun Number.toPercent(): Float {
 
 lateinit var gl: GL
 
+class Canvas(
+    val width: Int,
+    val height: Int
+)
+
 interface GL {
 
-    fun clearColor(r: Percent, g: Percent,  b: Percent, a: Percent)
+    val canvas: Canvas
+
+    fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent)
     fun clear(mask: ByteMask)
+    fun clearDepth(depth: Number)
+    fun enable(mask: ByteMask)
+    fun createProgram(): ShaderProgram
+    fun getAttribLocation(shaderProgram: ShaderProgram, name: String): Int
+    fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform
+    fun attachShader(shaderProgram: ShaderProgram, shader: Shader)
+    fun linkProgram(shaderProgram: ShaderProgram)
+    fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any
+    fun getProgramParameterB(shaderProgram: ShaderProgram, mask: ByteMask): Boolean =
+        getProgramParameter(shaderProgram, mask) as Boolean
+
+    fun getShaderParameter(shader: Shader, mask: ByteMask): Any
+    fun getShaderParameterB(shader: Shader, mask: ByteMask): Boolean = getShaderParameter(shader, mask) as Boolean
+    fun createShader(type: ByteMask): Shader
+    fun shaderSource(shader: Shader, source: String)
+    fun compileShader(shader: Shader)
+    fun getShaderInfoLog(shader: Shader): String
+    fun deleteShader(shader: Shader)
+    fun getProgramInfoLog(shader: ShaderProgram): String
+    fun createBuffer(): Buffer
+    fun bindBuffer(target: ByteMask, buffer: Buffer)
+    fun bufferData(target: ByteMask, size: Int, usage: Int)
+    fun bufferData(target: ByteMask, data: DataSource, usage: Int)
+    fun depthFunc(target: ByteMask)
+    fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int)
+    fun enableVertexAttribArray(index: Int)
+    fun useProgram(shaderProgram: ShaderProgram)
+    fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Matrix4) =
+        uniformMatrix4fv(uniform, transpose, data.data)
+
+    fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: FloatArray) =
+        uniformMatrix4fv(uniform, transpose, data.toTypedArray())
+
+    fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
+
+    fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
 
     companion object {
 
