@@ -25,6 +25,7 @@ kotlin {
     js {
         this.useCommonJs()
         this.browser
+        this.nodejs
     }
 
     sourceSets {

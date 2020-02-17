@@ -65,6 +65,7 @@ interface GL {
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
 
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
+    fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int)
 
     companion object {
 

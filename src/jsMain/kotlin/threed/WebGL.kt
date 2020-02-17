@@ -1,7 +1,8 @@
 package threed
 
 import org.khronos.webgl.Float32Array
-import org.khronos.webgl.Int32Array
+import org.khronos.webgl.Uint16Array
+import org.khronos.webgl.Uint32Array
 import org.khronos.webgl.WebGLRenderingContext
 import threed.buffer.Buffer
 import threed.buffer.DataSource
@@ -115,13 +116,19 @@ class WebGL(private val gl: WebGLRenderingContext, override val canvas: Canvas) 
     override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
         val converted = when (data) {
             is DataSource.FloatDataSource -> Float32Array(data.floats.toTypedArray())
-            is DataSource.IntDataSource -> Int32Array(data.ints.toTypedArray())
+            is DataSource.IntDataSource -> Uint32Array(data.ints.toTypedArray())
+            is DataSource.ShortDataSource -> Uint16Array(data.shorts.toTypedArray())
             is DataSource.DoubleDataSource -> TODO("Not supported")
+            is DataSource.UIntDataSource -> Uint32Array(data.ints.toTypedArray())
         }
         gl.bufferData(target, converted, usage)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
         gl.drawArrays(mask, offset, vertexCount)
+    }
+
+    override fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int) {
+        gl.drawElements(mask, vertexCount, type, offset)
     }
 }

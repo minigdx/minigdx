@@ -6,8 +6,6 @@ import threed.entity.Camera
 import threed.gl
 import threed.math.RAD2DEG
 import threed.math.Vector3
-import threed.math.asFloatArray
-import threed.math.v2
 import threed.shaders.DefaultShaders
 import threed.shaders.ShaderUtils
 
@@ -16,6 +14,7 @@ class DemoGame : Game {
     private val camera = Camera.create(45, gl.canvas.width / gl.canvas.height, 0.1, 100)
     private val buffer = gl.createBuffer()
     private val color = gl.createBuffer()
+    private val indices = gl.createBuffer()
     private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
     override fun create() {
@@ -25,25 +24,50 @@ class DemoGame : Game {
         program.createUniform("uProjectionMatrix")
         program.createUniform("uModelViewMatrix")
 
-        val positions = arrayOf(
-            1.0 v2 1.0,
-            -1.0 v2 1.0,
-            1.0 v2 -1.0,
-            -1.0 v2 -1.0
+        val positions = floatArrayOf(
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+            1.0f, 1.0f, 0.5f,
+            -1.0f, 1.0f, 0.5f,
+            1.0f, -1.0f, 0.5f,
+            -1.0f, -1.0f, 0.5f
         )
 
         val colors = floatArrayOf(
-            1.0f, 1.0f, 1.0f, 1.0f, // blanc
+            148f / 255f, 219f / 255f, 128f / 255f, 1.0f, // blanc
+            148f / 255f, 219f / 255f, 128f / 255f, 1.0f, // blanc
+            148f / 255f, 219f / 255f, 128f / 255f, 1.0f, // blanc
+            148f / 255f, 219f / 255f, 128f / 255f, 1.0f, // blanc
+            1.0f, 0.0f, 0.0f, 1.0f, // rouge
+            1.0f, 0.0f, 0.0f, 1.0f, // rouge
+            1.0f, 0.0f, 0.0f, 1.0f, // rouge
             1.0f, 0.0f, 0.0f, 1.0f, // rouge
             0.0f, 1.0f, 0.0f, 1.0f, // vert
+            0.0f, 1.0f, 0.0f, 1.0f, // vert
+            0.0f, 1.0f, 0.0f, 1.0f, // vert
+            0.0f, 1.0f, 0.0f, 1.0f, // vert
+            0.0f, 0.0f, 1.0f, 1.0f, // bleu
+            0.0f, 0.0f, 1.0f, 1.0f, // bleu
+            0.0f, 0.0f, 1.0f, 1.0f, // bleu
             0.0f, 0.0f, 1.0f, 1.0f // bleu
         )
 
+        val indice = shortArrayOf(
+            0, 3, 1,
+            1, 2, 3,
+            4, 7, 5,
+            5, 6, 7
+        )
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer)
-        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(positions.asFloatArray()), GL.STATIC_DRAW)
+        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(positions), GL.STATIC_DRAW)
 
         gl.bindBuffer(GL.ARRAY_BUFFER, color)
         gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(colors), GL.STATIC_DRAW)
+
+        gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indices)
+        gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, DataSource.ShortDataSource(indice), GL.STATIC_DRAW)
 
         camera.translate(0, 0, -6)
     }
@@ -64,7 +88,7 @@ class DemoGame : Game {
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer)
         gl.vertexAttribPointer(
             index = program.getAttrib("aVertexPosition"),
-            size = 2,
+            size = 3,
             type = GL.FLOAT,
             normalized = false,
             stride = 0,
@@ -88,9 +112,12 @@ class DemoGame : Game {
 
         gl.uniformMatrix4fv(program.getUniform("uProjectionMatrix"), false, camera.projectionMatrix)
 
-        gl.uniformMatrix4fv(program.getUniform("uModelViewMatrix"), false,
+        gl.uniformMatrix4fv(
+            program.getUniform("uModelViewMatrix"), false,
             camera.modelMatrix.rotate(Vector3.Z, rotation * RAD2DEG)
+                .rotate(Vector3.Y, rotation * RAD2DEG)
         )
-        gl.drawArrays(GL.TRIANGLE_STRIP, 0, 4)
+
+        gl.drawElements(GL.TRIANGLES, 12, GL.UNSIGNED_SHORT, 0)
     }
 }
