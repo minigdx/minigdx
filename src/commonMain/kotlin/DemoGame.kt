@@ -1,7 +1,6 @@
 import threed.GL
 import threed.Game
 import threed.Seconds
-import threed.buffer.Buffer
 import threed.buffer.DataSource
 import threed.entity.Camera
 import threed.gl
@@ -10,21 +9,16 @@ import threed.math.Vector3
 import threed.math.asFloatArray
 import threed.math.v2
 import threed.shaders.DefaultShaders
-import threed.shaders.ShaderProgram
 import threed.shaders.ShaderUtils
 
 class DemoGame : Game {
 
-    lateinit var camera: Camera
-
-    lateinit var buffer: Buffer
-    lateinit var color: Buffer
-    lateinit var program: ShaderProgram
+    private val camera = Camera.create(45, gl.canvas.width / gl.canvas.height, 0.1, 100)
+    private val buffer = gl.createBuffer()
+    private val color = gl.createBuffer()
+    private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
     override fun create() {
-        camera = Camera.create(45, gl.canvas.width / gl.canvas.height, 0.1, 100)
-        program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
-
         program.createAttrib("aVertexPosition")
         program.createAttrib("aVertexColor")
 
@@ -45,11 +39,9 @@ class DemoGame : Game {
             0.0f, 0.0f, 1.0f, 1.0f    // bleu
         )
 
-        buffer = gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer)
         gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(positions.asFloatArray()), GL.STATIC_DRAW)
 
-        color = gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, color)
         gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(colors), GL.STATIC_DRAW)
 

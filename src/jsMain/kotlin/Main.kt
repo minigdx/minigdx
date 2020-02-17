@@ -1,5 +1,4 @@
-import threed.gl
+import threed.GLConfiguration
+import threed.configuration
 
-fun main() = gl(DemoGame()) {
-    canvasId = "canvas"
-}
+fun main() = configuration(GLConfiguration(canvasId = "canvas")).run { DemoGame() }

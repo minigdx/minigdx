@@ -383,16 +383,16 @@ interface GL {
     }
 }
 
-expect class GLConfiguration() {
-    fun createContext(): GL
+expect class GLConfiguration
 
-    fun mainLoop(game: Game)
+expect class GLContext(configuration: GLConfiguration) {
+    internal fun createContext(): GL
+
+    fun run(gameFactory: () -> Game)
 }
 
-fun gl(game: Game, configuration: GLConfiguration.() -> Unit) {
-    val config = GLConfiguration()
-    config.configuration()
-    gl = config.createContext()
-
-    config.mainLoop(game)
+fun configuration(configuration: GLConfiguration): GLContext {
+    val glContext = GLContext(configuration)
+    gl = glContext.createContext()
+    return glContext
 }

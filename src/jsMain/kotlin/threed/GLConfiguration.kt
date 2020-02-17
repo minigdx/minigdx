@@ -5,27 +5,32 @@ import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
 
-actual class GLConfiguration actual constructor() {
+actual class GLConfiguration(
+    val canvas: HTMLCanvasElement? = null,
+    val canvasId: String? = null
+)
 
-    var canvas: HTMLCanvasElement? = null
-    var canvasId: String? = null
+actual class GLContext actual constructor(private val configuration: GLConfiguration) {
 
     private var then = 0.0
     private lateinit var game: Game
 
-    actual fun createContext(): GL {
-        canvas = canvas ?: canvasId?.let { document.getElementById(it) as? HTMLCanvasElement }
-                ?: throw RuntimeException("<canvas> with id '${canvasId}' not found")
+    internal actual fun createContext(): GL {
+        val canvas =
+            configuration.canvas ?: configuration.canvasId?.let { document.getElementById(it) as? HTMLCanvasElement }
+            ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
-        val context = canvas?.getContext("webgl") as WebGLRenderingContext
-        return WebGL(context, Canvas(
-            width = canvas!!.clientWidth,
-            height = canvas!!.clientHeight
-        ))
+        val context = canvas.getContext("webgl") as WebGLRenderingContext
+        return WebGL(
+            context, Canvas(
+                width = canvas.clientWidth,
+                height = canvas.clientHeight
+            )
+        )
     }
 
-    actual fun mainLoop(game: Game) {
-        this.game = game
+    actual fun run(gameFactory: () -> Game) {
+        this.game = gameFactory()
 
         game.create()
         game.resume()
