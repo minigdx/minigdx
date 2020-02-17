@@ -1,4 +1,3 @@
 package threed.shaders
 
-expect class Shader {
-}
+expect class Shader

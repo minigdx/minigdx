@@ -33,10 +33,10 @@ class DemoGame : Game {
         )
 
         val colors = floatArrayOf(
-            1.0f, 1.0f, 1.0f, 1.0f,    // blanc
-            1.0f, 0.0f, 0.0f, 1.0f,    // rouge
-            0.0f, 1.0f, 0.0f, 1.0f,    // vert
-            0.0f, 0.0f, 1.0f, 1.0f    // bleu
+            1.0f, 1.0f, 1.0f, 1.0f, // blanc
+            1.0f, 0.0f, 0.0f, 1.0f, // rouge
+            0.0f, 1.0f, 0.0f, 1.0f, // vert
+            0.0f, 0.0f, 1.0f, 1.0f // bleu
         )
 
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer)

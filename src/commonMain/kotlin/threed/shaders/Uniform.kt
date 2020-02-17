@@ -1,4 +1,3 @@
 package threed.shaders
 
-expect class Uniform {
-}
+expect class Uniform

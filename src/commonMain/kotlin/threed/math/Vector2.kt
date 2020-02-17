@@ -1,6 +1,5 @@
 package threed.math
 
-
 infix fun Number.v2(other: Number) = Vector2(this, other)
 
 fun Array<Vector2>.asFloatArray(): FloatArray {

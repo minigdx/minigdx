@@ -1,9 +1,9 @@
 package threed
 
-import org.khronos.webgl.WebGLRenderingContext
-import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
+import org.khronos.webgl.WebGLRenderingContext
+import org.w3c.dom.HTMLCanvasElement
 
 actual class GLConfiguration(
     val canvas: HTMLCanvasElement? = null,

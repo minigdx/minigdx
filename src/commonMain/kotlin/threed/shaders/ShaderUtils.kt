@@ -5,11 +5,11 @@ import threed.gl
 
 object ShaderUtils {
 
-    fun createShaderProgram(vertexShader: String, fragmentShader: String) : ShaderProgram {
+    fun createShaderProgram(vertexShader: String, fragmentShader: String): ShaderProgram {
         val vertex = compileShader(vertexShader, GL.VERTEX_SHADER)
         val fragment = compileShader(fragmentShader, GL.FRAGMENT_SHADER)
 
-        val shaderProgram = gl.createProgram();
+        val shaderProgram = gl.createProgram()
         gl.attachShader(shaderProgram, vertex)
         gl.attachShader(shaderProgram, fragment)
         gl.linkProgram(shaderProgram)

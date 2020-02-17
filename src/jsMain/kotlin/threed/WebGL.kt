@@ -122,6 +122,6 @@ class WebGL(private val gl: WebGLRenderingContext, override val canvas: Canvas) 
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
-        gl.drawArrays(mask,  offset, vertexCount)
+        gl.drawArrays(mask, offset, vertexCount)
     }
 }

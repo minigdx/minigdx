@@ -1,5 +1,3 @@
 package threed.buffer
 
-expect class Buffer {
-
-}
+expect class Buffer

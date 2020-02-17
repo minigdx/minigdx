@@ -1,8 +1,8 @@
 package threed.entity
 
+import kotlin.math.PI
 import threed.math.Matrix4
 import threed.math.Vector3
-import kotlin.math.PI
 
 data class Camera(
     val position: Vector3,
@@ -18,8 +18,6 @@ data class Camera(
         modelMatrix.translate(Vector3(x, y, z))
         return this
     }
-
-
 
     companion object {
 
