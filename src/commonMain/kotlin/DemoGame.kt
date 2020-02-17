@@ -5,6 +5,8 @@ import threed.buffer.Buffer
 import threed.buffer.DataSource
 import threed.entity.Camera
 import threed.gl
+import threed.math.RAD2DEG
+import threed.math.Vector3
 import threed.math.asFloatArray
 import threed.math.v2
 import threed.shaders.DefaultShaders
@@ -37,21 +39,27 @@ class DemoGame : Game {
         )
 
         val colors = floatArrayOf(
-            1.0f,  1.0f,  1.0f,  1.0f,    // blanc
-            1.0f,  0.0f,  0.0f,  1.0f,    // rouge
-            0.0f,  1.0f,  0.0f,  1.0f,    // vert
-            0.0f,  0.0f,  1.0f,  1.0f    // bleu
+            1.0f, 1.0f, 1.0f, 1.0f,    // blanc
+            1.0f, 0.0f, 0.0f, 1.0f,    // rouge
+            0.0f, 1.0f, 0.0f, 1.0f,    // vert
+            0.0f, 0.0f, 1.0f, 1.0f    // bleu
         )
 
         buffer = gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer)
-        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(positions.asFloatArray()), GL.STATIC_DRAW);
+        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(positions.asFloatArray()), GL.STATIC_DRAW)
 
         color = gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, color)
-        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(colors), GL.STATIC_DRAW);
+        gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(colors), GL.STATIC_DRAW)
 
         camera.translate(0, 0, -6)
+    }
+
+    var rotation = 0f
+
+    override fun render(delta: Seconds) {
+        rotation = delta
 
         // clear
         gl.clearColor(0, 0, 0, 1)
@@ -88,12 +96,9 @@ class DemoGame : Game {
 
         gl.uniformMatrix4fv(program.getUniform("uProjectionMatrix"), false, camera.projectionMatrix)
 
-        gl.uniformMatrix4fv(program.getUniform("uModelViewMatrix"), false, camera.modelMatrix)
-
+        gl.uniformMatrix4fv(program.getUniform("uModelViewMatrix"), false,
+            camera.modelMatrix.rotate(Vector3.Z, rotation * RAD2DEG)
+        )
         gl.drawArrays(GL.TRIANGLE_STRIP, 0, 4)
-    }
-
-    override fun render(delta: Seconds) {
-
     }
 }
