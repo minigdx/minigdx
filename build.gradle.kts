@@ -28,6 +28,10 @@ kotlin {
         this.nodejs
     }
 
+    jvm {
+        this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -44,6 +48,18 @@ kotlin {
         js().compilations["main"].defaultSourceSet {
             dependencies {
                 implementation(kotlin("stdlib-js"))
+            }
+        }
+
+        jvm().compilations["main"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("stdlib-jdk8"))
+
+                val lwjglVersion = "3.2.3"
+                implementation("org.lwjgl:lwjgl:$lwjglVersion")
+                implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-windows")
+                implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-linux")
+                implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-macos")
             }
         }
     }

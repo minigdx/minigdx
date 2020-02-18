@@ -21,8 +21,6 @@ const val DEG2RAD = PI.toFloat() / 180f
 
 class Matrix4(val data: FloatArray) {
 
-    constructor(vararg floats: Float) : this(data = floats)
-
     fun setTranslate(transform: Vector3): Matrix4 {
         data[3, 0] = transform.x
         data[3, 1] = transform.y
