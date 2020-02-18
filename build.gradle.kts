@@ -32,6 +32,17 @@ kotlin {
         this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
     }
 
+    macosX64() {
+        binaries {
+            executable {
+                // Change to specify fully qualified name of your application's entry point:
+                entryPoint = "main"
+                // Specify command-line arguments, if necessary:
+                runTask?.args("")
+            }
+        }
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
