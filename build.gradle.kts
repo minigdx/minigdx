@@ -60,6 +60,14 @@ kotlin {
                 implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-windows")
                 implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-linux")
                 implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-macos")
+                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
+                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-windows")
+                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-linux")
+                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-macos")
+                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")
+                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
+                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
+                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
             }
         }
     }

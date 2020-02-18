@@ -1,8 +1,23 @@
 package threed
 
-import SharedLibraryLoader
-import java.io.File
-import java.net.URLClassLoader
+import org.lwjgl.glfw.GLFW.GLFW_FALSE
+import org.lwjgl.glfw.GLFW.GLFW_RESIZABLE
+import org.lwjgl.glfw.GLFW.GLFW_TRUE
+import org.lwjgl.glfw.GLFW.GLFW_VISIBLE
+import org.lwjgl.glfw.GLFW.glfwCreateWindow
+import org.lwjgl.glfw.GLFW.glfwDefaultWindowHints
+import org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor
+import org.lwjgl.glfw.GLFW.glfwGetVideoMode
+import org.lwjgl.glfw.GLFW.glfwInit
+import org.lwjgl.glfw.GLFW.glfwMakeContextCurrent
+import org.lwjgl.glfw.GLFW.glfwPollEvents
+import org.lwjgl.glfw.GLFW.glfwSetWindowPos
+import org.lwjgl.glfw.GLFW.glfwShowWindow
+import org.lwjgl.glfw.GLFW.glfwSwapBuffers
+import org.lwjgl.glfw.GLFW.glfwSwapInterval
+import org.lwjgl.glfw.GLFW.glfwWindowHint
+import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
+import org.lwjgl.system.MemoryUtil.NULL
 
 typealias Pixels = Int
 
@@ -19,37 +34,78 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createContext(): GL {
-        // Find the ljwgl jar.
-        val classifier = computeJarClassifier()
-        val jar = findJar(classifier)
-
-        SharedLibraryLoader.load(disableOpenAL = true, nativesJar = jar.absolutePath)
         return LwjglGL(canvas = Canvas(configuration.width, configuration.height))
     }
 
-    private fun findJar(classifier: Classifier): File {
-        val cl = ClassLoader.getSystemClassLoader()
-
-        val jar: File = (cl as URLClassLoader).urLs
-            .map { File(it.toURI()) }
-            .filter { it.name.startsWith("lwjgl") }
-            .first { it.nameWithoutExtension.endsWith("natives-${classifier.exts}") }
-
-        return jar
+    /**
+     * Get the time in milliseconds
+     *
+     * @return The system time in milliseconds
+     */
+    private fun getTime(): Long {
+        return System.nanoTime() / 1000000
     }
 
-    private fun computeJarClassifier(): Classifier {
-        var isWindows = System.getProperty("os.name").contains("Windows")
-        var isLinux = System.getProperty("os.name").contains("Linux")
-        var isMac = System.getProperty("os.name").contains("Mac")
-
-        return if (isWindows) Classifier.WINDOWS
-        else if (isLinux) Classifier.LINUX
-        else if (isMac) Classifier.MACOS
-        else throw IllegalArgumentException("Not found what is the actual system.")
+    fun getDelta(): Float {
+        val time = getTime()
+        val delta = (time - lastFrame)
+        lastFrame = time
+        return delta / 1000f
     }
+
+    private var lastFrame: Long = 0L
 
     actual fun run(gameFactory: () -> Game) {
-        // TODO
+        if (!glfwInit()) {
+            throw IllegalStateException("Unable to initialize GLFW")
+        }
+
+        glfwDefaultWindowHints() // optional, the current window hints are already the default
+
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE) // the window will be resizable
+
+        // Create the window
+        val window = glfwCreateWindow(
+            configuration.width,
+            configuration.height,
+            configuration.name,
+            NULL,
+            NULL
+        )
+        if (window == NULL) {
+            throw IllegalStateException("Failed to create the GLFW window")
+        }
+
+        // Get the resolution of the primary monitor
+        val vidmode =
+            glfwGetVideoMode(glfwGetPrimaryMonitor()) ?: throw IllegalStateException("No primary monitor found")
+        // Center our window
+        glfwSetWindowPos(
+            window,
+            (vidmode.width() - configuration.width) / 2,
+            (vidmode.height() - configuration.height) / 2
+        )
+
+        // Make the OpenGL context current
+        glfwMakeContextCurrent(window)
+        // Enable v-sync
+        glfwSwapInterval(1)
+
+        org.lwjgl.opengl.GL.createCapabilities()
+
+        val game = gameFactory()
+
+        // Make the window visible
+        glfwShowWindow(window)
+        game.create()
+        game.resume()
+        while (!glfwWindowShouldClose(window)) {
+            game.render(getDelta())
+            glfwSwapBuffers(window) // swap the color buffers
+            glfwPollEvents()
+        }
+        game.pause()
+        game.destroy()
     }
 }

@@ -1,3 +1,3 @@
 package threed.shaders
 
-actual class Uniform
+actual class Uniform(val address: Int)

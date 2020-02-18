@@ -3,13 +3,17 @@ package threed.shaders
 object DefaultShaders {
 
     val vertexShader = """
-        attribute vec4 aVertexPosition;
-        attribute vec4 aVertexColor;
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
 
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
         
-        varying lowp vec4 vColor;
+        attribute vec4 aVertexPosition;
+        attribute vec4 aVertexColor;
+        
+        varying vec4 vColor;
         
         void main() {
             gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
@@ -19,7 +23,11 @@ object DefaultShaders {
     """.trimIndent()
 
     val fragmentShader = """
-        varying lowp vec4 vColor;
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+
+        varying vec4 vColor;
         
         void main() {
               // see vertex shader

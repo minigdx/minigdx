@@ -1,3 +1,3 @@
 package threed.shaders
 
-actual class Shader
+actual class Shader(val address: Int)

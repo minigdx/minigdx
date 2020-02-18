@@ -1,3 +1,3 @@
 package threed.buffer
 
-actual class Buffer
+actual class Buffer(val address: Int)

@@ -1,7 +1,35 @@
 package threed
 
+import org.lwjgl.opengl.GL30.glAttachShader
+import org.lwjgl.opengl.GL30.glBindBuffer
+import org.lwjgl.opengl.GL30.glBufferData
+import org.lwjgl.opengl.GL30.glClear
+import org.lwjgl.opengl.GL30.glClearColor
+import org.lwjgl.opengl.GL30.glClearDepth
+import org.lwjgl.opengl.GL30.glCompileShader
+import org.lwjgl.opengl.GL30.glCreateProgram
+import org.lwjgl.opengl.GL30.glCreateShader
+import org.lwjgl.opengl.GL30.glDeleteShader
+import org.lwjgl.opengl.GL30.glDepthFunc
+import org.lwjgl.opengl.GL30.glDrawArrays
+import org.lwjgl.opengl.GL30.glDrawElements
+import org.lwjgl.opengl.GL30.glEnable
+import org.lwjgl.opengl.GL30.glEnableVertexAttribArray
+import org.lwjgl.opengl.GL30.glGenBuffers
+import org.lwjgl.opengl.GL30.glGetAttribLocation
+import org.lwjgl.opengl.GL30.glGetProgramInfoLog
+import org.lwjgl.opengl.GL30.glGetProgrami
+import org.lwjgl.opengl.GL30.glGetShaderInfoLog
+import org.lwjgl.opengl.GL30.glGetShaderi
+import org.lwjgl.opengl.GL30.glGetUniformLocation
+import org.lwjgl.opengl.GL30.glLinkProgram
+import org.lwjgl.opengl.GL30.glShaderSource
+import org.lwjgl.opengl.GL30.glUniformMatrix4fv
+import org.lwjgl.opengl.GL30.glUseProgram
+import org.lwjgl.opengl.GL30.glVertexAttribPointer
 import threed.buffer.Buffer
 import threed.buffer.DataSource
+import threed.shaders.PlatformShaderProgram
 import threed.shaders.Shader
 import threed.shaders.ShaderProgram
 import threed.shaders.Uniform
@@ -9,114 +37,128 @@ import threed.shaders.Uniform
 class LwjglGL(override val canvas: Canvas) : GL {
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
-        TODO("not implemented")
+        glClearColor(r.toPercent(), g.toPercent(), b.toPercent(), a.toPercent())
     }
 
     override fun clear(mask: ByteMask) {
-        TODO("not implemented")
+        glClear(mask)
     }
 
     override fun clearDepth(depth: Number) {
-        TODO("not implemented")
+        glClearDepth(depth.toDouble())
     }
 
     override fun enable(mask: ByteMask) {
-        TODO("not implemented")
+        glEnable(mask)
     }
 
     override fun createProgram(): ShaderProgram {
-        TODO("not implemented")
+        return ShaderProgram(PlatformShaderProgram(glCreateProgram()))
     }
 
     override fun getAttribLocation(shaderProgram: ShaderProgram, name: String): Int {
-        TODO("not implemented")
+        return glGetAttribLocation(shaderProgram.program.address, name)
     }
 
     override fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform {
-        TODO("not implemented")
+        return Uniform(glGetUniformLocation(shaderProgram.program.address, name))
     }
 
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {
-        TODO("not implemented")
+        glAttachShader(shaderProgram.program.address, shader.address)
     }
 
     override fun linkProgram(shaderProgram: ShaderProgram) {
-        TODO("not implemented")
+        glLinkProgram(shaderProgram.program.address)
     }
 
     override fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any {
-        TODO("not implemented")
+        return glGetProgrami(shaderProgram.program.address, mask)
     }
 
     override fun getShaderParameter(shader: Shader, mask: ByteMask): Any {
-        TODO("not implemented")
+        return glGetShaderi(shader.address, mask)
+    }
+
+    override fun getProgramParameterB(shaderProgram: ShaderProgram, mask: ByteMask): Boolean {
+        return (getProgramParameter(shaderProgram, mask) as? Int) == 1
+    }
+
+    override fun getShaderParameterB(shader: Shader, mask: ByteMask): Boolean {
+        return (getShaderParameter(shader, mask) as? Int) == 1
     }
 
     override fun createShader(type: ByteMask): Shader {
-        TODO("not implemented")
+        return Shader(glCreateShader(type))
     }
 
     override fun shaderSource(shader: Shader, source: String) {
-        TODO("not implemented")
+        glShaderSource(shader.address, source)
     }
 
     override fun compileShader(shader: Shader) {
-        TODO("not implemented")
+        glCompileShader(shader.address)
     }
 
     override fun getShaderInfoLog(shader: Shader): String {
-        TODO("not implemented")
+        return glGetShaderInfoLog(shader.address)
     }
 
     override fun deleteShader(shader: Shader) {
-        TODO("not implemented")
+        glDeleteShader(shader.address)
     }
 
     override fun getProgramInfoLog(shader: ShaderProgram): String {
-        TODO("not implemented")
+        return glGetProgramInfoLog(shader.program.address)
     }
 
     override fun createBuffer(): Buffer {
-        TODO("not implemented")
+        return Buffer(glGenBuffers())
     }
 
     override fun bindBuffer(target: ByteMask, buffer: Buffer) {
-        TODO("not implemented")
+        glBindBuffer(target, buffer.address)
     }
 
     override fun bufferData(target: ByteMask, size: Int, usage: Int) {
-        TODO("not implemented")
+        glBufferData(target, size.toLong(), usage)
     }
 
     override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
-        TODO("not implemented")
+        when (data) {
+            is DataSource.FloatDataSource -> glBufferData(target, data.floats, usage)
+            is DataSource.IntDataSource -> glBufferData(target, data.ints, usage)
+            is DataSource.ShortDataSource -> glBufferData(target, data.shorts, usage)
+            is DataSource.UIntDataSource -> glBufferData(target, data.ints, usage)
+            is DataSource.DoubleDataSource -> glBufferData(target, data.double, usage)
+        }
     }
 
     override fun depthFunc(target: ByteMask) {
-        TODO("not implemented")
+        glDepthFunc(target)
     }
 
     override fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int) {
-        TODO("not implemented")
+        glVertexAttribPointer(index, size, type, normalized, stride, offset.toLong())
     }
 
     override fun enableVertexAttribArray(index: Int) {
-        TODO("not implemented")
+        glEnableVertexAttribArray(index)
     }
 
     override fun useProgram(shaderProgram: ShaderProgram) {
-        TODO("not implemented")
+        glUseProgram(shaderProgram.program.address)
     }
 
     override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
-        TODO("not implemented")
+        glUniformMatrix4fv(uniform.address, transpose, data.toFloatArray())
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
-        TODO("not implemented")
+        glDrawArrays(mask, offset, vertexCount)
     }
 
     override fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int) {
-        TODO("not implemented")
+        glDrawElements(mask, vertexCount, type, offset.toLong())
     }
 }
