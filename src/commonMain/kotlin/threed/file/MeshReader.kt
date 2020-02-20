@@ -18,19 +18,23 @@ object MeshReader {
     ) {
 
         fun build(): Mesh {
-            val vertices = vertex.zip(color).map {
-                Vertice(
-                    position = it.first,
-                    color = it.second
-                )
+            val createdVertice = mutableMapOf<Pair<Short, Short>, Pair<Int, Vertice>>()
+            var index = 0
+            val vertices = verticesOrder.zip(colorsOrder).map {
+                 createdVertice.getOrPut(it) {
+                     index++ to Vertice(
+                        vertex[it.first.toInt()],
+                        color[it.second.toInt()]
+                    )
+                }
             }
 
             return Mesh(
                 name = name,
                 position = position,
                 rotation = rotation,
-                vertices = vertices.toTypedArray(),
-                verticesOrder = verticesOrder.toShortArray()
+                vertices = vertices.distinctBy { it.first }.map { it.second }.toTypedArray(),
+                verticesOrder = vertices.map { it.first.toShort() }.toShortArray()
             )
         }
     }

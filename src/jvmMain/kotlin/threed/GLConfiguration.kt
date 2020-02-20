@@ -1,6 +1,7 @@
 package threed
 
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
 import threed.file.FileHander
 
@@ -89,6 +90,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         glfwShowWindow(window)
         game.create()
         game.resume()
+
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
+
         while (!glfwWindowShouldClose(window)) {
             game.render(getDelta())
             glfwSwapBuffers(window) // swap the color buffers

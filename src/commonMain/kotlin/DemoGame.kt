@@ -31,7 +31,7 @@ class DemoGame : Game {
         }
 
 
-        fileHandler.read("monkey_color.3d").onLoaded {
+        fileHandler.read("monkey_color2.3d").onLoaded {
             cube = Render(MeshReader.fromString(it).first())
             ready--
         }
