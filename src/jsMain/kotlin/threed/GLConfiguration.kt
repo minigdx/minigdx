@@ -1,9 +1,10 @@
 package threed
 
-import kotlin.browser.document
-import kotlin.browser.window
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
+import threed.file.FileHander
+import kotlin.browser.document
+import kotlin.browser.window
 
 actual class GLConfiguration(
     val canvas: HTMLCanvasElement? = null,
@@ -27,6 +28,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
                 height = canvas.clientHeight
             )
         )
+    }
+
+    internal actual fun createFileHandler(): FileHander {
+        return FileHander()
     }
 
     actual fun run(gameFactory: () -> Game) {

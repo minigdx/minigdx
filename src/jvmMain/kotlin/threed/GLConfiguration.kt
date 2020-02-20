@@ -1,23 +1,8 @@
 package threed
 
-import org.lwjgl.glfw.GLFW.GLFW_FALSE
-import org.lwjgl.glfw.GLFW.GLFW_RESIZABLE
-import org.lwjgl.glfw.GLFW.GLFW_TRUE
-import org.lwjgl.glfw.GLFW.GLFW_VISIBLE
-import org.lwjgl.glfw.GLFW.glfwCreateWindow
-import org.lwjgl.glfw.GLFW.glfwDefaultWindowHints
-import org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor
-import org.lwjgl.glfw.GLFW.glfwGetVideoMode
-import org.lwjgl.glfw.GLFW.glfwInit
-import org.lwjgl.glfw.GLFW.glfwMakeContextCurrent
-import org.lwjgl.glfw.GLFW.glfwPollEvents
-import org.lwjgl.glfw.GLFW.glfwSetWindowPos
-import org.lwjgl.glfw.GLFW.glfwShowWindow
-import org.lwjgl.glfw.GLFW.glfwSwapBuffers
-import org.lwjgl.glfw.GLFW.glfwSwapInterval
-import org.lwjgl.glfw.GLFW.glfwWindowHint
-import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.system.MemoryUtil.NULL
+import threed.file.FileHander
 
 typealias Pixels = Int
 
@@ -35,6 +20,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     internal actual fun createContext(): GL {
         return LwjglGL(canvas = Canvas(configuration.width, configuration.height))
+    }
+
+    internal actual fun createFileHandler(): FileHander {
+        return FileHander()
     }
 
     /**

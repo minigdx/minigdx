@@ -2,6 +2,7 @@ package threed
 
 import threed.buffer.Buffer
 import threed.buffer.DataSource
+import threed.file.FileHander
 import threed.math.Matrix4
 import threed.shaders.Shader
 import threed.shaders.ShaderProgram
@@ -17,6 +18,7 @@ fun Number.toPercent(): Float {
 }
 
 lateinit var gl: GL
+lateinit var fileHandler: FileHander
 
 class Canvas(
     val width: Int,
@@ -388,6 +390,7 @@ expect class GLConfiguration
 
 expect class GLContext(configuration: GLConfiguration) {
     internal fun createContext(): GL
+    internal fun createFileHandler(): FileHander
 
     fun run(gameFactory: () -> Game)
 }
@@ -395,5 +398,6 @@ expect class GLContext(configuration: GLConfiguration) {
 fun configuration(configuration: GLConfiguration): GLContext {
     val glContext = GLContext(configuration)
     gl = glContext.createContext()
+    fileHandler = glContext.createFileHandler()
     return glContext
 }

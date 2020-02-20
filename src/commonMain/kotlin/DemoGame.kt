@@ -1,9 +1,7 @@
-import threed.GL
-import threed.Game
-import threed.Seconds
+import threed.*
 import threed.entity.Camera
-import threed.entity.Cube
-import threed.gl
+import threed.file.MeshReader
+import threed.graphics.Render
 import threed.math.RAD2DEG
 import threed.math.Vector3
 import threed.shaders.DefaultShaders
@@ -13,7 +11,10 @@ class DemoGame : Game {
 
     private val camera = Camera.create(45, gl.canvas.width / gl.canvas.height, 0.1, 100)
     private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
-    private val cube = Cube("hello")
+
+    lateinit var monkey: Render
+    lateinit var cube: Render
+    var ready = 2
 
     override fun create() {
         program.createAttrib("aVertexPosition")
@@ -23,6 +24,17 @@ class DemoGame : Game {
         program.createUniform("uModelViewMatrix")
 
         camera.translate(0, 0, -6)
+
+        fileHandler.read("monkey.3d").onLoaded {
+            monkey = Render(MeshReader.fromString(it).first())
+            ready--
+        }
+
+
+        fileHandler.read("monkey_color.3d").onLoaded {
+            cube = Render(MeshReader.fromString(it).first())
+            ready--
+        }
     }
 
     var rotation = 0f
@@ -32,8 +44,8 @@ class DemoGame : Game {
         rotation = delta
 
         val modelMatrix = camera.modelMatrix
+            .rotate(Vector3.X, 2 * rotation * RAD2DEG)
             .rotate(Vector3.Z, rotation * RAD2DEG)
-            .rotate(Vector3.Y, rotation * RAD2DEG)
 
         // --- draw ---
         // clear
@@ -48,6 +60,9 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uProjectionMatrix"), false, camera.projectionMatrix)
         gl.uniformMatrix4fv(program.getUniform("uModelViewMatrix"), false, modelMatrix)
 
-        cube.draw(program)
+        if (ready == 0) {
+            //monkey.draw(program)
+            cube.draw(program)
+        }
     }
 }

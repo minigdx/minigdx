@@ -1,17 +1,19 @@
 plugins {
     java
-    kotlin("multiplatform") version "1.3.61"
+    kotlin("multiplatform") version "1.3.70-eap-42"
+    application
 }
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
 }
 
 dependencies {
-    testCompile("junit", "junit", "4.12")
+    testImplementation("junit", "junit", "4.12")
 }
 
 configure<JavaPluginConvention> {
@@ -83,3 +85,9 @@ kotlin {
         }
     }
 }
+
+application {
+    mainClassName = "demo.Main"
+}
+
+project.tasks.getByName("run").dependsOn("jvmJar")
