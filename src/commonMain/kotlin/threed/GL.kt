@@ -1,5 +1,7 @@
 package threed
 
+import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.transpose
 import threed.buffer.Buffer
 import threed.buffer.DataSource
 import threed.file.FileHander
@@ -58,8 +60,8 @@ interface GL {
     fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int)
     fun enableVertexAttribArray(index: Int)
     fun useProgram(shaderProgram: ShaderProgram)
-    fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Matrix4) =
-        uniformMatrix4fv(uniform, transpose, data.data)
+    fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Mat4) =
+        uniformMatrix4fv(uniform, transpose, transpose(data).toFloatArray())
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: FloatArray) =
         uniformMatrix4fv(uniform, transpose, data.toTypedArray())

@@ -1,21 +1,33 @@
 package threed.entity
 
-import threed.math.Matrix4
+import com.curiouscreature.kotlin.math.Float3
+import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.perspective
+import com.curiouscreature.kotlin.math.translation
+import com.curiouscreature.kotlin.math.*
 import threed.math.Vector3
 import kotlin.math.PI
 
 data class Camera(
     val position: Vector3,
     val target: Vector3,
-    val projectionMatrix: Matrix4,
-    val modelMatrix: Matrix4 = Matrix4.identity()
+    var projectionMatrix: Mat4,
+    var modelMatrix: Mat4 = Mat4.identity()
 ) : Entity {
 
     override fun translate(x: Number, y: Number, z: Number): Entity {
         position.add(x.toFloat(), y.toFloat(), z.toFloat())
         target.add(x.toFloat(), y.toFloat(), z.toFloat())
 
-        modelMatrix.translate(Vector3(x, y, z))
+        modelMatrix = modelMatrix.times(translation(Float3(x.toFloat(), y.toFloat(), z.toFloat())))
+        return this
+    }
+
+    fun rotate(x: Number, y: Number, z: Number): Entity {
+        val axesX = rotation(Float3(1f, 0f, 0f), x.toFloat())
+        val axesY = rotation(Float3(0f, 1f, 0f), y.toFloat())
+        val axesZ = rotation(Float3(0f, 0f, 1f), z.toFloat())
+        modelMatrix = modelMatrix * axesX * axesY * axesZ
         return this
     }
 
@@ -23,12 +35,11 @@ data class Camera(
 
         fun create(fov: Number, aspect: Number, near: Number, far: Number): Camera {
             // en radians
-            val fieldOfView = fov.toFloat() * PI.toFloat() / 180f
-            val projectionMatrix = Matrix4.projection(
-                fov = fieldOfView,
-                aspect = aspect,
-                near = near,
-                far = far
+            val projectionMatrix = projection(
+                fov = fov.toFloat(),
+                ratio = aspect.toFloat(),
+                near = near.toFloat(),
+                far = far.toFloat()
             )
             return Camera(
                 position = Vector3(),

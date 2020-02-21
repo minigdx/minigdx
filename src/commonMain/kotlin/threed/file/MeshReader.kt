@@ -13,18 +13,23 @@ object MeshReader {
         val rotation: Vector3 = Vector3(),
         val vertex: List<Vector3> = emptyList(),
         val color: List<Color> = emptyList(),
+        val normals: List<Vector3> = emptyList(),
         val colorsOrder: List<Short> = emptyList(),
-        val verticesOrder: List<Short> = emptyList()
+        val verticesOrder: List<Short> = emptyList(),
+        val normalOrder: List<Short> = emptyList()
     ) {
 
         fun build(): Mesh {
-            val createdVertice = mutableMapOf<Pair<Short, Short>, Pair<Int, Vertice>>()
+            val createdVertice = mutableMapOf<Triple<Short, Short, Short>, Pair<Int, Vertice>>()
             var index = 0
-            val vertices = verticesOrder.zip(colorsOrder).map {
-                 createdVertice.getOrPut(it) {
-                     index++ to Vertice(
-                        vertex[it.first.toInt()],
-                        color[it.second.toInt()]
+            val vertices = verticesOrder.zip(colorsOrder).zip(normalOrder).map {
+                Triple(it.first.first, it.first.second, it.second)
+            }.map {
+                createdVertice.getOrPut(it) {
+                    index++ to Vertice(
+                        position = vertex[it.first.toInt()],
+                        color = color[it.second.toInt()],
+                        normal = normals[it.third.toInt()]
                     )
                 }
             }
@@ -71,11 +76,23 @@ object MeshReader {
                     val colors = it.parseLine("COLORS")
                         .map { vec ->
                             val (x, y, z, w) = vec.trim().split(" ")
-                            Color(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
+                            Color(x.toFloat(), y.toFloat(), z.toFloat(), 1.0f)
                         }
                     mesh = mesh.copy(color = colors)
                 }
-
+                it.startsWith("NORMALS") -> {
+                    val normals = it.parseLine("NORMALS")
+                        .map { vec ->
+                            val (x, y, z) = vec.trim().split(" ")
+                            Vector3(x.toFloat(), y.toFloat(), z.toFloat())
+                        }
+                    mesh = mesh.copy(normals = normals)
+                }
+                it.startsWith("NORMAL_INDICES") -> {
+                    val indices = it.parseLine("NORMAL_INDICES")
+                        .map { str -> str.toShort() }
+                    mesh = mesh.copy(normalOrder = indices)
+                }
                 it.startsWith("VERTEX_INDICES") -> {
                     val indices = it.parseLine("VERTEX_INDICES")
                         .map { str -> str.toShort() }

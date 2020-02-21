@@ -49,6 +49,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-SNAPSHOT")
             }
         }
         val commonTest by getting {
@@ -60,13 +61,17 @@ kotlin {
 
         js().compilations["main"].defaultSourceSet {
             dependencies {
+                // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-SNAPSHOT")
                 implementation(kotlin("stdlib-js"))
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-SNAPSHOT")
             }
         }
 
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
+                // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
                 implementation(kotlin("stdlib-jdk8"))
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
 
                 val lwjglVersion = "3.2.3"
                 implementation("org.lwjgl:lwjgl:$lwjglVersion")

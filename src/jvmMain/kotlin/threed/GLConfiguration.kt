@@ -91,7 +91,8 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         game.create()
         game.resume()
 
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
+        // Wireframe mode
+        // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
 
         while (!glfwWindowShouldClose(window)) {
             game.render(getDelta())

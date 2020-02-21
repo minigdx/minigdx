@@ -13,14 +13,14 @@ data class Cube(
         Mesh(
             name = name,
             vertices = arrayOf(
-                Vertice(Vector3(-1, 1, 1), color), // 0
-                Vertice(Vector3(1, 1, 1), color), // 1
-                Vertice(Vector3(-1, -1, 1), color), // 2
-                Vertice(Vector3(1, -1, 1), color), // 3
-                Vertice(Vector3(-1, -1, -1), color), // 4
-                Vertice(Vector3(-1, 1, -1), color), // 5
-                Vertice(Vector3(1, 1, -1), color), // 6
-                Vertice(Vector3(1, -1, -1), color) // 7
+                Vertice(position = Vector3(x = -1, y = 1, z = 1), color = color), // 0
+                Vertice(position = Vector3(1, 1, 1), color = color), // 1
+                Vertice(position = Vector3(-1, -1, 1), color = color), // 2
+                Vertice(position = Vector3(1, -1, 1), color = color), // 3
+                Vertice(position = Vector3(-1, -1, -1), color = color), // 4
+                Vertice(position = Vector3(-1, 1, -1), color = color), // 5
+                Vertice(position = Vector3(1, 1, -1), color = color), // 6
+                Vertice(position = Vector3(1, -1, -1), color = color) // 7
             ),
             verticesOrder = shortArrayOf(
                 // front
