@@ -20,6 +20,7 @@ import platform.Metal.MTLCreateSystemDefaultDevice
 import platform.MetalKit.MTKView
 import platform.darwin.NSObject
 import threed.file.FileHander
+import threed.input.InputHandler
 
 class AppDelegate(val title: String, val w: Int, val h: Int) : NSObject(), NSApplicationDelegateProtocol {
 
@@ -96,5 +97,9 @@ actual class GLContext actual constructor(val configuration: GLConfiguration) {
 
     internal actual fun createFileHandler(): FileHander {
         return FileHander()
+    }
+
+    internal actual fun createInputHandler(): InputHandler {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

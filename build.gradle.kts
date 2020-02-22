@@ -26,7 +26,14 @@ kotlin {
 
     js {
         this.useCommonJs()
-        this.browser
+        this.browser {
+            this.webpackTask {
+                this.compilation.kotlinOptions {
+                    this.sourceMap = true
+                    this.sourceMapEmbedSources = "always"
+                }
+            }
+        }
         this.nodejs
     }
 

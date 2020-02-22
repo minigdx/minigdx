@@ -35,9 +35,9 @@ data class Camera(
 
         fun create(fov: Number, aspect: Number, near: Number, far: Number): Camera {
             // en radians
-            val projectionMatrix = projection(
+            val projectionMatrix = perspective(
                 fov = fov.toFloat(),
-                ratio = aspect.toFloat(),
+                aspect = aspect.toFloat(),
                 near = near.toFloat(),
                 far = far.toFloat()
             )

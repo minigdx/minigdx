@@ -1,9 +1,14 @@
 package threed
 
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
 import threed.file.FileHander
+import threed.input.InputHandler
+import threed.input.InputManager
+import threed.input.Key
+import threed.input.TouchSignal
+import threed.math.Vector2
+import java.lang.management.ManagementFactory
 
 typealias Pixels = Int
 
@@ -19,12 +24,38 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         WINDOWS("windows"), LINUX("linux"), MACOS("macos")
     }
 
+    private fun isMacOs(): Boolean {
+        val osName = System.getProperty("os.name").toLowerCase()
+        return osName.indexOf("mac") >= 0
+    }
     internal actual fun createContext(): GL {
+        if(isMacOs()) {
+            System.err.println("""WARNING : You're runing a game on Mac OS.
+                | If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin())
+        }
         return LwjglGL(canvas = Canvas(configuration.width, configuration.height))
     }
 
     internal actual fun createFileHandler(): FileHander {
         return FileHander()
+    }
+
+
+    internal actual fun createInputHandler(): InputHandler {
+        return object : InputHandler, InputManager {
+            override fun record()  = Unit
+
+            override fun reset() = Unit
+
+            override fun isKey(key: Key): Boolean = false
+
+            override fun isKeyPressed(key: Key): Boolean = false
+
+            override fun isTouched(signal: TouchSignal): Vector2? = null
+
+            override fun isJustTouched(signal: TouchSignal): Vector2?  = null
+
+        }
     }
 
     /**
@@ -36,7 +67,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return System.nanoTime() / 1000000
     }
 
-    fun getDelta(): Float {
+    private fun getDelta(): Float {
         val time = getTime()
         val delta = (time - lastFrame)
         lastFrame = time
@@ -94,10 +125,13 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         // Wireframe mode
         // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
 
+        val inputManager = inp as InputManager
         while (!glfwWindowShouldClose(window)) {
+            inputManager.record()
             game.render(getDelta())
             glfwSwapBuffers(window) // swap the color buffers
             glfwPollEvents()
+            inputManager.reset()
         }
         game.pause()
         game.destroy()

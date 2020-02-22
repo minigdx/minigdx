@@ -5,7 +5,7 @@ import com.curiouscreature.kotlin.math.transpose
 import threed.buffer.Buffer
 import threed.buffer.DataSource
 import threed.file.FileHander
-import threed.math.Matrix4
+import threed.input.InputHandler
 import threed.shaders.Shader
 import threed.shaders.ShaderProgram
 import threed.shaders.Uniform
@@ -21,6 +21,7 @@ fun Number.toPercent(): Float {
 
 lateinit var gl: GL
 lateinit var fileHandler: FileHander
+lateinit var inp: InputHandler
 
 class Canvas(
     val width: Int,
@@ -61,7 +62,7 @@ interface GL {
     fun enableVertexAttribArray(index: Int)
     fun useProgram(shaderProgram: ShaderProgram)
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Mat4) =
-        uniformMatrix4fv(uniform, transpose, transpose(data).toFloatArray())
+        uniformMatrix4fv(uniform, transpose, data.toFloatArray())
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: FloatArray) =
         uniformMatrix4fv(uniform, transpose, data.toTypedArray())
@@ -393,6 +394,7 @@ expect class GLConfiguration
 expect class GLContext(configuration: GLConfiguration) {
     internal fun createContext(): GL
     internal fun createFileHandler(): FileHander
+    internal fun createInputHandler(): InputHandler
 
     fun run(gameFactory: () -> Game)
 }
@@ -401,5 +403,6 @@ fun configuration(configuration: GLConfiguration): GLContext {
     val glContext = GLContext(configuration)
     gl = glContext.createContext()
     fileHandler = glContext.createFileHandler()
+    inp = glContext.createInputHandler()
     return glContext
 }
