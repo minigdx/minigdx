@@ -10,6 +10,8 @@ import threed.file.MeshReader
 import threed.fileHandler
 import threed.gl
 import threed.graphics.Render
+import threed.input.Key
+import threed.inputs
 import threed.math.RAD2DEG
 import threed.shaders.DefaultShaders
 import threed.shaders.ShaderUtils
@@ -51,14 +53,13 @@ class DemoGame : Game {
     override fun render(delta: Seconds) {
         // --- act ---
 
-        /*
-        if(inp.isKey(Key.A)) {
+        if (inputs.isKey(Key.A)) {
             rotation += delta
-        } else if(inp.isKey(Key.Z)) {
+        } else if (inputs.isKey(Key.Z)) {
             rotation -= delta
         }
-        */
-        rotation += delta
+
+        // rotation += delta
 
         val modelMatrix = camera.modelMatrix * rotation(Float3(0f, 0f, 1f), rotation * RAD2DEG)
         val normalMatrix = transpose(inverse(modelMatrix))

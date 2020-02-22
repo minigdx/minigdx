@@ -20,7 +20,7 @@ fun Number.toPercent(): Float {
 
 lateinit var gl: GL
 lateinit var fileHandler: FileHander
-lateinit var inp: InputHandler
+lateinit var inputs: InputHandler
 
 class Canvas(
     val width: Int,
@@ -402,6 +402,6 @@ fun configuration(configuration: GLConfiguration): GLContext {
     val glContext = GLContext(configuration)
     gl = glContext.createContext()
     fileHandler = glContext.createFileHandler()
-    inp = glContext.createInputHandler()
+    inputs = glContext.createInputHandler()
     return glContext
 }

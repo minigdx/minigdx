@@ -43,7 +43,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     actual fun run(gameFactory: () -> Game) {
-        inputManager = inp as InputManager
+        inputManager = inputs as InputManager
 
         this.game = gameFactory()
 

@@ -3,6 +3,7 @@ plugins {
     kotlin("multiplatform") version "1.3.70-eap-42"
     application
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+    // id("com.github.dwursteisen.collada") version "1.0.0-snapshot"
 }
 
 group = "org.example"
@@ -10,11 +11,19 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
+    maven(url = "https://maven.pkg.github.com/dwursteisen/kotlin-math") {
+        this.credentials {
+            this.username = System.getenv("GITHUB_USERNAME")
+            this.password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+    maven(url = "https://maven.pkg.github.com/dwursteisen/collada-parser") {
+        this.credentials {
+            this.username = System.getenv("GITHUB_USERNAME")
+            this.password = System.getenv("GITHUB_TOKEN")
+        }
+    }
     mavenCentral()
-}
-
-dependencies {
-    testImplementation("junit", "junit", "4.12")
 }
 
 configure<JavaPluginConvention> {

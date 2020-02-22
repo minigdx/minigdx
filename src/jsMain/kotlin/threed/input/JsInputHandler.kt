@@ -8,14 +8,14 @@ import threed.math.Vector2
 class JsInputHandler : InputHandler, InputManager {
 
     init {
-        document.addEventListener("keydown", ::keyUp, false)
-        document.addEventListener("keyup", ::keyDown, false)
+        document.addEventListener("keydown", ::keyDown, false)
+        document.addEventListener("keyup", ::keyUp, false)
     }
 
-    private val keys: Array<Boolean> = Array<Boolean>(256 + 1) { false }
-    private val pressed: Array<Boolean> = Array<Boolean>(256 + 1) { false }
+    private val keys: Array<Boolean> = Array(256 + 1) { false }
+    private val pressed: Array<Boolean> = Array(256 + 1) { false }
 
-    private fun keyUp(event: Event) {
+    private fun keyDown(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
             keys[event.keyCode] = true
@@ -23,7 +23,7 @@ class JsInputHandler : InputHandler, InputManager {
         }
     }
 
-    private fun keyDown(event: Event) {
+    private fun keyUp(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
             keys[event.keyCode] = false

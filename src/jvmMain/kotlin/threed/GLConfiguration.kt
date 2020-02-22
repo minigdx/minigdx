@@ -20,10 +20,7 @@ import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.system.MemoryUtil.NULL
 import threed.file.FileHander
 import threed.input.InputHandler
-import threed.input.InputManager
-import threed.input.Key
-import threed.input.TouchSignal
-import threed.math.Vector2
+import threed.input.LwjglInput
 
 typealias Pixels = Int
 
@@ -56,19 +53,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createInputHandler(): InputHandler {
-        return object : InputHandler, InputManager {
-            override fun record() = Unit
-
-            override fun reset() = Unit
-
-            override fun isKey(key: Key): Boolean = false
-
-            override fun isKeyPressed(key: Key): Boolean = false
-
-            override fun isTouched(signal: TouchSignal): Vector2? = null
-
-            override fun isJustTouched(signal: TouchSignal): Vector2? = null
-        }
+        return LwjglInput()
     }
 
     /**
@@ -128,6 +113,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         org.lwjgl.opengl.GL.createCapabilities()
 
+        // Attach input before game creation.
+        val inputManager = inputs as LwjglInput
+        inputManager.attachHandler(window)
+
         val game = gameFactory()
 
         // Make the window visible
@@ -138,7 +127,6 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         // Wireframe mode
         // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
 
-        val inputManager = inp as InputManager
         while (!glfwWindowShouldClose(window)) {
             inputManager.record()
             game.render(getDelta())
