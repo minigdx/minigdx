@@ -93,7 +93,7 @@ class Render(val mesh: Mesh) {
         )
         gl.enableVertexAttribArray(program.getAttrib("aVertexColor"))
 
-        gl.bindBuffer(GL.ARRAY_BUFFER, normals);
+        gl.bindBuffer(GL.ARRAY_BUFFER, normals)
         gl.vertexAttribPointer(
             index = program.getAttrib("aNormal"),
             size = 3,

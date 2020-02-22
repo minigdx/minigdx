@@ -1,7 +1,7 @@
 package threed.file
 
-import org.w3c.xhr.XMLHttpRequest
 import kotlin.browser.window
+import org.w3c.xhr.XMLHttpRequest
 
 class AsyncContent<T> : Content<T> {
 
@@ -21,7 +21,7 @@ class AsyncContent<T> : Content<T> {
 
 actual class FileHander {
     actual fun read(fileName: String): Content<String> {
-        val jsonFile = XMLHttpRequest();
+        val jsonFile = XMLHttpRequest()
         jsonFile.open("GET", window.location.href + fileName, true)
 
         val content = AsyncContent<String>()
@@ -35,5 +35,4 @@ actual class FileHander {
         jsonFile.send()
         return content
     }
-
 }

@@ -2,11 +2,14 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.transpose
-import threed.*
+import threed.GL
+import threed.Game
+import threed.Seconds
 import threed.entity.Camera
 import threed.file.MeshReader
+import threed.fileHandler
+import threed.gl
 import threed.graphics.Render
-import threed.input.Key
 import threed.math.RAD2DEG
 import threed.shaders.DefaultShaders
 import threed.shaders.ShaderUtils
@@ -37,7 +40,6 @@ class DemoGame : Game {
             ready--
         }
 
-
         fileHandler.read("monkey_color2.3d").onLoaded {
             cube = Render(MeshReader.fromString(it).first())
             ready--
@@ -57,7 +59,7 @@ class DemoGame : Game {
         }
         */
         rotation += delta
-        
+
         val modelMatrix = camera.modelMatrix * rotation(Float3(0f, 0f, 1f), rotation * RAD2DEG)
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
@@ -75,7 +77,7 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
         if (ready == 0) {
-            //monkey.draw(program)
+            // monkey.draw(program)
             cube.draw(program)
         }
     }

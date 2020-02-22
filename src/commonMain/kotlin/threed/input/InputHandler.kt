@@ -128,4 +128,3 @@ interface InputHandler {
 
     fun isJustTouched(signal: TouchSignal): Vector2?
 }
-

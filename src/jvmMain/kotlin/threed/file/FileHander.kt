@@ -15,5 +15,4 @@ actual class FileHander {
         val content = File(fileName).readText()
         return SyncContent(content)
     }
-
 }

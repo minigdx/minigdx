@@ -1,13 +1,13 @@
 package threed
 
+import kotlin.browser.document
+import kotlin.browser.window
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
 import threed.file.FileHander
 import threed.input.InputHandler
 import threed.input.InputManager
 import threed.input.JsInputHandler
-import kotlin.browser.document
-import kotlin.browser.window
 
 actual class GLConfiguration(
     val canvas: HTMLCanvasElement? = null,
@@ -60,6 +60,5 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         game.render(delta.toFloat())
         inputManager.reset()
         window.requestAnimationFrame(::render)
-
     }
 }

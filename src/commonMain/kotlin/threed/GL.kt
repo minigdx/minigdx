@@ -1,7 +1,6 @@
 package threed
 
 import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.transpose
 import threed.buffer.Buffer
 import threed.buffer.DataSource
 import threed.file.FileHander

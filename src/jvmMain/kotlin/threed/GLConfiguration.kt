@@ -1,6 +1,22 @@
 package threed
 
-import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFW.GLFW_FALSE
+import org.lwjgl.glfw.GLFW.GLFW_RESIZABLE
+import org.lwjgl.glfw.GLFW.GLFW_TRUE
+import org.lwjgl.glfw.GLFW.GLFW_VISIBLE
+import org.lwjgl.glfw.GLFW.glfwCreateWindow
+import org.lwjgl.glfw.GLFW.glfwDefaultWindowHints
+import org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor
+import org.lwjgl.glfw.GLFW.glfwGetVideoMode
+import org.lwjgl.glfw.GLFW.glfwInit
+import org.lwjgl.glfw.GLFW.glfwMakeContextCurrent
+import org.lwjgl.glfw.GLFW.glfwPollEvents
+import org.lwjgl.glfw.GLFW.glfwSetWindowPos
+import org.lwjgl.glfw.GLFW.glfwShowWindow
+import org.lwjgl.glfw.GLFW.glfwSwapBuffers
+import org.lwjgl.glfw.GLFW.glfwSwapInterval
+import org.lwjgl.glfw.GLFW.glfwWindowHint
+import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.system.MemoryUtil.NULL
 import threed.file.FileHander
 import threed.input.InputHandler
@@ -8,7 +24,6 @@ import threed.input.InputManager
 import threed.input.Key
 import threed.input.TouchSignal
 import threed.math.Vector2
-import java.lang.management.ManagementFactory
 
 typealias Pixels = Int
 
@@ -29,7 +44,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return osName.indexOf("mac") >= 0
     }
     internal actual fun createContext(): GL {
-        if(isMacOs()) {
+        if (isMacOs()) {
             System.err.println("""WARNING : You're runing a game on Mac OS.
                 | If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin())
         }
@@ -40,10 +55,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return FileHander()
     }
 
-
     internal actual fun createInputHandler(): InputHandler {
         return object : InputHandler, InputManager {
-            override fun record()  = Unit
+            override fun record() = Unit
 
             override fun reset() = Unit
 
@@ -53,8 +67,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
             override fun isTouched(signal: TouchSignal): Vector2? = null
 
-            override fun isJustTouched(signal: TouchSignal): Vector2?  = null
-
+            override fun isJustTouched(signal: TouchSignal): Vector2? = null
         }
     }
 

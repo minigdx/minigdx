@@ -3,10 +3,9 @@ package threed.entity
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.perspective
+import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
-import com.curiouscreature.kotlin.math.*
 import threed.math.Vector3
-import kotlin.math.PI
 
 data class Camera(
     val position: Vector3,

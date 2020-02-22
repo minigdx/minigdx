@@ -1,9 +1,9 @@
 package threed.input
 
+import kotlin.browser.document
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import threed.math.Vector2
-import kotlin.browser.document
 
 class JsInputHandler : InputHandler, InputManager {
 
