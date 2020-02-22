@@ -2,6 +2,7 @@ plugins {
     java
     kotlin("multiplatform") version "1.3.70-eap-42"
     application
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
 }
 
 group = "org.example"
