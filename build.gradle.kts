@@ -1,7 +1,6 @@
 plugins {
     java
     kotlin("multiplatform") version "1.3.70-eap-42"
-    application
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     id("com.github.dwursteisen.collada") version "v1.0-alpha"
 }
@@ -87,7 +86,7 @@ kotlin {
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
                 // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
-                implementation(kotlin("stdlib-jdk8"))
+                api(kotlin("stdlib-jdk8"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
 
                 val lwjglVersion = "3.2.3"
@@ -108,17 +107,11 @@ kotlin {
     }
 }
 
-application {
-    mainClassName = "demo.Main"
-}
-
 collada {
     create("assets") {
         this.daeDirectory.set(project.projectDir.resolve("src"))
         this.target.set(project.projectDir.resolve("src/commonMain/resources"))
     }
 }
-
-project.tasks.getByName("run").dependsOn("jvmJar")
 
 project.tasks.getByName("processResources").dependsOn("collada")

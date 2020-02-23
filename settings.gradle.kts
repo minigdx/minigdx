@@ -12,3 +12,5 @@ pluginManagement {
         }
     }
 }
+
+include("demo")
