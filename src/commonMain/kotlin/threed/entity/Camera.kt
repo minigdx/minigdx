@@ -13,14 +13,6 @@ data class Camera(
     var projectionMatrix: Mat4
 ) : Entity, CanMove by Movable() {
 
-    override fun translate(x: Number, y: Number, z: Number): Entity {
-        position.add(x.toFloat(), y.toFloat(), z.toFloat())
-        target.add(x.toFloat(), y.toFloat(), z.toFloat())
-
-        modelMatrix = modelMatrix.times(translation(Float3(x.toFloat(), y.toFloat(), z.toFloat())))
-        return this
-    }
-
     fun rotate(x: Number, y: Number, z: Number): Entity {
         val axesX = rotation(Float3(1f, 0f, 0f), x.toFloat())
         val axesY = rotation(Float3(0f, 1f, 0f), y.toFloat())

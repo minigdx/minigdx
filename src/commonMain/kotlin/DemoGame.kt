@@ -1,6 +1,4 @@
-
 import com.curiouscreature.kotlin.math.inverse
-import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.transpose
 import threed.GL
 import threed.Game
@@ -30,20 +28,24 @@ class DemoGame : Game {
         program.createAttrib("aVertexColor")
         program.createAttrib("aNormal")
 
+        // Model View Project Matrix
+        program.createUniform("uModelMatrix")
+        program.createUniform("uViewMatrix")
         program.createUniform("uProjectionMatrix")
-        program.createUniform("uModelViewMatrix")
+
         program.createUniform("uNormalMatrix")
 
         camera.translate(0, 0, -6)
         camera.rotate(-90, 0, 0)
 
-        fileHandler.read("monkey.3d").onLoaded {
+        fileHandler.read("monkey_color2.3d").onLoaded {
             monkey = Render(MeshReader.fromString(it).first())
             ready--
         }
 
         fileHandler.read("monkey_color2.3d").onLoaded {
             cube = Render(MeshReader.fromString(it).first())
+            cube.mesh.translate(4f, 4f, 0f)
             ready--
         }
     }
@@ -53,10 +55,11 @@ class DemoGame : Game {
     override fun render(delta: Seconds) {
         // --- act ---
 
+        // Camera move
         if (inputs.isKey(Key.A)) {
-            rotation += delta
+            camera.translate(0f, 2f * delta, 0f)
         } else if (inputs.isKey(Key.Z)) {
-            rotation -= delta
+            camera.translate(0f, -2f * delta, 0f)
         }
 
         if (inputs.isKey(Key.E)) {
@@ -64,6 +67,20 @@ class DemoGame : Game {
         } else if (inputs.isKey(Key.R)) {
             camera.rotateZ(delta * -25f)
         }
+
+        // Cube move
+        if (inputs.isKey(Key.O)) {
+            cube.mesh.rotateY(delta * 25f)
+        } else if (inputs.isKey(Key.L)) {
+            cube.mesh.rotateY(delta * -25f)
+        }
+
+        if (inputs.isKey(Key.K)) {
+            cube.mesh.translate(-2f * delta, 0f, 0f)
+        } else if (inputs.isKey(Key.M)) {
+            cube.mesh.translate(2f * delta, 0f, 0f)
+        }
+        // Monkey move
 
         // rotation += delta
         camera.setRotationX(rotation * RAD2DEG)
@@ -81,11 +98,11 @@ class DemoGame : Game {
         gl.useProgram(program)
 
         gl.uniformMatrix4fv(program.getUniform("uProjectionMatrix"), false, camera.projectionMatrix)
-        gl.uniformMatrix4fv(program.getUniform("uModelViewMatrix"), false, modelMatrix)
+        gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
         if (ready == 0) {
-            // monkey.draw(program)
+            monkey.draw(program)
             cube.draw(program)
         }
     }

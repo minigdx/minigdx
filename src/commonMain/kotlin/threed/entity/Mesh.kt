@@ -8,4 +8,4 @@ class Mesh(
     val rotation: Vector3 = Vector3(),
     val vertices: Array<Vertice> = emptyArray(),
     val verticesOrder: ShortArray
-)
+) : CanMove by Movable()

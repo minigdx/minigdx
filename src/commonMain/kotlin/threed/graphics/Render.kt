@@ -69,6 +69,9 @@ class Render(val mesh: Mesh) {
     }
 
     fun draw(program: ShaderProgram) {
+        // Set the model matrix
+        gl.uniformMatrix4fv(program.getUniform("uModelMatrix"), false, mesh.modelMatrix)
+
         // set buffer to attribute
         gl.bindBuffer(GL.ARRAY_BUFFER, vertices)
         gl.vertexAttribPointer(
