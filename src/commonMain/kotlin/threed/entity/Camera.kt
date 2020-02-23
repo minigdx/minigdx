@@ -10,9 +10,8 @@ import threed.math.Vector3
 data class Camera(
     val position: Vector3,
     val target: Vector3,
-    var projectionMatrix: Mat4,
-    var modelMatrix: Mat4 = Mat4.identity()
-) : Entity {
+    var projectionMatrix: Mat4
+) : Entity, CanMove by Movable() {
 
     override fun translate(x: Number, y: Number, z: Number): Entity {
         position.add(x.toFloat(), y.toFloat(), z.toFloat())

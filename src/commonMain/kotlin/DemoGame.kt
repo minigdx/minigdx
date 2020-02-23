@@ -1,4 +1,4 @@
-import com.curiouscreature.kotlin.math.Float3
+
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.transpose
@@ -59,9 +59,16 @@ class DemoGame : Game {
             rotation -= delta
         }
 
-        // rotation += delta
+        if (inputs.isKey(Key.E)) {
+            camera.rotateZ(delta * 25f)
+        } else if (inputs.isKey(Key.R)) {
+            camera.rotateZ(delta * -25f)
+        }
 
-        val modelMatrix = camera.modelMatrix * rotation(Float3(0f, 0f, 1f), rotation * RAD2DEG)
+        // rotation += delta
+        camera.setRotationX(rotation * RAD2DEG)
+
+        val modelMatrix = camera.modelMatrix
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
         // clear
