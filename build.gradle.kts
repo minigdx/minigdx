@@ -3,7 +3,7 @@ plugins {
     kotlin("multiplatform") version "1.3.70-eap-42"
     application
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    // id("com.github.dwursteisen.collada") version "1.0.0-snapshot"
+    id("com.github.dwursteisen.collada") version "v1.0-alpha"
 }
 
 group = "org.example"
@@ -112,4 +112,13 @@ application {
     mainClassName = "demo.Main"
 }
 
+collada {
+    create("assets") {
+        this.daeDirectory.set(project.projectDir.resolve("src"))
+        this.target.set(project.projectDir.resolve("src/commonMain/resources"))
+    }
+}
+
 project.tasks.getByName("run").dependsOn("jvmJar")
+
+project.tasks.getByName("processResources").dependsOn("collada")
