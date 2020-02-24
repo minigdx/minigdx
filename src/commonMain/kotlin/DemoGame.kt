@@ -8,9 +8,6 @@ import threed.file.MeshReader
 import threed.fileHandler
 import threed.gl
 import threed.graphics.Render
-import threed.input.Key
-import threed.inputs
-import threed.math.RAD2DEG
 import threed.shaders.DefaultShaders
 import threed.shaders.ShaderUtils
 
@@ -50,40 +47,58 @@ class DemoGame : Game {
         }
     }
 
-    var rotation = 0f
+    private fun moveCamera(delta: Seconds) {
+        camera.translate(0f, 2f * delta, 0f)
+    }
+
+    private fun moveCamera2(delta: Seconds) {
+        camera.translate(0f, -2f * delta, 0f)
+    }
+
+    private fun rotateCamera(delta: Seconds) {
+        camera.rotateX(25f * delta)
+    }
+
+    private fun moveCube(delta: Seconds) {
+        cube.mesh.translate(0f, -2f * delta, 0f)
+    }
+
+    private fun moveCube2(delta: Seconds) {
+        cube.mesh.translate(0f, 2f * delta, 0f)
+    }
+
+    private fun rotateCube(delta: Seconds) {
+        cube.mesh.rotateX(25f * delta)
+    }
+
+    var index = 0
+
+    var timer = 0f
+
+    lateinit var action: (Seconds) -> Unit
+
+    val actions = listOf(
+        this::rotateCube,
+        this::moveCamera,
+        this::moveCube,
+        this::moveCamera2,
+        this::moveCube2
+    )
 
     override fun render(delta: Seconds) {
+        if (ready > 0) {
+            return
+        }
+
         // --- act ---
-
-        // Camera move
-        if (inputs.isKey(Key.A)) {
-            camera.translate(0f, 2f * delta, 0f)
-        } else if (inputs.isKey(Key.Z)) {
-            camera.translate(0f, -2f * delta, 0f)
+        timer -= delta
+        if (timer <= 0f) {
+            timer = 4f
+            action = actions[index]
+            index = (index + 1) % actions.size
         }
 
-        if (inputs.isKey(Key.E)) {
-            camera.rotateZ(delta * 25f)
-        } else if (inputs.isKey(Key.R)) {
-            camera.rotateZ(delta * -25f)
-        }
-
-        // Cube move
-        if (inputs.isKey(Key.O)) {
-            cube.mesh.rotateY(delta * 25f)
-        } else if (inputs.isKey(Key.L)) {
-            cube.mesh.rotateY(delta * -25f)
-        }
-
-        if (inputs.isKey(Key.K)) {
-            cube.mesh.translate(-2f * delta, 0f, 0f)
-        } else if (inputs.isKey(Key.M)) {
-            cube.mesh.translate(2f * delta, 0f, 0f)
-        }
-        // Monkey move
-
-        // rotation += delta
-        camera.setRotationX(rotation * RAD2DEG)
+        action.invoke(delta)
 
         val modelMatrix = camera.modelMatrix
         val normalMatrix = transpose(inverse(modelMatrix))

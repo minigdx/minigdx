@@ -4,7 +4,6 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.perspective
 import com.curiouscreature.kotlin.math.rotation
-import com.curiouscreature.kotlin.math.translation
 import threed.math.Vector3
 
 data class Camera(
