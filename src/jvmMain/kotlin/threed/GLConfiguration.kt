@@ -18,7 +18,7 @@ import org.lwjgl.glfw.GLFW.glfwSwapInterval
 import org.lwjgl.glfw.GLFW.glfwWindowHint
 import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.system.MemoryUtil.NULL
-import threed.file.FileHander
+import threed.file.FileHandler
 import threed.input.InputHandler
 import threed.input.LwjglInput
 
@@ -48,8 +48,8 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return LwjglGL(canvas = Canvas(configuration.width, configuration.height))
     }
 
-    internal actual fun createFileHandler(): FileHander {
-        return FileHander()
+    internal actual fun createFileHandler(): FileHandler {
+        return FileHandler()
     }
 
     internal actual fun createInputHandler(): InputHandler {

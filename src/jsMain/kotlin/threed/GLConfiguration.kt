@@ -4,7 +4,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
-import threed.file.FileHander
+import threed.file.FileHandler
 import threed.input.InputHandler
 import threed.input.InputManager
 import threed.input.JsInputHandler
@@ -34,8 +34,8 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         )
     }
 
-    internal actual fun createFileHandler(): FileHander {
-        return FileHander()
+    internal actual fun createFileHandler(): FileHandler {
+        return FileHandler()
     }
 
     internal actual fun createInputHandler(): InputHandler {

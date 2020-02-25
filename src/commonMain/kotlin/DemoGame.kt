@@ -35,13 +35,13 @@ class DemoGame : Game {
         camera.translate(0, 0, -6)
         camera.rotate(-90, 0, 0)
 
-        fileHandler.read("monkey_color2.3d").onLoaded {
-            monkey = Render(MeshReader.fromString(it).first())
+        fileHandler.readData("monkey_color2.3d").onLoaded {
+            monkey = Render(MeshReader.fromByteArray(it).first())
             ready--
         }
 
-        fileHandler.read("monkey_color2.3d").onLoaded {
-            cube = Render(MeshReader.fromString(it).first())
+        fileHandler.readData("monkey_color2.3d").onLoaded {
+            cube = Render(MeshReader.fromByteArray(it).first())
             cube.mesh.translate(4f, 4f, 0f)
             ready--
         }

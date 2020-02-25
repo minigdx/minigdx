@@ -3,7 +3,7 @@ package threed
 import com.curiouscreature.kotlin.math.Mat4
 import threed.buffer.Buffer
 import threed.buffer.DataSource
-import threed.file.FileHander
+import threed.file.FileHandler
 import threed.input.InputHandler
 import threed.shaders.Shader
 import threed.shaders.ShaderProgram
@@ -19,7 +19,7 @@ fun Number.toPercent(): Float {
 }
 
 lateinit var gl: GL
-lateinit var fileHandler: FileHander
+lateinit var fileHandler: FileHandler
 lateinit var inputs: InputHandler
 
 class Canvas(
@@ -392,7 +392,7 @@ expect class GLConfiguration
 
 expect class GLContext(configuration: GLConfiguration) {
     internal fun createContext(): GL
-    internal fun createFileHandler(): FileHander
+    internal fun createFileHandler(): FileHandler
     internal fun createInputHandler(): InputHandler
 
     fun run(gameFactory: () -> Game)

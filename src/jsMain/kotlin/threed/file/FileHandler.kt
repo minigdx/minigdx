@@ -19,7 +19,8 @@ class AsyncContent<T> : Content<T> {
     }
 }
 
-actual class FileHander {
+actual class FileHandler {
+
     actual fun read(fileName: String): Content<String> {
         val jsonFile = XMLHttpRequest()
         jsonFile.open("GET", window.location.href + fileName, true)
@@ -29,6 +30,23 @@ actual class FileHander {
         jsonFile.onreadystatechange = { evt ->
             if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
                 content.loaded(jsonFile.responseText)
+            }
+        }
+
+        jsonFile.send()
+        return content
+    }
+
+    @ExperimentalStdlibApi
+    actual fun readData(filename: String): Content<ByteArray> {
+        val jsonFile = XMLHttpRequest()
+        jsonFile.open("GET", window.location.href + filename, true)
+
+        val content = AsyncContent<ByteArray>()
+
+        jsonFile.onreadystatechange = { evt ->
+            if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
+                content.loaded(jsonFile.responseText.encodeToByteArray())
             }
         }
 

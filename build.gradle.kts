@@ -1,8 +1,8 @@
 plugins {
     java
-    kotlin("multiplatform") version "1.3.70-eap-42"
+    kotlin("multiplatform") version "1.3.60"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.dwursteisen.collada") version "v1.0-alpha"
+    id("com.github.dwursteisen.collada") version "1.0-SNAPSHOT"
 }
 
 group = "org.example"
@@ -65,7 +65,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.collada:collada-api:1.0-SNAPSHOT")
+                // implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.14.0")
             }
         }
         val commonTest by getting {
@@ -79,7 +81,7 @@ kotlin {
             dependencies {
                 // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-SNAPSHOT")
                 implementation(kotlin("stdlib-js"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0-SNAPSHOT")
             }
         }
 
@@ -87,7 +89,7 @@ kotlin {
             dependencies {
                 // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
                 api(kotlin("stdlib-jdk8"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0-SNAPSHOT")
 
                 val lwjglVersion = "3.2.3"
                 implementation("org.lwjgl:lwjgl:$lwjglVersion")
