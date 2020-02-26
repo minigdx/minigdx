@@ -1,6 +1,6 @@
 plugins {
     java
-    kotlin("multiplatform") version "1.3.60"
+    kotlin("multiplatform") version "1.3.61"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     id("com.github.dwursteisen.collada") version "1.0-SNAPSHOT"
 }
