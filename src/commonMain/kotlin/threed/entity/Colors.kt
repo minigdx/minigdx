@@ -11,5 +11,8 @@ object Colors {
     }
 
     val WHITE = Color(1, 1, 1, 1)
+    val RED = Color(1, 0, 0, 1)
+    val GREEN = Color(0, 1, 0, 1)
+    val BLUE = Color(0, 0, 1, 1)
     val BLACK = Color(0, 0, 0, 1)
 }

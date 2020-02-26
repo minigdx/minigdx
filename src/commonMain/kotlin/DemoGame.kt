@@ -3,7 +3,7 @@ import com.curiouscreature.kotlin.math.transpose
 import threed.GL
 import threed.Game
 import threed.Seconds
-import threed.entity.Camera
+import threed.entity.*
 import threed.file.MeshReader
 import threed.fileHandler
 import threed.gl
@@ -18,6 +18,8 @@ class DemoGame : Game {
 
     lateinit var monkey: Render
     lateinit var cube: Render
+    val armatures: MutableList<CanDraw> = mutableListOf()
+    val landmark = Landmark.of()
 
     @ExperimentalStdlibApi
     override fun create() {
@@ -36,12 +38,27 @@ class DemoGame : Game {
         camera.rotate(-90, 0, 0)
 
         fileHandler.readData("monkey_color2.protobuf").onLoaded {
-            monkey = Render(MeshReader.fromByteArray(it).first())
+            monkey = Render(MeshReader.fromByteArray(it).first)
         }
 
-        fileHandler.readData("monkey_color2.protobuf").onLoaded {
-            cube = Render(MeshReader.fromByteArray(it).first())
-            cube.mesh.translate(4f, 4f, 0f)
+        fileHandler.readData("armature.protobuf").onLoaded {
+            val fromByteArray = MeshReader.fromByteArray(it)
+            cube = Render(fromByteArray.first)
+            val rootBone = fromByteArray.second?.rootBone
+
+            fun <T> Bone.scan(seed: T, acc: (Bone, T) -> T) {
+                this.childs.forEach {
+                    it.scan(acc(it, seed), acc)
+                }
+            }
+
+            rootBone?.scan(rootBone.transformation) { seed, acc ->
+                val result = acc * seed.transformation
+                val boneMesh = BoneMesh.of(result)
+                boneMesh.translate(armatures.size, armatures.size, 0)
+                armatures.add(boneMesh)
+                result
+            }
         }
     }
 
@@ -114,7 +131,12 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        monkey.draw(program)
-        cube.draw(program)
+        // monkey.draw(program)
+        // cube.draw(program)
+        armatures.forEach {
+         //   it.draw(program)
+        }
+
+        landmark.draw(program)
     }
 }

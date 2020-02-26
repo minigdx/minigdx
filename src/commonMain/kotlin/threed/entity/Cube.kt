@@ -2,12 +2,11 @@ package threed.entity
 
 import threed.graphics.Render
 import threed.math.Vector3
-import threed.shaders.ShaderProgram
 
 data class Cube(
     val mesh: Mesh,
     val render: Render = Render(mesh)
-) : Drawable {
+) : CanDraw by Drawable(render) {
 
     constructor(name: String, color: Color = Colors.WHITE) : this(
         Mesh(
@@ -44,8 +43,4 @@ data class Cube(
             )
         )
     )
-
-    override fun draw(program: ShaderProgram) {
-        render.draw(program)
-    }
 }
