@@ -18,8 +18,8 @@ class DemoGame : Game {
 
     lateinit var monkey: Render
     lateinit var cube: Render
-    var ready = 2
 
+    @ExperimentalStdlibApi
     override fun create() {
         program.createAttrib("aVertexPosition")
         program.createAttrib("aVertexColor")
@@ -35,15 +35,13 @@ class DemoGame : Game {
         camera.translate(0, 0, -6)
         camera.rotate(-90, 0, 0)
 
-        fileHandler.readData("monkey_color2.3d").onLoaded {
+        fileHandler.readData("monkey_color2.protobuf").onLoaded {
             monkey = Render(MeshReader.fromByteArray(it).first())
-            ready--
         }
 
-        fileHandler.readData("monkey_color2.3d").onLoaded {
+        fileHandler.readData("monkey_color2.protobuf").onLoaded {
             cube = Render(MeshReader.fromByteArray(it).first())
             cube.mesh.translate(4f, 4f, 0f)
-            ready--
         }
     }
 
@@ -86,7 +84,7 @@ class DemoGame : Game {
     )
 
     override fun render(delta: Seconds) {
-        if (ready > 0) {
+        if (!fileHandler.isLoaded) {
             return
         }
 
@@ -116,9 +114,7 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        if (ready == 0) {
-            monkey.draw(program)
-            cube.draw(program)
-        }
+        monkey.draw(program)
+        cube.draw(program)
     }
 }

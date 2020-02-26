@@ -21,36 +21,39 @@ class AsyncContent<T> : Content<T> {
 
 actual class FileHandler {
 
+    private var total = 0
+    private var loaded = 0
+
     actual fun read(fileName: String): Content<String> {
-        val jsonFile = XMLHttpRequest()
-        jsonFile.open("GET", window.location.href + fileName, true)
-
-        val content = AsyncContent<String>()
-
-        jsonFile.onreadystatechange = { evt ->
-            if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
-                content.loaded(jsonFile.responseText)
-            }
-        }
-
-        jsonFile.send()
-        return content
+        return asyncContent(fileName) { it }
     }
 
     @ExperimentalStdlibApi
     actual fun readData(filename: String): Content<ByteArray> {
+        return asyncContent(filename) {
+            it.encodeToByteArray()
+        }
+    }
+
+    private fun <T> asyncContent(filename: String, enc: (String) -> T): AsyncContent<T> {
+        total++
         val jsonFile = XMLHttpRequest()
         jsonFile.open("GET", window.location.href + filename, true)
 
-        val content = AsyncContent<ByteArray>()
+        val content = AsyncContent<T>()
 
         jsonFile.onreadystatechange = { evt ->
             if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
-                content.loaded(jsonFile.responseText.encodeToByteArray())
+                content.loaded(enc(jsonFile.responseText))
+                loaded++
             }
         }
 
         jsonFile.send()
         return content
     }
+
+    actual val isLoaded: Boolean = total == loaded
+
+    actual val loadProgression: Float = loaded / total.toFloat()
 }

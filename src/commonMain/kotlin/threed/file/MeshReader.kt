@@ -1,5 +1,6 @@
 package threed.file
 
+import collada.Model
 import kotlinx.serialization.protobuf.ProtoBuf
 import threed.entity.Color
 import threed.entity.Mesh
@@ -46,18 +47,22 @@ object MeshReader {
     }
 
     fun fromByteArray(data: ByteArray): List<Mesh> {
-        val m = ProtoBuf.load(collada.Mesh.serializer(), data)
-        return listOf(Mesh(
-            name = "todo",
-            position = Vector3(),
-            rotation = Vector3(),
-            vertices = m.vertices.map { v -> Vertice(
-                position = Vector3(v.position.x, v.position.y, v.position.z),
-                normal = Vector3(v.normal.x, v.normal.y, v.normal.z),
-                color = Color(v.color.r, v.color.g, v.color.b, v.color.a)
-            ) }.toTypedArray(),
-            verticesOrder = m.verticesOrder.map { it.toShort() }.toShortArray()
-        ))
+        val m = Model.readProtobuf(data).mesh
+        return listOf(
+            Mesh(
+                name = "todo",
+                position = Vector3(),
+                rotation = Vector3(),
+                vertices = m.vertices.map { v ->
+                    Vertice(
+                        position = Vector3(v.position.x, v.position.y, v.position.z),
+                        normal = Vector3(v.normal.x, v.normal.y, v.normal.z),
+                        color = Color(v.color.r, v.color.g, v.color.b, v.color.a)
+                    )
+                }.toTypedArray(),
+                verticesOrder = m.verticesOrder.map { it.toShort() }.toShortArray()
+            )
+        )
     }
 
     fun fromString(m3d: String): List<Mesh> {

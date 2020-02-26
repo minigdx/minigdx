@@ -10,6 +10,7 @@ pluginManagement {
                 this.password = System.getenv("GITHUB_TOKEN")
             }
         }
+        mavenLocal()
     }
 }
 

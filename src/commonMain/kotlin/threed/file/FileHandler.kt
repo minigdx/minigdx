@@ -10,4 +10,8 @@ expect class FileHandler {
     fun read(fileName: String): Content<String>
 
     fun readData(filename: String): Content<ByteArray>
+
+    val isLoaded: Boolean
+
+    val loadProgression: Float
 }

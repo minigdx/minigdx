@@ -23,6 +23,7 @@ repositories {
         }
     }
     mavenCentral()
+    mavenLocal()
 }
 
 configure<JavaPluginConvention> {
@@ -109,10 +110,16 @@ kotlin {
     }
 }
 
-collada {
-    create("assets") {
+colladaPlugin {
+    create("assetsProtobuf") {
         this.daeDirectory.set(project.projectDir.resolve("src"))
         this.target.set(project.projectDir.resolve("src/commonMain/resources"))
+        this.format.set(collada.Format.JSON as collada.Format)
+    }
+    create("assetsJson") {
+        this.daeDirectory.set(project.projectDir.resolve("src"))
+        this.target.set(project.projectDir.resolve("src/commonMain/resources"))
+        this.format.set(collada.Format.PROTOBUF as collada.Format)
     }
 }
 
