@@ -1,5 +1,6 @@
 package threed.entity
 
+import threed.entity.delegate.Drawable
 import threed.graphics.Render
 import threed.math.Vector3
 

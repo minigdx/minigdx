@@ -1,15 +1,20 @@
 package threed.entity
 
+import threed.entity.delegate.Drawable
+import threed.entity.delegate.Movable
 import threed.graphics.Render
 import threed.math.Vector3
 
-class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Drawable(Render(mesh)) {
+class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Drawable(
+    Render(mesh)
+) {
 
     companion object {
         fun of(): Landmark {
             return Landmark(
                 Mesh(
-                    "landmark",
+                    name = "landmark",
+                    drawType = DrawType.LINE,
                     position = Vector3(),
                     rotation = Vector3(),
                     vertices = arrayOf(

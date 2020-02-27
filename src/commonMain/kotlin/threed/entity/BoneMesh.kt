@@ -1,21 +1,10 @@
 package threed.entity
 
 import com.curiouscreature.kotlin.math.Mat4
+import threed.entity.delegate.Drawable
+import threed.entity.delegate.Movable
 import threed.graphics.Render
 import threed.math.Vector3
-import threed.shaders.ShaderProgram
-
-
-interface CanDraw {
-    fun draw(shader: ShaderProgram)
-}
-
-class Drawable(val render: Render) : CanDraw {
-
-    override fun draw(shader: ShaderProgram) {
-        render.draw(shader)
-    }
-}
 
 class BoneMesh(
     val mesh: Mesh
@@ -26,6 +15,8 @@ class BoneMesh(
         fun of(mat: Mat4): BoneMesh {
             return BoneMesh(
                 Mesh(
+                    drawType = DrawType.LINE,
+                    modelMatrix = mat,
                     vertices = arrayOf(
                         Vertice(
                             position = Vector3(0, 0, 0),
@@ -53,7 +44,7 @@ class BoneMesh(
                         1, 2, 3
                     )
                 )
-            ).also { it.modelMatrix = mat }
+            )
         }
     }
 }

@@ -2,6 +2,7 @@ package threed.graphics
 
 import threed.GL
 import threed.buffer.DataSource
+import threed.entity.DrawType
 import threed.entity.Mesh
 import threed.entity.Vertice
 import threed.gl
@@ -47,12 +48,27 @@ private fun ShortArray.convertOrder(): DataSource.ShortDataSource {
     return DataSource.ShortDataSource(this)
 }
 
+/**
+ * Render a mesh on a screen.
+ */
 class Render(val mesh: Mesh) {
 
+    /**
+     * Positions of vertices.
+     */
     private val vertices = gl.createBuffer()
+    /**
+     * Colors of vertices.
+     */
     private val colors = gl.createBuffer()
-    private val verticesOrder = gl.createBuffer()
+    /**
+     * Normals of vertices.
+     */
     private val normals = gl.createBuffer()
+    /**
+     * Order to drawn vertices.
+     */
+    private val verticesOrder = gl.createBuffer()
 
     init {
         gl.bindBuffer(GL.ARRAY_BUFFER, vertices)
@@ -108,6 +124,15 @@ class Render(val mesh: Mesh) {
         gl.enableVertexAttribArray(program.getAttrib("aNormal"))
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, verticesOrder)
-        gl.drawElements(GL.TRIANGLES, mesh.verticesOrder.size, GL.UNSIGNED_SHORT, 0)
+        gl.drawElements(mesh.drawType.glType, mesh.verticesOrder.size, GL.UNSIGNED_SHORT, 0)
     }
 }
+
+private val mappingType = mapOf(
+    DrawType.TRIANGLE to GL.TRIANGLES,
+    DrawType.LINE to GL.LINES
+)
+private val DrawType.glType: Int
+    get() {
+        return mappingType.getValue(this)
+    }

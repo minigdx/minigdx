@@ -3,7 +3,11 @@ import com.curiouscreature.kotlin.math.transpose
 import threed.GL
 import threed.Game
 import threed.Seconds
-import threed.entity.*
+import threed.entity.Bone
+import threed.entity.BoneMesh
+import threed.entity.Camera
+import threed.entity.CanDraw
+import threed.entity.Landmark
 import threed.file.MeshReader
 import threed.fileHandler
 import threed.gl
@@ -46,18 +50,16 @@ class DemoGame : Game {
             cube = Render(fromByteArray.first)
             val rootBone = fromByteArray.second?.rootBone
 
-            fun <T> Bone.scan(seed: T, acc: (Bone, T) -> T) {
+            fun Bone.traverse(action: (Bone) -> Unit) {
+                action(this)
                 this.childs.forEach {
-                    it.scan(acc(it, seed), acc)
+                    it.traverse(action)
                 }
             }
 
-            rootBone?.scan(rootBone.transformation) { seed, acc ->
-                val result = acc * seed.transformation
-                val boneMesh = BoneMesh.of(result)
-                boneMesh.translate(armatures.size, armatures.size, 0)
+            rootBone?.traverse {
+                val boneMesh = BoneMesh.of(it.globalTransaction)
                 armatures.add(boneMesh)
-                result
             }
         }
     }
@@ -132,9 +134,9 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
         // monkey.draw(program)
-        // cube.draw(program)
+        cube.draw(program)
         armatures.forEach {
-         //   it.draw(program)
+            it.draw(program)
         }
 
         landmark.draw(program)
