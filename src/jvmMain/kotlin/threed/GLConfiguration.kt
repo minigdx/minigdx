@@ -17,9 +17,6 @@ import org.lwjgl.glfw.GLFW.glfwSwapBuffers
 import org.lwjgl.glfw.GLFW.glfwSwapInterval
 import org.lwjgl.glfw.GLFW.glfwWindowHint
 import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
-import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
-import org.lwjgl.opengl.GL11.GL_LINE
-import org.lwjgl.opengl.GL11.glPolygonMode
 import org.lwjgl.system.MemoryUtil.NULL
 import threed.file.FileHandler
 import threed.input.InputHandler
@@ -130,7 +127,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         game.resume()
 
         // Wireframe mode
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
         while (!glfwWindowShouldClose(window)) {
             inputManager.record()

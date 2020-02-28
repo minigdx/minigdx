@@ -1,7 +1,11 @@
 package threed.file
 
 import kotlin.browser.window
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Int8Array
+import org.w3c.xhr.ARRAYBUFFER
 import org.w3c.xhr.XMLHttpRequest
+import org.w3c.xhr.XMLHttpRequestResponseType
 
 class AsyncContent<T> : Content<T> {
 
@@ -25,26 +29,28 @@ actual class FileHandler {
     private var loaded = 0
 
     actual fun read(fileName: String): Content<String> {
-        return asyncContent(fileName) { it }
+        return asyncContent(fileName) { it.contentToString() }
     }
 
     @ExperimentalStdlibApi
     actual fun readData(filename: String): Content<ByteArray> {
-        return asyncContent(filename) {
-            it.encodeToByteArray()
-        }
+        return asyncContent(filename) { it }
     }
 
-    private fun <T> asyncContent(filename: String, enc: (String) -> T): AsyncContent<T> {
+    // https://youtrack.jetbrains.com/issue/KT-30098
+    fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
+
+    private fun <T> asyncContent(filename: String, enc: (ByteArray) -> T): AsyncContent<T> {
         total++
         val jsonFile = XMLHttpRequest()
+        jsonFile.responseType = XMLHttpRequestResponseType.Companion.ARRAYBUFFER
         jsonFile.open("GET", window.location.href + filename, true)
 
         val content = AsyncContent<T>()
 
-        jsonFile.onreadystatechange = { evt ->
+        jsonFile.onload = { evt ->
             if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
-                content.loaded(enc(jsonFile.responseText))
+                content.loaded(enc((jsonFile.response as ArrayBuffer).toByteArray()))
                 loaded++
             }
         }
