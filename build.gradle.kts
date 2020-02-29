@@ -1,5 +1,5 @@
 plugins {
-    java
+    id("com.android.library")
     kotlin("multiplatform") version "1.3.61"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     id("com.github.dwursteisen.collada") version "1.0-SNAPSHOT"
@@ -22,13 +22,22 @@ repositories {
             this.password = System.getenv("GITHUB_TOKEN")
         }
     }
+    google()
     mavenCentral()
     mavenLocal()
 }
 
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+android {
+    compileSdkVersion(29)
+    buildToolsVersion = "29.0.3"
+    defaultConfig {
+        minSdkVersion(9)
+    }
+    sourceSets.getByName("main") {
+        manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    }
 }
+
 kotlin {
     /* Targets configuration omitted. 
     *  To find out how to configure the targets, please follow the link:
@@ -45,6 +54,9 @@ kotlin {
             }
         }
         this.nodejs
+    }
+
+    android("android") {
     }
 
     jvm {
@@ -123,4 +135,4 @@ colladaPlugin {
     }
 }
 
-project.tasks.getByName("processResources").dependsOn("collada")
+// project.tasks.getByName("processResources").dependsOn("collada")
