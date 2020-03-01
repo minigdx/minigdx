@@ -1,8 +1,8 @@
 package demo
 
-import DemoGame
-import threed.GLConfiguration
-import threed.configuration
+import com.github.dwursteisen.minigdx.DemoGame
+import com.github.dwursteisen.minigdx.GLConfiguration
+import com.github.dwursteisen.minigdx.configuration
 
 class Main {
 
