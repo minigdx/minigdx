@@ -2,23 +2,36 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.input.InputHandler
+import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.input.TouchSignal
+import com.github.dwursteisen.minigdx.internal.MiniGdxSurfaceView
+import com.github.dwursteisen.minigdx.math.Vector2
 
-actual class GLConfiguration
+actual class GLConfiguration(val activity: MiniGdxActivity)
 
-actual class GLContext actual constructor(configuration: GLConfiguration) {
+actual class GLContext actual constructor(val configuration: GLConfiguration) {
     internal actual fun createContext(): GL {
-        // FIXME: get actual canvas size.
         return AndroidGL(Canvas(400, 400))
     }
 
     internal actual fun createFileHandler(): FileHandler {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return FileHandler(configuration.activity)
     }
 
     internal actual fun createInputHandler(): InputHandler {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return object : InputHandler {
+            override fun isKey(key: Key): Boolean = false
+
+            override fun isKeyPressed(key: Key): Boolean = false
+
+            override fun isTouched(signal: TouchSignal): Vector2? = null
+
+            override fun isJustTouched(signal: TouchSignal): Vector2? = null
+        }
     }
 
     actual fun run(gameFactory: () -> Game) {
+        val surfaceView = MiniGdxSurfaceView(configuration.activity)
+        configuration.activity.setContentView(surfaceView)
     }
 }

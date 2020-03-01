@@ -32,10 +32,6 @@ actual class GLConfiguration(
 
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
 
-    private enum class Classifier(val exts: String) {
-        WINDOWS("windows"), LINUX("linux"), MACOS("macos")
-    }
-
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
         return osName.indexOf("mac") >= 0

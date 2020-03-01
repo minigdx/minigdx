@@ -1,16 +1,34 @@
 package com.github.dwursteisen.minigdx.file
 
-actual class FileHandler {
+import android.content.Context
+
+class SyncContent<T>(val content: T) : Content<T> {
+    override fun onLoaded(block: (T) -> Unit) {
+        block(content)
+    }
+}
+
+actual class FileHandler(private val context: Context) {
+
+    private var loaded = 0
+    private var toLoad = 0
+
+    @ExperimentalStdlibApi
     actual fun read(fileName: String): Content<String> {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        toLoad++
+        val data = context.assets.open(fileName).readBytes().decodeToString()
+        loaded++
+        return SyncContent(data)
     }
 
     actual fun readData(filename: String): Content<ByteArray> {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        toLoad++
+        val data = context.assets.open(filename).readBytes()
+        loaded++
+        return SyncContent(data)
     }
 
-    actual val isLoaded: Boolean
-        get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
-    actual val loadProgression: Float
-        get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
+    actual val isLoaded: Boolean = loaded == toLoad
+
+    actual val loadProgression: Float = loaded / toLoad.toFloat()
 }

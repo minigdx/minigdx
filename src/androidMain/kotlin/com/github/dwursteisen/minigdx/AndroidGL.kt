@@ -18,7 +18,9 @@ import android.opengl.GLES20.glEnableVertexAttribArray
 import android.opengl.GLES20.glGenBuffers
 import android.opengl.GLES20.glGetAttribLocation
 import android.opengl.GLES20.glGetProgramInfoLog
+import android.opengl.GLES20.glGetProgramiv
 import android.opengl.GLES20.glGetShaderInfoLog
+import android.opengl.GLES20.glGetShaderiv
 import android.opengl.GLES20.glGetUniformLocation
 import android.opengl.GLES20.glLinkProgram
 import android.opengl.GLES20.glShaderSource
@@ -68,7 +70,8 @@ class AndroidGL(override val canvas: Canvas) : GL {
     }
 
     override fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform {
-        return Uniform(glGetUniformLocation(shaderProgram.program.address, name))
+        val address = glGetUniformLocation(shaderProgram.program.address, name)
+        return Uniform(address)
     }
 
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {
@@ -80,13 +83,15 @@ class AndroidGL(override val canvas: Canvas) : GL {
     }
 
     override fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any {
-        TODO("Not implemented yet")
-        // return glGetProgrami(shaderProgram.program.address, mask)
+        val intBuffer = IntBuffer.allocate(1)
+        glGetProgramiv(shaderProgram.program.address, mask, intBuffer)
+        return intBuffer[0]
     }
 
     override fun getShaderParameter(shader: Shader, mask: ByteMask): Any {
-        TODO("Not implemented yet")
-        // return glGetShaderi(shader.address, mask)
+        val intBuffer = IntBuffer.allocate(1)
+        glGetShaderiv(shader.address, mask, intBuffer)
+        return intBuffer[0]
     }
 
     override fun getProgramParameterB(shaderProgram: ShaderProgram, mask: ByteMask): Boolean {
@@ -162,7 +167,8 @@ class AndroidGL(override val canvas: Canvas) : GL {
     }
 
     override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
-        glUniformMatrix4fv(uniform.address, data.size, transpose, data.toFloatArray(), 0)
+        // divided by 16 took from libgdx.
+        glUniformMatrix4fv(uniform.address, data.size / 16, transpose, data.toFloatArray(), 0)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
