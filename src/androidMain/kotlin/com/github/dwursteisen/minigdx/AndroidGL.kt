@@ -141,13 +141,20 @@ class AndroidGL(override val canvas: Canvas) : GL {
     }
 
     override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
-        when (data) {
-            is DataSource.FloatDataSource -> glBufferData(target, data.floats.size, data.floats.asBuffer(), usage)
-            is DataSource.IntDataSource -> glBufferData(target, data.ints.size, data.ints.asBuffer(), usage)
-            is DataSource.ShortDataSource -> glBufferData(target, data.shorts.size, data.shorts.asBuffer(), usage)
-            is DataSource.UIntDataSource -> glBufferData(target, data.ints.size, data.ints.asBuffer(), usage)
-            is DataSource.DoubleDataSource -> glBufferData(target, data.double.size, data.double.asBuffer(), usage)
+        val buffer: java.nio.Buffer = when (data) {
+            is DataSource.FloatDataSource -> data.floats.asBuffer()
+            is DataSource.IntDataSource -> data.ints.asBuffer()
+            is DataSource.ShortDataSource -> data.shorts.asBuffer()
+            is DataSource.UIntDataSource -> data.ints.asBuffer()
+            is DataSource.DoubleDataSource -> data.double.asBuffer()
         }
+        // FIXME: bad usage of glBufferData here.
+        val factor = if (data is DataSource.FloatDataSource) {
+            4
+        } else {
+            1
+        }
+        glBufferData(target, buffer.capacity() * factor, buffer, usage)
     }
 
     override fun depthFunc(target: ByteMask) {

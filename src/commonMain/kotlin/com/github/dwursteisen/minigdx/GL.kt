@@ -69,7 +69,10 @@ interface GL {
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
 
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
+
     fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int)
+
+    fun drawElementsS(mask: ByteMask, vertexCount: Int, type: Int, data: ShortArray): Unit = TODO("Not implemented")
 
     companion object {
 

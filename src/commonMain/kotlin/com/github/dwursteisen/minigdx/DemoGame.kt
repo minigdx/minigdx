@@ -2,10 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
-import com.github.dwursteisen.minigdx.entity.Bone
-import com.github.dwursteisen.minigdx.entity.BoneMesh
 import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.file.MeshReader
 import com.github.dwursteisen.minigdx.graphics.Render
@@ -18,9 +15,9 @@ class DemoGame : Game {
     private val camera = Camera.create(45, gl.canvas.width / gl.canvas.height, 0.1, 100)
     private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
-    lateinit var monkey: Render
+    // lateinit var monkey: Render
     lateinit var cube: Render
-    val armatures: MutableList<CanDraw> = mutableListOf()
+    // val armatures: MutableList<CanDraw> = mutableListOf()
     val landmark = Landmark.of()
 
     @ExperimentalStdlibApi
@@ -40,44 +37,7 @@ class DemoGame : Game {
         // camera.rotate(-90, 0, 0)
 
         fileHandler.readData("monkey_color2.protobuf").onLoaded {
-            monkey = Render(MeshReader.fromProtobuf(it).first)
-        }
-/*
-        fileHandler.readData("armature.protobuf").onLoaded {
-            val fromByteArray = MeshReader.fromByteArray(it)
-            cube = Render(fromByteArray.first)
-            val rootBone = fromByteArray.second?.rootBone
-
-            fun Bone.traverse(action: (Bone) -> Unit) {
-                action(this)
-                this.childs.forEach {
-                    it.traverse(action)
-                }
-            }
-
-            rootBone?.traverse {
-                val boneMesh = BoneMesh.of(it.globalTransaction)
-                armatures.add(boneMesh)
-            }
-        }
-*/
-        // TODO: add a convenient method to load a model
-        fileHandler.readData("cube_armature_loop.protobuf").onLoaded {
-            val fromByteArray = MeshReader.fromProtobuf(it)
-            cube = Render(fromByteArray.first)
-            val rootBone = fromByteArray.second?.rootBone
-
-            fun Bone.traverse(action: (Bone, Bone) -> Unit) {
-                this.childs.forEach {
-                    action(this, it)
-                    it.traverse(action)
-                }
-            }
-
-            rootBone?.traverse { a, b ->
-                val boneMesh = BoneMesh.of(a.globalTransaction, b.localTransformation)
-                armatures.add(boneMesh)
-            }
+            cube = Render(MeshReader.fromProtobuf(it).first)
         }
     }
 
@@ -125,7 +85,7 @@ class DemoGame : Game {
         }
 
         // --- act ---
-        /*
+
         timer -= delta
         if (timer <= 0f) {
             timer = 4f
@@ -134,7 +94,7 @@ class DemoGame : Game {
         }
 
         action.invoke(delta)
-        */
+
         if (inputs.isKey(Key.U)) {
             camera.translate(0, delta, 0)
         } else if (inputs.isKey(Key.J)) {
@@ -169,11 +129,7 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
         // monkey.draw(program)
-        //  cube.draw(program)
-        armatures.forEach {
-            it.draw(program)
-        }
-
-        //  landmark.draw(program)
+        cube.draw(program)
+        landmark.draw(program)
     }
 }
