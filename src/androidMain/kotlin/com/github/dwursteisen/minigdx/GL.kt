@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx
 
+import android.graphics.Point
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
@@ -9,9 +10,13 @@ import com.github.dwursteisen.minigdx.math.Vector2
 
 actual class GLConfiguration(val activity: MiniGdxActivity)
 
-actual class GLContext actual constructor(val configuration: GLConfiguration) {
+actual class GLContext actual constructor(private val configuration: GLConfiguration) {
     internal actual fun createContext(): GL {
-        return AndroidGL(Canvas(400, 400))
+        val display = configuration.activity.windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        // println("x = ${size.x} y = ${size.y}")
+        return AndroidGL(Canvas(size.x, size.x))
     }
 
     internal actual fun createFileHandler(): FileHandler {

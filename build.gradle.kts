@@ -31,7 +31,7 @@ android {
     compileSdkVersion(29)
     buildToolsVersion = "29.0.3"
     defaultConfig {
-        minSdkVersion(9)
+        minSdkVersion(13)
     }
     sourceSets.getByName("main") {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")

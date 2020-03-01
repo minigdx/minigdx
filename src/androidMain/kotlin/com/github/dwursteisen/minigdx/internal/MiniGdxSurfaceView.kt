@@ -19,8 +19,9 @@ class MiniGdxSurfaceView(context: Context) : GLSurfaceView(context) {
             lateinit var game: Game
 
             override fun onDrawFrame(gl: GL10?) {
-                val now = System.currentTimeMillis() / 1000f
-                val delta = now - time
+                val now = System.nanoTime().toFloat()
+                val delta = (now - time) / 1000000000.0f
+
                 game.render(delta)
                 time = now
             }

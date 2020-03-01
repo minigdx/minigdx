@@ -148,11 +148,12 @@ class AndroidGL(override val canvas: Canvas) : GL {
             is DataSource.UIntDataSource -> data.ints.asBuffer()
             is DataSource.DoubleDataSource -> data.double.asBuffer()
         }
-        // FIXME: bad usage of glBufferData here.
-        val factor = if (data is DataSource.FloatDataSource) {
-            4
-        } else {
-            1
+        val factor = when (data) {
+            is DataSource.FloatDataSource -> java.lang.Float.BYTES
+            is DataSource.IntDataSource -> java.lang.Integer.BYTES
+            is DataSource.ShortDataSource -> java.lang.Short.BYTES
+            is DataSource.UIntDataSource -> java.lang.Integer.BYTES
+            is DataSource.DoubleDataSource -> java.lang.Double.BYTES
         }
         glBufferData(target, buffer.capacity() * factor, buffer, usage)
     }

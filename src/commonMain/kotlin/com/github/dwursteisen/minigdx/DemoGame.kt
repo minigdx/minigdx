@@ -20,6 +20,8 @@ class DemoGame : Game {
     // val armatures: MutableList<CanDraw> = mutableListOf()
     val landmark = Landmark.of()
 
+    var ready = false
+
     @ExperimentalStdlibApi
     override fun create() {
         program.createAttrib("aVertexPosition")
@@ -38,6 +40,7 @@ class DemoGame : Game {
 
         fileHandler.readData("monkey_color2.protobuf").onLoaded {
             cube = Render(MeshReader.fromProtobuf(it).first)
+            ready = true
         }
     }
 
@@ -80,7 +83,7 @@ class DemoGame : Game {
     )
 
     override fun render(delta: Seconds) {
-        if (!fileHandler.isLoaded) {
+        if (!ready) {
             return
         }
 
@@ -93,7 +96,8 @@ class DemoGame : Game {
             index = (index + 1) % actions.size
         }
 
-        action.invoke(delta)
+        cube.mesh.rotateX(delta * 10)
+        // action.invoke(delta)
 
         if (inputs.isKey(Key.U)) {
             camera.translate(0, delta, 0)
@@ -112,6 +116,7 @@ class DemoGame : Game {
         } else if (inputs.isKey(Key.I)) {
             camera.translate(0, 0, -delta)
         }
+
         val modelMatrix = camera.modelMatrix
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
@@ -130,6 +135,6 @@ class DemoGame : Game {
 
         // monkey.draw(program)
         cube.draw(program)
-        landmark.draw(program)
+        // landmark.draw(program)
     }
 }
