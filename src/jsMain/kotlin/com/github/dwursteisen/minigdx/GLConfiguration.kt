@@ -6,10 +6,10 @@ import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.InputManager
 import com.github.dwursteisen.minigdx.input.JsInputHandler
-import org.khronos.webgl.WebGLRenderingContext
-import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
+import org.khronos.webgl.WebGLRenderingContext
+import org.w3c.dom.HTMLCanvasElement
 
 actual class GLConfiguration(
     val canvas: HTMLCanvasElement? = null,

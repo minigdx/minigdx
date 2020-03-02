@@ -123,6 +123,6 @@ class MetalGL : GL {
     }
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }

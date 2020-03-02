@@ -26,5 +26,4 @@ class FillViewportStrategy : ViewportStrategy {
 
         gl.viewport(gx.toInt(), gy.toInt(), pw, ph)
     }
-
 }

@@ -105,6 +105,6 @@ actual class GLContext actual constructor(val configuration: GLConfiguration) {
     }
 
     internal actual fun createViewportStrategy(): ViewportStrategy {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }

@@ -149,3 +149,17 @@ colladaPlugin {
 }
 
 // project.tasks.getByName("processResources").dependsOn("collada")
+project.tasks.create("runJs").apply {
+    group = "minigdx"
+    dependsOn("jsBrowserRun")
+}
+
+project.tasks.create("runJvm").apply {
+    group = "minigdx"
+    dependsOn(":demo:run")
+}
+
+project.tasks.create("runAndroid").apply {
+    group = "minigdx"
+    dependsOn("installDebug")
+}
