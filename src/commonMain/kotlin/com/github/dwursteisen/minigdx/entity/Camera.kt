@@ -5,8 +5,8 @@ import com.curiouscreature.kotlin.math.perspective
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.math.Vector3
 
-data class Camera(
-    val position: Vector3,
+class Camera(
+    position: Vector3,
     val target: Vector3,
     var projectionMatrix: Mat4
 ) : Entity, CanMove by Movable(

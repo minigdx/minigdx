@@ -7,6 +7,7 @@ import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.file.MeshReader
 import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.input.TouchSignal
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 
@@ -82,6 +83,9 @@ class DemoGame : Game {
         this::moveCube2
     )
 
+    var rotationStart: Float? = null
+    var currentRotation: Float = 0f
+    var xStart = 0f
     override fun render(delta: Seconds) {
         if (!ready) {
             return
@@ -96,8 +100,23 @@ class DemoGame : Game {
             index = (index + 1) % actions.size
         }
 
-        cube.mesh.rotateX(delta * 10)
-        // action.invoke(delta)
+        val cursor = inputs.isTouched(TouchSignal.FINGER1)
+        if (cursor != null) {
+            if (rotationStart == null) {
+                rotationStart = cube.mesh.rotation.x
+                xStart = cursor.x
+            }
+            // FIXME: get current screen size.
+            val screenWidth = 800
+            val factor = (cursor.x - screenWidth * 0.5f) / screenWidth
+            currentRotation = factor * 180f
+            rotationStart?.run {
+                cube.mesh.setRotationX(this + currentRotation)
+            }
+        } else {
+            rotationStart = null
+            cube.mesh.rotateX(delta * 10)
+        }
 
         if (inputs.isKey(Key.U)) {
             camera.translate(0, delta, 0)

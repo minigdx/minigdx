@@ -12,8 +12,8 @@ import com.github.dwursteisen.minigdx.math.Vector3
  */
 class Movable(
     override var modelMatrix: Mat4 = Mat4.identity(),
-    private val rotation: Vector3 = Vector3(),
-    private val position: Vector3 = Vector3()
+    override val rotation: Vector3 = Vector3(),
+    override val position: Vector3 = Vector3()
 ) : CanMove {
 
     override fun rotate(x: Number, y: Number, z: Number): CanMove {

@@ -7,6 +7,9 @@ interface CanMove {
 
     var modelMatrix: Mat4
 
+    val rotation: Vector3
+    val position: Vector3
+
     fun rotate(x: Number, y: Number, z: Number): CanMove
     fun rotate(angles: Vector3): CanMove
 
