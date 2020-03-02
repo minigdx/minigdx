@@ -1,6 +1,8 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
+import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.LwjglInput
 import org.lwjgl.glfw.GLFW.GLFW_FALSE
@@ -15,6 +17,7 @@ import org.lwjgl.glfw.GLFW.glfwInit
 import org.lwjgl.glfw.GLFW.glfwMakeContextCurrent
 import org.lwjgl.glfw.GLFW.glfwPollEvents
 import org.lwjgl.glfw.GLFW.glfwSetWindowPos
+import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
 import org.lwjgl.glfw.GLFW.glfwShowWindow
 import org.lwjgl.glfw.GLFW.glfwSwapBuffers
 import org.lwjgl.glfw.GLFW.glfwSwapInterval
@@ -52,6 +55,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     internal actual fun createInputHandler(): InputHandler {
         return LwjglInput()
+    }
+
+    internal actual fun createViewportStrategy(): ViewportStrategy {
+        return FillViewportStrategy()
     }
 
     /**
@@ -121,6 +128,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         glfwShowWindow(window)
         game.create()
         game.resume()
+
+        viewport.update(configuration.width, configuration.height)
+        glfwSetWindowSizeCallback(window) { _, w, h ->
+            viewport.update(w, h)
+        }
 
         // Wireframe mode
         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)

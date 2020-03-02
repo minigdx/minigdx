@@ -32,6 +32,7 @@ import org.lwjgl.opengl.GL30.glShaderSource
 import org.lwjgl.opengl.GL30.glUniformMatrix4fv
 import org.lwjgl.opengl.GL30.glUseProgram
 import org.lwjgl.opengl.GL30.glVertexAttribPointer
+import org.lwjgl.opengl.GL30.glViewport
 import org.lwjgl.opengl.GL30C.glGetUniformLocation
 
 class LwjglGL(override val canvas: Canvas) : GL {
@@ -160,5 +161,9 @@ class LwjglGL(override val canvas: Canvas) : GL {
 
     override fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int) {
         glDrawElements(mask, vertexCount, type, offset.toLong())
+    }
+
+    override fun viewport(x: Int, y: Int, width: Int, height: Int) {
+        glViewport(x, y, width, height)
     }
 }

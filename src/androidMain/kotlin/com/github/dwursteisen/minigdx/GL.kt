@@ -2,6 +2,8 @@ package com.github.dwursteisen.minigdx
 
 import android.graphics.Point
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
+import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.input.TouchSignal
@@ -15,12 +17,17 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         val display = configuration.activity.windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
-        // println("x = ${size.x} y = ${size.y}")
-        return AndroidGL(Canvas(size.x, size.x))
+        // FIXME: should be the world size versus the screen size.
+        return AndroidGL(Canvas(400, 400))
     }
 
     internal actual fun createFileHandler(): FileHandler {
         return FileHandler(configuration.activity)
+    }
+
+
+    internal actual fun createViewportStrategy(): ViewportStrategy {
+        return FillViewportStrategy()
     }
 
     internal actual fun createInputHandler(): InputHandler {

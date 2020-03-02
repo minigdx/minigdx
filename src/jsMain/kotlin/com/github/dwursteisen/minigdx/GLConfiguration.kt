@@ -1,13 +1,15 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
+import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.InputManager
 import com.github.dwursteisen.minigdx.input.JsInputHandler
-import kotlin.browser.document
-import kotlin.browser.window
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
+import kotlin.browser.document
+import kotlin.browser.window
 
 actual class GLConfiguration(
     val canvas: HTMLCanvasElement? = null,
@@ -42,10 +44,16 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return JsInputHandler()
     }
 
+    internal actual fun createViewportStrategy(): ViewportStrategy {
+        return FillViewportStrategy()
+    }
+
     actual fun run(gameFactory: () -> Game) {
         inputManager = inputs as InputManager
 
         this.game = gameFactory()
+
+        viewport.update(gl.canvas.width, gl.canvas.height)
 
         game.create()
         game.resume()

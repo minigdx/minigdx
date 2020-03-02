@@ -27,6 +27,7 @@ import android.opengl.GLES20.glShaderSource
 import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
+import android.opengl.GLES20.glViewport
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
@@ -185,5 +186,9 @@ class AndroidGL(override val canvas: Canvas) : GL {
 
     override fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int) {
         glDrawElements(mask, vertexCount, type, offset)
+    }
+
+    override fun viewport(x: Int, y: Int, width: Int, height: Int) {
+        glViewport(x, y, width, height)
     }
 }

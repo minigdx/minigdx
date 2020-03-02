@@ -131,4 +131,8 @@ class WebGL(private val gl: WebGLRenderingContext, override val canvas: Canvas) 
     override fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int) {
         gl.drawElements(mask, vertexCount, type, offset)
     }
+
+    override fun viewport(x: Int, y: Int, width: Int, height: Int) {
+        gl.viewport(x, y, width, height)
+    }
 }

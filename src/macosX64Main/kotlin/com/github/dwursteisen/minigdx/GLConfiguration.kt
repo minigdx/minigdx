@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import kotlinx.cinterop.useContents
 import platform.AppKit.NSApplication
@@ -101,5 +102,9 @@ actual class GLContext actual constructor(val configuration: GLConfiguration) {
 
     internal actual fun createInputHandler(): InputHandler {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    }
+
+    internal actual fun createViewportStrategy(): ViewportStrategy {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

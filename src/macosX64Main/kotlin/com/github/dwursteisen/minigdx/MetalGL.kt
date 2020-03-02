@@ -121,4 +121,8 @@ class MetalGL : GL {
     override fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int) {
         TODO("not implemented")
     }
+
+    override fun viewport(x: Int, y: Int, width: Int, height: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
