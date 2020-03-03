@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    kotlin("multiplatform") version "1.3.61"
+    kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     id("com.github.dwursteisen.collada") version "1.0-SNAPSHOT"
 }
@@ -75,7 +75,7 @@ kotlin {
     jvm {
         this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
     }
-
+/*
     macosX64() {
         binaries {
             executable {
@@ -86,7 +86,7 @@ kotlin {
             }
         }
     }
-
+*/
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -102,20 +102,20 @@ kotlin {
             }
         }
 
-        js().compilations["main"].defaultSourceSet {
+        val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0-SNAPSHOT")
             }
         }
 
-        js().compilations["test"].defaultSourceSet {
+        val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
             }
         }
 
-        jvm().compilations["main"].defaultSourceSet {
+        val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0-SNAPSHOT")
@@ -136,18 +136,16 @@ kotlin {
             }
         }
 
-        jvm().compilations["test"].defaultSourceSet {
+        val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
             }
         }
 
-        android("android").compilations.all {
-            if (this.name.endsWith("Test")) {
-                this.defaultSourceSet.dependencies {
-                    implementation(kotlin("stdlib-jdk7"))
-                    implementation(kotlin("test-junit"))
-                }
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("stdlib-jdk7"))
+                implementation(kotlin("test-junit"))
             }
         }
     }
@@ -166,10 +164,9 @@ colladaPlugin {
     }
 }
 
-// project.tasks.getByName("processResources").dependsOn("collada")
 project.tasks.create("runJs").apply {
     group = "minigdx"
-    dependsOn("jsBrowserRun")
+    dependsOn("browserDevelopmentRun")
 }
 
 project.tasks.create("runJvm").apply {
