@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx
 
 typealias Seconds = Float
 
-data class WorldSize(val width: Int,val height: Int) {
+data class WorldSize(val width: Int, val height: Int) {
 
     val ratio: Float = width / height.toFloat()
 }

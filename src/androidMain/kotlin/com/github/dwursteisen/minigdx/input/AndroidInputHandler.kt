@@ -26,7 +26,7 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
 
     private fun lookForTouchSignal(pointerId: Int): TouchSignal? {
         return type.mapIndexed { index, id ->
-            if(id == pointerId) {
+            if (id == pointerId) {
                 touchSignalCache[index]
             } else {
                 null
@@ -55,7 +55,7 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
 
         pointerIds.forEach {
             val (pointerId, touchSignal) = it
-            if(touchSignal == null) {
+            if (touchSignal == null) {
                 val newTouchSignal = assignTouchSignal(pointerId)
                 onTouch(newTouchSignal, event)
             } else {

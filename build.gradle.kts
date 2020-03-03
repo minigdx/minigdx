@@ -99,7 +99,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation("io.mockk:mockk-common:1.9.3")
             }
         }
 
@@ -140,17 +139,17 @@ kotlin {
         jvm().compilations["test"].defaultSourceSet {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation("io.mockk:mockk:1.9.3")
             }
         }
 
-        /*
-        android().compilations["androidTest"].defaultSourceSet {
-            dependencies {
-                implementation(kotlin("test-junit"))
-                implementation("io.mockk:mockk-android:1.9.3")
+        android("android").compilations.all {
+            if (this.name.endsWith("Test")) {
+                this.defaultSourceSet.dependencies {
+                    implementation(kotlin("stdlib-jdk7"))
+                    implementation(kotlin("test-junit"))
+                }
             }
-        }*/
+        }
     }
 }
 

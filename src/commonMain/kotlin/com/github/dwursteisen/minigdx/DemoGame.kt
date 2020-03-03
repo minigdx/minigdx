@@ -119,7 +119,7 @@ class DemoGame : Game {
             rotationStart = null
             cube.mesh.rotateX(delta * 10)
         }
-        if(inputs.isTouched(TouchSignal.TOUCH2) != null) {
+        if (inputs.isTouched(TouchSignal.TOUCH2) != null) {
             TODO("Second touch support is working!")
         }
 

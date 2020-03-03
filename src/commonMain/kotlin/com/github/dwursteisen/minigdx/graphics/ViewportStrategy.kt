@@ -1,6 +1,5 @@
 package com.github.dwursteisen.minigdx.graphics
 
-import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.WorldSize
 import com.github.dwursteisen.minigdx.gl
 import kotlin.math.min
