@@ -35,7 +35,7 @@ import org.lwjgl.opengl.GL30.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.glViewport
 import org.lwjgl.opengl.GL30C.glGetUniformLocation
 
-class LwjglGL(override val canvas: Canvas) : GL {
+class LwjglGL(override val screen: Screen) : GL {
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
         glClearColor(r.toPercent(), g.toPercent(), b.toPercent(), a.toPercent())

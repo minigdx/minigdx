@@ -24,14 +24,14 @@ lateinit var fileHandler: FileHandler
 lateinit var inputs: InputHandler
 lateinit var viewport: ViewportStrategy
 
-class Canvas(
+class Screen(
     var width: Int,
     var height: Int
 )
 
 interface GL {
 
-    val canvas: Canvas
+    val screen: Screen
 
     fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent)
     fun clear(mask: ByteMask)

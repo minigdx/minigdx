@@ -29,7 +29,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         val context = canvas.getContext("webgl") as WebGLRenderingContext
         return WebGL(
-            context, Canvas(
+            context, Screen(
                 width = canvas.clientWidth,
                 height = canvas.clientHeight
             )
@@ -53,7 +53,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         this.game = gameFactory()
 
-        viewport.update(game.worldSize, gl.canvas.width, gl.canvas.height)
+        viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
 
         game.create()
         game.resume()

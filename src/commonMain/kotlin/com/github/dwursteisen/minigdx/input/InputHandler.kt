@@ -3,8 +3,7 @@ package com.github.dwursteisen.minigdx.input
 import com.github.dwursteisen.minigdx.math.Vector2
 
 enum class TouchSignal {
-    FINGER1, FINGER2,
-    MOUSE1, MOUSE2, MOUSE3
+    TOUCH1, TOUCH2, TOUCH3
 }
 
 enum class Key {

@@ -16,7 +16,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         val size = Point()
         display.getSize(size)
         // FIXME: should be the world size versus the screen size.
-        return AndroidGL(Canvas(size.x, size.y))
+        return AndroidGL(Screen(size.x, size.y))
     }
 
     internal actual fun createFileHandler(): FileHandler {

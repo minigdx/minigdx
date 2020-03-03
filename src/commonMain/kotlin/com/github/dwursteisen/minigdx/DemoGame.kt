@@ -102,14 +102,14 @@ class DemoGame : Game {
             index = (index + 1) % actions.size
         }
 
-        val cursor = inputs.isTouched(TouchSignal.FINGER1)
+        val cursor = inputs.isTouched(TouchSignal.TOUCH1)
         if (cursor != null) {
             if (rotationStart == null) {
                 rotationStart = cube.mesh.rotation.x
                 xStart = cursor.x
             }
-            // FIXME: get current screen size.
-            val screenWidth = 800
+
+            val screenWidth = gl.screen.width
             val factor = (cursor.x - screenWidth * 0.5f) / screenWidth
             currentRotation = factor * 180f
             rotationStart?.run {
@@ -118,6 +118,9 @@ class DemoGame : Game {
         } else {
             rotationStart = null
             cube.mesh.rotateX(delta * 10)
+        }
+        if(inputs.isTouched(TouchSignal.TOUCH2) != null) {
+            TODO("Second touch support is working!")
         }
 
         if (inputs.isKey(Key.U)) {

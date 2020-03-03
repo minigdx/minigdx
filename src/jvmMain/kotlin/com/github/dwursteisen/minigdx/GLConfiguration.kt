@@ -46,7 +46,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
                 """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
             )
         }
-        return LwjglGL(canvas = Canvas(configuration.width, configuration.height))
+        return LwjglGL(screen = Screen(configuration.width, configuration.height))
     }
 
     internal actual fun createFileHandler(): FileHandler {
@@ -131,8 +131,8 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         viewport.update(game.worldSize, configuration.width, configuration.height)
         glfwSetWindowSizeCallback(window) { _, w, h ->
-            gl.canvas.width = w
-            gl.canvas.height = h
+            gl.screen.width = w
+            gl.screen.height = h
             viewport.update(game.worldSize, w, h)
         }
 

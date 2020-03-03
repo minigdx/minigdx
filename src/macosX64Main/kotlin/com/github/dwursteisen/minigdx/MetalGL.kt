@@ -7,7 +7,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Uniform
 
 class MetalGL : GL {
-    override val canvas: Canvas
+    override val screen: Screen
         get() = TODO("not implemented")
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
