@@ -25,8 +25,8 @@ lateinit var inputs: InputHandler
 lateinit var viewport: ViewportStrategy
 
 class Canvas(
-    val width: Int,
-    val height: Int
+    var width: Int,
+    var height: Int
 )
 
 interface GL {

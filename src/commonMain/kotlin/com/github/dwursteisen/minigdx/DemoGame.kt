@@ -13,7 +13,9 @@ import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 
 class DemoGame : Game {
 
-    private val camera = Camera.create(45, gl.canvas.width / gl.canvas.height, 0.1, 100)
+    override val worldSize = WorldSize(200, 200)
+
+    private val camera = Camera.create(45, worldSize.ratio, 0.1, 100)
     private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
     // lateinit var monkey: Render

@@ -129,9 +129,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         game.create()
         game.resume()
 
-        viewport.update(configuration.width, configuration.height)
+        viewport.update(game.worldSize, configuration.width, configuration.height)
         glfwSetWindowSizeCallback(window) { _, w, h ->
-            viewport.update(w, h)
+            gl.canvas.width = w
+            gl.canvas.height = h
+            viewport.update(game.worldSize, w, h)
         }
 
         // Wireframe mode

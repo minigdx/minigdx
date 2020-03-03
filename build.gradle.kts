@@ -93,27 +93,31 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0-SNAPSHOT")
                 implementation("com.github.dwursteisen.collada:collada-api:1.0-SNAPSHOT")
-                // implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.14.0")
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("io.mockk:mockk-common:1.9.3")
             }
         }
 
         js().compilations["main"].defaultSourceSet {
             dependencies {
-                // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-SNAPSHOT")
                 implementation(kotlin("stdlib-js"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0-SNAPSHOT")
             }
         }
 
+        js().compilations["test"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
+        }
+
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
-                // implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-SNAPSHOT")
                 api(kotlin("stdlib-jdk8"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0-SNAPSHOT")
 
@@ -132,6 +136,21 @@ kotlin {
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
             }
         }
+
+        jvm().compilations["test"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("test-junit"))
+                implementation("io.mockk:mockk:1.9.3")
+            }
+        }
+
+        /*
+        android().compilations["androidTest"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("test-junit"))
+                implementation("io.mockk:mockk-android:1.9.3")
+            }
+        }*/
     }
 }
 

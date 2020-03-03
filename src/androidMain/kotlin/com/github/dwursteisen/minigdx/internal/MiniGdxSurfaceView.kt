@@ -33,7 +33,7 @@ class MiniGdxSurfaceView(context: Context) : GLSurfaceView(context) {
             }
 
             override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-                viewport.update(width, height)
+                viewport.update(game.worldSize, width, height)
             }
 
             override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {

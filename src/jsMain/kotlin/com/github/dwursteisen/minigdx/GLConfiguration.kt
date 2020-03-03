@@ -53,7 +53,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         this.game = gameFactory()
 
-        viewport.update(gl.canvas.width, gl.canvas.height)
+        viewport.update(game.worldSize, gl.canvas.width, gl.canvas.height)
 
         game.create()
         game.resume()
