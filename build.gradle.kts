@@ -166,7 +166,7 @@ colladaPlugin {
 
 project.tasks.create("runJs").apply {
     group = "minigdx"
-    dependsOn("browserDevelopmentRun")
+    dependsOn("jsBrowserDevelopmentRun")
 }
 
 project.tasks.create("runJvm").apply {

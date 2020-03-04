@@ -15,7 +15,7 @@ class DemoGame : Game {
 
     override val worldSize = WorldSize(200, 200)
 
-    private val camera = Camera.create(45, worldSize.ratio, 0.1, 100)
+    private val camera = Camera.create(45, worldSize.ratio, 1, 1000)
     private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
     // lateinit var monkey: Render
@@ -38,10 +38,10 @@ class DemoGame : Game {
 
         program.createUniform("uNormalMatrix")
 
-        camera.translate(0, 0, -6)
+        camera.translate(0, 0, -100)
         // camera.rotate(-90, 0, 0)
 
-        fileHandler.readData("monkey_color2.protobuf").onLoaded {
+        fileHandler.readData("planet.protobuf").onLoaded {
             cube = Render(MeshReader.fromProtobuf(it).first)
             ready = true
         }
@@ -145,7 +145,8 @@ class DemoGame : Game {
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
         // clear
-        gl.clearColor(0, 0, 0, 1)
+        // Blue #01BFFF
+        gl.clearColor(1 / 255f, 191 / 255f, 255 / 255f, 1f)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)
