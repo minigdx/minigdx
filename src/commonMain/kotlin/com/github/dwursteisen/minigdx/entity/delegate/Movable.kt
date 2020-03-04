@@ -90,6 +90,16 @@ class Movable(
         return rotateX(toRotate)
     }
 
+    override fun setRotationY(angle: Float): CanMove {
+        val toRotate = angle - rotation.y
+        return rotateY(toRotate)
+    }
+
+    override fun setRotationZ(angle: Float): CanMove {
+        val toRotate = angle - rotation.z
+        return rotateZ(toRotate)
+    }
+
     override fun translate(x: Number, y: Number, z: Number): CanMove {
         position.add(x.toFloat(), y.toFloat(), z.toFloat())
         modelMatrix *= translation(

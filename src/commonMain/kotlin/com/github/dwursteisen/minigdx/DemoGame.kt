@@ -105,7 +105,7 @@ class DemoGame : Game {
         val cursor = inputs.isTouched(TouchSignal.TOUCH1)
         if (cursor != null) {
             if (rotationStart == null) {
-                rotationStart = cube.mesh.rotation.x
+                rotationStart = cube.mesh.rotation.y
                 xStart = cursor.x
             }
 
@@ -113,14 +113,11 @@ class DemoGame : Game {
             val factor = (cursor.x - screenWidth * 0.5f) / screenWidth
             currentRotation = factor * 180f
             rotationStart?.run {
-                cube.mesh.setRotationX(this + currentRotation)
+                cube.mesh.setRotationY(this + currentRotation)
             }
         } else {
             rotationStart = null
-            cube.mesh.rotateX(delta * 10)
-        }
-        if (inputs.isTouched(TouchSignal.TOUCH2) != null) {
-            TODO("Second touch support is working!")
+            cube.mesh.rotateY(delta * 10)
         }
 
         if (inputs.isKey(Key.U)) {

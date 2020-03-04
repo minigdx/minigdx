@@ -18,6 +18,8 @@ interface CanMove {
     fun rotateZ(angle: Float): CanMove
 
     fun setRotationX(angle: Float): CanMove
+    fun setRotationY(angle: Float): CanMove
+    fun setRotationZ(angle: Float): CanMove
 
     fun translate(move: Vector3): CanMove = translate(move.x, move.y, move.z)
     fun translate(x: Number, y: Number, z: Number): CanMove

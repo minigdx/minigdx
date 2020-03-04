@@ -21,9 +21,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     private var then = 0.0
     private lateinit var game: Game
     private lateinit var inputManager: InputManager
+    private lateinit var canvas: HTMLCanvasElement
 
     internal actual fun createContext(): GL {
-        val canvas =
+        canvas =
             configuration.canvas ?: configuration.canvasId?.let { document.getElementById(it) as? HTMLCanvasElement }
             ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
@@ -41,7 +42,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createInputHandler(): InputHandler {
-        return JsInputHandler()
+        return JsInputHandler(canvas)
     }
 
     internal actual fun createViewportStrategy(): ViewportStrategy {
