@@ -23,8 +23,6 @@ class DemoGame : Game {
     // val armatures: MutableList<CanDraw> = mutableListOf()
     val landmark = Landmark.of()
 
-    var ready = false
-
     @ExperimentalStdlibApi
     override fun create() {
         program.createAttrib("aVertexPosition")
@@ -89,7 +87,7 @@ class DemoGame : Game {
     var currentRotation: Float = 0f
     var xStart = 0f
     override fun render(delta: Seconds) {
-        if (!ready) {
+        if (!fileHandler.isLoaded) {
             return
         }
 

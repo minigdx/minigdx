@@ -59,7 +59,9 @@ actual class FileHandler {
         return content
     }
 
-    actual val isLoaded: Boolean = total == loaded
+    actual val isLoaded: Boolean
+        get() = total == loaded
 
-    actual val loadProgression: Float = loaded / total.toFloat()
+    actual val loadProgression: Float
+        get() = loaded / total.toFloat()
 }
