@@ -164,6 +164,18 @@ colladaPlugin {
     }
 }
 
+// -- convenient task to create the documentation.
+project.tasks.create<Copy>("docs").apply {
+    group = "minigdx"
+    // package the application
+    dependsOn("jsBrowserProductionWebpack")
+    from("build/distributions/") {
+        include("*.html", "*.js", "*.protobuf")
+    }
+    into("docs")
+}
+
+// -- convenient tasks to test the game engine.
 project.tasks.create("runJs").apply {
     group = "minigdx"
     dependsOn("jsBrowserDevelopmentRun")

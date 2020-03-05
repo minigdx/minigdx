@@ -28,7 +28,6 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
     }
 
     private fun onTouch(touchSignal: TouchSignal, pointerId: Int, event: MotionEvent) {
-        val ordinal = touchSignal.ordinal
         when (event.action and MotionEvent.ACTION_POINTER_INDEX_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 // down

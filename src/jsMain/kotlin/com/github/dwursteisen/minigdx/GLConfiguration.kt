@@ -62,12 +62,19 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     private fun render(now: Double) {
+        // The canvas has been resized
+        if (canvas.clientWidth != game.worldSize.width || canvas.clientHeight != game.worldSize.height) {
+            gl.screen.width = canvas.clientWidth
+            gl.screen.height = canvas.clientHeight
+            viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
+        }
         inputManager.record()
         val nowInSeconds = now * 0.001
         val delta = nowInSeconds - then
         then = nowInSeconds
         game.render(delta.toFloat())
         inputManager.reset()
+
         window.requestAnimationFrame(::render)
     }
 }
