@@ -41,7 +41,6 @@ class DemoGame : Game {
 
         fileHandler.readData("planet.protobuf").onLoaded {
             cube = Render(MeshReader.fromProtobuf(it).first)
-            ready = true
         }
     }
 
