@@ -71,7 +71,6 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
 
     private fun touchStart(event: Event) {
         event as TouchEvent
-        println(event)
         (0 until event.targetTouches.length).forEach {
             val jsTouch = event.targetTouches[it]!!
             val touch = touchManager.getTouchSignal(jsTouch.identifier)
@@ -81,7 +80,6 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
 
     private fun touchEnd(event: Event) {
         event as TouchEvent
-        println(event)
         (0 until event.targetTouches.length).forEach {
             val jsTouch = event.targetTouches[it]!!
             val touch = touchManager.getTouchSignal(jsTouch.identifier)
@@ -91,7 +89,6 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
 
     private fun touchMove(event: Event) {
         event as TouchEvent
-        println(event)
         (0 until event.targetTouches.length).forEach {
             val jsTouch = event.targetTouches[it]!!
             val touch = touchManager.getTouchSignal(jsTouch.identifier)

@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.entity.delegate
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.entity.CanMove
@@ -98,6 +99,11 @@ class Movable(
     override fun setRotationZ(angle: Float): CanMove {
         val toRotate = angle - rotation.z
         return rotateZ(toRotate)
+    }
+
+    override fun setRotation(quaternion: Quaternion): CanMove {
+        modelMatrix *= Mat4.from(quaternion)
+        return this
     }
 
     override fun translate(x: Number, y: Number, z: Number): CanMove {

@@ -57,14 +57,17 @@ class Render(val mesh: Mesh) {
      * Positions of vertices.
      */
     private val vertices = gl.createBuffer()
+
     /**
      * Colors of vertices.
      */
     private val colors = gl.createBuffer()
+
     /**
      * Normals of vertices.
      */
     private val normals = gl.createBuffer()
+
     /**
      * Order to drawn vertices.
      */

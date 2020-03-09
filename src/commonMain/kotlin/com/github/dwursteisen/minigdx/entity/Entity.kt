@@ -1,3 +1,8 @@
 package com.github.dwursteisen.minigdx.entity
 
-interface Entity
+import com.github.dwursteisen.minigdx.Seconds
+
+interface Entity {
+
+    fun update(delta: Seconds) = Unit
+}

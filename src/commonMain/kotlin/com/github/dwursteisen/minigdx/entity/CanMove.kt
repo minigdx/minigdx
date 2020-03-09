@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.entity
 
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.Quaternion
 import com.github.dwursteisen.minigdx.math.Vector3
 
 interface CanMove {
@@ -17,6 +18,7 @@ interface CanMove {
     fun rotateY(angle: Float): CanMove
     fun rotateZ(angle: Float): CanMove
 
+    fun setRotation(quaternion: Quaternion): CanMove
     fun setRotationX(angle: Float): CanMove
     fun setRotationY(angle: Float): CanMove
     fun setRotationZ(angle: Float): CanMove

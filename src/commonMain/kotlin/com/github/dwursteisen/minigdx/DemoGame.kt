@@ -3,11 +3,13 @@ package com.github.dwursteisen.minigdx
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
+import com.github.dwursteisen.minigdx.entity.CanDraw
+import com.github.dwursteisen.minigdx.entity.Cube
 import com.github.dwursteisen.minigdx.entity.Landmark
+import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.file.MeshReader
 import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.input.Key
-import com.github.dwursteisen.minigdx.input.TouchSignal
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 
@@ -20,8 +22,9 @@ class DemoGame : Game {
 
     // lateinit var monkey: Render
     lateinit var cube: Render
-    // val armatures: MutableList<CanDraw> = mutableListOf()
-    val landmark = Landmark.of()
+    private val armatures: MutableMap<String, CanDraw> = mutableMapOf()
+    private val landmark = Landmark.of()
+    private lateinit var animatedModel: AnimatedModel
 
     @ExperimentalStdlibApi
     override fun create() {
@@ -33,14 +36,24 @@ class DemoGame : Game {
         program.createUniform("uModelMatrix")
         program.createUniform("uViewMatrix")
         program.createUniform("uProjectionMatrix")
+        // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
+        // program.createUniform("uJointTransforms")
 
         program.createUniform("uNormalMatrix")
 
-        camera.translate(0, 0, -100)
+        camera.translate(0, 0, -10)
         // camera.rotate(-90, 0, 0)
 
-        fileHandler.readData("planet.protobuf").onLoaded {
-            cube = Render(MeshReader.fromProtobuf(it).first)
+        fileHandler.readData("armature.protobuf").onLoaded {
+            val fromProtobuf = MeshReader.fromProtobuf(it)
+            val (_, armature, animations) = fromProtobuf
+
+            animatedModel = AnimatedModel(
+                animation = animations!!,
+                mesh = Cube("cube").mesh,
+                armature = armature!!,
+                drawJoin = true
+            )
         }
     }
 
@@ -98,7 +111,7 @@ class DemoGame : Game {
             action = actions[index]
             index = (index + 1) % actions.size
         }
-
+/*
         val cursor = inputs.isTouched(TouchSignal.TOUCH1)
         if (cursor != null) {
             if (rotationStart == null) {
@@ -116,7 +129,7 @@ class DemoGame : Game {
             rotationStart = null
             cube.mesh.rotateY(delta * 10)
         }
-
+*/
         if (inputs.isKey(Key.U)) {
             camera.translate(0, delta, 0)
         } else if (inputs.isKey(Key.J)) {
@@ -138,22 +151,21 @@ class DemoGame : Game {
         val modelMatrix = camera.modelMatrix
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
-        // clear
-        // Blue #01BFFF
+        // TODO: create clear method
         gl.clearColor(1 / 255f, 191 / 255f, 255 / 255f, 1f)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)
         gl.clear(GL.COLOR_BUFFER_BIT or GL.DEPTH_BUFFER_BIT)
 
+        // TODO: create program.draw { … }
         gl.useProgram(program)
 
         gl.uniformMatrix4fv(program.getUniform("uProjectionMatrix"), false, camera.projectionMatrix)
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        // monkey.draw(program)
-        cube.draw(program)
-        // landmark.draw(program)
+        animatedModel.update(delta)
+        landmark.draw(program)
     }
 }
