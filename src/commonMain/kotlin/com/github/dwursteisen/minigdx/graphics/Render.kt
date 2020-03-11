@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.entity.DrawType
 import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.Vertice
+import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
@@ -51,7 +52,7 @@ private fun ShortArray.convertOrder(): DataSource.ShortDataSource {
 /**
  * Render a mesh on a screen.
  */
-class Render(val mesh: Mesh) {
+class Render(val mesh: Mesh, var pose: Armature? = null) {
 
     /**
      * Positions of vertices.
@@ -88,8 +89,21 @@ class Render(val mesh: Mesh) {
     }
 
     fun draw(program: ShaderProgram) {
+
         // Set the model matrix
         gl.uniformMatrix4fv(program.getUniform("uModelMatrix"), false, mesh.modelMatrix)
+
+        if (pose != null) {
+            // Set if an armature is present
+            gl.uniform1i(program.getUniform("uArmature"), 1)
+
+            // Set the joint matrix, if any
+            val root = pose!!.rootJoint.globalInverseBindTransformation
+
+            gl.uniformMatrix4fv(program.getUniform("uJointTransformationMatrix"), false, root)
+        } else {
+            gl.uniform1i(program.getUniform("uArmature"), -1)
+        }
 
         // set buffer to attribute
         gl.bindBuffer(GL.ARRAY_BUFFER, vertices)

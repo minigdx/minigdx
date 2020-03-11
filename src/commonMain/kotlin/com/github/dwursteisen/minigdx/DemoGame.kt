@@ -28,10 +28,12 @@ class DemoGame : Game {
 
     @ExperimentalStdlibApi
     override fun create() {
+
         program.createAttrib("aVertexPosition")
         program.createAttrib("aVertexColor")
         program.createAttrib("aNormal")
 
+        // FIXME: create by default this uniform.
         // Model View Project Matrix
         program.createUniform("uModelMatrix")
         program.createUniform("uViewMatrix")
@@ -40,6 +42,8 @@ class DemoGame : Game {
         // program.createUniform("uJointTransforms")
 
         program.createUniform("uNormalMatrix")
+        program.createUniform("uArmature")
+        program.createUniform("uJointTransformationMatrix")
 
         camera.translate(0, 0, -10)
         // camera.rotate(-90, 0, 0)
@@ -166,6 +170,8 @@ class DemoGame : Game {
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
         animatedModel.update(delta)
+
+        animatedModel.draw(program)
         landmark.draw(program)
     }
 }

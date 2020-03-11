@@ -29,6 +29,7 @@ import org.lwjgl.opengl.GL30.glGetShaderInfoLog
 import org.lwjgl.opengl.GL30.glGetShaderi
 import org.lwjgl.opengl.GL30.glLinkProgram
 import org.lwjgl.opengl.GL30.glShaderSource
+import org.lwjgl.opengl.GL30.glUniform1i
 import org.lwjgl.opengl.GL30.glUniformMatrix4fv
 import org.lwjgl.opengl.GL30.glUseProgram
 import org.lwjgl.opengl.GL30.glVertexAttribPointer
@@ -153,6 +154,10 @@ class LwjglGL(override val screen: Screen) : GL {
 
     override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
         glUniformMatrix4fv(uniform.address, transpose, data.toFloatArray())
+    }
+
+    override fun uniform1i(uniform: Uniform, data: Int) {
+        glUniform1i(uniform.address, data)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {

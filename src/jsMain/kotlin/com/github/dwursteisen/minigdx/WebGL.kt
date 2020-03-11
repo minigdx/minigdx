@@ -61,6 +61,10 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         gl.uniformMatrix4fv(uniform.uniformLocation, transpose, data)
     }
 
+    override fun uniform1i(uniform: Uniform, data: Int) {
+        gl.uniform1i(uniform.uniformLocation, data)
+    }
+
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {
         gl.attachShader(shaderProgram.program.delegate, shader.delegate)
     }

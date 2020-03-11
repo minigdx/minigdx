@@ -1,13 +1,20 @@
 package com.github.dwursteisen.minigdx.entity.animations
 
+import com.curiouscreature.kotlin.math.Float3
+import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.Quaternion
+import com.curiouscreature.kotlin.math.inverse
+import com.github.dwursteisen.minigdx.math.Vector3
+
 class Animator(
     var animationTime: Float = 0f,
     var currentAnimation: Animation,
-    val currentFrame: Frame = Frame()
+    val referencePose: Armature,
+    val currentPose: Armature = referencePose.copy()
 ) {
 
     fun update(delta: Float) {
-        animationTime += animationTime
+        animationTime += delta
 
         if (animationTime > currentAnimation.duration) {
             // reset animation time to loop.
@@ -18,30 +25,37 @@ class Animator(
     }
 
     private fun generatePose(keyframe: Float) {
-        val (previousFrame, currentFrame) = currentAnimation.getOnionFrames(keyframe)
-        val alphaRotation = (keyframe - previousFrame.rotation.keyframe) / (keyframe - currentFrame.rotation.keyframe)
+        val (previousFrame, nextFrame) = currentAnimation.getOnionFrames(keyframe)
 
-        val alphaTransformation =
-            (keyframe - previousFrame.transformation.keyframe) / (keyframe - currentFrame.transformation.keyframe)
+        val blend = (keyframe - previousFrame.keyframe) / (keyframe - nextFrame.keyframe)
+/*
+        println("keyframe = $keyframe")
+        println("previous = ${previousFrame.keyframe}")
+        println("next     = ${nextFrame.keyframe}")
+        println("blend    = $blend")*/
+        referencePose.traverse { join ->
+            val joinId = join.id
+            val prec = previousFrame.pose[joinId].localBindTransformation
+            val next = nextFrame.pose[joinId].localBindTransformation
 
-        currentFrame.rotation.keyframe = keyframe
-        previousFrame.rotation.joints.keys.forEach { joinId ->
-            val prec = previousFrame.rotation.joints.getValue(joinId)
-            val current = currentFrame.rotation.joints.getValue(joinId)
-            currentFrame.rotation.joints[joinId] =
-                com.curiouscreature.kotlin.math.interpolate(prec, current, alphaRotation)
-        }
+            val quaternionPrec = Quaternion.from(prec)
+            val quaternionNext = Quaternion.from(next)
+            val quarternionCurrent = com.curiouscreature.kotlin.math.interpolate(quaternionPrec, quaternionNext, blend)
 
-        currentFrame.transformation.keyframe = keyframe
-        previousFrame.transformation.joints.keys.forEach { joinId ->
-            val prec = previousFrame.transformation.joints.getValue(joinId)
-            val current = currentFrame.transformation.joints.getValue(joinId)
-            currentFrame.transformation.joints[joinId] =
-                interpolate(
-                    prec,
-                    current,
-                    alphaTransformation
-                )
+            val positionPrec = prec.position.let { Vector3(it.x, it.y, it.z) }
+            val positionNext = next.position.let { Vector3(it.x, it.y, it.z) }
+            val positionCurrent = interpolate(positionPrec, positionNext, blend)
+
+            val from = Mat4.from(quarternionCurrent)
+
+            from.position = Float3(positionCurrent.x, positionCurrent.y, positionCurrent.z)
+
+            val parent = join.parent?.id?.let {
+                currentPose[it].globalBindTransaction
+            } ?: Mat4.identity()
+
+            currentPose[joinId].globalBindTransaction = from * parent
+            currentPose[joinId].globalInverseBindTransformation = inverse(from * parent)
         }
     }
 }

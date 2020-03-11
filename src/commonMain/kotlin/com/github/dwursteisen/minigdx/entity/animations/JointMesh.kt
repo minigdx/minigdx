@@ -13,13 +13,14 @@ import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class JointMesh(
-    val mesh: Mesh
-) : CanDraw by Drawable(Render(mesh)),
+    val mesh: Mesh,
+    currentPose: Armature
+) : CanDraw by Drawable(Render(mesh, currentPose)),
     CanMove by Movable() {
 
     companion object {
 
-        fun of(mat: Mat4, local: Mat4): JointMesh {
+        fun of(mat: Mat4, currentPose: Armature): JointMesh {
             return JointMesh(
                 Mesh(
                     drawType = DrawType.TRIANGLE,
@@ -50,7 +51,7 @@ class JointMesh(
                         0, 1, 2,
                         1, 2, 3
                     )
-                )
+                ), currentPose
             )
         }
     }

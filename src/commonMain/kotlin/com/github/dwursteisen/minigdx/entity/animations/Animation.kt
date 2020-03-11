@@ -1,58 +1,35 @@
 package com.github.dwursteisen.minigdx.entity.animations
 
-import com.curiouscreature.kotlin.math.Quaternion
 import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.math.max
 import kotlin.math.min
 
 class Animation(
     val duration: Float,
-    private val transformations: Array<KeyFrame<Vector3>>,
-    private val rotations: Array<KeyFrame<Quaternion>>
+    private val keyFrames: Array<KeyFrame>
 ) {
 
-    fun getOnionFrames(keyframe: Float): Pair<Frame, Frame> {
-        val (previousTransformation, currentTransformation) = getPreviousCurrentFrame(keyframe, transformations)
-        val (previousRotation, currentRotation) = getPreviousCurrentFrame(keyframe, rotations)
-
-        return Frame(
-            transformation = previousTransformation,
-            rotation = previousRotation
-        ) to Frame(
-            transformation = currentTransformation,
-            rotation = currentRotation
-        )
-    }
-
-    private fun <T> getPreviousCurrentFrame(
-        keyframe: Float,
-        frames: Array<KeyFrame<T>>
-    ): Pair<KeyFrame<T>, KeyFrame<T>> {
-        var previous = frames.first()
-        var current = frames.first()
-        for (index in frames.indices) {
-            if (frames[index].keyframe > keyframe) {
-                current = frames[index]
-                previous = frames[max(0, index - 1)]
+    fun getOnionFrames(keyframe: Float): Pair<KeyFrame, KeyFrame> {
+        var previous = keyFrames.first()
+        var current = keyFrames.first()
+        for (index in keyFrames.indices) {
+            if (keyFrames[index].keyframe > keyframe) {
+                current = keyFrames[index]
+                previous = keyFrames[max(0, index - 1)]
+                return previous to current
             }
         }
-
         return previous to current
     }
 }
-
-class Frame(
-    val transformation: KeyFrame<Vector3> = KeyFrame(),
-    val rotation: KeyFrame<Quaternion> = KeyFrame()
-)
 
 /**
  * Key frame of an animation of one property.
  *
  */
-class KeyFrame<T>(
+data class KeyFrame(
     var keyframe: Float = 0f,
-    val joints: MutableMap<String, T> = mutableMapOf()
+    val pose: Armature
 )
 
 fun interpolate(a: Vector3, b: Vector3, alpha: Float): Vector3 {

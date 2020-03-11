@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.shaders
 
 object DefaultShaders {
 
+    //language=GLSL
     val vertexShader = """
         #ifdef GL_ES
         precision highp float;
@@ -11,6 +12,10 @@ object DefaultShaders {
         uniform mat4 uViewMatrix;
         uniform mat4 uProjectionMatrix;
         uniform mat4 uNormalMatrix;
+        uniform int uArmature;
+        
+        // TODO: create an array of Joint.
+        uniform mat4 uJointTransformationMatrix;
         
         attribute vec3 aVertexPosition;
         attribute vec3 aNormal;
@@ -20,7 +25,13 @@ object DefaultShaders {
         varying vec3 vLighting;
         
         void main() {
-            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+            mat4 uJointMatrix;
+            if(uArmature > 0) {
+                uJointMatrix = uJointTransformationMatrix; 
+            } else {
+               uJointMatrix = mat4(1.0);
+            }
+            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * uJointMatrix * vec4(aVertexPosition, 1.0);
             
             // Apply lighting effect
                 

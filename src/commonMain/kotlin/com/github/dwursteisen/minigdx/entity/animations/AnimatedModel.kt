@@ -13,10 +13,10 @@ class AnimatedModel(
     private var drawJoin: Boolean = false
 ) : Entity, CanDraw {
 
-    private val animator = Animator(currentAnimation = animation)
+    private val animator = Animator(currentAnimation = animation, referencePose = armature)
 
-    private val jointMeshs: Map<String, JointMesh> = armature.allJoints.mapValues {
-        JointMesh.of(it.value.globalBindTransaction, it.value.localBindTransformation)
+    private val jointMeshs: Map<JointId, JointMesh> = armature.allJoints.mapValues {
+        JointMesh.of(it.value.globalBindTransaction, animator.currentPose)
     }
 
     override fun update(delta: Seconds) {
@@ -28,7 +28,8 @@ class AnimatedModel(
         //   Les vertex doivent choisir le joint dans l'ensemble des matrices par rapport à l'indice.
         //   Comment gérer le fait qu'il ne peut ne pas y avoir d'armature au model ? => tableau de join vide
         //   ou id = -1
-        armature.rootJoint
+        //  Beaucoup plus simple : passer un uniform avec 1 ou -1 -> -1 == pas d'armature
+        // armature.rootJoint
 
         if (drawJoin) {
             jointMeshs.values.forEach {

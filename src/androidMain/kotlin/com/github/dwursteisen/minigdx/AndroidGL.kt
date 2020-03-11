@@ -24,6 +24,7 @@ import android.opengl.GLES20.glGetShaderiv
 import android.opengl.GLES20.glGetUniformLocation
 import android.opengl.GLES20.glLinkProgram
 import android.opengl.GLES20.glShaderSource
+import android.opengl.GLES20.glUniform1i
 import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
@@ -178,6 +179,10 @@ class AndroidGL(override val screen: Screen) : GL {
     override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
         // divided by 16 took from libgdx.
         glUniformMatrix4fv(uniform.address, data.size / 16, transpose, data.toFloatArray(), 0)
+    }
+
+    override fun uniform1i(uniform: Uniform, data: Int) {
+        glUniform1i(uniform.address, data)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
