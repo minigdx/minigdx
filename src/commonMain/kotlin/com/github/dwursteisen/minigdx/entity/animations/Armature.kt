@@ -23,11 +23,8 @@ class Joint(
      */
     var localBindTransformation: Mat4,
     /**
-     * Global transformation.
+     * Global Inverse transformation.
      */
-    @Deprecated("utiliser la version inverse")
-    var globalBindTransaction: Mat4,
-
     var globalInverseBindTransformation: Mat4
 )
 
@@ -50,7 +47,6 @@ class Armature(
                 parent = allJoints[joint.parent?.id],
                 localBindTransformation = joint.localBindTransformation,
                 globalInverseBindTransformation = joint.globalInverseBindTransformation,
-                globalBindTransaction = joint.globalInverseBindTransformation,
                 children = arrayOf()
             )
             allJoints[joint.id] = copy

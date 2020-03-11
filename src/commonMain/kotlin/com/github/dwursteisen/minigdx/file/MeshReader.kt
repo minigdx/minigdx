@@ -2,17 +2,19 @@ package com.github.dwursteisen.minigdx.file
 
 import collada.EmptyAnimations
 import collada.EmptyArmature
+import collada.InfluenceData
 import collada.Model
-import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
-import com.curiouscreature.kotlin.math.rotation
 import com.github.dwursteisen.minigdx.entity.Color
+import com.github.dwursteisen.minigdx.entity.Influence
+import com.github.dwursteisen.minigdx.entity.JointsIndex
 import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.animations.Animation
 import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
+import com.github.dwursteisen.minigdx.entity.animations.JointId
 import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
 import com.github.dwursteisen.minigdx.math.Vector3
 
@@ -23,15 +25,14 @@ object MeshReader {
         val mappingIds = mutableListOf<String>()
         fun collada.Bone.toJoin(parent: Joint? = null): Joint {
             // FIXME: quickfix. This conversion should be in the parser
-            val parentTransformation = parent?.globalBindTransaction ?: rotation(Float3(1f, 0f, 0f), -90f)
+            val parentTransformation = parent?.globalInverseBindTransformation ?: Mat4.identity()
             val localTransformation = Mat4.of(*this.transformation.matrix)
             val b = Joint(
                 id = joints.size,
                 parent = parent,
                 children = emptyArray(),
                 localBindTransformation = localTransformation,
-                globalBindTransaction = parentTransformation * localTransformation,
-                globalInverseBindTransformation = inverse(parentTransformation * localTransformation)
+                globalInverseBindTransformation = parentTransformation * localTransformation
             )
             joints.add(b)
             mappingIds.add(this.id)
@@ -42,7 +43,10 @@ object MeshReader {
         val root = this.rootBone.toJoin()
         return Armature(
             rootJoint = root,
-            allJoints = joints.map { it.id to it }.toMap()
+            allJoints = joints
+                .onEach { it.globalInverseBindTransformation = inverse(it.globalInverseBindTransformation) }
+                .map { it.id to it }
+                .toMap()
         ) to mappingIds
     }
 
@@ -62,9 +66,8 @@ object MeshReader {
         frames.values.forEach {
             it.traverse { joint ->
                 val local = joint.localBindTransformation
-                val parent = joint.parent?.globalBindTransaction ?: Mat4.identity()
+                val parent = joint.parent?.globalInverseBindTransformation ?: Mat4.identity()
                 joint.globalInverseBindTransformation = inverse(local * parent)
-                joint.globalBindTransaction = local * parent
             }
         }
         return Animation(
@@ -95,8 +98,11 @@ object MeshReader {
             else -> null
         }
 
+        val boneIdToJointIds = armature?.second ?: emptyList()
         val animations = when (anim) {
-            is collada.Animations -> anim.toAnimations(armature?.second ?: emptyList(), armature!!.first)
+            is collada.Animations -> {
+                anim.toAnimations(boneIdToJointIds, armature!!.first)
+            }
             is EmptyAnimations -> null
             else -> null
         }
@@ -109,11 +115,40 @@ object MeshReader {
                 Vertice(
                     position = Vector3(v.position.x, v.position.y, v.position.z),
                     normal = Vector3(v.normal.x, v.normal.y, v.normal.z),
-                    color = Color(v.color.r, v.color.g, v.color.b, v.color.a)
+                    color = Color(v.color.r, v.color.g, v.color.b, v.color.a),
+                    influence = v.influence.toInfluence(boneIdToJointIds)
                 )
             }.toTypedArray(),
             verticesOrder = m.verticesOrder.map { it.toShort() }.toShortArray()
         )
         return Triple(mesh, armature?.first, animations)
+    }
+
+    private fun collada.Influence.toInfluence(mapping: List<String>): Influence? {
+        if (this.data.isEmpty()) {
+            return null
+        }
+        if (this.data.size > 3) {
+            println("WARNING! Your some vertex of your model are influend by more than 3 bones!")
+        }
+
+        fun convert(data: InfluenceData?): Pair<JointId, Float> {
+            if (data == null) {
+                return -1 to 1f
+            }
+            val jointId = mapping.indexOf(data.boneId)
+            val weight = data.weight
+            return jointId to weight
+        }
+
+        // We support only 3 bones max per vertex
+        val (a, wa) = convert(this.data.getOrNull(0))
+        val (b, wb) = convert(this.data.getOrNull(1))
+        val (c, wc) = convert(this.data.getOrNull(2))
+
+        return Influence(
+            joinIds = JointsIndex(a, b, c),
+            weight = Vector3(wa, wb, wc)
+        )
     }
 }

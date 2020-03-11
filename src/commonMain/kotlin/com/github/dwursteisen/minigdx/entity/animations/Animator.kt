@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx.entity.animations
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
-import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class Animator(
@@ -25,14 +24,11 @@ class Animator(
     }
 
     private fun generatePose(keyframe: Float) {
+        // FIXME: check
         val (previousFrame, nextFrame) = currentAnimation.getOnionFrames(keyframe)
 
         val blend = (keyframe - previousFrame.keyframe) / (keyframe - nextFrame.keyframe)
-/*
-        println("keyframe = $keyframe")
-        println("previous = ${previousFrame.keyframe}")
-        println("next     = ${nextFrame.keyframe}")
-        println("blend    = $blend")*/
+
         referencePose.traverse { join ->
             val joinId = join.id
             val prec = previousFrame.pose[joinId].localBindTransformation
@@ -51,11 +47,10 @@ class Animator(
             from.position = Float3(positionCurrent.x, positionCurrent.y, positionCurrent.z)
 
             val parent = join.parent?.id?.let {
-                currentPose[it].globalBindTransaction
+                currentPose[it].globalInverseBindTransformation
             } ?: Mat4.identity()
 
-            currentPose[joinId].globalBindTransaction = from * parent
-            currentPose[joinId].globalInverseBindTransformation = inverse(from * parent)
+            currentPose[joinId].globalInverseBindTransformation = from * parent
         }
     }
 }

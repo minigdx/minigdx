@@ -22,7 +22,7 @@ class JointMesh(
     companion object {
 
         fun of(joint: Joint, currentPose: Armature): JointMesh {
-            val mat = joint.globalBindTransaction
+            val mat = joint.globalInverseBindTransformation
             return JointMesh(
                 Mesh(
                     drawType = DrawType.TRIANGLE,

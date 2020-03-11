@@ -4,6 +4,8 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.Entity
 import com.github.dwursteisen.minigdx.entity.Mesh
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
 class AnimatedModel(
@@ -14,6 +16,7 @@ class AnimatedModel(
 ) : Entity, CanDraw {
 
     private val animator = Animator(currentAnimation = animation, referencePose = armature)
+    private val drawable = Drawable(Render(mesh, animator.currentPose))
 
     private val jointMeshs: Map<JointId, JointMesh> = armature.allJoints.mapValues {
         JointMesh.of(it.value, animator.currentPose)
@@ -24,12 +27,7 @@ class AnimatedModel(
     }
 
     override fun draw(shader: ShaderProgram) {
-        // FIXME: passer l'ensemble des matrices de transformations au shader.
-        //   Les vertex doivent choisir le joint dans l'ensemble des matrices par rapport à l'indice.
-        //   Comment gérer le fait qu'il ne peut ne pas y avoir d'armature au model ? => tableau de join vide
-        //   ou id = -1
-        //  Beaucoup plus simple : passer un uniform avec 1 ou -1 -> -1 == pas d'armature
-        // armature.rootJoint
+        drawable.draw(shader)
 
         if (drawJoin) {
             jointMeshs.values.forEach {

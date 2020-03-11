@@ -4,7 +4,6 @@ import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
 import com.github.dwursteisen.minigdx.entity.CanDraw
-import com.github.dwursteisen.minigdx.entity.Cube
 import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.file.MeshReader
@@ -33,6 +32,7 @@ class DemoGame : Game {
         program.createAttrib("aVertexColor")
         program.createAttrib("aNormal")
         program.createAttrib("aJoints")
+        program.createAttrib("aWeights")
 
         // FIXME: create by default this uniform.
         // Model View Project Matrix
@@ -45,16 +45,16 @@ class DemoGame : Game {
         // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
         program.createUniform("uJointTransformationMatrix")
 
-        camera.translate(0, 0, -10)
+        camera.translate(0, 0, -20)
         // camera.rotate(-90, 0, 0)
 
-        fileHandler.readData("armature.protobuf").onLoaded {
+        fileHandler.readData("F.protobuf").onLoaded {
             val fromProtobuf = MeshReader.fromProtobuf(it)
-            val (_, armature, animations) = fromProtobuf
+            val (mesh, armature, animations) = fromProtobuf
 
             animatedModel = AnimatedModel(
                 animation = animations!!,
-                mesh = Cube("cube").mesh,
+                mesh = mesh,
                 armature = armature!!,
                 drawJoin = true
             )

@@ -63,6 +63,10 @@ private fun Array<Vertice>.convertJoints(): DataSource.FloatDataSource {
     })
 }
 
+private fun Array<Vertice>.convertWeights(): DataSource.FloatDataSource {
+    return convert { it.influence?.weight ?: Vector3.X }
+}
+
 /**
  * Render a mesh on a screen.
  */
@@ -96,6 +100,8 @@ class Render(
      */
     private val joints = gl.createBuffer()
 
+    private val weights = gl.createBuffer()
+
     init {
         gl.bindBuffer(GL.ARRAY_BUFFER, vertices)
         gl.bufferData(GL.ARRAY_BUFFER, mesh.vertices.convertPositions(), GL.STATIC_DRAW)
@@ -111,6 +117,9 @@ class Render(
 
         gl.bindBuffer(GL.ARRAY_BUFFER, joints)
         gl.bufferData(GL.ARRAY_BUFFER, mesh.vertices.convertJoints(), GL.STATIC_DRAW)
+
+        gl.bindBuffer(GL.ARRAY_BUFFER, weights)
+        gl.bufferData(GL.ARRAY_BUFFER, mesh.vertices.convertWeights(), GL.STATIC_DRAW)
     }
 
     private val jointsCache = generateCache()
@@ -137,7 +146,7 @@ class Render(
 
             // Copy all matrix values, aligned
             jointsCache.forEachIndexed { x, joint ->
-                val values = joint.globalBindTransaction.toArray()
+                val values = joint.globalInverseBindTransformation.toArray()
                 (0 until 16).forEach { y ->
                     tmpMatrix[x * 16 + y] = values[y]
                 }
@@ -193,6 +202,17 @@ class Render(
             offset = 0
         )
         gl.enableVertexAttribArray(program.getAttrib("aJoints"))
+
+        gl.bindBuffer(GL.ARRAY_BUFFER, weights)
+        gl.vertexAttribPointer(
+            index = program.getAttrib("aWeights"),
+            size = 3,
+            type = GL.FLOAT,
+            normalized = false,
+            stride = 0,
+            offset = 0
+        )
+        gl.enableVertexAttribArray(program.getAttrib("aWeights"))
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, verticesOrder)
         gl.drawElements(mesh.drawType.glType, mesh.verticesOrder.size, GL.UNSIGNED_SHORT, 0)

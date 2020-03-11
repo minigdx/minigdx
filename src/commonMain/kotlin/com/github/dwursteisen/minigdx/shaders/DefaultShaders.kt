@@ -11,6 +11,7 @@ object DefaultShaders {
         #endif
 
         const int MAX_JOINTS = $MAX_JOINTS;
+        const int MAX_WEIGHTS = 3;
         
         uniform mat4 uModelMatrix;
         uniform mat4 uViewMatrix;
@@ -24,18 +25,26 @@ object DefaultShaders {
         attribute vec3 aNormal;
         attribute vec4 aVertexColor;
         attribute vec3 aJoints;
+        attribute vec3 aWeights;
         
         varying vec4 vColor;
         varying vec3 vLighting;
         
         void main() {
-            mat4 uJointMatrix;
+            vec4 totalLocalPos = vec4(0.0);
+            
             if(uArmature > 0) {
-                uJointMatrix = uJointTransformationMatrix[int(aJoints.x)]; 
+                for(int i=0;i<MAX_WEIGHTS;i++){
+                    int joinId = int(aJoints[i]);
+                    mat4 uJointMatrix = uJointTransformationMatrix[joinId];
+                    vec4 posePosition = uJointMatrix * vec4(aVertexPosition, 1.0);
+                    totalLocalPos += posePosition * aWeights[i];
+                }
             } else {
-               uJointMatrix = mat4(1.0);
+                totalLocalPos = vec4(aVertexPosition, 1.0);
             }
-            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * uJointMatrix * vec4(aVertexPosition, 1.0);
+            
+            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * totalLocalPos;
             
             // Apply lighting effect
                 
