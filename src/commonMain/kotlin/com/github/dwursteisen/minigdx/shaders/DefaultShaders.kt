@@ -2,24 +2,28 @@ package com.github.dwursteisen.minigdx.shaders
 
 object DefaultShaders {
 
+    val MAX_JOINTS = 20
+
     //language=GLSL
     val vertexShader = """
         #ifdef GL_ES
         precision highp float;
         #endif
 
+        const int MAX_JOINTS = $MAX_JOINTS;
+        
         uniform mat4 uModelMatrix;
         uniform mat4 uViewMatrix;
         uniform mat4 uProjectionMatrix;
         uniform mat4 uNormalMatrix;
         uniform int uArmature;
         
-        // TODO: create an array of Joint.
-        uniform mat4 uJointTransformationMatrix;
+        uniform mat4 uJointTransformationMatrix[MAX_JOINTS];
         
         attribute vec3 aVertexPosition;
         attribute vec3 aNormal;
         attribute vec4 aVertexColor;
+        attribute vec3 aJoints;
         
         varying vec4 vColor;
         varying vec3 vLighting;
@@ -27,7 +31,7 @@ object DefaultShaders {
         void main() {
             mat4 uJointMatrix;
             if(uArmature > 0) {
-                uJointMatrix = uJointTransformationMatrix; 
+                uJointMatrix = uJointTransformationMatrix[int(aJoints.x)]; 
             } else {
                uJointMatrix = mat4(1.0);
             }

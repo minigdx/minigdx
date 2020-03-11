@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.entity.DrawType
 import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.animations.Armature
+import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
@@ -49,10 +50,26 @@ private fun ShortArray.convertOrder(): DataSource.ShortDataSource {
     return DataSource.ShortDataSource(this)
 }
 
+private fun Array<Vertice>.convertJoints(): DataSource.FloatDataSource {
+    return DataSource.FloatDataSource(FloatArray(this.size * 3) {
+        val y = it % 3
+        val x = (it - y) / 3
+        when (y) {
+            0 -> this[x].influence?.joinIds?.a?.toFloat() ?: -1f
+            1 -> this[x].influence?.joinIds?.b?.toFloat() ?: -1f
+            2 -> this[x].influence?.joinIds?.c?.toFloat() ?: -1f
+            else -> throw IllegalArgumentException("index '$it' not expected.")
+        }
+    })
+}
+
 /**
  * Render a mesh on a screen.
  */
-class Render(val mesh: Mesh, var pose: Armature? = null) {
+class Render(
+    val mesh: Mesh,
+    private val pose: Armature? = null
+) {
 
     /**
      * Positions of vertices.
@@ -74,6 +91,11 @@ class Render(val mesh: Mesh, var pose: Armature? = null) {
      */
     private val verticesOrder = gl.createBuffer()
 
+    /**
+     * Joints
+     */
+    private val joints = gl.createBuffer()
+
     init {
         gl.bindBuffer(GL.ARRAY_BUFFER, vertices)
         gl.bufferData(GL.ARRAY_BUFFER, mesh.vertices.convertPositions(), GL.STATIC_DRAW)
@@ -86,6 +108,22 @@ class Render(val mesh: Mesh, var pose: Armature? = null) {
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, verticesOrder)
         gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, mesh.verticesOrder.convertOrder(), GL.STATIC_DRAW)
+
+        gl.bindBuffer(GL.ARRAY_BUFFER, joints)
+        gl.bufferData(GL.ARRAY_BUFFER, mesh.vertices.convertJoints(), GL.STATIC_DRAW)
+    }
+
+    private val jointsCache = generateCache()
+    private val tmpMatrix = Array(jointsCache.size * 16) { 0f }
+
+    private fun generateCache(): Array<Joint> {
+        return if (pose == null) {
+            emptyArray()
+        } else {
+            Array(pose.allJoints.size) {
+                pose[it]
+            }
+        }
     }
 
     fun draw(program: ShaderProgram) {
@@ -93,14 +131,19 @@ class Render(val mesh: Mesh, var pose: Armature? = null) {
         // Set the model matrix
         gl.uniformMatrix4fv(program.getUniform("uModelMatrix"), false, mesh.modelMatrix)
 
-        if (pose != null) {
+        if (this.pose != null) {
             // Set if an armature is present
             gl.uniform1i(program.getUniform("uArmature"), 1)
 
-            // Set the joint matrix, if any
-            val root = pose!!.rootJoint.globalInverseBindTransformation
+            // Copy all matrix values, aligned
+            jointsCache.forEachIndexed { x, joint ->
+                val values = joint.globalBindTransaction.toArray()
+                (0 until 16).forEach { y ->
+                    tmpMatrix[x * 16 + y] = values[y]
+                }
+            }
 
-            gl.uniformMatrix4fv(program.getUniform("uJointTransformationMatrix"), false, root)
+            gl.uniformMatrix4fv(program.getUniform("uJointTransformationMatrix"), false, tmpMatrix)
         } else {
             gl.uniform1i(program.getUniform("uArmature"), -1)
         }
@@ -139,6 +182,17 @@ class Render(val mesh: Mesh, var pose: Armature? = null) {
             offset = 0
         )
         gl.enableVertexAttribArray(program.getAttrib("aNormal"))
+
+        gl.bindBuffer(GL.ARRAY_BUFFER, joints)
+        gl.vertexAttribPointer(
+            index = program.getAttrib("aJoints"),
+            size = 3,
+            type = GL.FLOAT,
+            normalized = false,
+            stride = 0,
+            offset = 0
+        )
+        gl.enableVertexAttribArray(program.getAttrib("aJoints"))
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, verticesOrder)
         gl.drawElements(mesh.drawType.glType, mesh.verticesOrder.size, GL.UNSIGNED_SHORT, 0)

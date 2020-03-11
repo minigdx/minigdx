@@ -16,7 +16,7 @@ class AnimatedModel(
     private val animator = Animator(currentAnimation = animation, referencePose = armature)
 
     private val jointMeshs: Map<JointId, JointMesh> = armature.allJoints.mapValues {
-        JointMesh.of(it.value.globalBindTransaction, animator.currentPose)
+        JointMesh.of(it.value, animator.currentPose)
     }
 
     override fun update(delta: Seconds) {

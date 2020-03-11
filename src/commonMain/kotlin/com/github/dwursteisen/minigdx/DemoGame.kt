@@ -32,17 +32,17 @@ class DemoGame : Game {
         program.createAttrib("aVertexPosition")
         program.createAttrib("aVertexColor")
         program.createAttrib("aNormal")
+        program.createAttrib("aJoints")
 
         // FIXME: create by default this uniform.
         // Model View Project Matrix
         program.createUniform("uModelMatrix")
         program.createUniform("uViewMatrix")
         program.createUniform("uProjectionMatrix")
-        // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
-        // program.createUniform("uJointTransforms")
 
         program.createUniform("uNormalMatrix")
         program.createUniform("uArmature")
+        // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
         program.createUniform("uJointTransformationMatrix")
 
         camera.translate(0, 0, -10)
