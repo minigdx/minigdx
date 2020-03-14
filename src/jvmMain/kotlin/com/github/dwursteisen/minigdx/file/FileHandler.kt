@@ -14,7 +14,7 @@ actual class FileHandler {
     private var total = 0
     private var loaded = 0
 
-    actual fun read(fileName: String): Content<String> {
+    actual fun read(filename: String): Content<String> {
         total++
         val content = File(fileName).readText()
         loaded++

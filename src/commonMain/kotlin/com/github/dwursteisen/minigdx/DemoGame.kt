@@ -152,6 +152,10 @@ class DemoGame : Game {
             camera.translate(0, 0, -delta)
         }
 
+        if (inputs.isKeyPressed(Key.F)) {
+            animatedModel.animator.nextFrame()
+        }
+
         val modelMatrix = camera.modelMatrix
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---

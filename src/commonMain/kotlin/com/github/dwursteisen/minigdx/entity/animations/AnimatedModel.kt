@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.entity.Entity
 import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.graphics.Render
+import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
 class AnimatedModel(
@@ -15,11 +16,22 @@ class AnimatedModel(
     private var drawJoin: Boolean = false
 ) : Entity, CanDraw {
 
-    private val animator = Animator(currentAnimation = animation, referencePose = armature)
+    val animator = Animator(currentAnimation = animation, referencePose = armature)
+
     private val drawable = Drawable(Render(mesh, animator.currentPose))
 
     private val jointMeshs: Map<JointId, JointMesh> = armature.allJoints.mapValues {
         JointMesh.of(it.value, animator.currentPose)
+    }
+
+    init {
+        log.info("MODEL") {
+            """New animated model created using:
+               - '${animation.keyFrames.size}' key frames
+               - '${armature.allJoints.size}' joints
+               - drawing join: '$drawJoin' 
+            """
+        }
     }
 
     override fun update(delta: Seconds) {

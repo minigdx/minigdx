@@ -28,8 +28,8 @@ actual class FileHandler {
     private var total = 0
     private var loaded = 0
 
-    actual fun read(fileName: String): Content<String> {
-        return asyncContent(fileName) { it.contentToString() }
+    actual fun read(filename: String): Content<String> {
+        return asyncContent(filename) { it.contentToString() }
     }
 
     @ExperimentalStdlibApi

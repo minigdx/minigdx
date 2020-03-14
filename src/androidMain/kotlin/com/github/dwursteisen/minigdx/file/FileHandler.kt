@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.file
 
 import android.content.Context
+import com.github.dwursteisen.minigdx.log
 
 class SyncContent<T>(val content: T) : Content<T> {
     override fun onLoaded(block: (T) -> Unit) {
@@ -14,10 +15,11 @@ actual class FileHandler(private val context: Context) {
     private var toLoad = 0
 
     @ExperimentalStdlibApi
-    actual fun read(fileName: String): Content<String> {
+    actual fun read(filename: String): Content<String> {
         toLoad++
-        val data = context.assets.open(fileName).readBytes().decodeToString()
+        val data = context.assets.open(filename).readBytes().decodeToString()
         loaded++
+        log.info("FILE_HANDLER") { "Reading '$filename' as String content" }
         return SyncContent(data)
     }
 
@@ -25,6 +27,7 @@ actual class FileHandler(private val context: Context) {
         toLoad++
         val data = context.assets.open(filename).readBytes()
         loaded++
+        log.info("FILE_HANDLER") { "Reading '$filename' as Byte content" }
         return SyncContent(data)
     }
 

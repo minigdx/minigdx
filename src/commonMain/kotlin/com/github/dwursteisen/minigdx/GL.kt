@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
+import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Uniform
@@ -23,6 +24,7 @@ lateinit var gl: GL
 lateinit var fileHandler: FileHandler
 lateinit var inputs: InputHandler
 lateinit var viewport: ViewportStrategy
+lateinit var log: Logger
 
 class Screen(
     var width: Int,
@@ -392,24 +394,4 @@ interface GL {
         const val TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE
         const val MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF
     }
-}
-
-expect class GLConfiguration
-
-expect class GLContext(configuration: GLConfiguration) {
-    internal fun createContext(): GL
-    internal fun createFileHandler(): FileHandler
-    internal fun createInputHandler(): InputHandler
-    internal fun createViewportStrategy(): ViewportStrategy
-
-    fun run(gameFactory: () -> Game)
-}
-
-fun configuration(configuration: GLConfiguration): GLContext {
-    val glContext = GLContext(configuration)
-    gl = glContext.createContext()
-    fileHandler = glContext.createFileHandler()
-    inputs = glContext.createInputHandler()
-    viewport = glContext.createViewportStrategy()
-    return glContext
 }

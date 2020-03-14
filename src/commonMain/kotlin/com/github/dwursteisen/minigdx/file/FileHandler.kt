@@ -7,7 +7,7 @@ interface Content<T> {
 
 expect class FileHandler {
 
-    fun read(fileName: String): Content<String>
+    fun read(filename: String): Content<String>
 
     fun readData(filename: String): Content<ByteArray>
 
