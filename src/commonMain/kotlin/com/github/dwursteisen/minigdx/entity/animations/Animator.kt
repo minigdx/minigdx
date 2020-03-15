@@ -4,6 +4,7 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.interpolate
+import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.math.Vector3
 
@@ -42,15 +43,29 @@ class Animator(
 
             val localBindTransformation = interpolate(prec, next, blend)
             currentPose[joinId].localBindTransformation = localBindTransformation
+            currentPose[joinId].localBindTransformation = currentAnimation.keyFrames[frame].pose[joinId].localBindTransformation
 
-            val parent = currentPose[join.parent?.id ?: 0].globalInverseBindTransformation
-            currentPose[joinId].globalInverseBindTransformation = localBindTransformation * parent
+            // val parent = currentPose[join.parent?.id ?: 0].globalInverseBindTransformation
+            // currentPose[joinId].globalInverseBindTransformation = localBindTransformation * parent
 
             // FIXME: test to check where is the issue
             // currentPose[joinId].localBindTransformation = nextFrame.pose[joinId].localBindTransformation
             // currentPose[joinId].globalInverseBindTransformation = nextFrame.pose[joinId].globalInverseBindTransformation
-            currentPose[joinId].localBindTransformation = currentAnimation.keyFrames[frame].pose[joinId].localBindTransformation
-            currentPose[joinId].globalInverseBindTransformation = currentAnimation.keyFrames[frame].pose[joinId].localBindTransformation
+            // currentPose[joinId].localBindTransformation =
+            //    currentAnimation.keyFrames[frame].pose[joinId].localBindTransformation
+            // currentPose[joinId].globalInverseBindTransformation =
+            //    currentAnimation.keyFrames[frame].pose[joinId].globalInverseBindTransformation
+        }
+        // global
+        currentPose.allJoints.forEach { entry ->
+            val local = entry.value.localBindTransformation
+            val parent = entry.value.parent?.globalInverseBindTransformation ?: Mat4.identity()
+            entry.value.globalInverseBindTransformation = local * parent
+        }
+        // inverse
+
+        currentPose.allJoints.forEach { entry ->
+            entry.value.globalInverseBindTransformation = inverse(entry.value.globalInverseBindTransformation)
         }
     }
 
@@ -69,14 +84,29 @@ class Animator(
 
         val localBindTransformation = Mat4.from(quaternionCurrent)
 
-        localBindTransformation.position = Float3(positionCurrent.x, positionCurrent.y, positionCurrent.z)
-        return localBindTransformation
+        // localBindTransformation.position = Float3(positionCurrent.x, positionCurrent.y, positionCurrent.z)
+        // return localBindTransformation
+        return next // FIXME
     }
 
     fun nextFrame() {
         frame = (frame + 1) % currentAnimation.keyFrames.size
         log.info("ANIMATOR") {
             "Advance to next frame: '$frame / ${currentAnimation.keyFrames.size}' frame"
+        }
+
+        log.info("ANIMATOR") {
+
+            val local = currentAnimation.keyFrames[frame].pose.allJoints.map { entry ->
+                "${entry.value.id} localMatrix -> \n${currentAnimation.keyFrames[frame].pose[entry.key].localBindTransformation}"
+            }.joinToString("\n")
+
+            val global = currentAnimation.keyFrames[frame].pose.allJoints.map { entry ->
+                "${entry.value.id} globalMatrix -> \n" +
+                        "${currentAnimation.keyFrames[frame].pose[entry.key].globalInverseBindTransformation}"
+            }.joinToString("\n")
+
+            local + "\n" + global
         }
     }
 }

@@ -1,13 +1,12 @@
 package com.github.dwursteisen.minigdx.logger
 
 import java.util.logging.Level
-import java.util.logging.LogManager
 
 typealias LambdaMessage = () -> String
 
 class JavaLoggingLogger : Logger {
 
-    private val log = LogManager.getLogManager().getLogger("minigdx")
+    private val log = java.util.logging.Logger.getLogger("minigdx")
 
     private fun LambdaMessage.withTag(tag: String): LambdaMessage {
         return { -> "[$tag] ${this.invoke()}" }

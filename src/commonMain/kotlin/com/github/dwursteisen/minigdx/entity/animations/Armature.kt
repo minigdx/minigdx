@@ -56,9 +56,17 @@ class Armature(
             copy.children = joint.children.map { allJoints[it.id]!! }.toTypedArray()
         }
         _traverse(rootJoint)
-        return Armature(
+
+        val armature = Armature(
             rootJoint = allJoints[rootJoint.id]!!,
             allJoints = allJoints
         )
+
+        allJoints.forEach {
+            val original = it.value
+            val copy = armature[it.key]
+        }
+
+        return armature
     }
 }

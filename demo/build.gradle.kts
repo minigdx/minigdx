@@ -28,6 +28,7 @@ dependencies {
 
 application {
     mainClassName = "demo.Main"
+    // applicationDefaultJvmArgs = listOf("-XstartOnFirstThread", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5000")
     applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
     executableDir = rootDir.resolve("src/commonMain/resources").absolutePath
 }

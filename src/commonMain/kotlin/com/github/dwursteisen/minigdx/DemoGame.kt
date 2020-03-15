@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.file.MeshReader
@@ -19,9 +18,7 @@ class DemoGame : Game {
     private val camera = Camera.create(45, worldSize.ratio, 1, 1000)
     private val program = ShaderUtils.createShaderProgram(DefaultShaders.vertexShader, DefaultShaders.fragmentShader)
 
-    // lateinit var monkey: Render
     lateinit var cube: Render
-    private val armatures: MutableMap<String, CanDraw> = mutableMapOf()
     private val landmark = Landmark.of()
     private lateinit var animatedModel: AnimatedModel
 
@@ -48,7 +45,7 @@ class DemoGame : Game {
         camera.translate(0, 0, -20)
         // camera.rotate(-90, 0, 0)
 
-        fileHandler.readData("F.protobuf").onLoaded {
+        fileHandler.readData("bone_debug.protobuf").onLoaded {
             val fromProtobuf = MeshReader.fromProtobuf(it)
             val (mesh, armature, animations) = fromProtobuf
 
@@ -140,6 +137,12 @@ class DemoGame : Game {
             camera.translate(0, -delta, 0)
         }
 
+        if (inputs.isKey(Key.Y)) {
+            camera.rotateX(delta)
+        } else if (inputs.isKey(Key.I)) {
+            camera.rotateX(-delta)
+        }
+
         if (inputs.isKey(Key.H)) {
             camera.translate(delta, 0, 0)
         } else if (inputs.isKey(Key.K)) {
@@ -155,6 +158,7 @@ class DemoGame : Game {
         if (inputs.isKeyPressed(Key.F)) {
             animatedModel.animator.nextFrame()
         }
+        //  animatedModel.animator.nextFrame()
 
         val modelMatrix = camera.modelMatrix
         val normalMatrix = transpose(inverse(modelMatrix))

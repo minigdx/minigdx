@@ -16,7 +16,7 @@ actual class FileHandler {
 
     actual fun read(filename: String): Content<String> {
         total++
-        val content = File(fileName).readText()
+        val content = File(filename).readText()
         loaded++
         return SyncContent(content)
     }

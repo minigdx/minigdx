@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.input
 
+import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.math.Vector2
 import java.nio.DoubleBuffer
 import org.lwjgl.BufferUtils
@@ -18,8 +19,10 @@ import org.lwjgl.glfw.GLFWKeyCallback
 
 class LwjglInput : InputHandler, InputManager {
 
-    private val keys: Array<Boolean> = Array(256 + 1) { false }
-    private val pressed: Array<Boolean> = Array(256 + 1) { false }
+    private val keys: Array<Long> = Array(256 + 1) { -1L }
+    private val pressed: Array<Long> = Array(256 + 1) { -1L }
+
+    private var frame = 0L
 
     private val touchManager = TouchManager()
 
@@ -29,15 +32,17 @@ class LwjglInput : InputHandler, InputManager {
     private val b2: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
 
     private fun keyDown(event: Int) {
+        log.info("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
         if (event in (0..256)) {
-            keys[event] = true
-            pressed[event] = true
+            keys[event] = frame + 1
+            pressed[event] = frame + 1
         }
     }
 
     private fun keyUp(event: Int) {
+        log.info("INPUT_HANDLER") { "Key release $event" }
         if (event in (0..256)) {
-            keys[event] = false
+            keys[event] = -1
         }
     }
 
@@ -75,14 +80,12 @@ class LwjglInput : InputHandler, InputManager {
     }
 
     override fun reset() {
-        for (i in pressed.indices) {
-            pressed[i] = false
-        }
+        frame++
     }
 
-    override fun isKey(key: Key): Boolean = keys[key.keyCode]
+    override fun isKey(key: Key): Boolean = keys[key.keyCode] != -1L
 
-    override fun isKeyPressed(key: Key): Boolean = pressed[key.keyCode]
+    override fun isKeyPressed(key: Key): Boolean = this.pressed[key.keyCode] == frame
 
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 
