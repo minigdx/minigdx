@@ -13,7 +13,7 @@ class AnimatedModel(
     animation: Animation,
     private val mesh: Mesh,
     private val armature: Armature,
-    private var drawJoin: Boolean = false
+    private var drawJoint: Boolean = false
 ) : Entity, CanDraw {
 
     val animator = Animator(currentAnimation = animation, referencePose = armature)
@@ -29,7 +29,7 @@ class AnimatedModel(
             """New animated model created using:
                - '${animation.keyFrames.size}' key frames
                - '${armature.allJoints.size}' joints
-               - drawing join: '$drawJoin' 
+               - drawing joint: '$drawJoint' 
             """
         }
     }
@@ -41,7 +41,7 @@ class AnimatedModel(
     override fun draw(shader: ShaderProgram) {
         drawable.draw(shader)
 
-        if (drawJoin) {
+        if (drawJoint) {
             jointMeshs.values.forEach {
                 it.draw(shader)
             }

@@ -35,4 +35,5 @@ application {
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = rootDir.resolve("src/commonMain/resources").absoluteFile
+    this.args = listOf("--game", "animation")
 }

@@ -1,6 +1,6 @@
 package demo
 
-import com.github.dwursteisen.minigdx.DemoGame
+import com.github.dwursteisen.minigdx.DemoPlanet
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 
@@ -16,7 +16,7 @@ class Main {
                     width = 800,
                     height = 800
                 )
-            ).run { DemoGame() }
+            ).run { DemoPlanet() }
         }
     }
 }

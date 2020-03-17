@@ -75,4 +75,26 @@ object DefaultShaders {
               gl_FragColor = vec4(vColor.rgb * vLighting.rgb, vColor.a);
         }
     """.trimIndent()
+
+    fun create(): ShaderProgram {
+        val program = ShaderUtils.createShaderProgram(vertexShader, fragmentShader)
+
+        program.createAttrib("aVertexPosition")
+        program.createAttrib("aVertexColor")
+        program.createAttrib("aNormal")
+        program.createAttrib("aJoints")
+        program.createAttrib("aWeights")
+
+        // Model View Project Matrix
+        program.createUniform("uModelMatrix")
+        program.createUniform("uViewMatrix")
+        program.createUniform("uProjectionMatrix")
+
+        program.createUniform("uNormalMatrix")
+        program.createUniform("uArmature")
+        // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
+        program.createUniform("uJointTransformationMatrix")
+
+        return program
+    }
 }
