@@ -23,8 +23,8 @@ object MeshReader {
     fun collada.Armature.toArmature(): Pair<Armature, List<String>> {
         val joints = mutableListOf<Joint>()
         val mappingIds = mutableListOf<String>()
+
         fun collada.Bone.toJoin(parent: Joint? = null): Joint {
-            // FIXME: quickfix. This conversion should be in the parser
             val parentTransformation = parent?.globalInverseBindTransformation ?: Mat4.identity()
             val localTransformation = Mat4.of(*this.transformation.matrix)
             val b = Joint(
@@ -56,20 +56,26 @@ object MeshReader {
         this.animations.forEach { join ->
             join.keyFrames.forEach { keys ->
                 val pose = frames.getOrPut(keys.time) { reference.copy() }
+
                 val jointId = boneIdToJointIds.indexOf(join.boneId)
 
                 val localTransformation = Mat4.of(*keys.transformation.matrix)
                 pose[jointId].localBindTransformation = localTransformation
             }
         }
-        // update all globalMatrix
+
+        // Update all global matrix
         frames.values.forEach {
             it.traverse { joint ->
-                val local = joint.localBindTransformation
                 val parent = joint.parent?.globalInverseBindTransformation ?: Mat4.identity()
-                joint.globalInverseBindTransformation = inverse(local * parent)
+                joint.globalInverseBindTransformation = parent * joint.localBindTransformation
+            }
+
+            it.traverse { joint ->
+                joint.globalInverseBindTransformation = inverse(joint.globalInverseBindTransformation)
             }
         }
+
         return Animation(
             duration = frames.keys.max() ?: 0f,
             keyFrames = frames.map { KeyFrame(it.key, it.value) }.toTypedArray()

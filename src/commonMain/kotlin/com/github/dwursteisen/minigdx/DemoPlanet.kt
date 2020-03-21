@@ -26,8 +26,7 @@ class DemoPlanet : Game {
         camera.translate(0, 0, -200)
 
         fileHandler.readData("planet.protobuf").onLoaded {
-            val fromProtobuf = MeshReader.fromProtobuf(it)
-            val (mesh, armature, animations) = fromProtobuf
+            val (mesh, _, _) = MeshReader.fromProtobuf(it)
 
             model = Render(mesh)
         }

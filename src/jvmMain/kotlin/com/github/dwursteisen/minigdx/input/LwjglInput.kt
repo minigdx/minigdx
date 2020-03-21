@@ -32,7 +32,7 @@ class LwjglInput : InputHandler, InputManager {
     private val b2: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
 
     private fun keyDown(event: Int) {
-        log.info("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
+        log.debug("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
         if (event in (0..256)) {
             keys[event] = frame + 1
             pressed[event] = frame + 1
@@ -40,7 +40,7 @@ class LwjglInput : InputHandler, InputManager {
     }
 
     private fun keyUp(event: Int) {
-        log.info("INPUT_HANDLER") { "Key release $event" }
+        log.debug("INPUT_HANDLER") { "Key release $event" }
         if (event in (0..256)) {
             keys[event] = -1
         }
