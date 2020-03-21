@@ -1,13 +1,11 @@
 package com.github.dwursteisen.minigdx.entity
 
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
-import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.math.Vector3
 
-data class Cube(
-    val mesh: Mesh,
-    val render: Render = Render(mesh)
-) : CanDraw by Drawable(render) {
+class Cube(
+    mesh: Mesh
+) : CanDraw by Drawable(mesh) {
 
     constructor(name: String, color: Color = Colors.WHITE) : this(
         Mesh(

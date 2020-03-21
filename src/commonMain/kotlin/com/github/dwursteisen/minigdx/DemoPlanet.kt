@@ -4,8 +4,8 @@ import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
 import com.github.dwursteisen.minigdx.entity.Landmark
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.file.MeshReader
-import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.input.TouchSignal
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
@@ -18,7 +18,7 @@ class DemoPlanet : Game {
     private val program = DefaultShaders.create()
 
     private val landmark = Landmark.of()
-    private var model: Render? = null
+    private var model: Drawable? = null
 
     @ExperimentalStdlibApi
     override fun create() {
@@ -28,7 +28,7 @@ class DemoPlanet : Game {
         fileHandler.readData("planet.protobuf").onLoaded {
             val (mesh, _, _) = MeshReader.fromProtobuf(it)
 
-            model = Render(mesh)
+            model = Drawable(mesh)
         }
     }
 

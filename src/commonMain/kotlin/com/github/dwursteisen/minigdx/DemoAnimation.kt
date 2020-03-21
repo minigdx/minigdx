@@ -25,7 +25,7 @@ class DemoAnimation : Game {
 
         camera.translate(0, 0, -20)
 
-        fileHandler.readData("animation.protobuf").onLoaded {
+        fileHandler.readData("F.protobuf").onLoaded {
             val fromProtobuf = MeshReader.fromProtobuf(it)
             val (mesh, armature, animations) = fromProtobuf
 

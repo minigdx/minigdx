@@ -10,13 +10,12 @@ import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
-import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class JointMesh(
     val mesh: Mesh,
     currentPose: Armature
-) : CanDraw by Drawable(Render(mesh, currentPose)),
+) : CanDraw by Drawable(mesh, currentPose),
     CanMove by Movable() {
 
     companion object {

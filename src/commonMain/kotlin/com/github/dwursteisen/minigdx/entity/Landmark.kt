@@ -2,12 +2,9 @@ package com.github.dwursteisen.minigdx.entity
 
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
-import com.github.dwursteisen.minigdx.graphics.Render
 import com.github.dwursteisen.minigdx.math.Vector3
 
-class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Drawable(
-    Render(mesh)
-) {
+class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Drawable(mesh) {
 
     companion object {
         fun of(): Landmark {
