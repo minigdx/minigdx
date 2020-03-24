@@ -5,6 +5,8 @@ import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
 import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
+import com.github.dwursteisen.minigdx.entity.animations.Animation
+import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
 import com.github.dwursteisen.minigdx.file.MeshReader
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
@@ -25,12 +27,13 @@ class DemoAnimation : Game {
 
         camera.translate(0, 0, -20)
 
-        fileHandler.readData("F.protobuf").onLoaded {
-            val fromProtobuf = MeshReader.fromProtobuf(it)
-            val (mesh, armature, animations) = fromProtobuf
+        fileHandler.readData("bones.protobuf").onLoaded {
+            val (mesh, armature, animations) = MeshReader.fromProtobuf(it)
 
             animatedModel = AnimatedModel(
-                animation = animations!!,
+                animation = animations ?: Animation(0f, keyFrames = arrayOf(
+                    KeyFrame(0f, armature!!.copy())
+                )),
                 mesh = mesh,
                 armature = armature!!,
                 drawJoint = true
@@ -49,7 +52,7 @@ class DemoAnimation : Game {
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
         // TODO: create clear method
-        gl.clearColor(1 / 255f, 191 / 255f, 255 / 255f, 1f)
+        gl.clearColor(0 / 255f, 0 / 255f, 0 / 255f, 1f)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)
@@ -65,6 +68,6 @@ class DemoAnimation : Game {
         animatedModel?.update(delta)
 
         animatedModel?.draw(program)
-        landmark.draw(program)
+        // landmark.draw(program)
     }
 }

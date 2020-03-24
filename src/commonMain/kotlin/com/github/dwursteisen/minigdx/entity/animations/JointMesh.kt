@@ -15,55 +15,49 @@ import com.github.dwursteisen.minigdx.math.Vector3
 class JointMesh(
     val mesh: Mesh,
     currentPose: Armature
-) : CanDraw by Drawable(mesh, currentPose),
+// FIXME: test without bone transformation
+) : CanDraw by Drawable(mesh, null),
     CanMove by Movable() {
 
     companion object {
 
-        fun of(joint: Joint, currentPose: Armature): JointMesh {
-            val mat = joint.globalInverseBindTransformation
+        private fun Joint.toVertice(): Vertice {
+            // joint position = position + scale ?
+            // bone = 1 unit * scale ?
+            val position = globalBindTransformation.position
+
+            return Vertice(
+                position = Vector3(position.x, position.y, position.z),
+                normal = Vector3(1, 1, 1),
+                color = Colors.RED,
+                influence = Influence(
+                    joinIds = JointsIndex(id)
+                )
+            )
+        }
+
+        fun of(
+            referencePose: Armature,
+            currentPose: Armature
+        ): JointMesh {
+            val positions = Array(referencePose.allJoints.size) {
+                referencePose[it].toVertice()
+            }
+
+            val order = mutableListOf<Short>()
+            positions.forEachIndexed { index, vertex ->
+                val parent = referencePose[index].parent
+                if (parent != null) {
+                    order.add(parent.id.toShort())
+                    order.add(index.toShort())
+                }
+            }
+
             return JointMesh(
                 Mesh(
-                    drawType = DrawType.TRIANGLE,
-                    modelMatrix = mat,
-                    vertices = arrayOf(
-                        Vertice(
-                            position = Vector3(0f, 0f, 0f),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.RED,
-                            influence = Influence(
-                                joinIds = JointsIndex(joint.id)
-                            )
-                        ),
-                        Vertice(
-                            position = Vector3(-0.25f, 0.25f, 0f),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.WHITE,
-                            influence = Influence(
-                                joinIds = JointsIndex(joint.id)
-                            )
-                        ),
-                        Vertice(
-                            position = Vector3(0.25f, 0.25f, 0f),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.WHITE,
-                            influence = Influence(
-                                joinIds = JointsIndex(joint.id)
-                            )
-                        ),
-                        Vertice(
-                            position = Vector3(0f, 1f, 0f),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.BLUE,
-                            influence = Influence(
-                                joinIds = JointsIndex(joint.id)
-                            )
-                        )
-                    ),
-                    verticesOrder = shortArrayOf(
-                        0, 1, 2,
-                        1, 2, 3
-                    )
+                    drawType = DrawType.LINE,
+                    vertices = positions,
+                    verticesOrder = order.toShortArray()
                 ), currentPose
             )
         }

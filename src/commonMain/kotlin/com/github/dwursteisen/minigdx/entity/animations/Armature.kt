@@ -25,6 +25,10 @@ class Joint(
     /**
      * Global Inverse transformation.
      */
+    var globalBindTransformation: Mat4,
+    /**
+     * Global Inverse transformation.
+     */
     var globalInverseBindTransformation: Mat4
 )
 
@@ -46,6 +50,7 @@ class Armature(
                 id = joint.id,
                 parent = allJoints[joint.parent?.id],
                 localBindTransformation = joint.localBindTransformation,
+                globalBindTransformation = joint.globalBindTransformation,
                 globalInverseBindTransformation = joint.globalInverseBindTransformation,
                 children = arrayOf()
             )
@@ -57,16 +62,9 @@ class Armature(
         }
         _traverse(rootJoint)
 
-        val armature = Armature(
+        return Armature(
             rootJoint = allJoints[rootJoint.id]!!,
             allJoints = allJoints
         )
-
-        allJoints.forEach {
-            val original = it.value
-            val copy = armature[it.key]
-        }
-
-        return armature
     }
 }

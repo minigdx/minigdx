@@ -10,7 +10,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
 class AnimatedModel(
     animation: Animation,
-    private val mesh: Mesh,
+    mesh: Mesh,
     private val armature: Armature,
     private var drawJoint: Boolean = false
 ) : Entity, CanDraw {
@@ -18,13 +18,14 @@ class AnimatedModel(
     val animator = Animator(currentAnimation = animation, referencePose = armature)
 
     private val drawable = Drawable(
-            mesh,
-            animator.currentPose
+        mesh,
+        animator.currentPose
     )
 
-    private val jointMeshs: Map<JointId, JointMesh> = armature.allJoints.mapValues {
-        JointMesh.of(it.value, animator.currentPose)
-    }
+    private val jointMeshs = JointMesh.of(
+        referencePose = armature,
+        currentPose = animator.currentPose
+    )
 
     init {
         log.info("MODEL") {
@@ -41,12 +42,10 @@ class AnimatedModel(
     }
 
     override fun draw(shader: ShaderProgram) {
-        drawable.draw(shader)
+        // drawable.draw(shader)
 
         if (drawJoint) {
-            jointMeshs.values.forEach {
-                it.draw(shader)
-            }
+            jointMeshs.draw(shader)
         }
     }
 }

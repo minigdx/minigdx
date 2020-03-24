@@ -12,8 +12,6 @@ class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Drawable(mesh)
                 Mesh(
                     name = "landmark",
                     drawType = DrawType.LINE,
-                    position = Vector3(),
-                    rotation = Vector3(),
                     vertices = arrayOf(
                         Vertice(
                             position = Vector3(0, 0, 0),
@@ -37,9 +35,9 @@ class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Drawable(mesh)
                         )
                     ),
                     verticesOrder = shortArrayOf(
-                        0, 1, 0,
-                        0, 2, 0,
-                        0, 3, 0
+                        0, 1,
+                        0, 2,
+                        0, 3
                     )
                 )
             )

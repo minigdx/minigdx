@@ -126,6 +126,7 @@ class Drawable(
     private val jointsCache = generateCache()
     private val tmpMatrix = Array(jointsCache.size * 16) { 0f }
 
+    // Create List of joint ordered by index.
     private fun generateCache(): Array<Joint> {
         return if (pose == null) {
             emptyArray()

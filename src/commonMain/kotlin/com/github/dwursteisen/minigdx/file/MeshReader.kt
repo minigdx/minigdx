@@ -21,30 +21,52 @@ import com.github.dwursteisen.minigdx.math.Vector3
 object MeshReader {
 
     fun collada.Armature.toArmature(): Pair<Armature, List<String>> {
-        val joints = mutableListOf<Joint>()
-        val mappingIds = mutableListOf<String>()
 
-        fun collada.Bone.toJoin(parent: Joint? = null): Joint {
-            val parentTransformation = parent?.globalInverseBindTransformation ?: Mat4.identity()
+        fun collada.Bone.toJoin(parent: Joint? = null, joints: MutableList<Joint>, mappingIds: MutableList<String>): Joint {
+            val parentTransformation = parent?.globalBindTransformation ?: Mat4.identity()
+            // FIXME: drop rotations to test
+            // FIXME: CHECK ICI
             val localTransformation = Mat4.of(*this.transformation.matrix)
+            val globalBindTransformation = parentTransformation * localTransformation
             val b = Joint(
                 id = joints.size,
                 parent = parent,
                 children = emptyArray(),
                 localBindTransformation = localTransformation,
-                globalInverseBindTransformation = parentTransformation * localTransformation
+                globalBindTransformation = globalBindTransformation,
+                globalInverseBindTransformation = inverse(globalBindTransformation)
             )
+
+            b.let {
+                println("----------")
+                println("[${it.id}] - (pos) ${it.globalBindTransformation.position}")
+                println("[${it.id}] - (sca) ${it.globalBindTransformation.scale}")
+                println("[${it.id}] - (for) ${it.globalBindTransformation.forward}")
+                println("[${it.id}] - (rig) ${it.globalBindTransformation.right}")
+                println("[${it.id}] - (up ) ${it.globalBindTransformation.up}")
+                println("[${it.id}] - (loc) \n${it.localBindTransformation}")
+                println("[${it.id}] - (glo) \n${it.globalBindTransformation}")
+                println("[${it.id}] - (inv) \n${it.globalInverseBindTransformation}")
+            }
+
             joints.add(b)
             mappingIds.add(this.id)
-            b.children = this.childs.map { it.toJoin(b) }.toTypedArray()
+
+            b.children = this.childs.map { it.toJoin(b, joints, mappingIds) }.toTypedArray()
             return b
         }
 
-        val root = this.rootBone.toJoin()
+        val joints = mutableListOf<Joint>()
+        val mappingIds = mutableListOf<String>()
+
+        val root = this.rootBone.toJoin(
+            parent = null,
+            joints = joints,
+            mappingIds = mappingIds
+        )
         return Armature(
             rootJoint = root,
             allJoints = joints
-                .onEach { it.globalInverseBindTransformation = inverse(it.globalInverseBindTransformation) }
                 .map { it.id to it }
                 .toMap()
         ) to mappingIds
@@ -60,19 +82,7 @@ object MeshReader {
                 val jointId = boneIdToJointIds.indexOf(join.boneId)
 
                 val localTransformation = Mat4.of(*keys.transformation.matrix)
-                pose[jointId].localBindTransformation = localTransformation
-            }
-        }
-
-        // Update all global matrix
-        frames.values.forEach {
-            it.traverse { joint ->
-                val parent = joint.parent?.globalInverseBindTransformation ?: Mat4.identity()
-                joint.globalInverseBindTransformation = parent * joint.localBindTransformation
-            }
-
-            it.traverse { joint ->
-                joint.globalInverseBindTransformation = inverse(joint.globalInverseBindTransformation)
+                pose[jointId].globalBindTransformation = pose[jointId].globalBindTransformation * localTransformation
             }
         }
 
@@ -135,7 +145,7 @@ object MeshReader {
             return null
         }
         if (this.data.size > 3) {
-            println("WARNING! Your some vertex of your model are influend by more than 3 bones!")
+            println("WARNING! Your some vertex of your model are influenced by more than 3 bones!")
         }
 
         fun convert(data: InfluenceData?): Pair<JointId, Float> {
