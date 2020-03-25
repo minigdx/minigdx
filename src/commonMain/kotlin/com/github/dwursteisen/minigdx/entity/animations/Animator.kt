@@ -27,14 +27,13 @@ class Animator(
     private fun generatePose(keyframe: Float) {
         val (previousFrame, nextFrame) = currentAnimation.getOnionFrames(keyframe)
 
-        /*
         // TODO: create interpolation here
         previousFrame.pose.traverse {
-            currentPose[it.id].localBindTransformation = it.localBindTransformation
-            currentPose[it.id].globalBindTransformation = it.globalBindTransformation
-            currentPose[it.id].globalInverseBindTransformation = it.globalInverseBindTransformation
+        //    currentPose[it.id].localBindTransformation = it.localBindTransformation
+        //    currentPose[it.id].globalBindTransformation = it.globalBindTransformation
+        //    currentPose[it.id].globalInverseBindTransformation = it.globalInverseBindTransformation
+            val animation = it.globalBindTransformation * referencePose[it.id].globalInverseBindTransformation
+            currentPose[it.id].animationTransformation = animation
         }
-
-         */
     }
 }

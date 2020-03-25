@@ -15,8 +15,7 @@ import com.github.dwursteisen.minigdx.math.Vector3
 class JointMesh(
     val mesh: Mesh,
     currentPose: Armature
-// FIXME: test without bone transformation
-) : CanDraw by Drawable(mesh, null),
+) : CanDraw by Drawable(mesh, currentPose),
     CanMove by Movable() {
 
     companion object {

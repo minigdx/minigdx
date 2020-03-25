@@ -148,7 +148,7 @@ class Drawable(
 
             // Copy all matrix values, aligned
             jointsCache.forEachIndexed { x, joint ->
-                val values = joint.globalInverseBindTransformation.toArray()
+                val values = joint.animationTransformation.toArray()
                 (0 until 16).forEach { y ->
                     tmpMatrix[x * 16 + y] = values[y]
                 }

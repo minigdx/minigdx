@@ -34,7 +34,8 @@ object MeshReader {
                 children = emptyArray(),
                 localBindTransformation = localTransformation,
                 globalBindTransformation = globalBindTransformation,
-                globalInverseBindTransformation = inverse(globalBindTransformation)
+                globalInverseBindTransformation = inverse(globalBindTransformation),
+                animationTransformation = Mat4.identity()
             )
 
             b.let {
@@ -75,14 +76,26 @@ object MeshReader {
     fun collada.Animations.toAnimations(boneIdToJointIds: List<String>, reference: Armature): Animation {
         val frames = mutableMapOf<Float, Armature>()
         // Update all local matrix
-        this.animations.forEach { join ->
-            join.keyFrames.forEach { keys ->
+        this.animations.forEach { animation ->
+            animation.keyFrames.forEach { keys ->
                 val pose = frames.getOrPut(keys.time) { reference.copy() }
 
-                val jointId = boneIdToJointIds.indexOf(join.boneId)
+                val jointId = boneIdToJointIds.indexOf(animation.boneId)
 
-                val localTransformation = Mat4.of(*keys.transformation.matrix)
-                pose[jointId].globalBindTransformation = pose[jointId].globalBindTransformation * localTransformation
+                // local animation transform
+                val animationMatrix = Mat4.of(*keys.transformation.matrix)
+                pose[jointId].localBindTransformation = animationMatrix
+            }
+        }
+
+        // update all matrix
+        frames.forEach { frame ->
+            frame.value.traverse { joint ->
+                val parentGlobalBindTransform = joint.parent?.globalBindTransformation ?: Mat4.identity()
+                val globalBindTransform = parentGlobalBindTransform * joint.localBindTransformation
+
+                joint.globalBindTransformation = globalBindTransform
+                joint.globalInverseBindTransformation = inverse(globalBindTransform)
             }
         }
 
