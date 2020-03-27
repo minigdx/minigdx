@@ -43,8 +43,10 @@ class Armature(
     operator fun get(jointId: JointId): Joint = allJoints.getValue(jointId)
 
     fun traverse(joint: Joint = rootJoint, block: (Joint) -> Unit) {
-        block(rootJoint)
-        rootJoint.children.forEach(block)
+        block(joint)
+        joint.children.forEach {
+            traverse(it, block)
+        }
     }
 
     fun copy(): Armature {

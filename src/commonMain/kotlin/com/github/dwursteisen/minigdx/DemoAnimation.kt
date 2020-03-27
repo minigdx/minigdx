@@ -18,7 +18,7 @@ class DemoAnimation : Game {
 
     private val program = DefaultShaders.create()
 
-    private val landmark = Landmark.of()
+    // private val landmark = Landmark.of()
 
     private var animatedModel: AnimatedModel? = null
 

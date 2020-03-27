@@ -16,12 +16,12 @@ class AnimatedModel(
 ) : Entity, CanDraw {
 
     val animator = Animator(currentAnimation = animation, referencePose = armature)
-
+/*
     private val drawable = Drawable(
         mesh,
         animator.currentPose
     )
-
+*/
     private val jointMeshs = JointMesh.of(
         referencePose = armature,
         currentPose = animator.currentPose

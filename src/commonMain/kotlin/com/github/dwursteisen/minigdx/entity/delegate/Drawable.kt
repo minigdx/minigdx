@@ -55,12 +55,13 @@ private fun Array<Vertice>.convertJoints(): DataSource.FloatDataSource {
     return DataSource.FloatDataSource(FloatArray(this.size * 3) {
         val y = it % 3
         val x = (it - y) / 3
-        when (y) {
+        val fl = when (y) {
             0 -> this[x].influence?.joinIds?.a?.toFloat() ?: -1f
             1 -> this[x].influence?.joinIds?.b?.toFloat() ?: -1f
             2 -> this[x].influence?.joinIds?.c?.toFloat() ?: -1f
             else -> throw IllegalArgumentException("index '$it' not expected.")
         }
+        fl
     })
 }
 
