@@ -24,8 +24,6 @@ object MeshReader {
 
         fun collada.Bone.toJoin(parent: Joint? = null, joints: MutableList<Joint>, mappingIds: MutableList<String>): Joint {
             val parentTransformation = parent?.globalBindTransformation ?: Mat4.identity()
-            // FIXME: drop rotations to test
-            // FIXME: CHECK ICI
             val localTransformation = Mat4.of(*this.transformation.matrix)
             val globalBindTransformation = parentTransformation * localTransformation
             val b = Joint(
@@ -37,18 +35,6 @@ object MeshReader {
                 globalInverseBindTransformation = inverse(globalBindTransformation),
                 animationTransformation = Mat4.identity()
             )
-
-            b.let {
-                println("----------")
-                println("[${it.id}] - (pos) ${it.globalBindTransformation.position}")
-                println("[${it.id}] - (sca) ${it.globalBindTransformation.scale}")
-                println("[${it.id}] - (for) ${it.globalBindTransformation.forward}")
-                println("[${it.id}] - (rig) ${it.globalBindTransformation.right}")
-                println("[${it.id}] - (up ) ${it.globalBindTransformation.up}")
-                println("[${it.id}] - (loc) \n${it.localBindTransformation}")
-                println("[${it.id}] - (glo) \n${it.globalBindTransformation}")
-                println("[${it.id}] - (inv) \n${it.globalInverseBindTransformation}")
-            }
 
             joints.add(b)
             mappingIds.add(this.id)

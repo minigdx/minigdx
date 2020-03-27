@@ -27,3 +27,7 @@ export GITHUB_TOKEN=<your read access token>
 ```bash
 ./gradlew build
 ```
+
+## Blender support
+
+Export collada with global orientation settings: X FORWARD / Y UP

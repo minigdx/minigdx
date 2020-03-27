@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.animations.Animation
 import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
@@ -27,7 +26,7 @@ class DemoAnimation : Game {
 
         camera.translate(0, 0, -20)
 
-        fileHandler.readData("bones.protobuf").onLoaded {
+        fileHandler.readData("F_xy.protobuf").onLoaded {
             val (mesh, armature, animations) = MeshReader.fromProtobuf(it)
 
             animatedModel = AnimatedModel(
