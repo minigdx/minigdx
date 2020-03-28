@@ -44,7 +44,8 @@ actual class FileHandler {
         total++
         val jsonFile = XMLHttpRequest()
         jsonFile.responseType = XMLHttpRequestResponseType.Companion.ARRAYBUFFER
-        jsonFile.open("GET", window.location.href + filename, true)
+        val path = window.location.protocol + "//" + window.location.host + window.location.pathname
+        jsonFile.open("GET", path + filename, true)
 
         val content = AsyncContent<T>()
 

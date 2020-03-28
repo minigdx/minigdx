@@ -30,4 +30,4 @@ export GITHUB_TOKEN=<your read access token>
 
 ## Blender support
 
-Export collada with global orientation settings: X FORWARD / Y UP
+Export collada with global orientation settings: X FORWARD / Y UP + Apply Global Orientation 

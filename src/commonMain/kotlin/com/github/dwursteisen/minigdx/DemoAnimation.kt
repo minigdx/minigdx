@@ -24,9 +24,9 @@ class DemoAnimation : Game {
     @ExperimentalStdlibApi
     override fun create() {
 
-        camera.translate(0, 0, -20)
+        camera.translate(0, -5, -20)
 
-        fileHandler.readData("bones.protobuf").onLoaded {
+        fileHandler.readData("F.protobuf").onLoaded {
             val (mesh, armature, animations) = MeshReader.fromProtobuf(it)
 
             animatedModel = AnimatedModel(
@@ -51,7 +51,7 @@ class DemoAnimation : Game {
         val normalMatrix = transpose(inverse(modelMatrix))
         // --- draw ---
         // TODO: create clear method
-        gl.clearColor(0 / 255f, 0 / 255f, 0 / 255f, 1f)
+        gl.clearColor(1 / 255f, 191 / 255f, 255 / 255f, 1f)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)
@@ -64,7 +64,7 @@ class DemoAnimation : Game {
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        animatedModel?.update(delta * 0.10f)
+        animatedModel?.update(delta)
 
         animatedModel?.draw(program)
         // landmark.draw(program)
