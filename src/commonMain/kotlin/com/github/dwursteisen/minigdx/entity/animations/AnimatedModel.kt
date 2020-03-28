@@ -15,7 +15,7 @@ class AnimatedModel(
     private var drawJoint: Boolean = false
 ) : Entity, CanDraw {
 
-    val animator = Animator(currentAnimation = animation, referencePose = armature)
+    private val animator = Animator(currentAnimation = animation, referencePose = armature)
 
     private val drawable = Drawable(
         mesh,

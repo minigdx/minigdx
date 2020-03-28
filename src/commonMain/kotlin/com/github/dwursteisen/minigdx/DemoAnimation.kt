@@ -26,7 +26,7 @@ class DemoAnimation : Game {
 
         camera.translate(0, 0, -20)
 
-        fileHandler.readData("F_xy.protobuf").onLoaded {
+        fileHandler.readData("bones.protobuf").onLoaded {
             val (mesh, armature, animations) = MeshReader.fromProtobuf(it)
 
             animatedModel = AnimatedModel(
@@ -64,7 +64,7 @@ class DemoAnimation : Game {
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        animatedModel?.update(delta)
+        animatedModel?.update(delta * 0.10f)
 
         animatedModel?.draw(program)
         // landmark.draw(program)

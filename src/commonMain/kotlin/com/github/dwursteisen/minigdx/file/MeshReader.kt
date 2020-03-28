@@ -22,7 +22,11 @@ object MeshReader {
 
     fun collada.Armature.toArmature(): Pair<Armature, List<String>> {
 
-        fun collada.Bone.toJoin(parent: Joint? = null, joints: MutableList<Joint>, mappingIds: MutableList<String>): Joint {
+        fun collada.Bone.toJoin(
+            parent: Joint? = null,
+            joints: MutableList<Joint>,
+            mappingIds: MutableList<String>
+        ): Joint {
             val parentTransformation = parent?.globalBindTransformation ?: Mat4.identity()
             val localTransformation = Mat4.of(*this.transformation.matrix)
             val globalBindTransformation = parentTransformation * localTransformation
@@ -59,36 +63,38 @@ object MeshReader {
         ) to mappingIds
     }
 
-    fun collada.Animations.toAnimations(boneIdToJointIds: List<String>, reference: Armature): Animation {
-        val frames = mutableMapOf<Float, Armature>()
-        // Update all local matrix
+    fun collada.Animations.toAnimations(boneIdToJointIds: List<String>, reference: Armature): Map<String, Animation> {
+        val result = mutableMapOf<String, Animation>()
+
         this.animations.forEach { animation ->
+            val frames = mutableMapOf<Float, Armature>()
             animation.keyFrames.forEach { keys ->
                 val pose = frames.getOrPut(keys.time) { reference.copy() }
-
-                val jointId = boneIdToJointIds.indexOf(animation.boneId)
-
-                // local animation transform
-                val animationMatrix = Mat4.of(*keys.transformation.matrix)
-                pose[jointId].localBindTransformation = animationMatrix
+                keys.transformations.forEach { (boneId, transformation) ->
+                    val jointId = boneIdToJointIds.indexOf(boneId)
+                    // local animation transform
+                    val animationMatrix = Mat4.of(*transformation.matrix)
+                    pose[jointId].localBindTransformation = animationMatrix
+                }
             }
-        }
 
-        // update all matrix
-        frames.forEach { frame ->
-            frame.value.traverse { joint ->
-                val parentGlobalBindTransform = joint.parent?.globalBindTransformation ?: Mat4.identity()
-                val globalBindTransform = parentGlobalBindTransform * joint.localBindTransformation
+            // update all matrix
+            frames.forEach { frame ->
+                frame.value.traverse { joint ->
+                    val parentGlobalBindTransform = joint.parent?.globalBindTransformation ?: Mat4.identity()
+                    val globalBindTransform = parentGlobalBindTransform * joint.localBindTransformation
 
-                joint.globalBindTransformation = globalBindTransform
-                joint.globalInverseBindTransformation = inverse(globalBindTransform)
+                    joint.globalBindTransformation = globalBindTransform
+                    joint.globalInverseBindTransformation = inverse(globalBindTransform)
+                }
             }
-        }
 
-        return Animation(
-            duration = frames.keys.max() ?: 0f,
-            keyFrames = frames.map { KeyFrame(it.key, it.value) }.toTypedArray()
-        )
+            result[animation.name] = Animation(
+                duration = frames.keys.max() ?: 0f,
+                keyFrames = frames.map { KeyFrame(it.key, it.value) }.toTypedArray()
+            )
+        }
+        return result
     }
 
     fun fromProtobuf(data: ByteArray): Triple<Mesh, Armature?, Animation?> {
@@ -136,7 +142,9 @@ object MeshReader {
             }.toTypedArray(),
             verticesOrder = m.verticesOrder.map { it.toShort() }.toShortArray()
         )
-        return Triple(mesh, armature?.first, animations)
+
+        // FIXME: support only one armature / one animation at the moment.
+        return Triple(mesh, armature?.first, animations?.values?.first())
     }
 
     private fun collada.Influence.toInfluence(mapping: List<String>): Influence? {
