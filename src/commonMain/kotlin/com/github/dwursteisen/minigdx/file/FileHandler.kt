@@ -1,17 +1,82 @@
 package com.github.dwursteisen.minigdx.file
 
-interface Content<T> {
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
-    fun onLoaded(block: (T) -> Unit)
+interface FileLoader<T> {
+
+    @ExperimentalStdlibApi
+    fun load(filename: String, content: String): T
+
+    @ExperimentalStdlibApi
+    fun load(filename: String, content: ByteArray): T
 }
 
-expect class FileHandler {
+class UnsupportedType(val type: KClass<*>) : RuntimeException("Unsupported type '${type::class}'")
 
-    fun read(filename: String): Content<String>
+open class Content<R> {
 
-    fun readData(filename: String): Content<ByteArray>
+    private val nop: (R) -> Unit = { }
 
-    val isLoaded: Boolean
+    private var isLoaded: Boolean = false
+    private var content: R? = null
+    private var onLoaded: (R) -> Unit = nop
 
-    val loadProgression: Float
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): R {
+        if (isLoaded) {
+            return content!!
+        } else {
+            throw RuntimeException("Content accessed before being loaded!")
+        }
+    }
+
+    open fun load(content: R?) {
+        this.content = content!!
+        isLoaded = true
+        onLoaded(content)
+    }
+
+    fun <T> map(block: (R) -> T): Content<T> {
+        val result = Content<T>()
+        this.onLoaded = {
+            result.load(block(it))
+        }
+        if (isLoaded) {
+            onLoaded(content!!)
+        }
+        return result
+    }
+
+    fun loaded(): Boolean {
+        return isLoaded
+    }
+}
+
+class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>>) {
+
+    private val assets = mutableMapOf<String, Content<*>>()
+
+    @ExperimentalStdlibApi
+    inline fun <reified T> load(filename: String): Content<T> {
+        return load(filename, T::class)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @ExperimentalStdlibApi
+    fun <T> load(filename: String, clazz: KClass<*>): Content<T> {
+        val loader = loaders[clazz]
+        if (loader == null) {
+            throw UnsupportedType(clazz)
+        } else {
+            loader as FileLoader<T>
+            val content = handler.readData(filename)
+            val asModel = content.map { loader.load(filename, it) }
+            assets[filename] = asModel
+            return asModel
+        }
+    }
+
+    fun isFullyLoaded(): Boolean {
+        return assets.all { it.value.loaded() }
+    }
 }

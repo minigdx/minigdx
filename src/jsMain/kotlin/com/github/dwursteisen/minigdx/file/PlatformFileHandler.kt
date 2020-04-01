@@ -7,26 +7,7 @@ import org.w3c.xhr.ARRAYBUFFER
 import org.w3c.xhr.XMLHttpRequest
 import org.w3c.xhr.XMLHttpRequestResponseType
 
-class AsyncContent<T> : Content<T> {
-
-    private var onLoaded: (T) -> Unit = { }
-    private var content: T? = null
-
-    fun loaded(content: T) {
-        this.content = content
-        onLoaded.invoke(content)
-    }
-
-    override fun onLoaded(block: (T) -> Unit) {
-        onLoaded = block
-        content?.run { loaded(this) }
-    }
-}
-
-actual class FileHandler {
-
-    private var total = 0
-    private var loaded = 0
+actual class PlatformFileHandler {
 
     actual fun read(filename: String): Content<String> {
         return asyncContent(filename) { it.contentToString() }
@@ -40,29 +21,23 @@ actual class FileHandler {
     // https://youtrack.jetbrains.com/issue/KT-30098
     fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
 
-    private fun <T> asyncContent(filename: String, enc: (ByteArray) -> T): AsyncContent<T> {
-        total++
+    private fun <T> asyncContent(filename: String, enc: (ByteArray) -> T): Content<T> {
+        val path = window.location.protocol + "//" + window.location.host + window.location.pathname
+
         val jsonFile = XMLHttpRequest()
         jsonFile.responseType = XMLHttpRequestResponseType.Companion.ARRAYBUFFER
-        val path = window.location.protocol + "//" + window.location.host + window.location.pathname
         jsonFile.open("GET", path + filename, true)
 
-        val content = AsyncContent<T>()
+        val content = Content<T>()
 
-        jsonFile.onload = { evt ->
+        jsonFile.onload = { _ ->
             if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
-                content.loaded(enc((jsonFile.response as ArrayBuffer).toByteArray()))
-                loaded++
+                val element = enc((jsonFile.response as ArrayBuffer).toByteArray())
+                content.load(element)
             }
         }
 
         jsonFile.send()
         return content
     }
-
-    actual val isLoaded: Boolean
-        get() = total == loaded
-
-    actual val loadProgression: Float
-        get() = loaded / total.toFloat()
 }

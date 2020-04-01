@@ -4,11 +4,9 @@ import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
-import com.github.dwursteisen.minigdx.entity.animations.Animation
-import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
-import com.github.dwursteisen.minigdx.file.MeshReader
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
+@ExperimentalStdlibApi
 class DemoAnimation : Game {
 
     override val worldSize = WorldSize(200, 200)
@@ -17,34 +15,14 @@ class DemoAnimation : Game {
 
     private val program = DefaultShaders.create()
 
-    // private val landmark = Landmark.of()
-
-    private var animatedModel: AnimatedModel? = null
+    private val animatedModel: AnimatedModel by fileHandler.load("F.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {
-
         camera.translate(0, -5, -20)
-
-        fileHandler.readData("F.protobuf").onLoaded {
-            val (mesh, armature, animations) = MeshReader.fromProtobuf(it)
-
-            animatedModel = AnimatedModel(
-                animation = animations ?: Animation(0f, keyFrames = arrayOf(
-                    KeyFrame(0f, armature!!.copy())
-                )),
-                mesh = mesh,
-                armature = armature!!,
-                drawJoint = true
-            )
-        }
     }
 
     override fun render(delta: Seconds) {
-        if (!fileHandler.isLoaded) {
-            return
-        }
-
         // --- act ---
 
         val modelMatrix = camera.modelMatrix
@@ -64,9 +42,8 @@ class DemoAnimation : Game {
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        animatedModel?.update(delta)
+        animatedModel.update(delta)
 
-        animatedModel?.draw(program)
-        // landmark.draw(program)
+        animatedModel.draw(program)
     }
 }

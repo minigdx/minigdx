@@ -1,6 +1,11 @@
 package com.github.dwursteisen.minigdx
 
+import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.file.AnimatedModelLoader
+import com.github.dwursteisen.minigdx.file.DrawableLoader
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -35,7 +40,13 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createFileHandler(): FileHandler {
-        return FileHandler()
+        return FileHandler(
+            handler = PlatformFileHandler(),
+            loaders = mapOf(
+                AnimatedModel::class to AnimatedModelLoader(),
+                Drawable::class to DrawableLoader()
+            )
+        )
     }
 
     internal actual fun createInputHandler(): InputHandler {
@@ -55,11 +66,19 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         this.game = gameFactory()
 
-        viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
+        window.requestAnimationFrame(::loading)
+    }
 
-        game.create()
-        game.resume()
-        window.requestAnimationFrame(::render)
+    private fun loading(now: Double) {
+        if (!fileHandler.isFullyLoaded()) {
+            window.requestAnimationFrame(::loading)
+        } else {
+            viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
+
+            game.create()
+            game.resume()
+            window.requestAnimationFrame(::render)
+        }
     }
 
     private fun render(now: Double) {

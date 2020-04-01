@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.DemoPlanet
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 
+@ExperimentalStdlibApi
 class Main {
 
     companion object {

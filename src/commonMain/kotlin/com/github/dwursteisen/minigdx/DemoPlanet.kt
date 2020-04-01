@@ -3,12 +3,11 @@ package com.github.dwursteisen.minigdx
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
-import com.github.dwursteisen.minigdx.file.MeshReader
 import com.github.dwursteisen.minigdx.input.TouchSignal
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
+@ExperimentalStdlibApi
 class DemoPlanet : Game {
 
     override val worldSize = WorldSize(200, 200)
@@ -17,19 +16,11 @@ class DemoPlanet : Game {
 
     private val program = DefaultShaders.create()
 
-    private val landmark = Landmark.of()
-    private var model: Drawable? = null
+    private val model: Drawable by fileHandler.load("planet.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {
-
         camera.translate(0, 0, -200)
-
-        fileHandler.readData("planet.protobuf").onLoaded {
-            val (mesh, _, _) = MeshReader.fromProtobuf(it)
-
-            model = Drawable(mesh)
-        }
     }
 
     var rotationStart: Float? = null
@@ -37,15 +28,11 @@ class DemoPlanet : Game {
     var xStart = 0f
 
     override fun render(delta: Seconds) {
-        if (!fileHandler.isLoaded) {
-            return
-        }
-
         // --- act ---
         val cursor = inputs.isTouched(TouchSignal.TOUCH1)
         if (cursor != null) {
             if (rotationStart == null) {
-                rotationStart = model?.mesh?.rotation?.y ?: 0f
+                rotationStart = model.mesh.rotation.y
                 xStart = cursor.x
             }
 
@@ -53,11 +40,11 @@ class DemoPlanet : Game {
             val factor = (cursor.x - screenWidth * 0.5f) / screenWidth
             currentRotation = factor * 180f
             rotationStart?.run {
-                model?.mesh?.setRotationY(this + currentRotation)
+                model.mesh.setRotationY(this + currentRotation)
             }
         } else {
             rotationStart = null
-            model?.mesh?.rotateY(delta * 10)
+            model.mesh.rotateY(delta * 10)
         }
 
         val modelMatrix = camera.modelMatrix
@@ -77,7 +64,6 @@ class DemoPlanet : Game {
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, camera.modelMatrix)
         gl.uniformMatrix4fv(program.getUniform("uNormalMatrix"), false, normalMatrix)
 
-        model?.draw(program)
-        landmark.draw(program)
+        model.draw(program)
     }
 }
