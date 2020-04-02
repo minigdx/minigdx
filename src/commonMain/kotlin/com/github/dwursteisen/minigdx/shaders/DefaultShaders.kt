@@ -76,7 +76,7 @@ object DefaultShaders {
         }
     """.trimIndent()
 
-    fun create(): ShaderProgram {
+    fun create(): ShaderProgramExecutor {
         val program = ShaderUtils.createShaderProgram(vertexShader, fragmentShader)
 
         program.createAttrib("aVertexPosition")
@@ -95,6 +95,6 @@ object DefaultShaders {
         // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
         program.createUniform("uJointTransformationMatrix")
 
-        return program
+        return ShaderProgramExecutor(program)
     }
 }
