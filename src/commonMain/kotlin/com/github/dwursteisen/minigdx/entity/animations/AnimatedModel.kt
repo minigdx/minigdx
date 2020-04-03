@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.entity.animations
 
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.entity.CanDraw
+import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.Entity
 import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
@@ -13,7 +14,7 @@ class AnimatedModel(
     mesh: Mesh,
     private val armature: Armature,
     private var drawJoint: Boolean = false
-) : Entity, CanDraw {
+) : Entity, CanDraw, CanMove by mesh {
 
     private val animator = Animator(currentAnimation = animation, referencePose = armature)
 

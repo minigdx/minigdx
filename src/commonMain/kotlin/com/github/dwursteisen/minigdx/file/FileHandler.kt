@@ -57,18 +57,22 @@ class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, 
     private val assets = mutableMapOf<String, Content<*>>()
 
     @ExperimentalStdlibApi
-    inline fun <reified T> load(filename: String): Content<T> {
-        return load(filename, T::class)
+    inline fun <reified T> get(filename: String): Content<T> {
+        return get(filename, T::class)
     }
 
     @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
-    fun <T> load(filename: String, clazz: KClass<*>): Content<T> {
+    fun <T> get(filename: String, clazz: KClass<*>): Content<T> {
+        return assets.getOrPut(filename) { load(filename, clazz) } as Content<T>
+    }
+
+    @ExperimentalStdlibApi
+    private fun load(filename: String, clazz: KClass<*>): Content<*> {
         val loader = loaders[clazz]
         if (loader == null) {
             throw UnsupportedType(clazz)
         } else {
-            loader as FileLoader<T>
             val content = handler.readData(filename)
             val asModel = content.map { loader.load(filename, it) }
             assets[filename] = asModel

@@ -15,7 +15,7 @@ class DemoPlanet : Game {
 
     private val program = DefaultShaders.create()
 
-    private val model: Drawable by fileHandler.load("planet.protobuf")
+    private val model: Drawable by fileHandler.get("planet.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {

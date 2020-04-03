@@ -6,7 +6,7 @@ import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
 @ExperimentalStdlibApi
-class DemoAnimation : Game {
+class DemoAnimation2 : Game {
 
     override val worldSize = WorldSize(200, 200)
 
@@ -14,16 +14,16 @@ class DemoAnimation : Game {
 
     private val program = DefaultShaders.create()
 
-    private val animatedModel: AnimatedModel by fileHandler.get("F.protobuf")
+    private val animatedModel: AnimatedModel by fileHandler.get("monkey_animation.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {
-        camera.translate(0, -5, -20)
+        camera.translate(0, 0, -5)
+        animatedModel.rotateY(90f)
     }
 
     override fun render(delta: Seconds) {
-        animatedModel.update(delta)
-
+        animatedModel.update(delta * 0.5f)
         // --- draw ---
         clear(1 / 255f, 191 / 255f, 255 / 255f)
 
