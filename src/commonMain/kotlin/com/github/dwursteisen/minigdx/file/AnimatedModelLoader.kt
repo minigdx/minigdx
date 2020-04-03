@@ -13,20 +13,21 @@ class AnimatedModelLoader : FileLoader<AnimatedModel> {
 
     @ExperimentalStdlibApi
     override fun load(filename: String, content: ByteArray): AnimatedModel {
-        val (mesh, armature, animations) = if (filename.endsWith(".json")) {
-            MeshReader.fromJson(content)
+        val description = if (filename.endsWith(".json")) {
+            ModelReader.fromJson(content)
         } else {
-            MeshReader.fromProtobuf(content)
+            ModelReader.fromProtobuf(content)
         }
 
+        val currentAnimation = if (description.animations.size != 1) {
+            Animation(0f, keyFrames = arrayOf(KeyFrame(0f, description.model.pose!!.copy())))
+        } else {
+            description.animations.values.first()
+        }
         return AnimatedModel(
-            animation = animations ?: Animation(
-                0f, keyFrames = arrayOf(
-                    KeyFrame(0f, armature!!.copy())
-                )
-            ),
-            mesh = mesh,
-            armature = armature!!,
+            animation = currentAnimation,
+            animations = description.animations,
+            model = description.model,
             drawJoint = true
         )
     }

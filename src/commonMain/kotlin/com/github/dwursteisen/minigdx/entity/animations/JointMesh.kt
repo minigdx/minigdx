@@ -8,14 +8,14 @@ import com.github.dwursteisen.minigdx.entity.Influence
 import com.github.dwursteisen.minigdx.entity.JointsIndex
 import com.github.dwursteisen.minigdx.entity.Mesh
 import com.github.dwursteisen.minigdx.entity.Vertice
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class JointMesh(
     val mesh: Mesh,
     currentPose: Armature
-) : CanDraw by Drawable(mesh, currentPose),
+) : CanDraw by Model(mesh, currentPose),
     CanMove by Movable() {
 
     companion object {

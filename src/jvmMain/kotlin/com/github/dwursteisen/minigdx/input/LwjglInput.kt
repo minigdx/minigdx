@@ -83,7 +83,7 @@ class LwjglInput : InputHandler, InputManager {
         frame++
     }
 
-    override fun isKey(key: Key): Boolean = keys[key.keyCode] != -1L
+    override fun isKeyJustPressed(key: Key): Boolean = keys[key.keyCode] != -1L
 
     override fun isKeyPressed(key: Key): Boolean = this.pressed[key.keyCode] == frame
 

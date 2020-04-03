@@ -1,7 +1,7 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.input.TouchSignal
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
@@ -15,7 +15,7 @@ class DemoPlanet : Game {
 
     private val program = DefaultShaders.create()
 
-    private val model: Drawable by fileHandler.get("planet.protobuf")
+    private val model: Model by fileHandler.get("planet.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {

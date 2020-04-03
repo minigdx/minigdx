@@ -1,11 +1,5 @@
 package com.github.dwursteisen.minigdx.entity.animations
 
-import com.curiouscreature.kotlin.math.Float3
-import com.github.dwursteisen.minigdx.math.Vector3
-
-private fun Vector3.toFloat3() = Float3(x, y, z)
-private fun Float3.toVector3() = Vector3(x, y, z)
-
 class Animator(
     var animationTime: Float = 0f,
     var currentAnimation: Animation,

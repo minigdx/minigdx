@@ -1,10 +1,10 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.file.AnimatedModelLoader
-import com.github.dwursteisen.minigdx.file.DrawableLoader
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.file.ModelLoader
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
@@ -28,7 +28,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     internal actual fun createContext(): GL {
         canvas =
             configuration.canvas ?: configuration.canvasId?.let { document.getElementById(it) as? HTMLCanvasElement }
-            ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
+                    ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
         val context = canvas.getContext("webgl") as WebGLRenderingContext
         return WebGL(
@@ -44,7 +44,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
             handler = PlatformFileHandler(),
             loaders = mapOf(
                 AnimatedModel::class to AnimatedModelLoader(),
-                Drawable::class to DrawableLoader()
+                Model::class to ModelLoader()
             )
         )
     }

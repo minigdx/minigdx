@@ -1,9 +1,11 @@
 package com.github.dwursteisen.minigdx.file
 
+import collada.Bone
 import collada.EmptyAnimations
 import collada.EmptyArmature
 import collada.InfluenceData
-import collada.Model
+import collada.Model as ColladaModel
+import collada.Transformation
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.entity.Color
@@ -16,9 +18,15 @@ import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.entity.animations.JointId
 import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
+import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.math.Vector3
 
-object MeshReader {
+data class ModelDescription(
+    val model: Model,
+    val animations: Map<String, Animation> = emptyMap()
+)
+
+object ModelReader {
 
     fun collada.Armature.toArmature(): Pair<Armature, List<String>> {
 
@@ -97,35 +105,49 @@ object MeshReader {
         return result
     }
 
-    fun fromProtobuf(data: ByteArray): Triple<Mesh, Armature?, Animation?> {
-        val model = Model.readProtobuf(data)
+    fun fromProtobuf(data: ByteArray): ModelDescription {
+        val model = ColladaModel.readProtobuf(data)
         return convertModel(model)
     }
 
     @ExperimentalStdlibApi
-    fun fromJson(data: ByteArray): Triple<Mesh, Armature?, Animation?> {
-        val model = Model.readJson(data)
+    fun fromJson(data: ByteArray): ModelDescription {
+        val model = ColladaModel.readJson(data)
         return convertModel(model)
     }
 
-    private fun convertModel(model: Model): Triple<Mesh, Armature?, Animation?> {
+    private fun convertModel(model: ColladaModel): ModelDescription {
         val m = model.mesh
         val a = model.armature
         val anim = model.animations
 
         val armature = when (a) {
             is collada.Armature -> a.toArmature()
-            is EmptyArmature -> null
-            else -> null
+            is EmptyArmature -> collada.Armature(
+                Bone(
+                    id = "root",
+                    childs = emptyList(),
+                    transformation = Transformation(Mat4.identity().toFloatArray()),
+                    inverseBindPose = Transformation(Mat4.identity().toFloatArray()),
+                    weights = emptyList()
+                )
+            ).toArmature()
+            else -> collada.Armature(
+                Bone(
+                    id = "root",
+                    childs = emptyList(),
+                    transformation = Transformation(Mat4.identity().toFloatArray()),
+                    inverseBindPose = Transformation(Mat4.identity().toFloatArray()),
+                    weights = emptyList()
+                )
+            ).toArmature()
         }
 
-        val boneIdToJointIds = armature?.second ?: emptyList()
+        val boneIdToJointIds = armature.second
         val animations = when (anim) {
-            is collada.Animations -> {
-                anim.toAnimations(boneIdToJointIds, armature!!.first)
-            }
-            is EmptyAnimations -> null
-            else -> null
+            is collada.Animations -> anim.toAnimations(boneIdToJointIds, armature.first)
+            is EmptyAnimations -> emptyMap()
+            else -> emptyMap()
         }
 
         val mesh = Mesh(
@@ -143,8 +165,10 @@ object MeshReader {
             verticesOrder = m.verticesOrder.map { it.toShort() }.toShortArray()
         )
 
-        // FIXME: support only one armature / one animation at the moment.
-        return Triple(mesh, armature?.first, animations?.values?.first())
+        return ModelDescription(
+            model = Model(mesh, armature.first),
+            animations = animations
+        )
     }
 
     private fun collada.Influence.toInfluence(mapping: List<String>): Influence? {

@@ -72,9 +72,9 @@ private fun Array<Vertice>.convertWeights(): DataSource.FloatDataSource {
 /**
  * Render a mesh on a screen.
  */
-class Drawable(
+class Model(
     val mesh: Mesh,
-    private val pose: Armature? = null
+    val pose: Armature? = null
 ) : CanDraw {
 
     /**

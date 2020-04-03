@@ -1,7 +1,7 @@
 package com.github.dwursteisen.minigdx.entity.animations
 
 import com.github.dwursteisen.minigdx.file.FileHandler
-import com.github.dwursteisen.minigdx.file.MeshReader
+import com.github.dwursteisen.minigdx.file.ModelReader
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -13,7 +13,7 @@ class ArmatureTest {
     @Before
     fun setUp() {
         FileHandler().readData("src/commonMain/resources/cube_animation2.protobuf").onLoaded {
-            val (_, loadedArmature, _) = MeshReader.fromProtobuf(it)
+            val (_, loadedArmature, _) = ModelReader.fromProtobuf(it)
             armature = loadedArmature!!
         }
     }

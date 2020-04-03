@@ -6,7 +6,7 @@ import com.github.dwursteisen.minigdx.math.Vector2
 
 class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
 
-    override fun isKey(key: Key): Boolean = false
+    override fun isKeyJustPressed(key: Key): Boolean = false
 
     override fun isKeyPressed(key: Key): Boolean = false
 

@@ -1,25 +1,29 @@
 package com.github.dwursteisen.minigdx.entity.animations
 
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.entity.CanAnimate
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.Entity
-import com.github.dwursteisen.minigdx.entity.Mesh
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
 class AnimatedModel(
     animation: Animation,
-    mesh: Mesh,
-    private val armature: Armature,
+    model: Model,
+    private val animations: Map<String, Animation>,
+    private val armature: Armature = model.pose!!,
     private var drawJoint: Boolean = false
-) : Entity, CanDraw, CanMove by mesh {
+) : Entity, CanDraw, CanMove by model.mesh, CanAnimate {
 
-    private val animator = Animator(currentAnimation = animation, referencePose = armature)
+    private val animator = Animator(
+        currentAnimation = animation,
+        referencePose = armature
+    )
 
-    private val drawable = Drawable(
-        mesh,
+    private val drawable = Model(
+        model.mesh,
         animator.currentPose
     )
 
@@ -48,5 +52,10 @@ class AnimatedModel(
         if (drawJoint) {
             jointMeshs.draw(shader)
         }
+    }
+
+    override fun switchAnimation(animationName: String) {
+        animator.currentAnimation = animations[animationName] ?: throw IllegalArgumentException("Animation '$animationName' unknown!")
+        animator.animationTime = 0f // reset animation.
     }
 }

@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx.entity.animations
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.file.FileHandler
-import com.github.dwursteisen.minigdx.file.MeshReader
+import com.github.dwursteisen.minigdx.file.ModelReader
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import org.junit.Before
@@ -16,7 +16,7 @@ class AnimationTest {
     @Before
     fun setUp() {
         FileHandler().readData("src/commonMain/resources/cube_animation2.protobuf").onLoaded {
-            val (_, _, loadedAnimation) = MeshReader.fromProtobuf(it)
+            val (_, _, loadedAnimation) = ModelReader.fromProtobuf(it)
             animation = loadedAnimation!!
         }
     }

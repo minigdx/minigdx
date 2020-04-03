@@ -111,7 +111,7 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         }
     }
 
-    override fun isKey(key: Key): Boolean = keys[key.keyCode]
+    override fun isKeyJustPressed(key: Key): Boolean = keys[key.keyCode]
 
     override fun isKeyPressed(key: Key): Boolean = pressed[key.keyCode]
 

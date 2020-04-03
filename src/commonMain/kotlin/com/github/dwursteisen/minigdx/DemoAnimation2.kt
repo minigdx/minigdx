@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx
 import com.github.dwursteisen.minigdx.entity.Camera
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.graphics.clear
+import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
 @ExperimentalStdlibApi
@@ -23,6 +24,17 @@ class DemoAnimation2 : Game {
     }
 
     override fun render(delta: Seconds) {
+
+        if (inputs.isKeyPressed(Key.F)) {
+            animatedModel.rotateY(10f * delta)
+        } else if (inputs.isKeyPressed(Key.H)) {
+            animatedModel.rotateY(-10f * delta)
+        }
+
+        if (inputs.isKeyJustPressed(Key.G)) {
+            animatedModel.switchAnimation("TODO")
+        }
+
         animatedModel.update(delta * 0.5f)
         // --- draw ---
         clear(1 / 255f, 191 / 255f, 255 / 255f)

@@ -1,11 +1,11 @@
 package com.github.dwursteisen.minigdx.entity
 
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class Cube(
     mesh: Mesh
-) : CanDraw by Drawable(mesh) {
+) : CanDraw by Model(mesh) {
 
     constructor(name: String, color: Color = Colors.WHITE) : this(
         Mesh(

@@ -119,7 +119,7 @@ interface InputManager {
 
 interface InputHandler {
 
-    fun isKey(key: Key): Boolean
+    fun isKeyJustPressed(key: Key): Boolean
 
     fun isKeyPressed(key: Key): Boolean
 
