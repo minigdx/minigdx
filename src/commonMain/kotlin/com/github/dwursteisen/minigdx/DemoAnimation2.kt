@@ -21,6 +21,8 @@ class DemoAnimation2 : Game {
     override fun create() {
         camera.translate(0, 0, -5)
         animatedModel.rotateY(90f)
+
+        println(animatedModel.animationsName)
     }
 
     override fun render(delta: Seconds) {

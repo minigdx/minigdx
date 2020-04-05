@@ -153,12 +153,14 @@ kotlin {
 
 colladaPlugin {
     create("assetsProtobuf") {
-        this.daeDirectory.set(project.projectDir.resolve("src"))
+        this.daeDirectory.set(project.projectDir.resolve("src/assets"))
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets"))
         this.target.set(project.projectDir.resolve("src/commonMain/resources"))
         this.format.set(collada.Format.PROTOBUF as collada.Format)
     }
     create("assetsJson") {
-        this.daeDirectory.set(project.projectDir.resolve("src"))
+        this.daeDirectory.set(project.projectDir.resolve("src/assets"))
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets"))
         this.target.set(project.projectDir.resolve("src/commonMain/resources"))
         this.format.set(collada.Format.JSON as collada.Format)
     }

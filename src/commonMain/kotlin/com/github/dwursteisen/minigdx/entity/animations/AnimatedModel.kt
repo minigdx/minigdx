@@ -22,6 +22,9 @@ class AnimatedModel(
         referencePose = armature
     )
 
+    val animationsName
+    get() = animations.keys
+
     private val drawable = Model(
         model.mesh,
         animator.currentPose
