@@ -172,7 +172,7 @@ project.tasks.create<Copy>("docs").apply {
     // package the application
     dependsOn("jsBrowserProductionWebpack")
     from("build/distributions/") {
-        include("*.html", "*.js", "*.protobuf")
+        include("*.js", "*.protobuf")
     }
     into("docs")
 }
