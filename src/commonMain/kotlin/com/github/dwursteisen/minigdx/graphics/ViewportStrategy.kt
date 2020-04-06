@@ -15,8 +15,8 @@ class FillViewportStrategy : ViewportStrategy {
         // Fill strategy.
         val sw = width
         val sh = height
-        val ww = worldSize.width
-        val wh = worldSize.height
+        val ww = worldSize.width.toFloat()
+        val wh = worldSize.height.toFloat()
 
         val ref = min(sw / ww, sh / wh)
         val pw = ww * ref
@@ -25,6 +25,6 @@ class FillViewportStrategy : ViewportStrategy {
         val gx = (sw - pw) * 0.5f
         val gy = (sh - ph) * 0.5f
 
-        gl.viewport(gx.toInt(), gy.toInt(), pw, ph)
+        gl.viewport(gx.toInt(), gy.toInt(), pw.toInt(), ph.toInt())
     }
 }

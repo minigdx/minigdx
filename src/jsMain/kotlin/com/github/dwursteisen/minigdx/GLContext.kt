@@ -86,6 +86,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         if (canvas.clientWidth != game.worldSize.width || canvas.clientHeight != game.worldSize.height) {
             gl.screen.width = canvas.clientWidth
             gl.screen.height = canvas.clientHeight
+            canvas.height = canvas.clientHeight
+            canvas.width = canvas.clientWidth
+
             viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
         }
         inputManager.record()
