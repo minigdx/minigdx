@@ -100,7 +100,7 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     private fun keyDown(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
-            if(justRelease[event.keyCode]) {
+            if (justRelease[event.keyCode]) {
                 justPressed[event.keyCode] = true
                 justRelease[event.keyCode] = false
             }

@@ -16,11 +16,11 @@ class DemoPlanet : Game {
 
     private val program = DefaultShaders.create()
 
-    private val model: Model by fileHandler.get("planet.protobuf")
+    private val model: Model by fileHandler.get("cube_debug.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {
-        camera.translate(0, 0, -200)
+        camera.translate(0, 0, -20)
     }
 
     private var rotationStart: Float? = null

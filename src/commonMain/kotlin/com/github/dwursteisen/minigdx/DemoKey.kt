@@ -44,11 +44,11 @@ class DemoKey : Game {
         // --- act ---
         if (inputs.isKeyPressed(Key.ARROW_LEFT)) {
                 left.translate(0, 5f * delta, 0f)
-        } else if(inputs.isKeyPressed(Key.ARROW_RIGHT)) {
+        } else if (inputs.isKeyPressed(Key.ARROW_RIGHT)) {
                 right.translate(0, 5f * delta, 0f)
-        } else if(inputs.isKeyJustPressed(Key.ARROW_UP)) {
+        } else if (inputs.isKeyJustPressed(Key.ARROW_UP)) {
                 up.translate(0, 5f * delta, 0f)
-        } else if(inputs.isKeyJustPressed(Key.ARROW_DOWN)) {
+        } else if (inputs.isKeyJustPressed(Key.ARROW_DOWN)) {
                 down.translate(0, 5f * delta, 0f)
         }
         // --- draw ---
