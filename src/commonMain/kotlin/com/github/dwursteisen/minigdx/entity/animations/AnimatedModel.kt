@@ -14,7 +14,7 @@ class AnimatedModel(
     model: Model,
     private val animations: Map<String, Animation>,
     private val armature: Armature = model.pose!!,
-    private var drawJoint: Boolean = false
+    var drawJoint: Boolean = false
 ) : Entity, CanDraw, CanMove by model.mesh, CanAnimate {
 
     private val animator = Animator(

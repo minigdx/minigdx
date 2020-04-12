@@ -15,15 +15,19 @@ class DemoAnimation2 : Game {
 
     private val program = DefaultShaders.create()
 
-    private val animatedModel: AnimatedModel by fileHandler.get("monkey_animation.protobuf")
+    private val animatedModel: AnimatedModel by fileHandler.get("monkey_animation_gltf.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {
         camera.translate(0, 0, -5)
         animatedModel.rotateY(90f)
-
-        println(animatedModel.animationsName)
+        animationNames.addAll(animatedModel.animationsName)
+        animatedModel.switchAnimation(animationNames[currentAnimation])
+        animatedModel.drawJoint = true
     }
+
+    private var currentAnimation = 0
+    private val animationNames = mutableListOf<String>()
 
     override fun render(delta: Seconds) {
 
@@ -34,7 +38,8 @@ class DemoAnimation2 : Game {
         }
 
         if (inputs.isKeyJustPressed(Key.G)) {
-            animatedModel.switchAnimation("TODO")
+            currentAnimation = (currentAnimation + 1) % animationNames.size
+            animatedModel.switchAnimation(animationNames[currentAnimation])
         }
 
         animatedModel.update(delta * 0.5f)
