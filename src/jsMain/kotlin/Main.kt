@@ -1,5 +1,6 @@
 import com.github.dwursteisen.minigdx.DemoAnimation
 import com.github.dwursteisen.minigdx.DemoAnimation2
+import com.github.dwursteisen.minigdx.DemoKey
 import com.github.dwursteisen.minigdx.DemoPlanet
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.Game
@@ -10,7 +11,8 @@ import org.w3c.dom.url.URLSearchParams
 @ExperimentalStdlibApi
 private val factory: Map<String, () -> Game> = mapOf(
     "animation" to { DemoAnimation() },
-    "animation2" to { DemoAnimation2() }
+    "animation2" to { DemoAnimation2() },
+    "key" to { DemoKey() }
 )
 @ExperimentalStdlibApi
 fun main() = configuration(GLConfiguration(canvasId = "canvas")).run {

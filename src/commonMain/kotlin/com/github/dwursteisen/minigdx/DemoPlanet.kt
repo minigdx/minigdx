@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.entity.Camera
+import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.input.TouchSignal
@@ -26,12 +27,14 @@ class DemoPlanet : Game {
     private var currentRotation: Float = 0f
     private var xStart = 0f
 
+    private val landmark = Landmark.of()
+
     override fun render(delta: Seconds) {
         // --- act ---
         val cursor = inputs.isTouched(TouchSignal.TOUCH1)
         if (cursor != null) {
             if (rotationStart == null) {
-                rotationStart = model.mesh.rotation.y
+                rotationStart = model.rotation.y
                 xStart = cursor.x
             }
 
@@ -39,11 +42,11 @@ class DemoPlanet : Game {
             val factor = (cursor.x - screenWidth * 0.5f) / screenWidth
             currentRotation = factor * 180f
             rotationStart?.run {
-                model.mesh.setRotationY(this + currentRotation)
+                model.setRotationY(this + currentRotation)
             }
         } else {
             rotationStart = null
-            model.mesh.rotateY(delta * 10)
+            model.rotateY(delta * 10)
         }
 
         // --- draw ---
@@ -52,6 +55,7 @@ class DemoPlanet : Game {
         program.render {
             camera.draw(it)
             model.draw(it)
+            landmark.draw(it)
         }
     }
 }

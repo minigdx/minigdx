@@ -15,8 +15,18 @@ class Mesh(
     val vertices: Array<Vertice> = emptyArray(),
     val verticesOrder: ShortArray,
     val drawType: DrawType = DrawType.TRIANGLE
-) : CanMove by Movable(
+) : CanCopy<Mesh>, CanMove by Movable(
     position = position,
     rotation = rotation,
     modelMatrix = modelMatrix
-)
+) {
+    override fun copy() = Mesh(
+        name = this.name,
+        position = position.copy(),
+        rotation = rotation.copy(),
+        modelMatrix = modelMatrix.copy(),
+        vertices = vertices,
+        verticesOrder = verticesOrder,
+        drawType = drawType
+    )
+}

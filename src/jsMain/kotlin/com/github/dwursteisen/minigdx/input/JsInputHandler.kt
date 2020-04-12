@@ -26,7 +26,8 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         canvas.addEventListener("mousemove", ::mouseMove, false)
     }
 
-    private val keys: Array<Boolean> = Array(256 + 1) { false }
+    private val justPressed: Array<Boolean> = Array(256 + 1) { false }
+    private val justRelease: Array<Boolean> = Array(256 + 1) { true }
     private val pressed: Array<Boolean> = Array(256 + 1) { false }
 
     private val flagMouse1: Short = 0x1
@@ -99,19 +100,25 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     private fun keyDown(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
-            keys[event.keyCode] = true
+            if(justRelease[event.keyCode]) {
+                justPressed[event.keyCode] = true
+                justRelease[event.keyCode] = false
+            }
             pressed[event.keyCode] = true
+            event.preventDefault()
         }
     }
 
     private fun keyUp(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
-            keys[event.keyCode] = false
+            justRelease[event.keyCode] = true
+            pressed[event.keyCode] = false
+            event.preventDefault()
         }
     }
 
-    override fun isKeyJustPressed(key: Key): Boolean = keys[key.keyCode]
+    override fun isKeyJustPressed(key: Key): Boolean = justPressed[key.keyCode]
 
     override fun isKeyPressed(key: Key): Boolean = pressed[key.keyCode]
 
@@ -122,8 +129,8 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     override fun record() = Unit
 
     override fun reset() {
-        (pressed.indices).forEach {
-            pressed[it] = false
+        (justPressed.indices).forEach {
+            justPressed[it] = false
         }
         touchManager.reset()
     }

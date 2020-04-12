@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.math.Vector2
 import java.nio.DoubleBuffer
 import org.lwjgl.BufferUtils
+import org.lwjgl.glfw.GLFW.GLFW_KEY_LAST
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_2
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_3
@@ -19,8 +20,8 @@ import org.lwjgl.glfw.GLFWKeyCallback
 
 class LwjglInput : InputHandler, InputManager {
 
-    private val keys: Array<Long> = Array(256 + 1) { -1L }
-    private val pressed: Array<Long> = Array(256 + 1) { -1L }
+    private val keys: Array<Long> = Array(GLFW_KEY_LAST + 1) { -1L }
+    private val pressed: Array<Long> = Array(GLFW_KEY_LAST + 1) { -1L }
 
     private var frame = 0L
 

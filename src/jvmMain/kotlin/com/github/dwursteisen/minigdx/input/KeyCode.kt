@@ -1,8 +1,9 @@
 package com.github.dwursteisen.minigdx.input
 
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.GLFW_KEY_LAST
 
-const val UNKNOWN_KEY = 257
+const val UNKNOWN_KEY = GLFW_KEY_LAST + 1
 
 val Key.keyCode: Int
     get() {

@@ -28,7 +28,7 @@ actual class PlatformFileHandler {
         jsonFile.responseType = XMLHttpRequestResponseType.Companion.ARRAYBUFFER
         jsonFile.open("GET", path + filename, true)
 
-        val content = Content<T>()
+        val content = Content<T>(filename)
 
         jsonFile.onload = { _ ->
             if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {

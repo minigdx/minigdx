@@ -119,8 +119,24 @@ interface InputManager {
 
 interface InputHandler {
 
+    /**
+     * Is the [key] was pressed?
+     *
+     * It returns true once and will return true only if
+     * the key is released then pressed again.
+     *
+     * This method should be used to count action trigger only
+     * once (ie: starting an action like opening a door)
+     */
     fun isKeyJustPressed(key: Key): Boolean
 
+    /**
+     * Is the [key] is actually pressed?
+     *
+     * This method should be used to know when the key is pressed
+     * and running an action until the key is not released.
+     * (ie: running while the key is pressed, stop when it's not)
+     */
     fun isKeyPressed(key: Key): Boolean
 
     fun isTouched(signal: TouchSignal): Vector2?

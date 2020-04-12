@@ -14,6 +14,9 @@ import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
+import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
+import org.lwjgl.opengl.GL11.GL_LINE
+import org.lwjgl.opengl.GL11.glPolygonMode
 import org.lwjgl.system.MemoryUtil
 
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
@@ -142,7 +145,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         }
 
         // Wireframe mode
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
         while (!GLFW.glfwWindowShouldClose(window)) {
             inputManager.record()

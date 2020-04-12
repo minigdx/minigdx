@@ -20,10 +20,10 @@ val Key.keyCode: Int
             Key.PAGE_DOWN -> TODO()
             Key.END -> TODO()
             Key.HOME -> TODO()
-            Key.ARROW_LEFT -> TODO()
-            Key.ARROW_UP -> TODO()
-            Key.ARROW_RIGHT -> TODO()
-            Key.ARROW_DOWN -> TODO()
+            Key.ARROW_LEFT -> 37
+            Key.ARROW_UP -> 38
+            Key.ARROW_RIGHT -> 39
+            Key.ARROW_DOWN -> 40
             Key.PRINT_SCREEN -> TODO()
             Key.INSERT -> TODO()
             Key.DELETE -> TODO()
