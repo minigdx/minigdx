@@ -173,7 +173,10 @@ object ModelReader {
 
     private fun collada.Influence.toInfluence(mapping: List<String>): Influence? {
         if (this.data.isEmpty()) {
-            return null
+            return Influence(
+                joinIds = JointsIndex(0, 0, 0),
+                weight = Vector3(1f, 0f, 0f)
+            )
         }
         if (this.data.size > 3) {
             println("WARNING! Your some vertex of your model are influenced by more than 3 bones!")

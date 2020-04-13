@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.Landmark
 import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.input.TouchSignal
@@ -12,22 +11,20 @@ class DemoPlanet : Game {
 
     override val worldSize = WorldSize(200, 200)
 
-    private val camera = Camera.create(45, worldSize.ratio, 1, 1000)
+    private val camera = Camera.create(45, worldSize.ratio, 1, 100)
 
     private val program = DefaultShaders.create()
 
-    private val model: Model by fileHandler.get("cube_debug.protobuf")
+    private val model: Model by fileHandler.get("planet.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {
-        camera.translate(0, 0, -20)
+        camera.translate(0, 0, -5)
     }
 
     private var rotationStart: Float? = null
     private var currentRotation: Float = 0f
     private var xStart = 0f
-
-    private val landmark = Landmark.of()
 
     override fun render(delta: Seconds) {
         // --- act ---
@@ -55,7 +52,6 @@ class DemoPlanet : Game {
         program.render {
             camera.draw(it)
             model.draw(it)
-            landmark.draw(it)
         }
     }
 }
