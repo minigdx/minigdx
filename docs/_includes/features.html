@@ -1,4 +1,4 @@
-<div class="features">
+<div class="features" id="features">
 
     {% for feature in site.features %}
 
@@ -17,6 +17,12 @@
             <p>
                 {{ feature.description }}
             </p>
+          {% if feature.demo %}
+            <p>
+                <a href="?demo={{ feature.demo }}">demo</a>
+            </p>
+          {% endif %}
+
         </div>
     </div>
     {% endif %}

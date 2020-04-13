@@ -35,16 +35,23 @@ youtube_username                          :
 features                                  :
 
   - title                                 : Multiplaform
-    description                           : TODO
+    description                           : Build one game, deploy on the web, on a computer or on android.
+                                            (iOS not supported yet)
     fontawesome_icon_name                 : mobile
-    
+
   - title                                 : Kotlin
-    description                           : TODO
+    description                           : Be productive by using a productive language.
     fontawesome_icon_name                 : magic
 
+  - title                                 : gltf / Blender support
+    description                           : Create levels, animations and so in Blender and export it as gltf.
+    fontawesome_icon_name                 : draw-polygon
+    demo                                  : suzanne
+
   - title                                 : Armature animations
-    description                           : TODO
+    description                           : Create 3D animation using armatures
     fontawesome_icon_name                 : play-circle
+    demo                                  : animation
 
   - title                                 : # New Feature Title
     description                           : # New Feature Description
