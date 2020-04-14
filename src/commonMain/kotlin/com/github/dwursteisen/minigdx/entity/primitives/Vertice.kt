@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.entity
+package com.github.dwursteisen.minigdx.entity.primitives
 
 import com.github.dwursteisen.minigdx.math.Vector3
 

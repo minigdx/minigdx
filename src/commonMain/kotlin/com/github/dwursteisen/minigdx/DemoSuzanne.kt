@@ -1,7 +1,7 @@
 package com.github.dwursteisen.minigdx
 
-import com.github.dwursteisen.minigdx.entity.Camera
 import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.models.Camera
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
@@ -12,7 +12,7 @@ class DemoSuzanne : Game {
 
     private val camera = Camera.create(45, worldSize.ratio, 1, 100)
 
-    private val program = DefaultShaders.create()
+    private val program = DefaultShaders.create3d()
 
     private val model: Model by fileHandler.get("suzanne.protobuf")
 

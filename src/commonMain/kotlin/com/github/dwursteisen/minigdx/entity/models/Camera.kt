@@ -1,10 +1,12 @@
-package com.github.dwursteisen.minigdx.entity
+package com.github.dwursteisen.minigdx.entity.models
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.perspective
 import com.curiouscreature.kotlin.math.transpose
+import com.github.dwursteisen.minigdx.entity.CanMove
+import com.github.dwursteisen.minigdx.entity.Entity
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3

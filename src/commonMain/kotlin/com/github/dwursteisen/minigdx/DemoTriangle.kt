@@ -1,11 +1,11 @@
 package com.github.dwursteisen.minigdx
 
-import com.github.dwursteisen.minigdx.entity.Camera
-import com.github.dwursteisen.minigdx.entity.Colors
-import com.github.dwursteisen.minigdx.entity.Landmark
-import com.github.dwursteisen.minigdx.entity.Mesh
-import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.models.Camera
+import com.github.dwursteisen.minigdx.entity.models.Landmark
+import com.github.dwursteisen.minigdx.entity.primitives.Colors
+import com.github.dwursteisen.minigdx.entity.primitives.Mesh
+import com.github.dwursteisen.minigdx.entity.primitives.Vertice
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
@@ -17,7 +17,7 @@ class DemoTriangle : Game {
 
     private val camera = Camera.create(45, worldSize.ratio, 1, 100)
 
-    private val program = DefaultShaders.create()
+    private val program = DefaultShaders.create3d()
 
     private val model: Model = Model(
         mesh = Mesh(

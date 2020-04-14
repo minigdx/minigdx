@@ -1,6 +1,8 @@
-package com.github.dwursteisen.minigdx.entity
+package com.github.dwursteisen.minigdx.entity.primitives
 
 import com.curiouscreature.kotlin.math.Mat4
+import com.github.dwursteisen.minigdx.entity.CanCopy
+import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.math.Vector3
 

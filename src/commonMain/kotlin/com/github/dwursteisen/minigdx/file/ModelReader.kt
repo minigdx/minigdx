@@ -8,17 +8,17 @@ import collada.Model as ColladaModel
 import collada.Transformation
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
-import com.github.dwursteisen.minigdx.entity.Color
-import com.github.dwursteisen.minigdx.entity.Influence
-import com.github.dwursteisen.minigdx.entity.JointsIndex
-import com.github.dwursteisen.minigdx.entity.Mesh
-import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.animations.Animation
 import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.entity.animations.JointId
 import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
 import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.primitives.Color
+import com.github.dwursteisen.minigdx.entity.primitives.Influence
+import com.github.dwursteisen.minigdx.entity.primitives.JointsIndex
+import com.github.dwursteisen.minigdx.entity.primitives.Mesh
+import com.github.dwursteisen.minigdx.entity.primitives.Vertice
 import com.github.dwursteisen.minigdx.math.Vector3
 
 data class ModelDescription(
@@ -158,7 +158,12 @@ object ModelReader {
                 Vertice(
                     position = Vector3(v.position.x, v.position.y, v.position.z),
                     normal = Vector3(v.normal.x, v.normal.y, v.normal.z),
-                    color = Color(v.color.r, v.color.g, v.color.b, v.color.a),
+                    color = Color(
+                        v.color.r,
+                        v.color.g,
+                        v.color.b,
+                        v.color.a
+                    ),
                     influence = v.influence.toInfluence(boneIdToJointIds)
                 )
             }.toTypedArray(),

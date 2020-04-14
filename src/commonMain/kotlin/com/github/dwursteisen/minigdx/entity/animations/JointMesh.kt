@@ -2,14 +2,14 @@ package com.github.dwursteisen.minigdx.entity.animations
 
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.Colors
-import com.github.dwursteisen.minigdx.entity.DrawType
-import com.github.dwursteisen.minigdx.entity.Influence
-import com.github.dwursteisen.minigdx.entity.JointsIndex
-import com.github.dwursteisen.minigdx.entity.Mesh
-import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
+import com.github.dwursteisen.minigdx.entity.primitives.Colors
+import com.github.dwursteisen.minigdx.entity.primitives.DrawType
+import com.github.dwursteisen.minigdx.entity.primitives.Influence
+import com.github.dwursteisen.minigdx.entity.primitives.JointsIndex
+import com.github.dwursteisen.minigdx.entity.primitives.Mesh
+import com.github.dwursteisen.minigdx.entity.primitives.Vertice
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class JointMesh(

@@ -76,7 +76,7 @@ object DefaultShaders {
         }
     """.trimIndent()
 
-    fun create(): ShaderProgramExecutor {
+    fun create3d(): ShaderProgramExecutor {
         val program = ShaderUtils.createShaderProgram(vertexShader, fragmentShader)
 
         program.createAttrib("aVertexPosition")
@@ -96,5 +96,9 @@ object DefaultShaders {
         program.createUniform("uJointTransformationMatrix")
 
         return ShaderProgramExecutor(program)
+    }
+
+    fun create2d(): ShaderProgramExecutor {
+        TODO("Not yet implemented")
     }
 }

@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.entity
+package com.github.dwursteisen.minigdx.entity.primitives
 
 import kotlin.random.Random
 
@@ -7,7 +7,12 @@ object Colors {
     private val random = Random(0)
 
     fun random(alpha: Float = 1.0f): Color {
-        return Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), alpha)
+        return Color(
+            random.nextFloat(),
+            random.nextFloat(),
+            random.nextFloat(),
+            alpha
+        )
     }
 
     val WHITE = Color(1, 1, 1, 1)

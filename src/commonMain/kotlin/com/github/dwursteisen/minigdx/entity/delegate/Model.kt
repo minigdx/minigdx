@@ -5,11 +5,11 @@ import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.DrawType
-import com.github.dwursteisen.minigdx.entity.Mesh
-import com.github.dwursteisen.minigdx.entity.Vertice
 import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
+import com.github.dwursteisen.minigdx.entity.primitives.DrawType
+import com.github.dwursteisen.minigdx.entity.primitives.Mesh
+import com.github.dwursteisen.minigdx.entity.primitives.Vertice
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
