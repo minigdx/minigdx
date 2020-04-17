@@ -5,7 +5,7 @@ object DefaultShaders {
     val MAX_JOINTS = 20
 
     //language=GLSL
-    val vertexShader = """
+    private val vertexShader = """
         #ifdef GL_ES
         precision highp float;
         #endif
@@ -61,7 +61,8 @@ object DefaultShaders {
         }
     """.trimIndent()
 
-    val fragmentShader = """
+    //language=GLSL
+    private val fragmentShader = """
         #ifdef GL_ES
         precision highp float;
         #endif
@@ -73,6 +74,54 @@ object DefaultShaders {
               // see vertex shader
               // gl_FragColor = vColor;
               gl_FragColor = vec4(vColor.rgb * vLighting.rgb, vColor.a);
+        }
+    """.trimIndent()
+
+    //language=GLSL
+    private val vertexShader2d = """
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+        
+        attribute vec2 aPosition;
+        attribute vec2 aTexCoord;
+
+        uniform vec2 uResolution;
+
+        varying vec2 vTexCoord;
+
+        void main() {
+           // convert the rectangle from pixels to 0.0 to 1.0
+           vec2 zeroToOne = aPosition / uResolution;
+
+           // convert from 0->1 to 0->2
+           vec2 zeroToTwo = zeroToOne * 2.0;
+
+           // convert from 0->2 to -1->+1 (clipspace)
+           vec2 clipSpace = zeroToTwo - 1.0;
+
+           gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+
+           // pass the texCoord to the fragment shader
+           // The GPU will interpolate this value between points.
+           vTexCoord = aTexCoord;
+        }
+    """.trimIndent()
+
+    //language=GLSL
+    private val fragmentShader2d = """
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+        
+        // our texture
+        uniform sampler2D uTexture;
+
+        // the texCoords passed in from the vertex shader.
+        varying vec2 vTexCoord;
+
+        void main() {
+           gl_FragColor = texture2D(uTexture, vTexCoord);
         }
     """.trimIndent()
 
@@ -92,13 +141,19 @@ object DefaultShaders {
 
         program.createUniform("uNormalMatrix")
         program.createUniform("uArmature")
-        // FIXME: https://www.gamedev.net/forums/topic/658191-webgl-how-to-send-an-array-of-matrices-to-the-vertex-shader/
         program.createUniform("uJointTransformationMatrix")
 
         return ShaderProgramExecutor(program)
     }
 
     fun create2d(): ShaderProgramExecutor {
-        TODO("Not yet implemented")
+        val program = ShaderUtils.createShaderProgram(vertexShader2d, fragmentShader2d)
+
+        program.createAttrib("aPosition")
+        program.createAttrib("aTexCoord")
+
+        program.createUniform("uResolution")
+
+        return ShaderProgramExecutor(program)
     }
 }

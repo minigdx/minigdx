@@ -2,10 +2,14 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.file.AnimatedModelLoader
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.ModelLoader
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
+import com.github.dwursteisen.minigdx.file.TextureImage
+import com.github.dwursteisen.minigdx.file.TextureImageLoader
+import com.github.dwursteisen.minigdx.file.TextureLoader
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -42,7 +46,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
             handler = PlatformFileHandler(),
             loaders = mapOf(
                 AnimatedModel::class to AnimatedModelLoader(),
-                Model::class to ModelLoader()
+                Model::class to ModelLoader(),
+                TextureImage::class to TextureImageLoader(),
+                Texture::class to TextureLoader()
             )
         )
     }

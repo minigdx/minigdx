@@ -2,9 +2,11 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.Uint16Array
@@ -54,7 +56,9 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
     }
 
     override fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform {
-        return Uniform(gl.getUniformLocation(shaderProgram.program.delegate, name)!!)
+        val location = gl.getUniformLocation(shaderProgram.program.delegate, name)
+        location ?: throw RuntimeException("Uniform '$name' not created. Check that your shader include this uniform.")
+        return Uniform(location)
     }
 
     override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
@@ -63,6 +67,10 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
 
     override fun uniform1i(uniform: Uniform, data: Int) {
         gl.uniform1i(uniform.uniformLocation, data)
+    }
+
+    override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
+        gl.uniform2f(uniform.uniformLocation, first, second)
     }
 
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {
@@ -138,5 +146,21 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {
         gl.viewport(x, y, width, height)
+    }
+
+    override fun createTexture(): TextureReference {
+        return TextureReference(gl.createTexture()!!)
+    }
+
+    override fun bindTexture(target: Int, textureReference: TextureReference) {
+        gl.bindTexture(target, textureReference.reference)
+    }
+
+    override fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage) {
+        gl.texImage2D(target, level, internalformat, format, type, source.source)
+    }
+
+    override fun generateMipmap(target: Int) {
+        gl.generateMipmap(target)
     }
 }

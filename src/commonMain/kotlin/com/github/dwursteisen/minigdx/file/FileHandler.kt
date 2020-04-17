@@ -6,11 +6,7 @@ import kotlin.reflect.KProperty
 
 interface FileLoader<T> {
 
-    @ExperimentalStdlibApi
-    fun load(filename: String, content: String): T
-
-    @ExperimentalStdlibApi
-    fun load(filename: String, content: ByteArray): T
+    fun load(filename: String, handler: PlatformFileHandler): Content<T>
 }
 
 class UnsupportedType(val type: KClass<*>) : RuntimeException("Unsupported type '${type::class}'")
@@ -87,10 +83,7 @@ class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, 
         if (loader == null) {
             throw UnsupportedType(clazz)
         } else {
-            val content = handler.readData(filename)
-            return content.map {
-                loader.load(filename, it)
-            }
+            return loader.load(filename, handler)
         }
     }
 

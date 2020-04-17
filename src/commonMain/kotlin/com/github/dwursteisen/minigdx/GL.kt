@@ -4,11 +4,13 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 
 typealias Percent = Number
@@ -64,6 +66,10 @@ interface GL {
     fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int)
     fun enableVertexAttribArray(index: Int)
     fun useProgram(shaderProgram: ShaderProgram)
+
+    fun createTexture(): TextureReference
+    fun bindTexture(target: Int, textureReference: TextureReference)
+
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Mat4) =
         uniformMatrix4fv(uniform, transpose, data.toFloatArray())
 
@@ -72,12 +78,17 @@ interface GL {
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
     fun uniform1i(uniform: Uniform, data: Int)
+    fun uniform2f(uniform: Uniform, first: Float, second: Float)
 
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
 
     fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int)
 
     fun viewport(x: Int, y: Int, width: Int, height: Int)
+
+    fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage)
+
+    fun generateMipmap(target: Int)
 
     companion object {
 

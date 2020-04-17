@@ -5,4 +5,6 @@ expect class PlatformFileHandler {
     fun read(filename: String): Content<String>
 
     fun readData(filename: String): Content<ByteArray>
+
+    fun readTextureImage(filename: String): Content<TextureImage>
 }

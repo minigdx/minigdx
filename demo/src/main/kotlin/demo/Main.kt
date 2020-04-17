@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.DemoAnimation2
 import com.github.dwursteisen.minigdx.DemoKey
 import com.github.dwursteisen.minigdx.DemoPlanet
 import com.github.dwursteisen.minigdx.DemoSuzanne
+import com.github.dwursteisen.minigdx.DemoTexture
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 
@@ -26,6 +27,7 @@ class Main {
                 when (args.getOrElse(index + 1) { "" }) {
                     "animation" -> DemoAnimation()
                     "animation2" -> DemoAnimation2()
+                    "2d" -> DemoTexture()
                     "key" -> DemoKey()
                     "suzanne" -> DemoSuzanne()
                     else -> DemoPlanet()

@@ -133,6 +133,8 @@ kotlin {
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
+
+                implementation("org.l33tlabs.twl:pngdecoder:1.0")
             }
         }
 

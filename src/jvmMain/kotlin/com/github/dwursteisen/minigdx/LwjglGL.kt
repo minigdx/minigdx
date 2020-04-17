@@ -2,12 +2,15 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
+import org.lwjgl.opengl.GL30.glBindTexture
 import org.lwjgl.opengl.GL30.glBufferData
 import org.lwjgl.opengl.GL30.glClear
 import org.lwjgl.opengl.GL30.glClearColor
@@ -22,6 +25,8 @@ import org.lwjgl.opengl.GL30.glDrawElements
 import org.lwjgl.opengl.GL30.glEnable
 import org.lwjgl.opengl.GL30.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL30.glGenBuffers
+import org.lwjgl.opengl.GL30.glGenTextures
+import org.lwjgl.opengl.GL30.glGenerateMipmap
 import org.lwjgl.opengl.GL30.glGetAttribLocation
 import org.lwjgl.opengl.GL30.glGetProgramInfoLog
 import org.lwjgl.opengl.GL30.glGetProgrami
@@ -29,7 +34,9 @@ import org.lwjgl.opengl.GL30.glGetShaderInfoLog
 import org.lwjgl.opengl.GL30.glGetShaderi
 import org.lwjgl.opengl.GL30.glLinkProgram
 import org.lwjgl.opengl.GL30.glShaderSource
+import org.lwjgl.opengl.GL30.glTexImage2D
 import org.lwjgl.opengl.GL30.glUniform1i
+import org.lwjgl.opengl.GL30.glUniform2f
 import org.lwjgl.opengl.GL30.glUniformMatrix4fv
 import org.lwjgl.opengl.GL30.glUseProgram
 import org.lwjgl.opengl.GL30.glVertexAttribPointer
@@ -160,6 +167,10 @@ class LwjglGL(override val screen: Screen) : GL {
         glUniform1i(uniform.address, data)
     }
 
+    override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
+        glUniform2f(uniform.address, first, second)
+    }
+
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
         glDrawArrays(mask, offset, vertexCount)
     }
@@ -170,5 +181,38 @@ class LwjglGL(override val screen: Screen) : GL {
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {
         glViewport(x, y, width, height)
+    }
+
+    override fun createTexture(): TextureReference {
+        return TextureReference(glGenTextures())
+    }
+
+    override fun bindTexture(target: Int, textureReference: TextureReference) {
+        glBindTexture(target, textureReference.pointer)
+    }
+
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        type: Int,
+        source: TextureImage
+    ) {
+        glTexImage2D(
+            target,
+            level,
+            internalformat,
+            source.width,
+            source.height,
+            0,
+            source.glFormat,
+            source.glType,
+            source.pixels
+        )
+    }
+
+    override fun generateMipmap(target: Int) {
+        glGenerateMipmap(target)
     }
 }

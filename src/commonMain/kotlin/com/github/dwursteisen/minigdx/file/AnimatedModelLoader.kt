@@ -7,12 +7,7 @@ import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
 class AnimatedModelLoader : FileLoader<AnimatedModel> {
 
     @ExperimentalStdlibApi
-    override fun load(filename: String, content: String): AnimatedModel {
-        return load(filename, content.encodeToByteArray())
-    }
-
-    @ExperimentalStdlibApi
-    override fun load(filename: String, content: ByteArray): AnimatedModel {
+    private fun load(filename: String, content: ByteArray): AnimatedModel {
         val description = if (filename.endsWith(".json")) {
             ModelReader.fromJson(content)
         } else {
@@ -30,5 +25,10 @@ class AnimatedModelLoader : FileLoader<AnimatedModel> {
             model = description.model,
             drawJoint = true
         )
+    }
+
+    @ExperimentalStdlibApi
+    override fun load(filename: String, handler: PlatformFileHandler): Content<AnimatedModel> {
+        return handler.readData(filename).map { load(filename, it) }
     }
 }
