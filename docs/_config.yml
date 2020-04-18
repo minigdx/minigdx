@@ -49,9 +49,19 @@ features                                  :
     demo                                  : suzanne
 
   - title                                 : Armature animations
-    description                           : Create 3D animation using armatures
+    description                           : Create 3D animation using armatures.
     fontawesome_icon_name                 : play-circle
     demo                                  : animation
+
+  - title                                 : 2D support
+    description                           : Add 2D elements in your game.
+    fontawesome_icon_name                 : dice-two
+    demo                                  : 2d
+
+  - title                                 : Key and Touch input support
+    description                           : Support key and touch action from keyboard or from mobile screen.
+    fontawesome_icon_name                 : keyboard
+    demo                                  : key
 
   - title                                 : # New Feature Title
     description                           : # New Feature Description

@@ -9,7 +9,7 @@ import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
-class Texture(source: TextureImage) : CanDraw, CanMove by Movable() {
+class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() {
 
     private val texture = gl.createTexture()
 
@@ -35,13 +35,20 @@ class Texture(source: TextureImage) : CanDraw, CanMove by Movable() {
                 )
             ), GL.STATIC_DRAW
         )
+    }
 
-        // FIXME: quand il y a des modifications sur position, … ça doit être modifié
-        val x1 = 0f
-        val y1 = 0f
-        // FIXME: check que les dimensions sont correcte
-        val x2 = source.width.toFloat()
-        val y2 = source.height.toFloat()
+    override fun draw(shader: ShaderProgram) {
+        // FIXME: support rotation
+        //   https://webglfundamentals.org/webgl/lessons/fr/webgl-2d-rotation.html
+
+        gl.enableVertexAttribArray(shader.getAttrib("aPosition"))
+        gl.bindBuffer(GL.ARRAY_BUFFER, positionBuffer)
+
+        val x1 = position.x
+        val y1 = position.y
+
+        val x2 = position.x + source.width.toFloat() * scale.x
+        val y2 = position.y + source.height.toFloat() * scale.y
 
         gl.bindBuffer(GL.ARRAY_BUFFER, positionBuffer)
         gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(
@@ -54,11 +61,7 @@ class Texture(source: TextureImage) : CanDraw, CanMove by Movable() {
                 x2, y2
             )
         ), GL.STATIC_DRAW)
-    }
 
-    override fun draw(shader: ShaderProgram) {
-        gl.enableVertexAttribArray(shader.getAttrib("aPosition"))
-        gl.bindBuffer(GL.ARRAY_BUFFER, positionBuffer)
         gl.vertexAttribPointer(
             index = shader.getAttrib("aPosition"),
             size = 2,
