@@ -174,7 +174,7 @@ project.tasks.create<Copy>("docs").apply {
     // package the application
     dependsOn("jsBrowserProductionWebpack")
     from("build/distributions/") {
-        include("*.js", "*.protobuf", "*.png")
+        include("*.js", "*.protobuf", "*.png", "*.fnt")
     }
     into("docs")
 }
