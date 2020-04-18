@@ -8,6 +8,7 @@ class Main {
 
     companion object {
 
+        @ExperimentalStdlibApi
         @JvmStatic
         fun main(args: Array<String>) {
             configuration(

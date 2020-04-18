@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.entity.models.Camera
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
+import com.github.dwursteisen.minigdx.entity.text.Text
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 import kotlin.math.cos
@@ -20,15 +21,29 @@ class DemoTexture : Game {
     @ExperimentalStdlibApi
     private val texture: Texture by fileHandler.get("f-texture.png")
 
+    @ExperimentalStdlibApi
+    // private val angel: AngelCode by fileHandler.get("font.fnt")
+    // private val font: Texture by fileHandler.get("font.png")
+
     private var time = 0f
+
+    private val text: Text by fileHandler.get("font")
+
+    override fun create() {
+        text.text = "Hello world!"
+    }
 
     override fun render(delta: Seconds) {
         time += delta
         clear(0f, 0f, 0f)
+
         dd.render {
             texture.setTranslate(100f + 20f * cos(time), 100f, 100f)
             texture.setScale(x = cos(time), y = sin(time))
             texture.draw(it)
+
+            text.setTranslate(100f + 40f * -cos(time), 100f + 40f * sin(time), 100f)
+            text.draw(it)
         }
     }
 }

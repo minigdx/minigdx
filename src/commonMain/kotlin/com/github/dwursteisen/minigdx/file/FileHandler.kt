@@ -9,7 +9,9 @@ interface FileLoader<T> {
     fun load(filename: String, handler: PlatformFileHandler): Content<T>
 }
 
-class UnsupportedType(val type: KClass<*>) : RuntimeException("Unsupported type '${type::class}'")
+class UnsupportedTypeException(val type: KClass<*>) : RuntimeException("Unsupported type '${type::class}'")
+class EarlyAccessException(val filename: String, val property: String) :
+    RuntimeException("Content of file '$filename' accessed before being loaded by the property '$property'!")
 
 open class Content<R>(val filename: String) {
 
@@ -18,17 +20,11 @@ open class Content<R>(val filename: String) {
     private var content: R? = null
     private var onLoaded: List<(R) -> Unit> = emptyList()
 
-    val id = index++
-
-    companion object {
-        var index: Int = 0
-    }
-
     operator fun getValue(thisRef: Any?, property: KProperty<*>): R {
         if (isLoaded) {
             return content!!
         } else {
-            throw RuntimeException("$id Content of file '$filename' accessed before being loaded by the property '${property.name}'!")
+            throw EarlyAccessException(filename, property.name)
         }
     }
 
@@ -42,6 +38,17 @@ open class Content<R>(val filename: String) {
         val result = Content<T>(filename)
         this.onLoaded += {
             result.load(block(it))
+        }
+        if (isLoaded) {
+            onLoaded.forEach { it(content!!) }
+        }
+        return result
+    }
+
+    fun <T> flatMap(block: (R) -> Content<T>): Content<T> {
+        val result = Content<T>(filename)
+        this.onLoaded += { r ->
+            val unit = block(r).map { t -> result.load(t) }
         }
         if (isLoaded) {
             onLoaded.forEach { it(content!!) }
@@ -81,7 +88,7 @@ class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, 
     private fun load(filename: String, clazz: KClass<*>): Content<*> {
         val loader = loaders[clazz]
         if (loader == null) {
-            throw UnsupportedType(clazz)
+            throw UnsupportedTypeException(clazz)
         } else {
             return loader.load(filename, handler)
         }

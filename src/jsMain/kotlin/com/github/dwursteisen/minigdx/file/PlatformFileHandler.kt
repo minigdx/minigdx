@@ -12,8 +12,9 @@ import org.w3c.xhr.XMLHttpRequestResponseType
 
 actual class PlatformFileHandler {
 
+    @ExperimentalStdlibApi
     actual fun read(filename: String): Content<String> {
-        return asyncContent(filename) { it.contentToString() }
+        return asyncContent(filename) { it.decodeToString() }
     }
 
     @ExperimentalStdlibApi

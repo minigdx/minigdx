@@ -20,35 +20,43 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() 
         gl.bindTexture(GL.TEXTURE_2D, texture)
         gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, source)
         gl.generateMipmap(GL.TEXTURE_2D)
-
-        // FIXME: quand il y a des modifications sur position, … ça doit être modifié
-        gl.bindBuffer(GL.ARRAY_BUFFER, texCoordBuffer)
-        gl.bufferData(
-            GL.ARRAY_BUFFER, DataSource.FloatDataSource(
-                floatArrayOf(
-                    0.0f, 0.0f,
-                    1.0f, 0.0f,
-                    0.0f, 1.0f,
-                    0.0f, 1.0f,
-                    1.0f, 0.0f,
-                    1.0f, 1.0f
-                )
-            ), GL.STATIC_DRAW
-        )
     }
 
     override fun draw(shader: ShaderProgram) {
-        // FIXME: support rotation
+        draw(
+            shader = shader,
+            x = position.x,
+            y = position.y,
+            width = source.width.toFloat(),
+            height = source.height.toFloat(),
+            textureX = 0,
+            textureY = 0,
+            textureWidth = source.width,
+            textureHeight = source.height
+        )
+    }
+
+    fun draw(
+        shader: ShaderProgram,
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        textureX: Int,
+        textureY: Int,
+        textureWidth: Int,
+        textureHeight: Int
+    ) {
+        gl.bindTexture(GL.TEXTURE_2D, texture)
+
         //   https://webglfundamentals.org/webgl/lessons/fr/webgl-2d-rotation.html
-
         gl.enableVertexAttribArray(shader.getAttrib("aPosition"))
-        gl.bindBuffer(GL.ARRAY_BUFFER, positionBuffer)
 
-        val x1 = position.x
-        val y1 = position.y
+        val x1 = x
+        val y1 = y
 
-        val x2 = position.x + source.width.toFloat() * scale.x
-        val y2 = position.y + source.height.toFloat() * scale.y
+        val x2 = x + width * scale.x
+        val y2 = y + height * scale.y
 
         gl.bindBuffer(GL.ARRAY_BUFFER, positionBuffer)
         gl.bufferData(GL.ARRAY_BUFFER, DataSource.FloatDataSource(
@@ -73,6 +81,24 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() 
 
         gl.enableVertexAttribArray(shader.getAttrib("aTexCoord"))
         gl.bindBuffer(GL.ARRAY_BUFFER, texCoordBuffer)
+
+        val tx = textureX / source.width.toFloat()
+        val ty = textureY / source.height.toFloat()
+        val tw = textureWidth / source.width.toFloat()
+        val th = textureHeight / source.height.toFloat()
+        gl.bufferData(
+            GL.ARRAY_BUFFER, DataSource.FloatDataSource(
+                floatArrayOf(
+                    tx, ty,
+                    tx + tw, ty,
+                    tx, ty + th,
+                    tx, ty + th,
+                    tx + tw, ty,
+                    tx + tw, ty + th
+                )
+            ), GL.STATIC_DRAW
+        )
+
         gl.vertexAttribPointer(
             index = shader.getAttrib("aTexCoord"),
             size = 2,
