@@ -9,13 +9,15 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
 class Text(
     var text: String = "",
-    var size: Float = 16f,
     private val angelCode: AngelCode,
     private val fontSprite: Texture
 ) : CanMove by Movable(), CanDraw {
 
     private var xOffset = 0f
     private var yOffset = 0f
+
+    private val scaleW = 2f
+    private val scaleH = 2f
 
     override fun draw(shader: ShaderProgram) {
         xOffset = 0f
@@ -29,7 +31,7 @@ class Text(
     private fun drawCharacter(shader: ShaderProgram, char: Char) {
         if (char == '\n') {
             xOffset = 0f
-            yOffset += size
+            yOffset += angelCode.info.lineHeight * scaleH
             return
         }
 
@@ -39,11 +41,11 @@ class Text(
         fontSprite.draw(
             shader,
             position.x + xOffset, position.y + yOffset,
-            size, size,
+            angelCode.info.size * scaleW, angelCode.info.size * scaleH,
             code.x, code.y,
             code.width, code.height
         )
 
-        xOffset += size
+        xOffset += (code.xadvance + code.xoffset) * scaleW
     }
 }

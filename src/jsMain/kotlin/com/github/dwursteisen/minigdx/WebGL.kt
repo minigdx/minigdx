@@ -31,6 +31,10 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         gl.enable(mask)
     }
 
+    override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
+        gl.blendFunc(sfactor, dfactor)
+    }
+
     override fun depthFunc(target: ByteMask) {
         gl.depthFunc(target)
     }

@@ -47,6 +47,9 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() 
         textureWidth: Int,
         textureHeight: Int
     ) {
+        gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
+        gl.enable(GL.BLEND)
+
         gl.bindTexture(GL.TEXTURE_2D, texture)
 
         //   https://webglfundamentals.org/webgl/lessons/fr/webgl-2d-rotation.html

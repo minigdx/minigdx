@@ -11,6 +11,7 @@ import com.github.dwursteisen.minigdx.shaders.Uniform
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
 import org.lwjgl.opengl.GL30.glBindTexture
+import org.lwjgl.opengl.GL30.glBlendFunc
 import org.lwjgl.opengl.GL30.glBufferData
 import org.lwjgl.opengl.GL30.glClear
 import org.lwjgl.opengl.GL30.glClearColor
@@ -59,6 +60,10 @@ class LwjglGL(override val screen: Screen) : GL {
 
     override fun enable(mask: ByteMask) {
         glEnable(mask)
+    }
+
+    override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
+        glBlendFunc(sfactor, dfactor)
     }
 
     override fun createProgram(): ShaderProgram {

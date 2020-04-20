@@ -41,6 +41,7 @@ interface GL {
     fun clear(mask: ByteMask)
     fun clearDepth(depth: Number)
     fun enable(mask: ByteMask)
+    fun blendFunc(sfactor: ByteMask, dfactor: ByteMask)
     fun createProgram(): ShaderProgram
     fun getAttribLocation(shaderProgram: ShaderProgram, name: String): Int
     fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform

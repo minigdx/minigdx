@@ -23,7 +23,10 @@ class DemoTexture : Game {
     private val text: Text by fileHandler.get("font")
 
     override fun create() {
-        text.text = "Hello world!"
+        text.text = """
+            ABCDEFGHIJKLMONPQRSTUVWXYZ
+            abcdefghijklmonpqrstuvwxyz
+        """.trimIndent()
     }
 
     override fun render(delta: Seconds) {
