@@ -87,6 +87,9 @@ object DefaultShaders {
         attribute vec2 aTexCoord;
 
         uniform vec2 uResolution;
+        uniform mat4 uViewMatrix;
+        uniform mat4 uProjectionMatrix;
+        
 
         varying vec2 vTexCoord;
 
@@ -100,7 +103,7 @@ object DefaultShaders {
            // convert from 0->2 to -1->+1 (clipspace)
            vec2 clipSpace = zeroToTwo - 1.0;
 
-           gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+           gl_Position = uProjectionMatrix * uViewMatrix * vec4(clipSpace * vec2(1, -1), 0, 1);
 
            // pass the texCoord to the fragment shader
            // The GPU will interpolate this value between points.
@@ -153,6 +156,9 @@ object DefaultShaders {
         program.createAttrib("aTexCoord")
 
         program.createUniform("uResolution")
+
+        program.createUniform("uViewMatrix")
+        program.createUniform("uProjectionMatrix")
 
         return ShaderProgramExecutor(program)
     }

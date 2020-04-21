@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx.entity.models
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
-import com.curiouscreature.kotlin.math.perspective
 import com.curiouscreature.kotlin.math.transpose
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.Entity
@@ -12,7 +11,7 @@ import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
-class Camera(
+class Camera3D(
     var projectionMatrix: Mat4
 ) : Entity, CanMove by Movable() {
 
@@ -40,15 +39,26 @@ class Camera(
 
     companion object {
 
-        fun create(fov: Number, aspect: Number, near: Number, far: Number): Camera {
+        fun perspective(fov: Number, aspect: Number, near: Number, far: Number): Camera3D {
             // en radians
-            val projectionMatrix = perspective(
+            val projectionMatrix = com.curiouscreature.kotlin.math.perspective(
                 fov = fov.toFloat(),
                 aspect = aspect.toFloat(),
                 near = near.toFloat(),
                 far = far.toFloat()
             )
-            return Camera(
+            return Camera3D(
+                projectionMatrix = projectionMatrix
+            )
+        }
+
+        fun orthographic(): Camera3D {
+            val projectionMatrix = com.curiouscreature.kotlin.math.ortho(
+                l = 0f, r = 10f,
+                b = 0f, t = 10f,
+                n = 0f, f = 10f
+            )
+            return Camera3D(
                 projectionMatrix = projectionMatrix
             )
         }
