@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.demo.DemoAnimation
 import com.github.dwursteisen.minigdx.demo.DemoAnimation2
+import com.github.dwursteisen.minigdx.demo.DemoGame
 import com.github.dwursteisen.minigdx.demo.DemoKey
 import com.github.dwursteisen.minigdx.demo.DemoPlanet
 import com.github.dwursteisen.minigdx.demo.DemoSuzanne
@@ -30,6 +31,7 @@ class Main {
                     "2d" -> DemoTexture()
                     "key" -> DemoKey()
                     "suzanne" -> DemoSuzanne()
+                    "game" -> DemoGame()
                     else -> DemoPlanet()
                 }
             }

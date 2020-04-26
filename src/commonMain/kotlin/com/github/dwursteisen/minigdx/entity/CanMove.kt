@@ -28,7 +28,7 @@ interface CanMove {
     fun setRotationY(angle: Degree): CanMove
     fun setRotationZ(angle: Degree): CanMove
 
-    fun translate(x: Coordinate, y: Coordinate, z: Coordinate): CanMove
+    fun translate(x: Coordinate = 0f, y: Coordinate = 0f, z: Coordinate = 0f): CanMove
     fun translate(move: Vector3): CanMove = translate(move.x, move.y, move.z)
 
     fun setTranslate(x: Coordinate, y: Coordinate, z: Coordinate): CanMove

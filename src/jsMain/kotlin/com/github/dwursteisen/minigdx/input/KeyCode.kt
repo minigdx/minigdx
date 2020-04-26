@@ -16,7 +16,7 @@ val Key.keyCode: Int
             Key.CAPS_LOCK -> TODO()
             Key.ESCAPE -> TODO()
             Key.PAGE_UP -> TODO()
-            Key.SPACE -> TODO()
+            Key.SPACE -> 32
             Key.PAGE_DOWN -> TODO()
             Key.END -> TODO()
             Key.HOME -> TODO()
