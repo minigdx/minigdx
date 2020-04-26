@@ -1,5 +1,8 @@
-package com.github.dwursteisen.minigdx
+package com.github.dwursteisen.minigdx.demo
 
+import com.github.dwursteisen.minigdx.Game
+import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.WorldSize
 import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.models.Landmark

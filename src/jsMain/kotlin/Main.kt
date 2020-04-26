@@ -1,12 +1,12 @@
-import com.github.dwursteisen.minigdx.DemoAnimation
-import com.github.dwursteisen.minigdx.DemoAnimation2
-import com.github.dwursteisen.minigdx.DemoKey
-import com.github.dwursteisen.minigdx.DemoPlanet
-import com.github.dwursteisen.minigdx.DemoSuzanne
-import com.github.dwursteisen.minigdx.DemoTexture
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.configuration
+import com.github.dwursteisen.minigdx.demo.DemoAnimation
+import com.github.dwursteisen.minigdx.demo.DemoAnimation2
+import com.github.dwursteisen.minigdx.demo.DemoKey
+import com.github.dwursteisen.minigdx.demo.DemoPlanet
+import com.github.dwursteisen.minigdx.demo.DemoSuzanne
+import com.github.dwursteisen.minigdx.demo.DemoTexture
 import kotlin.browser.window
 import org.w3c.dom.url.URLSearchParams
 

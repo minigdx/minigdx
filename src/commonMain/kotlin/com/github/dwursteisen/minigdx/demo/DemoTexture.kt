@@ -1,10 +1,15 @@
-package com.github.dwursteisen.minigdx
+package com.github.dwursteisen.minigdx.demo
 
+import com.github.dwursteisen.minigdx.Game
+import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.WorldSize
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.Text
+import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 import kotlin.math.cos
 import kotlin.math.sin
@@ -12,7 +17,8 @@ import kotlin.math.sin
 @ExperimentalStdlibApi
 class DemoTexture : Game {
 
-    override val worldSize: WorldSize = WorldSize(200, 200)
+    override val worldSize: WorldSize =
+        WorldSize(200, 200)
 
     private val camera = Camera2D.orthographic(
         width = 5f, height = 5f
