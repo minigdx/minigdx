@@ -12,8 +12,8 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 class AnimatedModel(
     animation: Animation,
     model: Model,
-    private val animations: Map<String, Animation>,
-    private val armature: Armature = model.pose!!,
+    val animations: Map<String, Animation>,
+    val armature: Armature = model.pose!!,
     var drawJoint: Boolean = false
 ) : Entity, CanDraw, CanMove by model.mesh,
     CanAnimate {

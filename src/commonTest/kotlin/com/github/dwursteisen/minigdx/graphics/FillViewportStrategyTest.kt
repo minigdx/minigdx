@@ -7,9 +7,11 @@ import com.github.dwursteisen.minigdx.Screen
 import com.github.dwursteisen.minigdx.WorldSize
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -43,6 +45,10 @@ class FillViewportStrategyTest {
 
             override fun enable(mask: ByteMask) {
                 TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
+                TODO("Not yet implemented")
             }
 
             override fun createProgram(): ShaderProgram {
@@ -136,11 +142,23 @@ class FillViewportStrategyTest {
                 TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
             }
 
+            override fun createTexture(): TextureReference {
+                TODO("Not yet implemented")
+            }
+
+            override fun bindTexture(target: Int, textureReference: TextureReference) {
+                TODO("Not yet implemented")
+            }
+
             override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
                 TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
             }
 
             override fun uniform1i(uniform: Uniform, data: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
                 TODO("Not yet implemented")
             }
 
@@ -154,6 +172,21 @@ class FillViewportStrategyTest {
 
             override fun viewport(x: Int, y: Int, width: Int, height: Int) {
                 viewportCall = ViewportCall(x, y, width, height)
+            }
+
+            override fun texImage2D(
+                target: Int,
+                level: Int,
+                internalformat: Int,
+                format: Int,
+                type: Int,
+                source: TextureImage
+            ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun generateMipmap(target: Int) {
+                TODO("Not yet implemented")
             }
         }
     }

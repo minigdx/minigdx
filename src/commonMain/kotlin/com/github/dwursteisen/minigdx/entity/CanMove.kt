@@ -31,7 +31,7 @@ interface CanMove {
     fun translate(x: Coordinate = 0f, y: Coordinate = 0f, z: Coordinate = 0f): CanMove
     fun translate(move: Vector3): CanMove = translate(move.x, move.y, move.z)
 
-    fun setTranslate(x: Coordinate, y: Coordinate, z: Coordinate): CanMove
+    fun setTranslate(x: Coordinate = position.x, y: Coordinate = position.y, z: Coordinate = position.z): CanMove
     fun setTranslate(move: Vector3): CanMove = setTranslate(move.x, move.y, move.z)
 
     fun scale(x: Factor = scale.x, y: Factor = scale.y, z: Factor = scale.z): CanMove

@@ -74,6 +74,7 @@ kotlin {
 
     jvm {
         this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
+        this.compilations.getByName("test").kotlinOptions.jvmTarget = "1.8"
     }
 /*
     macosX64() {
