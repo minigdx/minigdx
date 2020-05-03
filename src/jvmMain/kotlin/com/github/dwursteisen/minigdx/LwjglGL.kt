@@ -134,10 +134,6 @@ class LwjglGL(override val screen: Screen) : GL {
         glBindBuffer(target, buffer.address)
     }
 
-    override fun bufferData(target: ByteMask, size: Int, usage: Int) {
-        glBufferData(target, size.toLong(), usage)
-    }
-
     override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
         when (data) {
             is DataSource.FloatDataSource -> glBufferData(target, data.floats, usage)

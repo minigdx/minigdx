@@ -49,6 +49,20 @@ android {
         exclude("META-INF/ASL2.0")
         exclude("META-INF/*.kotlin_module")
     }
+
+    // Configure only for each module that uses Java 8
+    // language features (either in its source code or
+    // through dependencies).
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 kotlin {
@@ -142,6 +156,12 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                implementation("org.l33tlabs.twl:pngdecoder:1.0")
             }
         }
 

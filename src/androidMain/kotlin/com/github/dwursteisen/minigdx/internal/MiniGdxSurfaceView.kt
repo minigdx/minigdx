@@ -10,6 +10,7 @@ import com.github.dwursteisen.minigdx.viewport
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
+@ExperimentalStdlibApi
 class MiniGdxSurfaceView(context: Context) : GLSurfaceView(context) {
 
     init {

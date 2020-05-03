@@ -61,7 +61,6 @@ interface GL {
     fun getProgramInfoLog(shader: ShaderProgram): String
     fun createBuffer(): Buffer
     fun bindBuffer(target: ByteMask, buffer: Buffer)
-    fun bufferData(target: ByteMask, size: Int, usage: Int)
     fun bufferData(target: ByteMask, data: DataSource, usage: Int)
     fun depthFunc(target: ByteMask)
     fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int)

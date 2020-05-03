@@ -2,6 +2,8 @@ package com.github.dwursteisen.minigdx
 
 import android.opengl.GLES20.glAttachShader
 import android.opengl.GLES20.glBindBuffer
+import android.opengl.GLES20.glBindTexture
+import android.opengl.GLES20.glBlendFunc
 import android.opengl.GLES20.glBufferData
 import android.opengl.GLES20.glClear
 import android.opengl.GLES20.glClearColor
@@ -16,6 +18,8 @@ import android.opengl.GLES20.glDrawElements
 import android.opengl.GLES20.glEnable
 import android.opengl.GLES20.glEnableVertexAttribArray
 import android.opengl.GLES20.glGenBuffers
+import android.opengl.GLES20.glGenTextures
+import android.opengl.GLES20.glGenerateMipmap
 import android.opengl.GLES20.glGetAttribLocation
 import android.opengl.GLES20.glGetProgramInfoLog
 import android.opengl.GLES20.glGetProgramiv
@@ -24,16 +28,20 @@ import android.opengl.GLES20.glGetShaderiv
 import android.opengl.GLES20.glGetUniformLocation
 import android.opengl.GLES20.glLinkProgram
 import android.opengl.GLES20.glShaderSource
+import android.opengl.GLES20.glTexImage2D
 import android.opengl.GLES20.glUniform1i
+import android.opengl.GLES20.glUniform2f
 import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
 import android.opengl.GLES20.glViewport
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 import java.nio.DoubleBuffer
 import java.nio.FloatBuffer
@@ -61,6 +69,10 @@ class AndroidGL(override val screen: Screen) : GL {
 
     override fun enable(mask: ByteMask) {
         glEnable(mask)
+    }
+
+    override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
+        glBlendFunc(sfactor, dfactor)
     }
 
     override fun createProgram(): ShaderProgram {
@@ -138,10 +150,6 @@ class AndroidGL(override val screen: Screen) : GL {
         glBindBuffer(target, buffer.address)
     }
 
-    override fun bufferData(target: ByteMask, size: Int, usage: Int) {
-        TODO("Not supported")
-    }
-
     override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
         val buffer: java.nio.Buffer = when (data) {
             is DataSource.FloatDataSource -> data.floats.asBuffer()
@@ -176,6 +184,16 @@ class AndroidGL(override val screen: Screen) : GL {
         glUseProgram(shaderProgram.program.address)
     }
 
+    override fun createTexture(): TextureReference {
+        val ints = intArrayOf(0)
+        glGenTextures(1, ints, 0)
+        return TextureReference(pointer = ints[0])
+    }
+
+    override fun bindTexture(target: Int, textureReference: TextureReference) {
+        glBindTexture(target, textureReference.pointer)
+    }
+
     override fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>) {
         // divided by 16 took from libgdx.
         glUniformMatrix4fv(uniform.address, data.size / 16, transpose, data.toFloatArray(), 0)
@@ -183,6 +201,10 @@ class AndroidGL(override val screen: Screen) : GL {
 
     override fun uniform1i(uniform: Uniform, data: Int) {
         glUniform1i(uniform.address, data)
+    }
+
+    override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
+        glUniform2f(uniform.address, first, second)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
@@ -195,5 +217,30 @@ class AndroidGL(override val screen: Screen) : GL {
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {
         glViewport(x, y, width, height)
+    }
+
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        type: Int,
+        source: TextureImage
+    ) {
+        glTexImage2D(
+            target,
+            level,
+            internalformat,
+            source.width,
+            source.height,
+            0,
+            format,
+            type,
+            source.pixels
+        )
+    }
+
+    override fun generateMipmap(target: Int) {
+        glGenerateMipmap(target)
     }
 }

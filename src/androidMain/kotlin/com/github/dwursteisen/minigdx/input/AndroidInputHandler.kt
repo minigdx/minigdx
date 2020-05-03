@@ -28,7 +28,7 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
     }
 
     private fun onTouch(touchSignal: TouchSignal, pointerId: Int, event: MotionEvent) {
-        when (event.action and MotionEvent.ACTION_POINTER_INDEX_MASK) {
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 // down
                 touchManager.onTouchDown(touchSignal, event.getX(pointerId), event.getY(pointerId))

@@ -125,10 +125,6 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         gl.bindBuffer(target, buffer.delegate)
     }
 
-    override fun bufferData(target: ByteMask, size: Int, usage: Int) {
-        gl.bufferData(target, size, usage)
-    }
-
     override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
         val converted = when (data) {
             is DataSource.FloatDataSource -> Float32Array(data.floats.toTypedArray())
