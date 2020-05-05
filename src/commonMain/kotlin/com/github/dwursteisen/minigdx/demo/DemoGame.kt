@@ -16,6 +16,7 @@ import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.input.TouchSignal
 import com.github.dwursteisen.minigdx.inputs
+import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
 class Player(private val model: Cube = Cube("player")) : CanMove by model, CanDraw by model {
@@ -95,6 +96,8 @@ class DemoGame : Game {
 
     private val model by fileHandler.get<Model>("monkey.protobuf")
 
+    private val background by fileHandler.get<Model>("montains.protobuf")
+
     private val text by fileHandler.get<Text>("font")
 
     private val player = Player()
@@ -106,6 +109,10 @@ class DemoGame : Game {
     override fun create() {
         camera.translate(0f, 0f, -50f)
         player.setTranslate(-10f, -10f, 0f)
+        background
+            .translate(y = -20f, z = 10f)
+            .rotateZ(90f)
+            .scale(Vector3(10f, 10f, 10f))
 
         cameraGUI.translate(x = 2.5f, y = 2.5f, z = 0f)
 
@@ -134,10 +141,13 @@ class DemoGame : Game {
         obstacles.forEach { it.update(delta) }
         score.update(delta)
 
+        background.rotateX(5f * delta)
+
         // -- draw --
         shader.render { shader ->
             clear(178 / 255f, 235 / 255f, 242 / 255f)
             camera.draw(shader)
+            background.draw(shader)
             player.draw(shader)
 
             obstacles.forEach { it.draw(shader) }
