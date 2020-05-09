@@ -23,7 +23,7 @@ class AnimatedModelLoader : FileLoader<AnimatedModel> {
             animation = currentAnimation,
             animations = description.animations,
             model = description.model,
-            drawJoint = true
+            drawJoint = false
         )
     }
 

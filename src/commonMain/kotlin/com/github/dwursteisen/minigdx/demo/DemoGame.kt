@@ -5,11 +5,11 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
+import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.behavior.JumpBehavior
 import com.github.dwursteisen.minigdx.entity.delegate.Model
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
-import com.github.dwursteisen.minigdx.entity.models.Cube
 import com.github.dwursteisen.minigdx.entity.text.Text
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.graphics.clear
@@ -19,7 +19,7 @@ import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
-class Player(private val model: Cube = Cube("player")) : CanMove by model, CanDraw by model {
+class Player(private val model: AnimatedModel) : CanMove by model, CanDraw by model {
 
     private val jumpingCharge = JumpBehavior(
         charge = 0.8f,
@@ -30,6 +30,7 @@ class Player(private val model: Cube = Cube("player")) : CanMove by model, CanDr
     )
 
     fun update(delta: Seconds) {
+        model.update(delta)
         jumpingCharge.update(delta)
         if (jumpingCharge.grounded) {
             setTranslate(y = -10f)
@@ -94,14 +95,14 @@ class DemoGame : Game {
 
     private val gui = DefaultShaders.create2d()
 
-    private val obstacles by fileHandler.get("monkey.protobuf", Model::class).map {
-        (0 until 10).map { index ->
+    private val obstacles by fileHandler.get("cactus.protobuf", Model::class).map {
+        (0 until 1).map { index ->
             Obstacle(it.copy()).apply {
                 setTranslate(
                     // put it offscreen
-                    x = 20f + index * 20f,
-                    y = -10f,
-                    z = 0f
+                    y = 20f + index * 20f,
+                    x = -10f,
+                    z = 10f
                 )
             }
         }
@@ -111,7 +112,9 @@ class DemoGame : Game {
 
     private val score by fileHandler.get("font", Text::class).map { Score(it) }
 
-    private val player = Player()
+    private val player by fileHandler.get("dino.protobuf", AnimatedModel::class).map {
+        Player(model = it)
+    }
 
     override fun create() {
         camera.translate(0f, 0f, -50f)
@@ -134,6 +137,20 @@ class DemoGame : Game {
         score.update(delta)
 
         background.rotateX(5f * delta)
+
+        if (inputs.isKeyPressed(Key.ARROW_LEFT)) {
+            obstacles.forEach {
+                it.rotate(x = 10f * delta)
+            }
+        } else if (inputs.isKeyPressed(Key.ARROW_RIGHT)) {
+            obstacles.forEach {
+                it.rotate(y = 10f * delta)
+            }
+        } else if (inputs.isKeyPressed(Key.ARROW_UP)) {
+            obstacles.forEach {
+                it.rotate(z = 10f * delta)
+            }
+        }
 
         // -- draw --
         shader.render { shader ->
