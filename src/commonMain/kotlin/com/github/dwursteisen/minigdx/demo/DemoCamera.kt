@@ -33,7 +33,7 @@ class DemoCamera : Game {
     private val landmark = Landmark.of()
 
     override fun create() {
-        myCamera.translate(z = -10f)
+        myCamera.setTranslate(z = -10f)
     }
 
     override fun render(delta: Seconds) {
@@ -41,20 +41,24 @@ class DemoCamera : Game {
 
         if (inputs.isKeyPressed(Key.SPACE)) {
             landmark.rotateX(30f * delta)
+            scene.camera["Camera"]?.run {
+                this.rotateY(30f * delta)
+            }
+            myCamera.rotateY(30f * delta)
         }
 
         myCamera.control(delta)
 
         shader.render { program ->
             myCamera.draw(program)
-            /*scene.camera["Camera"]?.run {
-                println("camera ${this.position}")
-                draw(program)
+            scene.camera["Camera"]?.run {
+                //    println("camera ${this.position}")
+                //    draw(program)
             }
-            */
+
             scene.models.values.forEach {
                 // println("draw model")
-                //  it.draw(program)
+                it.draw(program)
             }
 
             landmark.draw(program)

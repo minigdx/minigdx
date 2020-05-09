@@ -189,7 +189,8 @@ object ModelReader {
                         near = cam.parameters.zNear
                     ).also {
                         val mat = Mat4.of(*cam.transformation.matrix)
-                        it.setTranslate(mat.translation.x, mat.translation.y, mat.translation.z)
+                        // FIXME: the - should be in the parser
+                        it.setTranslate(mat.translation.x, mat.translation.y, -mat.translation.z)
                         it.setRotation(Quaternion.from(mat))
                         it.setScale(mat.scale.x, mat.scale.y, mat.scale.z)
                     }
