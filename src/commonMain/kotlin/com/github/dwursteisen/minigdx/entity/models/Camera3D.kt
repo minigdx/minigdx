@@ -4,10 +4,14 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.transpose
+import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.Entity
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.gl
+import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.input.TouchSignal
+import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
@@ -37,10 +41,35 @@ class Camera3D(
         )
     }
 
+    fun control(delta: Seconds) {
+        if (inputs.isKeyPressed(Key.ARROW_LEFT)) {
+            translate(x = 5f * delta)
+        } else if (inputs.isKeyPressed(Key.ARROW_RIGHT)) {
+            translate(x = -5f * delta)
+        }
+
+        if (inputs.isKeyPressed(Key.ARROW_UP)) {
+            translate(y = -5f * delta)
+        } else if (inputs.isKeyPressed(Key.ARROW_DOWN)) {
+            translate(y = 5f * delta)
+        }
+
+        if (inputs.isKeyPressed(Key.A) ||
+            inputs.isTouched(TouchSignal.TOUCH1) != null
+        ) {
+            translate(z = 5f * delta)
+        } else if (
+            inputs.isKeyPressed(Key.Q) ||
+            inputs.isTouched(TouchSignal.TOUCH2) != null ||
+            (inputs.isTouched(TouchSignal.TOUCH1) != null && inputs.isKeyPressed(Key.CTRL))
+        ) {
+            translate(z = -5f * delta)
+        }
+    }
+
     companion object {
 
         fun perspective(fov: Number, aspect: Number, near: Number, far: Number): Camera3D {
-            // en radians
             val projectionMatrix = com.curiouscreature.kotlin.math.perspective(
                 fov = fov.toFloat(),
                 aspect = aspect.toFloat(),

@@ -1,15 +1,19 @@
 package com.github.dwursteisen.minigdx
 
-typealias Seconds = Float
-
-data class WorldSize(val width: Int, val height: Int) {
+/**
+ * Virtual resolution of your game.
+ *
+ * Create your 2D interface using this resolution.
+ * The game will scale up your game to match this resolution.
+ */
+data class WorldResolution(val width: Int, val height: Int) {
 
     val ratio: Float = width / height.toFloat()
 }
 
 interface Game {
 
-    val worldSize: WorldSize
+    val worldResolution: WorldResolution
 
     fun create() = Unit
 

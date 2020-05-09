@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx.entity.text
 
-typealias Pixel = Int
+import com.github.dwursteisen.minigdx.Pixel
 
 data class FontInfo(
     val face: String,

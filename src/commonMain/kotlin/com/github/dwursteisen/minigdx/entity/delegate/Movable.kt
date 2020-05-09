@@ -5,10 +5,10 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
+import com.github.dwursteisen.minigdx.Coordinate
+import com.github.dwursteisen.minigdx.Degree
+import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.Coordinate
-import com.github.dwursteisen.minigdx.entity.Degree
-import com.github.dwursteisen.minigdx.entity.Factor
 import com.github.dwursteisen.minigdx.math.Vector3
 
 /**
@@ -90,7 +90,10 @@ class Movable(
     }
 
     override fun setRotation(quaternion: Quaternion): CanMove {
-        TODO("Not correctly implemented yet")
+        val angles = quaternion.toEulerAngles()
+        return setRotationX(angles.x)
+            .setRotationY(angles.y)
+            .setRotationZ(angles.z)
     }
 
     override fun translate(x: Coordinate, y: Coordinate, z: Coordinate): CanMove {
@@ -118,7 +121,7 @@ class Movable(
         return this
     }
 
-    override fun setScale(x: Factor, y: Factor, z: Factor): CanMove {
+    override fun setScale(x: Percent, y: Percent, z: Percent): CanMove {
         val toX = x.toFloat() - scale.x
         val toY = y.toFloat() - scale.y
         val toZ = z.toFloat() - scale.z

@@ -13,9 +13,6 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 
-typealias Percent = Number
-typealias ByteMask = Int
-
 fun Number.toPercent(): Float {
     val v = this.toFloat()
     require(v in 0.0..1.0)

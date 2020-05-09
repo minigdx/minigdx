@@ -1,22 +1,22 @@
 package com.github.dwursteisen.minigdx.graphics
 
-import com.github.dwursteisen.minigdx.WorldSize
+import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.gl
 import kotlin.math.min
 
 interface ViewportStrategy {
 
-    fun update(worldSize: WorldSize, width: Int, height: Int)
+    fun update(worldResolution: WorldResolution, width: Int, height: Int)
 }
 
 class FillViewportStrategy : ViewportStrategy {
 
-    override fun update(worldSize: WorldSize, width: Int, height: Int) {
+    override fun update(worldResolution: WorldResolution, width: Int, height: Int) {
         // Fill strategy.
         val sw = width
         val sh = height
-        val ww = worldSize.width.toFloat()
-        val wh = worldSize.height.toFloat()
+        val ww = worldResolution.width.toFloat()
+        val wh = worldResolution.height.toFloat()
 
         val ref = min(sw / ww, sh / wh)
         val pw = ww * ref

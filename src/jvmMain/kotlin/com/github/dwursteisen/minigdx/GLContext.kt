@@ -1,19 +1,7 @@
 package com.github.dwursteisen.minigdx
 
-import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
-import com.github.dwursteisen.minigdx.entity.delegate.Model
-import com.github.dwursteisen.minigdx.entity.primitives.Texture
-import com.github.dwursteisen.minigdx.entity.text.AngelCode
-import com.github.dwursteisen.minigdx.entity.text.Text
-import com.github.dwursteisen.minigdx.file.AngelCodeLoader
-import com.github.dwursteisen.minigdx.file.AnimatedModelLoader
 import com.github.dwursteisen.minigdx.file.FileHandler
-import com.github.dwursteisen.minigdx.file.ModelLoader
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
-import com.github.dwursteisen.minigdx.file.TextLoader
-import com.github.dwursteisen.minigdx.file.TextureImage
-import com.github.dwursteisen.minigdx.file.TextureImageLoader
-import com.github.dwursteisen.minigdx.file.TextureLoader
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -46,17 +34,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(
-            handler = PlatformFileHandler(),
-            loaders = mapOf(
-                AnimatedModel::class to AnimatedModelLoader(),
-                Model::class to ModelLoader(),
-                TextureImage::class to TextureImageLoader(),
-                Texture::class to TextureLoader(),
-                AngelCode::class to AngelCodeLoader(),
-                Text::class to TextLoader()
-            )
-        )
+        return FileHandler(handler = PlatformFileHandler())
     }
 
     internal actual fun createInputHandler(): InputHandler {
@@ -146,11 +124,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         game.create()
         game.resume()
 
-        viewport.update(game.worldSize, configuration.width, configuration.height)
+        viewport.update(game.worldResolution, configuration.width, configuration.height)
         glfwSetWindowSizeCallback(window) { _, w, h ->
             gl.screen.width = w
             gl.screen.height = h
-            viewport.update(game.worldSize, w, h)
+            viewport.update(game.worldResolution, w, h)
         }
 
         // Wireframe mode

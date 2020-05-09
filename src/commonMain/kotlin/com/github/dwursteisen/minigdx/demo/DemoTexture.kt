@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.demo
 
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.WorldSize
+import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.Text
@@ -17,8 +17,8 @@ import kotlin.math.sin
 @ExperimentalStdlibApi
 class DemoTexture : Game {
 
-    override val worldSize: WorldSize =
-        WorldSize(200, 200)
+    override val worldResolution: WorldResolution =
+        WorldResolution(200, 200)
 
     private val camera = Camera2D.orthographic(
         width = 5f, height = 5f

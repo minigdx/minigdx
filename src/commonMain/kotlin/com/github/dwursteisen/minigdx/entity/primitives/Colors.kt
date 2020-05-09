@@ -1,12 +1,13 @@
 package com.github.dwursteisen.minigdx.entity.primitives
 
+import com.github.dwursteisen.minigdx.Percent
 import kotlin.random.Random
 
 object Colors {
 
     private val random = Random(0)
 
-    fun random(alpha: Float = 1.0f): Color {
+    fun random(alpha: Percent = 1.0f): Color {
         return Color(
             random.nextFloat(),
             random.nextFloat(),

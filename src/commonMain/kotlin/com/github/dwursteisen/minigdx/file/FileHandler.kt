@@ -1,6 +1,12 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.github.dwursteisen.minigdx.entity.CanCopy
+import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
+import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.models.Scene
+import com.github.dwursteisen.minigdx.entity.primitives.Texture
+import com.github.dwursteisen.minigdx.entity.text.AngelCode
+import com.github.dwursteisen.minigdx.entity.text.Text
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -62,7 +68,17 @@ open class Content<R>(val filename: String) {
     }
 }
 
-class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>>) {
+private fun createLoaders() = mapOf(
+    AnimatedModel::class to AnimatedModelLoader(),
+    Model::class to ModelLoader(),
+    TextureImage::class to TextureImageLoader(),
+    Texture::class to TextureLoader(),
+    AngelCode::class to AngelCodeLoader(),
+    Text::class to TextLoader(),
+    Scene::class to SceneLoader()
+)
+
+class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {
 
     private val assets = mutableMapOf<String, Content<*>>()
 

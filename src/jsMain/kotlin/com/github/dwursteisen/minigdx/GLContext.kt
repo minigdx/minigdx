@@ -1,19 +1,7 @@
 package com.github.dwursteisen.minigdx
 
-import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
-import com.github.dwursteisen.minigdx.entity.delegate.Model
-import com.github.dwursteisen.minigdx.entity.primitives.Texture
-import com.github.dwursteisen.minigdx.entity.text.AngelCode
-import com.github.dwursteisen.minigdx.entity.text.Text
-import com.github.dwursteisen.minigdx.file.AngelCodeLoader
-import com.github.dwursteisen.minigdx.file.AnimatedModelLoader
 import com.github.dwursteisen.minigdx.file.FileHandler
-import com.github.dwursteisen.minigdx.file.ModelLoader
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
-import com.github.dwursteisen.minigdx.file.TextLoader
-import com.github.dwursteisen.minigdx.file.TextureImage
-import com.github.dwursteisen.minigdx.file.TextureImageLoader
-import com.github.dwursteisen.minigdx.file.TextureLoader
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -48,17 +36,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(
-            handler = PlatformFileHandler(),
-            loaders = mapOf(
-                AnimatedModel::class to AnimatedModelLoader(),
-                Model::class to ModelLoader(),
-                TextureImage::class to TextureImageLoader(),
-                Texture::class to TextureLoader(),
-                AngelCode::class to AngelCodeLoader(),
-                Text::class to TextLoader()
-            )
-        )
+        return FileHandler(PlatformFileHandler())
     }
 
     internal actual fun createInputHandler(): InputHandler {
@@ -85,7 +63,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         if (!fileHandler.isFullyLoaded()) {
             window.requestAnimationFrame(::loading)
         } else {
-            viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
+            viewport.update(game.worldResolution, gl.screen.width, gl.screen.height)
 
             game.create()
             game.resume()
@@ -95,13 +73,14 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     private fun render(now: Double) {
         // The canvas has been resized
-        if (canvas.clientWidth != game.worldSize.width || canvas.clientHeight != game.worldSize.height) {
+        // if (canvas.clientWidth != gl.screen.width || canvas.clientHeight != gl.screen.height) {
+        if (canvas.clientWidth != game.worldResolution.width || canvas.clientHeight != game.worldResolution.height) {
             gl.screen.width = canvas.clientWidth
             gl.screen.height = canvas.clientHeight
             canvas.height = canvas.clientHeight
             canvas.width = canvas.clientWidth
 
-            viewport.update(game.worldSize, gl.screen.width, gl.screen.height)
+            viewport.update(game.worldResolution, gl.screen.width, gl.screen.height)
         }
         inputManager.record()
         val nowInSeconds = now * 0.001

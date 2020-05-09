@@ -3,8 +3,8 @@ package com.github.dwursteisen.minigdx.entity.delegate
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.entity.CanCopy
-import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
+import com.github.dwursteisen.minigdx.entity.CanMoveAndDraw
 import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.entity.primitives.DrawType
@@ -77,7 +77,7 @@ private fun Array<Vertice>.convertWeights(): DataSource.FloatDataSource {
 class Model(
     val mesh: Mesh,
     val pose: Armature? = null
-) : CanCopy<Model>, CanDraw, CanMove by mesh {
+) : CanCopy<Model>, CanMoveAndDraw, CanMove by mesh {
 
     /**
      * Positions of vertices.

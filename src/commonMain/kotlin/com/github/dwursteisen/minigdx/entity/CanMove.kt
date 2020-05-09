@@ -2,11 +2,10 @@ package com.github.dwursteisen.minigdx.entity
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
+import com.github.dwursteisen.minigdx.Coordinate
+import com.github.dwursteisen.minigdx.Degree
+import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.math.Vector3
-
-typealias Degree = Number
-typealias Coordinate = Number
-typealias Factor = Number
 
 interface CanMove {
 
@@ -17,7 +16,7 @@ interface CanMove {
     val scale: Vector3
 
     fun rotate(x: Degree = 0, y: Degree = 0, z: Degree = 0): CanMove
-    fun rotate(angles: Vector3): CanMove
+    fun rotate(angles: Vector3): CanMove = rotate(angles.x, angles.y, angles.z)
 
     fun rotateX(angle: Degree): CanMove
     fun rotateY(angle: Degree): CanMove
@@ -34,9 +33,9 @@ interface CanMove {
     fun setTranslate(x: Coordinate = position.x, y: Coordinate = position.y, z: Coordinate = position.z): CanMove
     fun setTranslate(move: Vector3): CanMove = setTranslate(move.x, move.y, move.z)
 
-    fun scale(x: Factor = scale.x, y: Factor = scale.y, z: Factor = scale.z): CanMove
+    fun scale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): CanMove
     fun scale(scale: Vector3): CanMove = scale(scale.x, scale.y, scale.z)
 
-    fun setScale(x: Factor = 1, y: Factor = 1, z: Factor = 1): CanMove
+    fun setScale(x: Percent = 1, y: Percent = 1, z: Percent = 1): CanMove
     fun setScale(scale: Vector3): CanMove = setScale(scale.x, scale.y, scale.z)
 }

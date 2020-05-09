@@ -1,12 +1,15 @@
 package com.github.dwursteisen.minigdx.file
 
 import collada.Bone
+import collada.CameraType
 import collada.EmptyAnimations
 import collada.EmptyArmature
 import collada.InfluenceData
 import collada.Model as ColladaModel
 import collada.Transformation
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.Quaternion
+import com.curiouscreature.kotlin.math.degrees
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.entity.animations.Animation
 import com.github.dwursteisen.minigdx.entity.animations.Armature
@@ -14,16 +17,19 @@ import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.entity.animations.JointId
 import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
 import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.primitives.Color
 import com.github.dwursteisen.minigdx.entity.primitives.Influence
 import com.github.dwursteisen.minigdx.entity.primitives.JointsIndex
 import com.github.dwursteisen.minigdx.entity.primitives.Mesh
 import com.github.dwursteisen.minigdx.entity.primitives.Vertice
 import com.github.dwursteisen.minigdx.math.Vector3
+import kotlin.random.Random
 
 data class ModelDescription(
     val model: Model,
-    val animations: Map<String, Animation> = emptyMap()
+    val animations: Map<String, Animation> = emptyMap(),
+    val cameras: Map<String, Camera3D> = emptyMap()
 )
 
 object ModelReader {
@@ -151,7 +157,7 @@ object ModelReader {
         }
 
         val mesh = Mesh(
-            name = "todo",
+            name = generateName(),
             position = Vector3(),
             rotation = Vector3(),
             vertices = m.vertices.map { v ->
@@ -172,8 +178,34 @@ object ModelReader {
 
         return ModelDescription(
             model = Model(mesh, armature.first),
-            animations = animations
+            animations = animations,
+            cameras = model.cameras.map { cam ->
+                println("data --> " + cam)
+                val camera = when (cam.type) {
+                    CameraType.PERSPECTIVE -> Camera3D.perspective(
+                        fov = degrees(cam.parameters.perspectiveFov),
+                        aspect = 1, // FIXME: it should be updated at the creation of the game?
+                        far = cam.parameters.zFar,
+                        near = cam.parameters.zNear
+                    ).also {
+                        val mat = Mat4.of(*cam.transformation.matrix)
+                        it.setTranslate(mat.translation.x, mat.translation.y, mat.translation.z)
+                        it.setRotation(Quaternion.from(mat))
+                        it.setScale(mat.scale.x, mat.scale.y, mat.scale.z)
+                    }
+
+                    CameraType.ORTHOGRAPHIC -> Camera3D.orthographic()
+                }
+
+                println(camera.modelMatrix)
+                cam.name to camera
+            }.toMap()
         )
+    }
+
+    private fun generateName(): String {
+        return (0..10).map { Random.nextInt() }
+            .joinToString("")
     }
 
     private fun collada.Influence.toInfluence(mapping: List<String>): Influence? {

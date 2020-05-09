@@ -4,7 +4,7 @@ import com.github.dwursteisen.minigdx.ByteMask
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Screen
-import com.github.dwursteisen.minigdx.WorldSize
+import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.TextureImage
@@ -193,42 +193,42 @@ class FillViewportStrategyTest {
 
     @Test
     fun updateSquareWorldSquareScreen() {
-        val world = WorldSize(200, 200)
+        val world = WorldResolution(200, 200)
         fillViewportStrategy.update(world, 800, 800)
         assertEquals(viewportCall, ViewportCall(0, 0, 800, 800))
     }
 
     @Test
     fun updateSquareWorldHorizontalScreen() {
-        val world = WorldSize(200, 200)
+        val world = WorldResolution(200, 200)
         fillViewportStrategy.update(world, 800, 400)
         assertEquals(viewportCall, ViewportCall(200, 0, 400, 400))
     }
 
     @Test
     fun updateSquareWorldVerticalScreen() {
-        val world = WorldSize(200, 200)
+        val world = WorldResolution(200, 200)
         fillViewportStrategy.update(world, 400, 800)
         assertEquals(viewportCall, ViewportCall(0, 200, 400, 400))
     }
 
     @Test
     fun updateHorizontalWorldSquareScreen() {
-        val world = WorldSize(200, 100)
+        val world = WorldResolution(200, 100)
         fillViewportStrategy.update(world, 800, 800)
         assertEquals(viewportCall, ViewportCall(0, 200, 800, 400))
     }
 
     @Test
     fun updateHorizontalWorldHorizontalScreen() {
-        val world = WorldSize(400, 100)
+        val world = WorldResolution(400, 100)
         fillViewportStrategy.update(world, 800, 400)
         assertEquals(viewportCall, ViewportCall(0, 100, 800, 200))
     }
 
     @Test
     fun updateHorizontalWorldVerticalScreen() {
-        val world = WorldSize(200, 100)
+        val world = WorldResolution(200, 100)
         fillViewportStrategy.update(world, 400, 800)
         assertEquals(viewportCall, ViewportCall(0, 300, 400, 200))
     }

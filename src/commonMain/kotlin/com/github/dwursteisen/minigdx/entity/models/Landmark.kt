@@ -1,51 +1,22 @@
 package com.github.dwursteisen.minigdx.entity.models
 
-import com.github.dwursteisen.minigdx.entity.CanDraw
-import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.delegate.Model
-import com.github.dwursteisen.minigdx.entity.delegate.Movable
+import com.github.dwursteisen.minigdx.entity.CanMoveAndDraw
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
-import com.github.dwursteisen.minigdx.entity.primitives.DrawType
-import com.github.dwursteisen.minigdx.entity.primitives.Mesh
-import com.github.dwursteisen.minigdx.entity.primitives.Vertice
-import com.github.dwursteisen.minigdx.math.Vector3
 
-class Landmark(val mesh: Mesh) : CanMove by Movable(), CanDraw by Model(mesh) {
+class Landmark private constructor(private val structure: GroupModels = GroupModels()) : CanMoveAndDraw by structure {
+
+    private constructor(vararg structure: CanMoveAndDraw) : this(GroupModels(structure.toMutableList()))
 
     companion object {
         fun of(): Landmark {
             return Landmark(
-                Mesh(
-                    name = "landmark",
-                    drawType = DrawType.LINE,
-                    vertices = arrayOf(
-                        Vertice(
-                            position = Vector3(0, 0, 0),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.WHITE
-                        ),
-                        Vertice(
-                            position = Vector3(1, 0, 0),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.BLUE
-                        ),
-                        Vertice(
-                            position = Vector3(0, 1, 0),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.RED
-                        ),
-                        Vertice(
-                            position = Vector3(0, 0, 1),
-                            normal = Vector3(1, 1, 1),
-                            color = Colors.GREEN
-                        )
-                    ),
-                    verticesOrder = shortArrayOf(
-                        0, 1,
-                        0, 2,
-                        0, 3
-                    )
-                )
+                Cube("").also { it.setScale(0.5f, 0.5f, 0.5f) }, // origin
+                Cube(name = "X", color = Colors.RED)
+                    .also { it.translate(x = 1f).setScale(0.5f, 0.5f, 0.5f) }, // X
+                Cube(name = "Y", color = Colors.GREEN)
+                    .also { it.translate(y = 1f).setScale(0.5f, 0.5f, 0.5f) }, // Y
+                Cube(name = "Z", color = Colors.BLUE)
+                    .also { it.translate(z = 1f).setScale(0.5f, 0.5f, 0.5f) } // Z
             )
         }
     }

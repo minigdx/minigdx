@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.demo
 
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.WorldSize
+import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.behavior.JumpBehavior
@@ -77,11 +77,11 @@ class Score(val text: Text) : CanDraw by text, CanMove by text {
 @ExperimentalStdlibApi
 class DemoGame : Game {
 
-    override val worldSize: WorldSize = WorldSize(200, 200)
+    override val worldResolution: WorldResolution = WorldResolution(200, 200)
 
     private val camera = Camera3D.perspective(
         45,
-        worldSize.ratio,
+        worldResolution.ratio,
         near = 1f,
         far = 200f
     )
