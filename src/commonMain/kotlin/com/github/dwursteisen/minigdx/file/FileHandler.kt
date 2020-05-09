@@ -10,6 +10,7 @@ interface FileLoader<T> {
 }
 
 class UnsupportedTypeException(val type: KClass<*>) : RuntimeException("Unsupported type '${type::class}'")
+
 class EarlyAccessException(val filename: String, val property: String) :
     RuntimeException("Content of file '$filename' accessed before being loaded by the property '$property'!")
 
@@ -66,31 +67,38 @@ class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, 
     private val assets = mutableMapOf<String, Content<*>>()
 
     @ExperimentalStdlibApi
-    inline fun <reified T> get(filename: String): Content<T> = get(filename, T::class)
+    inline fun <reified T : Any> get(filename: String): Content<T> = get(filename, T::class)
 
     @ExperimentalStdlibApi
     inline fun <reified T> copy(filename: String): Content<T> where T : CanCopy<T> = copy(filename, T::class)
 
     @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
-    fun <T> get(filename: String, clazz: KClass<*>): Content<T> {
+    fun <T, R : Any> get(filename: String, rClazz: KClass<R>, map: (R) -> Content<T>): Content<T> {
+        return get(filename, rClazz).map(map) as Content<T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @ExperimentalStdlibApi
+    fun <T : Any> get(filename: String, clazz: KClass<T>): Content<T> {
         return assets.getOrPut(filename) { load(filename, clazz) } as Content<T>
     }
 
     @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
-    fun <T> copy(filename: String, clazz: KClass<*>): Content<T> where T : CanCopy<T> {
+    fun <T> copy(filename: String, clazz: KClass<T>): Content<T> where T : CanCopy<T>, T : Any {
         val asset: Content<T> = get(filename, clazz)
         return asset.map { it.copy() }
     }
 
+    @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
-    private fun load(filename: String, clazz: KClass<*>): Content<*> {
+    private fun <R : Any> load(filename: String, clazz: KClass<R>): Content<R> {
         val loader = loaders[clazz]
         if (loader == null) {
             throw UnsupportedTypeException(clazz)
         } else {
-            return loader.load(filename, handler)
+            return loader.load(filename, handler) as Content<R>
         }
     }
 

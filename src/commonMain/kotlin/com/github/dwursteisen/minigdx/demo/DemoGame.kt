@@ -56,7 +56,7 @@ class Obstacle(private val model: Model) : CanDraw by model, CanMove by model {
     }
 }
 
-class Score(private val text: Text) : CanDraw by text, CanMove by text {
+class Score(val text: Text) : CanDraw by text, CanMove by text {
 
     private var time: Int = 0
 
@@ -94,17 +94,24 @@ class DemoGame : Game {
 
     private val gui = DefaultShaders.create2d()
 
-    private val model by fileHandler.get<Model>("monkey.protobuf")
+    private val obstacles by fileHandler.get("monkey.protobuf", Model::class).map {
+        (0 until 10).map { index ->
+            Obstacle(it.copy()).apply {
+                setTranslate(
+                    // put it offscreen
+                    x = 20f + index * 20f,
+                    y = -10f,
+                    z = 0f
+                )
+            }
+        }
+    }
 
     private val background by fileHandler.get<Model>("montains.protobuf")
 
-    private val text by fileHandler.get<Text>("font")
+    private val score by fileHandler.get("font", Text::class).map { Score(it) }
 
     private val player = Player()
-
-    private var obstacles = emptyList<Obstacle>()
-
-    lateinit var score: Score
 
     override fun create() {
         camera.translate(0f, 0f, -50f)
@@ -116,23 +123,8 @@ class DemoGame : Game {
 
         cameraGUI.translate(x = 2.5f, y = 2.5f, z = 0f)
 
-        score = Score(text).apply {
-            text.text = "toto"
-            text.setTranslate(-400, -400, 0)
-        }
-
-        (0 until 10).forEach {
-            val obstacle = Obstacle(model.copy()).apply {
-                setTranslate(
-                    // put it offscreen
-                    x = 20f + it * 20f,
-                    y = -10f,
-                    z = 0f
-                )
-            }
-
-            obstacles = obstacles + obstacle
-        }
+        score.text.text = "toto"
+        score.setTranslate(-400, -400, 0)
     }
 
     override fun render(delta: Seconds) {
