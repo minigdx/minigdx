@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.entity.primitives
 
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
@@ -9,7 +10,7 @@ import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
-class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() {
+class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable(), CanCopy<Texture> {
 
     private val texture = gl.createTexture()
 
@@ -21,6 +22,9 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() 
         gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, source)
         gl.generateMipmap(GL.TEXTURE_2D)
     }
+
+    val width = source.width
+    val height = source.height
 
     override fun draw(shader: ShaderProgram) {
         draw(
@@ -55,6 +59,7 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() 
         //   https://webglfundamentals.org/webgl/lessons/fr/webgl-2d-rotation.html
         gl.enableVertexAttribArray(shader.getAttrib("aPosition"))
 
+        // World unit.  For a 200x200 world, it's gonna be in such range.
         val x1 = x
         val y1 = y
 
@@ -111,16 +116,14 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable() 
             offset = 0
         )
 
-        gl.uniform2f(
-            shader.getUniform("uResolution"),
-            gl.screen.width.toFloat(),
-            gl.screen.height.toFloat()
-        )
-
         // Draw the rectangle.
         val primitiveType = GL.TRIANGLES
         val offset = 0
         val count = 6
         gl.drawArrays(primitiveType, offset, count)
+    }
+
+    override fun copy(): Texture {
+        return Texture(source)
     }
 }

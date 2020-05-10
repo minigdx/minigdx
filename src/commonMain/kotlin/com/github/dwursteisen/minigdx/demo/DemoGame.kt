@@ -87,9 +87,7 @@ class DemoGame : Game {
         far = 200f
     )
 
-    private val cameraGUI = Camera2D.orthographic(
-        width = 5f, height = 5f
-    )
+    private val cameraGUI = Camera2D.orthographic(worldResolution)
 
     private val shader = DefaultShaders.create3d()
 
@@ -124,10 +122,9 @@ class DemoGame : Game {
             .rotateZ(90f)
             .scale(Vector3(10f, 10f, 10f))
 
-        cameraGUI.translate(x = 2.5f, y = 2.5f, z = 0f)
-
-        score.text.text = "toto"
-        score.setTranslate(-400, -400, 0)
+        score.text.text = "00:00"
+        score.translate(x = 10f, y = 5f)
+        score.scale(x = -0.5, y = -0.5f)
     }
 
     override fun render(delta: Seconds) {

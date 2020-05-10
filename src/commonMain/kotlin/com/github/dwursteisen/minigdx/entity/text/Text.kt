@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.entity.text
 
+import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
@@ -11,13 +12,19 @@ class Text(
     var text: String = "",
     private val angelCode: AngelCode,
     private val fontSprite: Texture
-) : CanMove by Movable(), CanDraw {
+) : CanMove by Movable(), CanDraw, CanCopy<Text> {
 
     private var xOffset = 0f
     private var yOffset = 0f
 
-    private val scaleW = 2f
-    private val scaleH = 2f
+    private val scaleW: Float
+        get() {
+            return scale.x
+        }
+    private val scaleH: Float
+        get() {
+            return scale.y
+        }
 
     override fun draw(shader: ShaderProgram) {
         xOffset = 0f
@@ -47,5 +54,13 @@ class Text(
         )
 
         xOffset += (code.xadvance + code.xoffset) * scaleW
+    }
+
+    override fun copy(): Text {
+        return Text(
+            text = text,
+            fontSprite = fontSprite,
+            angelCode = angelCode
+        )
     }
 }

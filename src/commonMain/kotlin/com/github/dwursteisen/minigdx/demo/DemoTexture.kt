@@ -18,29 +18,25 @@ import kotlin.math.sin
 class DemoTexture : Game {
 
     override val worldResolution: WorldResolution =
-        WorldResolution(200, 200)
+        WorldResolution(512, 512)
 
-    private val camera = Camera2D.orthographic(
-        width = 5f, height = 5f
-    )
+    private val camera = Camera2D.orthographic(worldResolution)
 
     // 2d, you get it?
     private val dd = DefaultShaders.create2d()
 
     @ExperimentalStdlibApi
-    private val texture: Texture by fileHandler.get("f-texture.png")
+    private val texture: Texture by fileHandler.copy("f-texture.png")
 
     private var time = 0f
 
-    private val text: Text by fileHandler.get("font")
+    private val text: Text by fileHandler.copy("font")
 
     override fun create() {
         text.text = """
             ABCDEFGHIJKLMONPQRSTUVWXYZ
             abcdefghijklmonpqrstuvwxyz
         """.trimIndent()
-
-        camera.translate(x = 2.5f, y = 2.5f, z = 0f)
     }
 
     override fun render(delta: Seconds) {
@@ -48,14 +44,21 @@ class DemoTexture : Game {
         clear(0f, 0f, 0f)
 
         if (inputs.isKeyPressed(Key.ARROW_LEFT)) {
-            camera.translate(x = -5f * delta, y = 0f, z = 0f)
+            camera.translate(x = -15f * delta, y = 0f, z = 0f)
         } else if (inputs.isKeyPressed(Key.ARROW_RIGHT)) {
-            camera.translate(x = 5f * delta, y = 0f, z = 0f)
+            camera.translate(x = 15f * delta, y = 0f, z = 0f)
         }
+
+        if (inputs.isKeyPressed(Key.ARROW_UP)) {
+            camera.translate(y = -15f * delta, x = 0f, z = 0f)
+        } else if (inputs.isKeyPressed(Key.ARROW_DOWN)) {
+            camera.translate(y = 15f * delta, x = 0f, z = 0f)
+        }
+
         dd.render {
             camera.draw(it)
 
-            texture.setTranslate(100f + 20f * cos(time), 100f, 100f)
+            texture.setTranslate(256f, 256f, 100f)
             texture.setScale(x = cos(time), y = sin(time))
             texture.draw(it)
 
