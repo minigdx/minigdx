@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.demo.DemoAnimation2
 import com.github.dwursteisen.minigdx.demo.DemoCamera
 import com.github.dwursteisen.minigdx.demo.DemoGame
 import com.github.dwursteisen.minigdx.demo.DemoKey
+import com.github.dwursteisen.minigdx.demo.DemoMovable
 import com.github.dwursteisen.minigdx.demo.DemoPlanet
 import com.github.dwursteisen.minigdx.demo.DemoSuzanne
 import com.github.dwursteisen.minigdx.demo.DemoTexture
@@ -20,7 +21,8 @@ private val factory: Map<String, () -> Game> = mapOf(
     "2d" to { DemoTexture() },
     "key" to { DemoKey() },
     "game" to { DemoGame() },
-    "camera" to { DemoCamera() }
+    "camera" to { DemoCamera() },
+    "move" to { DemoMovable() }
 )
 @ExperimentalStdlibApi
 fun main() = configuration(GLConfiguration(canvasId = "canvas")).run {

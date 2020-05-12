@@ -14,7 +14,7 @@ import com.github.dwursteisen.minigdx.math.Vector3
 /**
  * Computation of moving an entity.
  */
-class Movable(
+open class Movable(
     override var modelMatrix: Mat4 = Mat4.identity(),
     override val rotation: Vector3 = Vector3(),
     override val position: Vector3 = Vector3(),
