@@ -95,6 +95,23 @@ class Camera3D(
         } else if (inputs.isKeyPressed(Key.D)) {
             rotateY(45f * delta)
         }
+
+        if (inputs.isKeyPressed(Key.A)) {
+            rotateX(-45f * delta)
+        } else if (inputs.isKeyPressed(Key.E)) {
+            rotateX(45f * delta)
+        }
+
+        if (inputs.isKeyPressed(Key.W)) {
+            rotateZ(-45f * delta)
+        } else if (inputs.isKeyPressed(Key.C)) {
+            rotateZ(45f * delta)
+        }
+
+        if (inputs.isKeyJustPressed(Key.L)) {
+            println("P ->" + position)
+            println("R -> " + rotation)
+        }
     }
 
     companion object {

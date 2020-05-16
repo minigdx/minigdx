@@ -40,7 +40,7 @@ class DemoMovable : Game {
     }
 
     override fun render(delta: Seconds) {
-        shaderProgram.render {shader ->
+        shaderProgram.render { shader ->
             camera.draw(shader)
             camera.control(delta)
             cubes.forEach {

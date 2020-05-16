@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.demo.DemoAnimation
 import com.github.dwursteisen.minigdx.demo.DemoAnimation2
+import com.github.dwursteisen.minigdx.demo.DemoCamera
 import com.github.dwursteisen.minigdx.demo.DemoGame
 import com.github.dwursteisen.minigdx.demo.DemoKey
 import com.github.dwursteisen.minigdx.demo.DemoPlanet
@@ -32,6 +33,7 @@ class Main {
                     "key" -> DemoKey()
                     "suzanne" -> DemoSuzanne()
                     "game" -> DemoGame()
+                    "camera" -> DemoCamera()
                     else -> DemoPlanet()
                 }
             }

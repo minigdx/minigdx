@@ -7,10 +7,10 @@ import collada.EmptyArmature
 import collada.InfluenceData
 import collada.Model as ColladaModel
 import collada.Transformation
+import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.Quaternion
-import com.curiouscreature.kotlin.math.degrees
 import com.curiouscreature.kotlin.math.inverse
+import com.curiouscreature.kotlin.math.rotation
 import com.github.dwursteisen.minigdx.entity.animations.Animation
 import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
@@ -23,6 +23,7 @@ import com.github.dwursteisen.minigdx.entity.primitives.Influence
 import com.github.dwursteisen.minigdx.entity.primitives.JointsIndex
 import com.github.dwursteisen.minigdx.entity.primitives.Mesh
 import com.github.dwursteisen.minigdx.entity.primitives.Vertice
+import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.random.Random
 
@@ -176,32 +177,41 @@ object ModelReader {
             verticesOrder = m.verticesOrder.map { it.toShort() }.toShortArray()
         )
 
-        return ModelDescription(
+        val model = ModelDescription(
             model = Model(mesh, armature.first),
             animations = animations,
             cameras = model.cameras.map { cam ->
-                println("data --> " + cam)
                 val camera = when (cam.type) {
                     CameraType.PERSPECTIVE -> Camera3D.perspective(
-                        fov = degrees(cam.parameters.perspectiveFov),
+                        fov = cam.parameters.perspectiveFov * 100f, // FIXME: I don't know what I'm doing
                         aspect = 1, // FIXME: it should be updated at the creation of the game?
                         far = cam.parameters.zFar,
-                        near = cam.parameters.zNear
-                    ).also {
-                        val mat = Mat4.of(*cam.transformation.matrix)
-                        // FIXME: the - should be in the parser
-                        it.setTranslate(mat.translation.x, mat.translation.y, -mat.translation.z)
-                        it.setRotation(Quaternion.from(mat))
-                        it.setScale(mat.scale.x, mat.scale.y, mat.scale.z)
+                        near = cam.parameters.zNear)
+                    .also {
+                        val mat4 = Mat4.of(*cam.transformation.matrix)
+                        val mat = mat4 * rotation(Float3(1f, 0f, 0f), 90f) *
+                                // rotation(Float3(0f, 1f, 0f), 180f) *
+                                rotation(Float3(0f, 0f, 1f), 180f)
+                        it.modelMatrix = Mat4.identity()
+                        it.setTranslate(-1 * mat.translation.x.toInt(), -1 * mat.translation.y.toInt(), -1 * mat.translation.z.toInt())
+
+                        it.setRotationX(mat.rotation.x.toInt())
+                        it.setRotationY(mat.rotation.z.toInt()) // inversion on purpose
+                        it.setRotationZ(mat.rotation.y.toInt())
                     }
 
                     CameraType.ORTHOGRAPHIC -> Camera3D.orthographic()
                 }
-
-                println(camera.modelMatrix)
                 cam.name to camera
             }.toMap()
         )
+        log.info("MODEL_READER") {
+            """Read 3D Scene with: 
+                        |- ${model.animations.size} animation(s)
+                        |- ${model.cameras.size} camera(s)
+                    """.trimMargin()
+        }
+        return model
     }
 
     private fun generateName(): String {

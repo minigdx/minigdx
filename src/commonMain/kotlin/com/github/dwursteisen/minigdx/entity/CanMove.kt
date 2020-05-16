@@ -23,6 +23,9 @@ interface CanMove {
     fun rotateZ(angle: Degree): CanMove
 
     fun setRotation(quaternion: Quaternion): CanMove
+    fun setRotation(angles: Vector3): CanMove = setRotationX(angles.x)
+        .setRotationY(angles.y)
+        .setRotationZ(angles.z)
     fun setRotationX(angle: Degree): CanMove
     fun setRotationY(angle: Degree): CanMove
     fun setRotationZ(angle: Degree): CanMove
