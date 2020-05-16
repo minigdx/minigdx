@@ -5,9 +5,12 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
+import com.github.dwursteisen.minigdx.entity.CanTouchByHitBox
+import com.github.dwursteisen.minigdx.entity.HitBox
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.behavior.JumpBehavior
 import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.TouchByHitBox
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.text.Text
@@ -19,7 +22,10 @@ import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
-class Player(private val model: AnimatedModel) : CanMove by model, CanDraw by model {
+class Player(private val model: AnimatedModel) :
+    CanMove by model,
+    CanDraw by model,
+    CanTouchByHitBox by TouchByHitBox(HitBox(10f, 10f), model) {
 
     private val jumpingCharge = JumpBehavior(
         charge = 0.8f,
@@ -29,6 +35,8 @@ class Player(private val model: AnimatedModel) : CanMove by model, CanDraw by mo
         isJumping = { inputs.isKeyPressed(Key.SPACE) || inputs.isTouched(TouchSignal.TOUCH1) != null }
     )
 
+    val obstacles: MutableList<Obstacle> = mutableListOf()
+
     fun update(delta: Seconds) {
         model.update(delta)
         jumpingCharge.update(delta)
@@ -37,17 +45,26 @@ class Player(private val model: AnimatedModel) : CanMove by model, CanDraw by mo
         } else {
             translate(y = jumpingCharge.dy)
         }
+
+        obstacles.forEach {
+            if (it.hit(this)) {
+                println("loose")
+            }
+        }
     }
 }
 
-class Obstacle(private val model: Model) : CanDraw by model, CanMove by model {
+class Obstacle(private val model: Model) :
+    CanDraw by model,
+    CanMove by model,
+    CanTouchByHitBox by TouchByHitBox(HitBox(10f, 10f), model) {
 
     fun update(delta: Seconds) {
         translate(-speed * delta)
 
         // off the screen
         if (position.x <= -20f) {
-            setTranslate(x = 20f, y = -10f, z = 0f)
+            setTranslate(x = 20f, y = -11f, z = 0f)
         }
     }
 
@@ -117,6 +134,7 @@ class DemoGame : Game {
     override fun create() {
         camera.translate(0f, 0f, -50f)
         player.setTranslate(-10f, -10f, 0f)
+        player.obstacles.addAll(obstacles)
         background
             .translate(y = -20f, z = 10f)
             .rotateZ(90f)
