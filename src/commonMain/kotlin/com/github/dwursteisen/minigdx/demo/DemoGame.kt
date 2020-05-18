@@ -137,7 +137,6 @@ class DemoGame : Game {
         player.obstacles.addAll(obstacles)
         background
             .translate(y = -20f, z = 10f)
-            .rotateZ(90f)
             .scale(Vector3(10f, 10f, 10f))
 
         score.text.text = "00:00"
@@ -151,7 +150,7 @@ class DemoGame : Game {
         obstacles.forEach { it.update(delta) }
         score.update(delta)
 
-        background.rotateX(5f * delta)
+        background.rotateY(5f * delta)
 
         if (inputs.isKeyPressed(Key.ARROW_LEFT)) {
             obstacles.forEach {
