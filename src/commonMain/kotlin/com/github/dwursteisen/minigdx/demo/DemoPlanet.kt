@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.graphics.clear
@@ -32,6 +33,8 @@ class DemoPlanet : Game {
     private var currentRotation: Float = 0f
     private var xStart = 0f
 
+    private val light: Light = Light()
+
     override fun render(delta: Seconds) {
         // --- act ---
         val cursor = inputs.isTouched(TouchSignal.TOUCH1)
@@ -57,6 +60,7 @@ class DemoPlanet : Game {
 
         program.render {
             camera.draw(it)
+            light.draw(it)
             model.draw(it)
         }
     }

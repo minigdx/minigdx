@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
@@ -20,6 +21,8 @@ class DemoSuzanne : Game {
 
     private val model: Drawable by fileHandler.get("suzanne.protobuf")
 
+    private val light: Light = Light()
+
     @ExperimentalStdlibApi
     override fun create() {
         camera.translate(0, 0, -5)
@@ -34,6 +37,7 @@ class DemoSuzanne : Game {
 
         program.render {
             camera.draw(it)
+            light.draw(it)
             model.draw(it)
         }
     }

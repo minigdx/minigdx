@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.Text
 import com.github.dwursteisen.minigdx.fileHandler
@@ -32,6 +33,8 @@ class DemoTexture : Game {
 
     private val text: Text by fileHandler.copy("font")
 
+    private val light: Light = Light()
+
     override fun create() {
         text.text = """
             ABCDEFGHIJKLMONPQRSTUVWXYZ
@@ -57,6 +60,7 @@ class DemoTexture : Game {
 
         dd.render {
             camera.draw(it)
+            light.draw(it)
 
             texture.setTranslate(256f, 256f, 100f)
             texture.setScale(x = cos(time), y = sin(time))

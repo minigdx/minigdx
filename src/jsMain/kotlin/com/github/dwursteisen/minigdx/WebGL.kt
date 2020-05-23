@@ -77,6 +77,10 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         gl.uniform2f(uniform.uniformLocation, first, second)
     }
 
+    override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
+        gl.uniform3f(uniform.uniformLocation, first, second, third)
+    }
+
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {
         gl.attachShader(shaderProgram.program.delegate, shader.delegate)
     }

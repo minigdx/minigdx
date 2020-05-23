@@ -34,7 +34,7 @@ class LwjglInput : InputHandler, InputManager {
 
     private fun keyDown(event: Int) {
         log.debug("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
-        if (event in (0..256)) {
+        if (event in (0..GLFW_KEY_LAST)) {
             keys[event] = frame + 1
             pressed[event] = frame + 1
         }
@@ -42,7 +42,7 @@ class LwjglInput : InputHandler, InputManager {
 
     private fun keyUp(event: Int) {
         log.debug("INPUT_HANDLER") { "Key release $event" }
-        if (event in (0..256)) {
+        if (event in (0..GLFW_KEY_LAST)) {
             keys[event] = -1
         }
     }
@@ -84,9 +84,9 @@ class LwjglInput : InputHandler, InputManager {
         frame++
     }
 
-    override fun isKeyJustPressed(key: Key): Boolean = keys[key.keyCode] != -1L
+    override fun isKeyJustPressed(key: Key): Boolean = this.pressed[key.keyCode] == frame
 
-    override fun isKeyPressed(key: Key): Boolean = this.pressed[key.keyCode] == frame
+    override fun isKeyPressed(key: Key): Boolean = keys[key.keyCode] != -1L
 
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 

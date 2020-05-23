@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx.demo
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.entity.models.Scene
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
 import com.github.dwursteisen.minigdx.fileHandler
@@ -23,6 +24,8 @@ class DemoCamera : Game {
 
     private var cameraIndex = 0
 
+    private val light: Light = Light()
+
     override fun render(delta: Seconds) {
         clear(Colors.BLUE)
 
@@ -34,7 +37,7 @@ class DemoCamera : Game {
         shader.render { program ->
             cameras[cameraIndex].draw(program)
             cameras[cameraIndex].control(delta)
-
+            light.draw(program)
             scene.models.values.forEach {
                 it.draw(program)
             }

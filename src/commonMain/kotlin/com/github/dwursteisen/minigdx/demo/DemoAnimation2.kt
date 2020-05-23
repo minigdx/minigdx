@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.graphics.clear
 import com.github.dwursteisen.minigdx.input.Key
@@ -21,6 +22,8 @@ class DemoAnimation2 : Game {
     private val program = DefaultShaders.create3d()
 
     private val animatedModel: AnimatedModel by fileHandler.get("monkey_animation_gltf.protobuf")
+
+    private val light: Light = Light()
 
     @ExperimentalStdlibApi
     override fun create() {
@@ -53,6 +56,7 @@ class DemoAnimation2 : Game {
 
         program.render {
             camera.draw(it)
+            light.draw(it)
             animatedModel.draw(it)
         }
     }

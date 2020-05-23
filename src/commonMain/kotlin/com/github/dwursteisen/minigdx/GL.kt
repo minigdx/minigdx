@@ -76,6 +76,7 @@ interface GL {
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
     fun uniform1i(uniform: Uniform, data: Int)
     fun uniform2f(uniform: Uniform, first: Float, second: Float)
+    fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float)
 
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
 

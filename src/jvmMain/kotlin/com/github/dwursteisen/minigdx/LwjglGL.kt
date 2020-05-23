@@ -9,6 +9,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 import org.lwjgl.opengl.GL11.glTexParameteri
+import org.lwjgl.opengl.GL20.glUniform3f
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
 import org.lwjgl.opengl.GL30.glBindTexture
@@ -171,6 +172,10 @@ class LwjglGL(override val screen: Screen) : GL {
 
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         glUniform2f(uniform.address, first, second)
+    }
+
+    override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
+        glUniform3f(uniform.address, first, second, third)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {

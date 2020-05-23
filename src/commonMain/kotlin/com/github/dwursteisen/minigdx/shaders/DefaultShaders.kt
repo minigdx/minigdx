@@ -21,6 +21,10 @@ object DefaultShaders {
         
         uniform mat4 uJointTransformationMatrix[MAX_JOINTS];
         
+        uniform vec3 uLightAmbient;
+        uniform vec3 uLightColor;
+        uniform vec3 uLightDirection;
+        
         attribute vec3 aVertexPosition;
         attribute vec3 aNormal;
         attribute vec4 aVertexColor;
@@ -46,17 +50,11 @@ object DefaultShaders {
             
             gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * totalLocalPos;
             
-            // Puissance    
-            vec3 ambientLight = vec3(0.6, 0.6, 0.6);
-            // Couleur
-            vec3 directionalLightColor = vec3(0.5, 0.5, 0.75);
-            vec3 directionalVector = vec3(0.85, 0.8, 0.75);
-            
             vec4 transformedNormal = uNormalMatrix * uModelMatrix * vec4(aNormal, 1.0);
             
-            float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-            vLighting = ambientLight + (directionalLightColor * directional);
-            // vLighting = vec3(0.5,0.5,0.5);
+            float directional = max(dot(transformedNormal.xyz, uLightDirection), 0.0);
+            
+            vLighting = uLightAmbient + (uLightColor * directional);
             vColor = aVertexColor;
         }
     """.trimIndent()
@@ -145,6 +143,11 @@ object DefaultShaders {
         program.createUniform("uNormalMatrix")
         program.createUniform("uArmature")
         program.createUniform("uJointTransformationMatrix")
+
+        // Light
+        program.createUniform("uLightAmbient")
+        program.createUniform("uLightColor")
+        program.createUniform("uLightDirection")
 
         return ShaderProgramExecutor(program)
     }

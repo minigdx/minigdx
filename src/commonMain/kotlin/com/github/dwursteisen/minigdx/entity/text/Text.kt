@@ -40,6 +40,8 @@ class Text(
             xOffset = 0f
             yOffset += angelCode.info.lineHeight * scaleH
             return
+        } else if (char == ' ') {
+            xOffset += angelCode.info.base * scaleW
         }
 
         val code = angelCode.characters[char]

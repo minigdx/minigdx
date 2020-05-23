@@ -6,10 +6,12 @@ import com.github.dwursteisen.minigdx.demo.DemoAnimation2
 import com.github.dwursteisen.minigdx.demo.DemoCamera
 import com.github.dwursteisen.minigdx.demo.DemoGame
 import com.github.dwursteisen.minigdx.demo.DemoKey
+import com.github.dwursteisen.minigdx.demo.DemoLight
 import com.github.dwursteisen.minigdx.demo.DemoMovable
 import com.github.dwursteisen.minigdx.demo.DemoPlanet
 import com.github.dwursteisen.minigdx.demo.DemoSuzanne
 import com.github.dwursteisen.minigdx.demo.DemoTexture
+import com.github.dwursteisen.minigdx.demo.DemoTriangle
 import kotlin.browser.window
 import org.w3c.dom.url.URLSearchParams
 
@@ -22,7 +24,9 @@ private val factory: Map<String, () -> Game> = mapOf(
     "key" to { DemoKey() },
     "game" to { DemoGame() },
     "camera" to { DemoCamera() },
-    "move" to { DemoMovable() }
+    "move" to { DemoMovable() },
+    "triange" to { DemoTriangle() },
+    "light" to { DemoLight() }
 )
 @ExperimentalStdlibApi
 fun main() = configuration(GLConfiguration(canvasId = "canvas")).run {

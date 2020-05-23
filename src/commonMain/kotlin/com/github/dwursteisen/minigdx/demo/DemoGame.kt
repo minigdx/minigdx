@@ -13,6 +13,7 @@ import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.delegate.TouchByHitBox
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.entity.text.Text
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.graphics.clear
@@ -201,6 +202,8 @@ class DemoGame : Game {
 
     private val entities: MutableList<DemoGameLifeCycle> = mutableListOf()
 
+    private val light: Light = Light()
+
     override fun create() {
         camera.translate(0f, 0f, -50f)
         player.setTranslate(-10f, -10f, 0f)
@@ -240,6 +243,7 @@ class DemoGame : Game {
         shader.render { shader ->
             clear(178 / 255f, 235 / 255f, 242 / 255f)
             camera.draw(shader)
+            light.draw(shader)
             background.draw(shader)
             player.draw(shader)
 

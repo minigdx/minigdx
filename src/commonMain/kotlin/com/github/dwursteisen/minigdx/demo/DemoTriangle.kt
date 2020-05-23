@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.models.Landmark
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
 import com.github.dwursteisen.minigdx.entity.primitives.Mesh
 import com.github.dwursteisen.minigdx.entity.primitives.Vertice
@@ -45,6 +46,8 @@ class DemoTriangle : Game {
         )
     )
 
+    private val light: Light = Light()
+
     @ExperimentalStdlibApi
     override fun create() {
         camera.translate(0, 0, -5)
@@ -58,6 +61,7 @@ class DemoTriangle : Game {
 
         program.render {
             camera.draw(it)
+            light.draw(it)
             model.draw(it)
             landmark.draw(it)
         }

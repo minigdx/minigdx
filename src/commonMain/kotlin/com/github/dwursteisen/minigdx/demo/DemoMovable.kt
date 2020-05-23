@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.models.Cube
+import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
@@ -35,6 +36,8 @@ class DemoMovable : Game {
 
     private val shaderProgram = DefaultShaders.create3d()
 
+    private val light: Light = Light()
+
     override fun create() {
         camera.translate(z = -10f)
     }
@@ -43,6 +46,7 @@ class DemoMovable : Game {
         shaderProgram.render { shader ->
             camera.draw(shader)
             camera.control(delta)
+            light.draw(shader)
             cubes.forEach {
                 it.draw(shader)
             }
