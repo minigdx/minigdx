@@ -9,7 +9,7 @@ import com.github.dwursteisen.minigdx.entity.CanTouchByHitBox
 import com.github.dwursteisen.minigdx.entity.HitBox
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.behavior.JumpBehavior
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.delegate.TouchByHitBox
 import com.github.dwursteisen.minigdx.entity.models.Camera2D
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
@@ -73,7 +73,7 @@ class Player(private val model: AnimatedModel) :
     }
 }
 
-class Obstacle(private val index: Int, private val model: Model) :
+class Obstacle(private val index: Int, private val model: Drawable) :
     DemoGameLifeCycle,
     CanDraw by model,
     CanMove by model,
@@ -185,13 +185,13 @@ class DemoGame : Game {
 
     private val gui = DefaultShaders.create2d()
 
-    private val obstacles by fileHandler.get("cactus.protobuf", Model::class).map {
+    private val obstacles by fileHandler.get("cactus.protobuf", Drawable::class).map {
         (0 until 1).map { index ->
             Obstacle(index, it.copy())
         }
     }
 
-    private val background by fileHandler.get<Model>("montains.protobuf")
+    private val background by fileHandler.get<Drawable>("montains.protobuf")
 
     private val score by fileHandler.get("pt_font", Text::class).map { Score(it) }
 

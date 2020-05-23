@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.entity.animations
 
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
 import com.github.dwursteisen.minigdx.entity.primitives.DrawType
@@ -15,7 +15,7 @@ import com.github.dwursteisen.minigdx.math.Vector3
 class JointMesh(
     val mesh: Mesh,
     currentPose: Armature
-) : CanDraw by Model(mesh, currentPose),
+) : CanDraw by Drawable(mesh, currentPose),
     CanMove by Movable() {
 
     companion object {

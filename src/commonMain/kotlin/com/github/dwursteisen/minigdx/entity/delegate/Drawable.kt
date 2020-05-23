@@ -14,70 +14,13 @@ import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
-private fun Array<Vertice>.convertNormals(): DataSource.FloatDataSource {
-    return convert { it.normal }
-}
-
-private fun Array<Vertice>.convert(field: (Vertice) -> Vector3): DataSource.FloatDataSource {
-    return DataSource.FloatDataSource(FloatArray(this.size * 3) {
-        val y = it % 3
-        val x = (it - y) / 3
-        when (y) {
-            0 -> field(this[x]).x
-            1 -> field(this[x]).y
-            2 -> field(this[x]).z
-            else -> throw IllegalArgumentException("index '$it' not expected.")
-        }
-    })
-}
-
-private fun Array<Vertice>.convertPositions(): DataSource.FloatDataSource {
-    return convert { it.position }
-}
-
-private fun Array<Vertice>.convertColors(): DataSource.FloatDataSource {
-    return DataSource.FloatDataSource(FloatArray(this.size * 4) {
-        val y = it % 4
-        val x = (it - y) / 4
-        when (y) {
-            0 -> this[x].color.r
-            1 -> this[x].color.g
-            2 -> this[x].color.b
-            3 -> this[x].color.alpha
-            else -> throw IllegalArgumentException("index '$it' not expected.")
-        }
-    })
-}
-
-private fun ShortArray.convertOrder(): DataSource.ShortDataSource {
-    return DataSource.ShortDataSource(this)
-}
-
-private fun Array<Vertice>.convertJoints(): DataSource.FloatDataSource {
-    return DataSource.FloatDataSource(FloatArray(this.size * 3) {
-        val y = it % 3
-        val x = (it - y) / 3
-        val fl = when (y) {
-            0 -> this[x].influence?.joinIds?.a?.toFloat() ?: -1f
-            1 -> this[x].influence?.joinIds?.b?.toFloat() ?: -1f
-            2 -> this[x].influence?.joinIds?.c?.toFloat() ?: -1f
-            else -> throw IllegalArgumentException("index '$it' not expected.")
-        }
-        fl
-    })
-}
-
-private fun Array<Vertice>.convertWeights(): DataSource.FloatDataSource {
-    return convert { it.influence?.weight ?: Vector3.X }
-}
-
 /**
  * Render a mesh on a screen.
  */
-class Model(
+class Drawable(
     val mesh: Mesh,
     val pose: Armature? = null
-) : CanCopy<Model>, CanMoveAndDraw, CanMove by mesh {
+) : CanCopy<Drawable>, CanMoveAndDraw, CanMove by mesh {
 
     /**
      * Positions of vertices.
@@ -223,17 +166,74 @@ class Model(
         gl.drawElements(mesh.drawType.glType, mesh.verticesOrder.size, GL.UNSIGNED_SHORT, 0)
     }
 
-    override fun copy() = Model(
+    override fun copy() = Drawable(
         mesh = mesh.copy(),
         pose = this.pose
     )
-}
 
-private val mappingType = mapOf(
-    DrawType.TRIANGLE to GL.TRIANGLES,
-    DrawType.LINE to GL.LINES
-)
-private val DrawType.glType: Int
-    get() {
-        return mappingType.getValue(this)
+    private fun Array<Vertice>.convertNormals(): DataSource.FloatDataSource {
+        return convert { it.normal }
     }
+
+    private fun Array<Vertice>.convert(field: (Vertice) -> Vector3): DataSource.FloatDataSource {
+        return DataSource.FloatDataSource(FloatArray(this.size * 3) {
+            val y = it % 3
+            val x = (it - y) / 3
+            when (y) {
+                0 -> field(this[x]).x
+                1 -> field(this[x]).y
+                2 -> field(this[x]).z
+                else -> throw IllegalArgumentException("index '$it' not expected.")
+            }
+        })
+    }
+
+    private fun Array<Vertice>.convertPositions(): DataSource.FloatDataSource {
+        return convert { it.position }
+    }
+
+    private fun Array<Vertice>.convertColors(): DataSource.FloatDataSource {
+        return DataSource.FloatDataSource(FloatArray(this.size * 4) {
+            val y = it % 4
+            val x = (it - y) / 4
+            when (y) {
+                0 -> this[x].color.r
+                1 -> this[x].color.g
+                2 -> this[x].color.b
+                3 -> this[x].color.alpha
+                else -> throw IllegalArgumentException("index '$it' not expected.")
+            }
+        })
+    }
+
+    private fun ShortArray.convertOrder(): DataSource.ShortDataSource {
+        return DataSource.ShortDataSource(this)
+    }
+
+    private fun Array<Vertice>.convertJoints(): DataSource.FloatDataSource {
+        return DataSource.FloatDataSource(FloatArray(this.size * 3) {
+            val y = it % 3
+            val x = (it - y) / 3
+            val fl = when (y) {
+                0 -> this[x].influence?.joinIds?.a?.toFloat() ?: -1f
+                1 -> this[x].influence?.joinIds?.b?.toFloat() ?: -1f
+                2 -> this[x].influence?.joinIds?.c?.toFloat() ?: -1f
+                else -> throw IllegalArgumentException("index '$it' not expected.")
+            }
+            fl
+        })
+    }
+
+    private fun Array<Vertice>.convertWeights(): DataSource.FloatDataSource {
+        return convert { it.influence?.weight ?: Vector3.X }
+    }
+
+    private val mappingType = mapOf(
+        DrawType.TRIANGLE to GL.TRIANGLES,
+        DrawType.LINE to GL.LINES
+    )
+    private val DrawType.glType: Int
+        get() {
+            return mappingType.getValue(this)
+        }
+}

@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.file
 
 import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Scene
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.AngelCode
@@ -70,7 +70,7 @@ open class Content<R>(val filename: String) {
 
 private fun createLoaders() = mapOf(
     AnimatedModel::class to AnimatedModelLoader(),
-    Model::class to ModelLoader(),
+    Drawable::class to ModelLoader(),
     TextureImage::class to TextureImageLoader(),
     Texture::class to TextureLoader(),
     AngelCode::class to AngelCodeLoader(),

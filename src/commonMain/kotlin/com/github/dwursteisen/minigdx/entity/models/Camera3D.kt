@@ -44,7 +44,7 @@ class Camera3D(
 ) : Entity, CanMove by InvMovable() {
 
     fun draw(program: ShaderProgram) {
-        val normalMatrix = transpose(inverse(modelMatrix))
+        val normalMatrix = transpose(modelMatrix)
 
         gl.uniformMatrix4fv(program.getUniform("uProjectionMatrix"), false, projectionMatrix)
         gl.uniformMatrix4fv(program.getUniform("uViewMatrix"), false, inverse(modelMatrix))

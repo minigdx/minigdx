@@ -16,7 +16,7 @@ import com.github.dwursteisen.minigdx.entity.animations.Armature
 import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.entity.animations.JointId
 import com.github.dwursteisen.minigdx.entity.animations.KeyFrame
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.primitives.Color
 import com.github.dwursteisen.minigdx.entity.primitives.Influence
@@ -28,7 +28,7 @@ import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.random.Random
 
 data class ModelDescription(
-    val model: Model,
+    val model: Drawable,
     val animations: Map<String, Animation> = emptyMap(),
     val cameras: Map<String, Camera3D> = emptyMap()
 )
@@ -178,7 +178,7 @@ object ModelReader {
         )
 
         val model = ModelDescription(
-            model = Model(mesh, armature.first),
+            model = Drawable(mesh, armature.first),
             animations = animations,
             cameras = model.cameras.map { cam ->
                 val camera = when (cam.type) {

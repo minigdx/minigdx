@@ -5,13 +5,13 @@ import com.github.dwursteisen.minigdx.entity.CanAnimate
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.Entity
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
 class AnimatedModel(
     animation: Animation,
-    model: Model,
+    model: Drawable,
     val animations: Map<String, Animation>,
     val armature: Armature = model.pose!!,
     var drawJoint: Boolean = false
@@ -26,7 +26,7 @@ class AnimatedModel(
     val animationsName
         get() = animations.keys
 
-    private val drawable = Model(
+    private val drawable = Drawable(
         model.mesh,
         animator.currentPose
     )

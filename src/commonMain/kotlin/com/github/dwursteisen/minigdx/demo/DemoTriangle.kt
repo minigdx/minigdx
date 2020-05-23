@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx.demo
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.models.Landmark
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
@@ -22,7 +22,7 @@ class DemoTriangle : Game {
 
     private val program = DefaultShaders.create3d()
 
-    private val model: Model = Model(
+    private val model: Drawable = Drawable(
         mesh = Mesh(
             "model",
             vertices = arrayOf(

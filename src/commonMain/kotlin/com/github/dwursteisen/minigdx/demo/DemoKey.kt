@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx.demo
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.graphics.clear
@@ -20,10 +20,10 @@ class DemoKey : Game {
 
     private val program = DefaultShaders.create3d()
 
-    private val up: Model by fileHandler.copy("key.protobuf")
-    private val down: Model by fileHandler.copy("key.protobuf")
-    private val left: Model by fileHandler.copy("key.protobuf")
-    private val right: Model by fileHandler.copy("key.protobuf")
+    private val up: Drawable by fileHandler.copy("key.protobuf")
+    private val down: Drawable by fileHandler.copy("key.protobuf")
+    private val left: Drawable by fileHandler.copy("key.protobuf")
+    private val right: Drawable by fileHandler.copy("key.protobuf")
 
     @ExperimentalStdlibApi
     override fun create() {

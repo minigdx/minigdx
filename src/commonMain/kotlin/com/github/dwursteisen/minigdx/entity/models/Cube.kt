@@ -1,7 +1,7 @@
 package com.github.dwursteisen.minigdx.entity.models
 
 import com.github.dwursteisen.minigdx.entity.CanMoveAndDraw
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.primitives.Color
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
 import com.github.dwursteisen.minigdx.entity.primitives.Mesh
@@ -10,7 +10,7 @@ import com.github.dwursteisen.minigdx.math.Vector3
 
 class Cube(
     mesh: Mesh
-) : CanMoveAndDraw by Model(mesh) {
+) : CanMoveAndDraw by Drawable(mesh) {
 
     constructor(name: String, color: Color = Colors.WHITE) : this(
         Mesh(

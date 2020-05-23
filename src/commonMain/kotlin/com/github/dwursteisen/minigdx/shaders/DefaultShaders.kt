@@ -46,13 +46,13 @@ object DefaultShaders {
             
             gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * totalLocalPos;
             
-            // Apply lighting effect
-                
+            // Puissance    
             vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+            // Couleur
             vec3 directionalLightColor = vec3(0.5, 0.5, 0.75);
             vec3 directionalVector = vec3(0.85, 0.8, 0.75);
             
-            vec4 transformedNormal = uNormalMatrix * vec4(aNormal, 1.0);
+            vec4 transformedNormal = uNormalMatrix * uModelMatrix * vec4(aNormal, 1.0);
             
             float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
             vLighting = ambientLight + (directionalLightColor * directional);

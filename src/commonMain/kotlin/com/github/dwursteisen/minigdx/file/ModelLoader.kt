@@ -1,11 +1,11 @@
 package com.github.dwursteisen.minigdx.file
 
-import com.github.dwursteisen.minigdx.entity.delegate.Model
+import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 
-class ModelLoader : FileLoader<Model> {
+class ModelLoader : FileLoader<Drawable> {
 
     @ExperimentalStdlibApi
-    private fun load(filename: String, content: ByteArray): Model {
+    private fun load(filename: String, content: ByteArray): Drawable {
         val description = if (filename.endsWith(".json")) {
             ModelReader.fromJson(content)
         } else {
@@ -15,7 +15,7 @@ class ModelLoader : FileLoader<Model> {
     }
 
     @ExperimentalStdlibApi
-    override fun load(filename: String, handler: PlatformFileHandler): Content<Model> {
+    override fun load(filename: String, handler: PlatformFileHandler): Content<Drawable> {
         return handler.readData(filename).map { load(filename, it) }
     }
 }
