@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
+import org.lwjgl.opengl.GL11.glTexParameteri
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
 import org.lwjgl.opengl.GL30.glBindTexture
@@ -211,6 +212,10 @@ class LwjglGL(override val screen: Screen) : GL {
             source.glType,
             source.pixels
         )
+    }
+
+    override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {
+        glTexParameteri(target, paramName, paramValue)
     }
 
     override fun generateMipmap(target: Int) {

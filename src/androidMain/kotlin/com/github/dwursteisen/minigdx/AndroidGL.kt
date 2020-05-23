@@ -29,6 +29,7 @@ import android.opengl.GLES20.glGetUniformLocation
 import android.opengl.GLES20.glLinkProgram
 import android.opengl.GLES20.glShaderSource
 import android.opengl.GLES20.glTexImage2D
+import android.opengl.GLES20.glTexParameteri
 import android.opengl.GLES20.glUniform1i
 import android.opengl.GLES20.glUniform2f
 import android.opengl.GLES20.glUniformMatrix4fv
@@ -166,6 +167,10 @@ class AndroidGL(override val screen: Screen) : GL {
             is DataSource.DoubleDataSource -> java.lang.Double.BYTES
         }
         glBufferData(target, buffer.capacity() * factor, buffer, usage)
+    }
+
+    override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {
+        glTexParameteri(target, paramName, paramValue)
     }
 
     override fun depthFunc(target: ByteMask) {

@@ -22,7 +22,15 @@ import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.DefaultShaders
 
+interface DemoGameLifeCycle {
+
+    fun stop()
+
+    fun reset()
+}
+
 class Player(private val model: AnimatedModel) :
+    DemoGameLifeCycle,
     CanMove by model,
     CanDraw by model,
     CanTouchByHitBox by TouchByHitBox(HitBox(10f, 10f), model) {
@@ -35,9 +43,14 @@ class Player(private val model: AnimatedModel) :
         isJumping = { inputs.isKeyPressed(Key.SPACE) || inputs.isTouched(TouchSignal.TOUCH1) != null }
     )
 
+    var touched: Boolean = false
+        private set
+
     val obstacles: MutableList<Obstacle> = mutableListOf()
 
     fun update(delta: Seconds) {
+        if (touched) return
+
         model.update(delta)
         jumpingCharge.update(delta)
         if (jumpingCharge.grounded) {
@@ -48,18 +61,29 @@ class Player(private val model: AnimatedModel) :
 
         obstacles.forEach {
             if (it.hit(this)) {
-                println("loose")
+                touched = true
             }
         }
     }
+
+    override fun stop() = Unit
+
+    override fun reset() {
+        touched = false
+    }
 }
 
-class Obstacle(private val model: Model) :
+class Obstacle(private val index: Int, private val model: Model) :
+    DemoGameLifeCycle,
     CanDraw by model,
     CanMove by model,
     CanTouchByHitBox by TouchByHitBox(HitBox(10f, 10f), model) {
 
+    private var stop: Boolean = false
+
     fun update(delta: Seconds) {
+        if (stop) return
+
         translate(-speed * delta)
 
         // off the screen
@@ -68,34 +92,85 @@ class Obstacle(private val model: Model) :
         }
     }
 
+    override fun stop() {
+        stop = true
+    }
+
+    override fun reset() {
+        stop = false
+        setTranslate(
+            // put it offscreen
+            y = 20f + index * 20f,
+            x = -10f,
+            z = 10f
+        )
+    }
+
     companion object {
 
         private var speed = 12f
     }
 }
 
-class Score(val text: Text) : CanDraw by text, CanMove by text {
+class Score(val text: Text) :
+    DemoGameLifeCycle,
+    CanDraw by text,
+    CanMove by text {
 
     private var time: Int = 0
 
-    fun update(delta: Seconds) {
-        time += (delta * 100).toInt()
+    private var blinkTime: Float = 0f
 
-        val seconds = (time / 100f).toInt()
-        val millis = time - (seconds * 100)
+    var blink = false
+
+    fun update(delta: Seconds) {
+        if (!blink) {
+            time += (delta * 100).toInt()
+
+            text.text = asTimeString(time)
+        } else {
+            blinkTime += delta
+            if (blinkTime > BLINK_DURATION + BLINK_COOLDOWN) {
+                blinkTime = 0f // reset
+            } else if (blinkTime > BLINK_DURATION) {
+                text.text = ""
+            } else {
+                text.text = asTimeString(time)
+            }
+        }
+    }
+
+    private fun asTimeString(t: Int): String {
+        val seconds = (t / 100f).toInt()
+        val millis = t - (seconds * 100)
         val m = if (millis < 10) {
             "0$millis"
         } else {
             "$millis"
         }
-        text.text = "$seconds:$m"
+        return "$seconds:$m"
+    }
+
+    override fun stop() {
+        blink = true
+    }
+
+    override fun reset() {
+        blinkTime = 0f
+        blink = false
+        time = 0
+    }
+
+    companion object {
+        private const val BLINK_DURATION = 1f
+        private const val BLINK_COOLDOWN = 0.25f
     }
 }
 
 @ExperimentalStdlibApi
 class DemoGame : Game {
 
-    override val worldResolution: WorldResolution = WorldResolution(200, 200)
+    override val worldResolution: WorldResolution = WorldResolution(512, 512)
 
     private val camera = Camera3D.perspective(
         45,
@@ -112,24 +187,19 @@ class DemoGame : Game {
 
     private val obstacles by fileHandler.get("cactus.protobuf", Model::class).map {
         (0 until 1).map { index ->
-            Obstacle(it.copy()).apply {
-                setTranslate(
-                    // put it offscreen
-                    y = 20f + index * 20f,
-                    x = -10f,
-                    z = 10f
-                )
-            }
+            Obstacle(index, it.copy())
         }
     }
 
     private val background by fileHandler.get<Model>("montains.protobuf")
 
-    private val score by fileHandler.get("font", Text::class).map { Score(it) }
+    private val score by fileHandler.get("pt_font", Text::class).map { Score(it) }
 
     private val player by fileHandler.get("dino.protobuf", AnimatedModel::class).map {
         Player(model = it)
     }
+
+    private val entities: MutableList<DemoGameLifeCycle> = mutableListOf()
 
     override fun create() {
         camera.translate(0f, 0f, -50f)
@@ -140,8 +210,13 @@ class DemoGame : Game {
             .scale(Vector3(10f, 10f, 10f))
 
         score.text.text = "00:00"
-        score.translate(x = 10f, y = 5f)
-        score.scale(x = -0.5, y = -0.5f)
+        score.translate(x = 20f, y = 5f)
+
+        entities.addAll(obstacles)
+        entities.add(score)
+        entities.add(player)
+
+        entities.forEach { it.reset() }
     }
 
     override fun render(delta: Seconds) {
@@ -150,20 +225,15 @@ class DemoGame : Game {
         obstacles.forEach { it.update(delta) }
         score.update(delta)
 
-        background.rotateY(5f * delta)
+        if (player.touched) {
+            entities.forEach { it.stop() }
 
-        if (inputs.isKeyPressed(Key.ARROW_LEFT)) {
-            obstacles.forEach {
-                it.rotate(x = 10f * delta)
+            if (inputs.isKeyJustPressed(Key.SPACE) ||
+                inputs.isJustTouched(TouchSignal.TOUCH1) != null) {
+                entities.forEach { it.reset() }
             }
-        } else if (inputs.isKeyPressed(Key.ARROW_RIGHT)) {
-            obstacles.forEach {
-                it.rotate(y = 10f * delta)
-            }
-        } else if (inputs.isKeyPressed(Key.ARROW_UP)) {
-            obstacles.forEach {
-                it.rotate(z = 10f * delta)
-            }
+        } else {
+            background.rotateY(5f * delta)
         }
 
         // -- draw --

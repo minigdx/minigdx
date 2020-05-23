@@ -85,6 +85,8 @@ interface GL {
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage)
 
+    fun texParameteri(target: Int, paramName: Int, paramValue: Int)
+
     fun generateMipmap(target: Int)
 
     companion object {

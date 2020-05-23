@@ -56,6 +56,9 @@ class Texture(private val source: TextureImage) : CanDraw, CanMove by Movable(),
 
         gl.bindTexture(GL.TEXTURE_2D, texture)
 
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST)
+
         //   https://webglfundamentals.org/webgl/lessons/fr/webgl-2d-rotation.html
         gl.enableVertexAttribArray(shader.getAttrib("aPosition"))
 

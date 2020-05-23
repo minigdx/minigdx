@@ -160,6 +160,10 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         gl.texImage2D(target, level, internalformat, format, type, source.source)
     }
 
+    override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {
+        gl.texParameteri(target, paramName, paramValue)
+    }
+
     override fun generateMipmap(target: Int) {
         gl.generateMipmap(target)
     }

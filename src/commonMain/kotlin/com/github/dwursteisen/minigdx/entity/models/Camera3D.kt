@@ -58,6 +58,7 @@ class Camera3D(
         target: Vector3 = Vector3(),
         up: Vector3 = rotation
     ) {
+        // TODO: ça devrait être projection matrix ?
         projectionMatrix = com.curiouscreature.kotlin.math.lookAt(
             eye = Float3(eye.x, eye.y, eye.z),
             target = Float3(target.x, target.y, target.z),

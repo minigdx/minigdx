@@ -111,10 +111,6 @@ class FillViewportStrategyTest {
                 TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun bufferData(target: ByteMask, size: Int, usage: Int) {
-                TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
-            }
-
             override fun bufferData(target: ByteMask, data: DataSource, usage: Int) {
                 TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
             }
@@ -182,6 +178,10 @@ class FillViewportStrategyTest {
                 type: Int,
                 source: TextureImage
             ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun texParameteri(target: Int, paramNam: Int, paramValue: Int) {
                 TODO("Not yet implemented")
             }
 
