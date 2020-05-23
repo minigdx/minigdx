@@ -33,7 +33,7 @@ class Player(private val model: AnimatedModel) :
     DemoGameLifeCycle,
     CanMove by model,
     CanDraw by model,
-    CanTouchByHitBox by TouchByHitBox(HitBox(10f, 10f), model) {
+    CanTouchByHitBox by TouchByHitBox(HitBox(2f, 3f), model) {
 
     private val jumpingCharge = JumpBehavior(
         charge = 0.8f,
@@ -77,7 +77,7 @@ class Obstacle(private val index: Int, private val model: Model) :
     DemoGameLifeCycle,
     CanDraw by model,
     CanMove by model,
-    CanTouchByHitBox by TouchByHitBox(HitBox(10f, 10f), model) {
+    CanTouchByHitBox by TouchByHitBox(HitBox(2f, 2f), model) {
 
     private var stop: Boolean = false
 
