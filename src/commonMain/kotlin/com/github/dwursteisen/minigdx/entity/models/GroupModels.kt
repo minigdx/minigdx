@@ -5,21 +5,30 @@ import com.curiouscreature.kotlin.math.Quaternion
 import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
+import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.CanMoveAndDraw
 import com.github.dwursteisen.minigdx.entity.delegate.Movable
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 
-class GroupModels(val models: MutableList<CanMoveAndDraw> = mutableListOf()) : CanMoveAndDraw {
+class GroupModels() : CanMove, CanDraw {
 
     private val delegate: CanMove = Movable()
 
+    private val models: MutableList<CanMove> = mutableListOf()
+
+    private val draws: MutableList<CanDraw> = mutableListOf()
+
+    fun <T> add(child: T) where T : CanMove, T : CanDraw {
+        models.add(child)
+        draws.add(child)
+    }
+
     override fun draw(shader: ShaderProgram) {
-        models.forEach {
+        models.forEachIndexed { index, it ->
             val mat = it.modelMatrix
             it.modelMatrix = delegate.modelMatrix * it.modelMatrix
-            it.draw(shader)
+            draws[index].draw(shader)
             it.modelMatrix = mat
         }
     }

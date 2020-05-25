@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.entity.models
 
-import com.github.dwursteisen.minigdx.entity.CanMoveAndDraw
+import com.github.dwursteisen.minigdx.entity.CanDraw
+import com.github.dwursteisen.minigdx.entity.CanMove
 import com.github.dwursteisen.minigdx.entity.delegate.Drawable
 import com.github.dwursteisen.minigdx.entity.primitives.Color
 import com.github.dwursteisen.minigdx.entity.primitives.Colors
@@ -9,8 +10,9 @@ import com.github.dwursteisen.minigdx.entity.primitives.Vertice
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class Cube(
-    mesh: Mesh
-) : CanMoveAndDraw by Drawable(mesh) {
+    mesh: Mesh,
+    private val delegate: Drawable = Drawable(mesh)
+) : CanDraw by delegate, CanMove by delegate {
 
     constructor(name: String, color: Color = Colors.WHITE) : this(
         Mesh(
