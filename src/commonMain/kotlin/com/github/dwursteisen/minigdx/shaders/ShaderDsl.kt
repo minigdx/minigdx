@@ -5,13 +5,20 @@ import com.github.dwursteisen.minigdx.shaders.Parameter.Vec2
 import com.github.dwursteisen.minigdx.shaders.Parameter.Vec3
 import com.github.dwursteisen.minigdx.shaders.Parameter.Vec4
 
+interface VertexShader
+interface FragmentShader
+
 fun vertex(generator: VertexBuilder.() -> Unit): VertexShader {
     val builder = VertexBuilder()
     builder.generator()
     return builder
 }
 
-interface VertexShader
+fun fragment(generator: FragmentBuilder.() -> Unit): FragmentShader {
+    val builder = FragmentBuilder()
+    builder.generator()
+    return builder
+}
 
 sealed class Parameter(val name: String, val type: String) {
 
@@ -22,6 +29,7 @@ sealed class Parameter(val name: String, val type: String) {
             return Vec3(name + " + " + other.name)
         }
     }
+
     class Vec4(name: String) : Parameter(name, "vec4")
     class Mat4(name: String) : Parameter(name, "mat4")
 }
@@ -98,6 +106,21 @@ class VertexBuilder : VertexShader, ShaderBuilder() {
     override fun emitBody(): String {
         val builder = StringBuilder()
         glPosition?.run { builder.append("gl_Position = $name;") }
+        return builder.toString()
+    }
+}
+
+class FragmentBuilder : FragmentShader, ShaderBuilder() {
+
+    private var glColor: Parameter? = null
+
+    fun glColor(code: () -> Parameter) {
+        glColor = code()
+    }
+
+    override fun emitBody(): String {
+        val builder = StringBuilder()
+        glColor?.run { builder.append("gl_FragColor = $name;") }
         return builder.toString()
     }
 }

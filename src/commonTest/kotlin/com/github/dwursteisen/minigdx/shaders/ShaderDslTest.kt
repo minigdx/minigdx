@@ -16,8 +16,7 @@ class ShaderDslTest {
             #ifdef GL_ES
                 precision highp float;
             #endif
-        
-        
+
             attribute vec4 aAttribute;
             
             void main() {
@@ -39,8 +38,7 @@ class ShaderDslTest {
             #endif
         
             uniform mat4 aUniform;
-            
-            
+
             void main() {
             
             }
@@ -66,7 +64,6 @@ class ShaderDslTest {
             uniform vec3 a;
             uniform vec3 b;
             uniform vec3 c;
-            
             
             void main() {
                 gl_Position = a + b + c;
