@@ -158,6 +158,10 @@ class FillViewportStrategyTest {
                 TODO("Not yet implemented")
             }
 
+            override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
+                TODO("Not yet implemented")
+            }
+
             override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
                 TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
             }
