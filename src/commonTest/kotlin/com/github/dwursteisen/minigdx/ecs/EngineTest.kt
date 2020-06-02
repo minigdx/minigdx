@@ -41,4 +41,33 @@ class EngineTest {
         assertTrue(result)
         assertNull(system.entities.firstOrNull())
     }
+
+    @Test
+    fun `updating | it add the entity in a system when a component is added`() {
+        val engine = Engine()
+        val system = TestSystem()
+
+        engine.addSystem(system)
+
+        val entity = engine.create {
+        }
+
+        entity.add(Name("hello"))
+        assertNotNull(system.entities.firstOrNull())
+    }
+
+    @Test
+    fun `updating | it remove the entity from a system when a component is removed`() {
+        val engine = Engine()
+        val system = TestSystem()
+
+        engine.addSystem(system)
+
+        val entity = engine.create {
+            add(Name("hello"))
+        }
+
+        entity.remove(Name::class)
+        assertNull(system.entities.firstOrNull())
+    }
 }

@@ -13,19 +13,25 @@ class Entity(
 
     var componentsType: Set<KClass<out Component>> = components.map { it::class }.toSet()
 
-    fun add(component: Component) {
+    fun add(component: Component) = engineUpdate {
         components += component
         componentsType = componentsType + component::class
     }
 
-    fun remove(component: Component) {
+    fun remove(component: Component) = engineUpdate {
         components -= component
         componentsType = componentsType - component::class
     }
 
-    fun remove(componentType: KClass<out Component>) {
+    fun remove(componentType: KClass<out Component>) = engineUpdate {
         components = components.filter { it::class != componentType }
         componentsType = componentsType - componentType
+    }
+
+    private fun engineUpdate(block: () -> Unit) {
+        engine.destroy(this)
+        block()
+        engine.add(this)
     }
 }
 
