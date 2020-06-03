@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs
 
+import com.github.dwursteisen.minigdx.Seconds
 import kotlin.reflect.KClass
 
 interface Component
@@ -38,6 +39,10 @@ class Entity(
 abstract class System(val entityQuery: EntityQuery) {
 
     var entities: Sequence<Entity> = emptySequence()
+
+    abstract fun update(delta: Seconds, entity: Entity)
+
+    fun update(delta: Seconds) = entities.forEach { update(delta, it) }
 
     fun add(entity: Entity): Boolean {
         return if (entityQuery.accept(entity)) {
@@ -96,5 +101,9 @@ class Engine {
 
     fun add(entity: Entity): Boolean {
         return systems.any { it.add(entity) }
+    }
+
+    fun update(delta: Seconds) {
+        systems.forEach { it.update(delta) }
     }
 }
