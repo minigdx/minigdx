@@ -10,6 +10,7 @@ import com.github.dwursteisen.minigdx.demo.DemoLight
 import com.github.dwursteisen.minigdx.demo.DemoMovable
 import com.github.dwursteisen.minigdx.demo.DemoPlanet
 import com.github.dwursteisen.minigdx.demo.DemoSuzanne
+import com.github.dwursteisen.minigdx.demo.DemoSuzanne2
 import com.github.dwursteisen.minigdx.demo.DemoTexture
 import com.github.dwursteisen.minigdx.demo.DemoTriangle
 import kotlin.browser.window
@@ -20,6 +21,7 @@ private val factory: Map<String, () -> Game> = mapOf(
     "animation" to { DemoAnimation() },
     "animation2" to { DemoAnimation2() },
     "suzanne" to { DemoSuzanne() },
+    "suzanne2" to { DemoSuzanne2() },
     "2d" to { DemoTexture() },
     "key" to { DemoKey() },
     "game" to { DemoGame() },
