@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx.demo
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.WorldResolution
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
+import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
 import com.github.dwursteisen.minigdx.entity.models.Camera3D
 import com.github.dwursteisen.minigdx.entity.models.Light
 import com.github.dwursteisen.minigdx.fileHandler
@@ -19,19 +19,20 @@ class DemoSuzanne : Game {
 
     private val program = DefaultShaders.create3d()
 
-    private val model: Drawable by fileHandler.get("suzanne.protobuf")
+    private val model: AnimatedModel by fileHandler.get("dino.protobuf")
 
     private val light: Light = Light()
 
     @ExperimentalStdlibApi
     override fun create() {
         camera.translate(0, 0, -5)
+        model.scale(0.5f, 0.5f, 0.5f)
     }
 
     override fun render(delta: Seconds) {
         // --- act ---
-        model.rotateY(delta * 10)
-
+        model.rotateY(-delta * 10)
+        model.update(delta)
         // --- draw ---
         clear(1 / 255f, 191 / 255f, 255 / 255f)
 
