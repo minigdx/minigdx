@@ -42,9 +42,9 @@ abstract class System(val entityQuery: EntityQuery) {
 
     abstract fun update(delta: Seconds, entity: Entity)
 
-    fun update(delta: Seconds) = entities.forEach { update(delta, it) }
+    open fun update(delta: Seconds) = entities.forEach { update(delta, it) }
 
-    fun add(entity: Entity): Boolean {
+    open fun add(entity: Entity): Boolean {
         return if (entityQuery.accept(entity)) {
             entities += entity
             true
@@ -53,7 +53,7 @@ abstract class System(val entityQuery: EntityQuery) {
         }
     }
 
-    fun remove(entity: Entity): Boolean {
+    open fun remove(entity: Entity): Boolean {
         return if (entityQuery.accept(entity)) {
             val count = entities.count()
             entities -= entity

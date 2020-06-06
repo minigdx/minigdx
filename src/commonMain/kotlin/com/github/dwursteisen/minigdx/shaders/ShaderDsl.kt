@@ -8,6 +8,14 @@ import com.github.dwursteisen.minigdx.shaders.Parameter.Vec4
 interface VertexShader
 interface FragmentShader
 
+class StringVertexShader(private val shader: String) : VertexShader {
+    override fun toString(): String = shader
+}
+
+class StringFragmentShader(private val shader: String) : FragmentShader {
+    override fun toString(): String = shader
+}
+
 fun vertex(generator: VertexBuilder.() -> Unit): VertexShader {
     val builder = VertexBuilder()
     builder.generator()
