@@ -9,6 +9,9 @@ group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    maven {
+        url = uri("https://dl.bintray.com/dwursteisen/minigdx")
+    }
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
     maven(url = "https://maven.pkg.github.com/dwursteisen/kotlin-math") {
         this.credentials {
@@ -176,16 +179,9 @@ kotlin {
 
 colladaPlugin {
     create("assetsProtobuf") {
-        this.daeDirectory.set(project.projectDir.resolve("src/assets"))
-        this.gltfDirectory.set(project.projectDir.resolve("src/assets"))
-        this.target.set(project.projectDir.resolve("src/commonMain/resources"))
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets/v2"))
+        this.target.set(project.projectDir.resolve("src/commonMain/resources/v2"))
         this.format.set(collada.Format.PROTOBUF as collada.Format)
-    }
-    create("assetsJson") {
-        this.daeDirectory.set(project.projectDir.resolve("src/assets"))
-        this.gltfDirectory.set(project.projectDir.resolve("src/assets"))
-        this.target.set(project.projectDir.resolve("src/commonMain/resources"))
-        this.format.set(collada.Format.JSON as collada.Format)
     }
 }
 

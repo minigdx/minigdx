@@ -35,5 +35,5 @@ application {
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = rootDir.resolve("src/commonMain/resources").absoluteFile
-    this.args = listOf("--game", "light")
+    this.args = listOf("--game", "v2")
 }

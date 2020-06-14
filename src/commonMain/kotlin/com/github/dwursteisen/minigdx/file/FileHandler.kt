@@ -68,14 +68,15 @@ open class Content<R>(val filename: String) {
     }
 }
 
-private fun createLoaders() = mapOf(
+private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     AnimatedModel::class to AnimatedModelLoader(),
     Drawable::class to ModelLoader(),
     TextureImage::class to TextureImageLoader(),
     Texture::class to TextureLoader(),
     AngelCode::class to AngelCodeLoader(),
     Text::class to TextLoader(),
-    Scene::class to SceneLoader()
+    Scene::class to SceneLoader(),
+    com.dwursteisen.minigdx.scene.api.Scene::class to SceneV2Loader()
 )
 
 class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {

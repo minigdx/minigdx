@@ -43,7 +43,7 @@ object ModelReader {
             mappingIds: MutableList<String>
         ): Joint {
             val parentTransformation = parent?.globalBindTransformation ?: Mat4.identity()
-            val localTransformation = Mat4.of(*this.transformation.matrix)
+            val localTransformation = Mat4.fromColumnMajor(*this.transformation.matrix)
             val globalBindTransformation = parentTransformation * localTransformation
             val b = Joint(
                 id = joints.size,
@@ -88,7 +88,7 @@ object ModelReader {
                 keys.transformations.forEach { (boneId, transformation) ->
                     val jointId = boneIdToJointIds.indexOf(boneId)
                     // local animation transform
-                    val animationMatrix = Mat4.of(*transformation.matrix)
+                    val animationMatrix = Mat4.fromColumnMajor(*transformation.matrix)
                     pose[jointId].localBindTransformation = animationMatrix
                 }
             }
@@ -188,7 +188,7 @@ object ModelReader {
                         far = cam.parameters.zFar,
                         near = cam.parameters.zNear)
                     .also {
-                        val mat4 = Mat4.of(*cam.transformation.matrix)
+                        val mat4 = Mat4.fromColumnMajor(*cam.transformation.matrix)
                         val mat = mat4 * rotation(Float3(1f, 0f, 0f), 90f) *
                                 // rotation(Float3(0f, 1f, 0f), 180f) *
                                 rotation(Float3(0f, 0f, 1f), 180f)

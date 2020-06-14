@@ -74,7 +74,11 @@ interface GL {
         uniformMatrix4fv(uniform, transpose, data.toTypedArray())
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
+
     fun uniform1i(uniform: Uniform, data: Int)
+    fun uniform2i(uniform: Uniform, a: Int, b: Int)
+    fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int)
+
     fun uniform2f(uniform: Uniform, first: Float, second: Float)
     fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float)
 

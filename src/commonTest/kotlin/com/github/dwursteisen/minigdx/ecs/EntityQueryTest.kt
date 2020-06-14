@@ -9,7 +9,7 @@ class EntityQueryTest {
     class Name : Component
 
     @Test
-    fun `accept | it should accept included component`() {
+    fun accept__it_should_accept_included_component() {
         val entity = Engine().create {
             add(Name())
         }
@@ -19,7 +19,7 @@ class EntityQueryTest {
     }
 
     @Test
-    fun `accept | it should not accept excluded component`() {
+    fun accept__it_should_not_accept_excluded_component() {
         val entity = Engine().create {
             add(Name())
         }
@@ -29,7 +29,7 @@ class EntityQueryTest {
     }
 
     @Test
-    fun `accept | it should not accept not included component`() {
+    fun accept__it_should_not_accept_not_included_component() {
         val entity = Engine().create {}
         val query = EntityQuery(Name::class)
 

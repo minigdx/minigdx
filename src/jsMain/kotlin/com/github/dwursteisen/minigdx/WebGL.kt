@@ -73,6 +73,14 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         gl.uniform1i(uniform.uniformLocation, data)
     }
 
+    override fun uniform2i(uniform: Uniform, a: Int, b: Int) {
+        gl.uniform2i(uniform.uniformLocation, a, b)
+    }
+
+    override fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int) {
+        gl.uniform3i(uniform.uniformLocation, a, b, c)
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         gl.uniform2f(uniform.uniformLocation, first, second)
     }

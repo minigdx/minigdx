@@ -5,7 +5,34 @@ object DefaultShaders {
     val MAX_JOINTS = 20
 
     //language=GLSL
-    private val vertexShader = """
+    val simpleVertexShader = """
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+        
+        uniform mat4 uViewMatrix;
+        uniform mat4 uProjectionMatrix;
+        uniform mat4 uModelMatrix;
+        attribute vec3 aVertexPosition;
+        
+        void main() {
+            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+        }
+    """.trimIndent()
+
+    //language=GLSL
+    val simpleFragmentShader = """
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+
+        void main() {
+              gl_FragColor = vec4(0.0, 0.5, 0.5, 1.0);
+        }
+    """.trimIndent()
+
+    //language=GLSL
+    val vertexShader = """
         #ifdef GL_ES
         precision highp float;
         #endif
@@ -60,7 +87,7 @@ object DefaultShaders {
     """.trimIndent()
 
     //language=GLSL
-    private val fragmentShader = """
+    val fragmentShader = """
         #ifdef GL_ES
         precision highp float;
         #endif

@@ -1,134 +1,95 @@
 package com.github.dwursteisen.minigdx.shaders
 
-import com.github.dwursteisen.minigdx.shaders.Parameter.Mat4
-import com.github.dwursteisen.minigdx.shaders.Parameter.Vec2
-import com.github.dwursteisen.minigdx.shaders.Parameter.Vec3
-import com.github.dwursteisen.minigdx.shaders.Parameter.Vec4
+import com.curiouscreature.kotlin.math.Mat4
+import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.buffer.Buffer
+import com.github.dwursteisen.minigdx.gl
 
-interface VertexShader
-interface FragmentShader
+sealed class ShaderParameter(val name: String) {
+    abstract fun create(program: ShaderProgram)
 
-class StringVertexShader(private val shader: String) : VertexShader {
-    override fun toString(): String = shader
-}
+    class UniformMat4(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
 
-class StringFragmentShader(private val shader: String) : FragmentShader {
-    override fun toString(): String = shader
-}
-
-fun vertex(generator: VertexBuilder.() -> Unit): VertexShader {
-    val builder = VertexBuilder()
-    builder.generator()
-    return builder
-}
-
-fun fragment(generator: FragmentBuilder.() -> Unit): FragmentShader {
-    val builder = FragmentBuilder()
-    builder.generator()
-    return builder
-}
-
-sealed class Parameter(val name: String, val type: String) {
-
-    class Vec2(name: String) : Parameter(name, "vec2")
-    class Vec3(name: String) : Parameter(name, "vec3") {
-
-        operator fun plus(other: Vec3): Vec3 {
-            return Vec3(name + " + " + other.name)
+        fun apply(program: ShaderProgram, matrix: Mat4) {
+            gl.uniformMatrix4fv(program.getUniform(name), false, matrix)
         }
     }
 
-    class Vec4(name: String) : Parameter(name, "vec4")
-    class Mat4(name: String) : Parameter(name, "mat4")
-}
+    class UniformInt(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
 
-class ShaderParameterBuilder {
-    fun vec2(name: String): Vec2 {
-        return Vec2(name)
-    }
-
-    fun vec3(name: String): Vec3 {
-        return Vec3(name)
-    }
-
-    fun vec4(name: String): Vec4 {
-        return Vec4(name)
-    }
-
-    fun mat4(name: String): Mat4 {
-        return Mat4(name)
-    }
-}
-
-abstract class ShaderBuilder {
-
-    private var attributes = emptyList<Parameter>()
-    private var uniforms = emptyList<Parameter>()
-
-    fun <T : Parameter> attribute(configuration: ShaderParameterBuilder.() -> T): T {
-        val parameter = ShaderParameterBuilder().configuration()
-        attributes = attributes + parameter
-        return parameter
-    }
-
-    fun <T : Parameter> uniform(configuration: ShaderParameterBuilder.() -> T): T {
-        val parameter = ShaderParameterBuilder().configuration()
-        uniforms = uniforms + parameter
-        return parameter
-    }
-
-    private fun emit(type: String, parameters: List<Parameter>): String {
-        if (parameters.isEmpty()) return ""
-
-        return parameters.sortedBy { it.name }.joinToString("\n") {
-            "$type ${it.type} ${it.name};"
+        fun apply(program: ShaderProgram, vararg value: Int) {
+            when (value.size) {
+                0 -> throw IllegalArgumentException("At least one int is expected")
+                1 -> gl.uniform1i(program.getUniform(name), value[0])
+                2 -> gl.uniform2i(program.getUniform(name), value[0], value[1])
+                3 -> gl.uniform3i(program.getUniform(name), value[0], value[1], value[2])
+            }
         }
     }
 
-    override fun toString(): String {
-        return """
-#ifdef GL_ES
-    precision highp float;
-#endif
-        
-${emit("uniform", uniforms)}
-${emit("attribute", attributes)}
-            
-void main() {
-    ${emitBody()}
+    class UniformVec3(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+    }
+
+    class AtributeVec3(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createAttrib(name)
+        }
+
+        fun apply(program: ShaderProgram, source: Buffer) {
+            gl.bindBuffer(GL.ARRAY_BUFFER, source)
+            gl.vertexAttribPointer(
+                index = program.getAttrib(name),
+                size = 3,
+                type = GL.FLOAT,
+                normalized = false,
+                stride = 0,
+                offset = 0
+            )
+            gl.enableVertexAttribArray(program.getAttrib(name))
+        }
+    }
+
+    class AtributeVec4(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createAttrib(name)
+        }
+
+        fun apply(program: ShaderProgram, source: Buffer) {
+            gl.bindBuffer(GL.ARRAY_BUFFER, source)
+            gl.vertexAttribPointer(
+                index = program.getAttrib(name),
+                size = 4,
+                type = GL.FLOAT,
+                normalized = false,
+                stride = 0,
+                offset = 0
+            )
+            gl.enableVertexAttribArray(program.getAttrib(name))
+        }
+    }
 }
-        """.trimIndent()
-    }
 
-    abstract fun emitBody(): String
+abstract class VertexShader(
+    private val shader: String
+) {
+    open val parameters: List<ShaderParameter> = emptyList()
+
+    override fun toString(): String = shader
 }
 
-class VertexBuilder : VertexShader, ShaderBuilder() {
+abstract class FragmentShader(
+    private val shader: String
+) {
+    open val parameters: List<ShaderParameter> = emptyList()
 
-    private var glPosition: Parameter? = null
-
-    fun glPosition(code: () -> Parameter) {
-        glPosition = code()
-    }
-
-    override fun emitBody(): String {
-        val builder = StringBuilder()
-        glPosition?.run { builder.append("gl_Position = $name;") }
-        return builder.toString()
-    }
-}
-
-class FragmentBuilder : FragmentShader, ShaderBuilder() {
-
-    private var glColor: Parameter? = null
-
-    fun glColor(code: () -> Parameter) {
-        glColor = code()
-    }
-
-    override fun emitBody(): String {
-        val builder = StringBuilder()
-        glColor?.run { builder.append("gl_FragColor = $name;") }
-        return builder.toString()
-    }
+    override fun toString(): String = shader
 }

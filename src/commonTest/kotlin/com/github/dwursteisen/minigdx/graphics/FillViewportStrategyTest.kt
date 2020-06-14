@@ -154,6 +154,14 @@ class FillViewportStrategyTest {
                 TODO("Not yet implemented")
             }
 
+            override fun uniform2i(uniform: Uniform, a: Int, b: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int) {
+                TODO("Not yet implemented")
+            }
+
             override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
                 TODO("Not yet implemented")
             }
