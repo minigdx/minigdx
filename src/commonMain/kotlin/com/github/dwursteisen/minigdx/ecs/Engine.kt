@@ -21,7 +21,8 @@ data class Position(
     var transformation: Mat4 = Mat4.identity(),
     val translation: Vector3 = transformation.position.let { Vector3(it.x, it.y, it.z) },
     val rotation: Vector3 = transformation.rotation.let { Vector3(it.x, it.y, it.z) },
-    val scale: Vector3 = transformation.scale.let { Vector3(it.x, it.y, it.z) }
+    val scale: Vector3 = transformation.scale.let { Vector3(it.x, it.y, it.z) },
+    var way: Float = 1f
 ) : Component {
     fun rotate(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
         rotateX(x.toFloat())
@@ -33,7 +34,7 @@ data class Position(
     fun rotate(angles: Vector3): Position = rotate(angles.x, angles.y, angles.z)
 
     fun rotateX(angle: Degree): Position {
-        val asFloat = angle.toFloat()
+        val asFloat = angle.toFloat() * way
         rotation.x += asFloat
         transformation *= rotation(
             Float3(
@@ -46,7 +47,7 @@ data class Position(
     }
 
     fun rotateY(angle: Degree): Position {
-        val asFloat = angle.toFloat()
+        val asFloat = angle.toFloat() * way
         rotation.y += asFloat
         transformation *= rotation(
             Float3(
@@ -59,7 +60,7 @@ data class Position(
     }
 
     fun rotateZ(angle: Degree): Position {
-        val asFloat = angle.toFloat()
+        val asFloat = angle.toFloat() * way
         rotation.z += asFloat
         transformation *= rotation(
             Float3(

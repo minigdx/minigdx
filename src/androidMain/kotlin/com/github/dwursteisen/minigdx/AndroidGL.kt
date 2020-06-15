@@ -32,7 +32,9 @@ import android.opengl.GLES20.glTexImage2D
 import android.opengl.GLES20.glTexParameteri
 import android.opengl.GLES20.glUniform1i
 import android.opengl.GLES20.glUniform2f
+import android.opengl.GLES20.glUniform2i
 import android.opengl.GLES20.glUniform3f
+import android.opengl.GLES20.glUniform3i
 import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
@@ -207,6 +209,14 @@ class AndroidGL(override val screen: Screen) : GL {
 
     override fun uniform1i(uniform: Uniform, data: Int) {
         glUniform1i(uniform.address, data)
+    }
+
+    override fun uniform2i(uniform: Uniform, a: Int, b: Int) {
+        glUniform2i(uniform.address, a, b)
+    }
+
+    override fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int) {
+        glUniform3i(uniform.address, a, b, c)
     }
 
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {

@@ -9,22 +9,10 @@ group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    maven {
+    maven(
         url = uri("https://dl.bintray.com/dwursteisen/minigdx")
-    }
+    )
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
-    maven(url = "https://maven.pkg.github.com/dwursteisen/kotlin-math") {
-        this.credentials {
-            this.username = System.getenv("GITHUB_USERNAME")
-            this.password = System.getenv("GITHUB_TOKEN")
-        }
-    }
-    maven(url = "https://maven.pkg.github.com/dwursteisen/collada-parser") {
-        this.credentials {
-            this.username = System.getenv("GITHUB_USERNAME")
-            this.password = System.getenv("GITHUB_TOKEN")
-        }
-    }
     google()
     mavenCentral()
     mavenLocal()

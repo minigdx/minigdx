@@ -1,8 +1,9 @@
 package com.github.dwursteisen.minigdx.demo
 
+import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.inverse
-import com.curiouscreature.kotlin.math.projection
+import com.curiouscreature.kotlin.math.perspective
+import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
 import com.dwursteisen.minigdx.scene.api.model.Position as PP
@@ -20,49 +21,53 @@ import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.gl
+import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.render.Camera
 import com.github.dwursteisen.minigdx.render.MeshPrimitive
 import com.github.dwursteisen.minigdx.render.RenderStage
-import com.github.dwursteisen.minigdx.shaders.DefaultShaders
-import com.github.dwursteisen.minigdx.shaders.FragmentShader
-import com.github.dwursteisen.minigdx.shaders.ShaderParameter
-import com.github.dwursteisen.minigdx.shaders.ShaderParameter.AtributeVec3
-import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformMat4
-import com.github.dwursteisen.minigdx.shaders.VertexShader
+import com.github.dwursteisen.minigdx.shaders.WorldFragmentShader
+import com.github.dwursteisen.minigdx.shaders.WorldVertexShader
 
 class Rotating : Component
+
+class CameraSystem : System(EntityQuery(Camera::class)) {
+    override fun update(delta: Seconds, entity: Entity) {
+        if (inputs.isKeyPressed(Key.Q)) {
+            entity[Position::class].forEach {
+                it.rotateY(1f * delta)
+            }
+        } else if (inputs.isKeyPressed(Key.D)) {
+            entity[Position::class].forEach {
+                it.rotateY(-1f * delta)
+            }
+        }
+
+        if (inputs.isKeyPressed(Key.Z)) {
+            entity[Position::class].forEach {
+                it.transformation *= translation(Float3(0f, 0f, 50f * delta))
+            }
+        } else if (inputs.isKeyPressed(Key.S)) {
+            entity[Position::class].forEach {
+                it.transformation *= translation(Float3(0f, 0f, -50f * delta))
+            }
+        }
+    }
+}
 
 class RotatingSystem : System(EntityQuery(Rotating::class)) {
 
     override fun update(delta: Seconds, entity: Entity) {
         entity[Position::class].forEach {
-            it.rotateZ(10f * delta)
+            // it.rotateZ(10f * delta)
         }
     }
 }
 
-class WorldVertexShader : VertexShader(
-    shader = DefaultShaders.simpleVertexShader
-) {
-    val uModelMatrix = UniformMat4("uModelMatrix")
-    val uViewMatrix = UniformMat4("uViewMatrix")
-    val uProjectionMatrix = UniformMat4("uProjectionMatrix")
-    val aVertexPosition = AtributeVec3("aVertexPosition")
-
-    override val parameters: List<ShaderParameter> = listOf(
-        uModelMatrix,
-        uViewMatrix,
-        uProjectionMatrix,
-        aVertexPosition
-    )
-}
-
-class WorldFragmentShader : FragmentShader(DefaultShaders.simpleFragmentShader)
-
 @ExperimentalStdlibApi
 class DemoScreen : Screen {
 
-    private val model: Scene by fileHandler.get("v2/triangle.protobuf")
+    private val model: Scene by fileHandler.get("v2/model.protobuf")
 
     override fun createEntities(engine: Engine) {
         model.models.values.forEach { model ->
@@ -84,20 +89,20 @@ class DemoScreen : Screen {
         engine.create {
             add(
                 Camera(
-                    projection = projection(
+                    projection = perspective(
                         fov = camera.fov,
-                        ratio = 1f, // FIXME,
+                        aspect = 1f, // FIXME,
                         near = camera.near,
                         far = camera.far
                     )
                 )
             )
-            add(Position(transformation = Mat4.fromColumnMajor(*camera.transformation.matrix)))
+            add(Position(transformation = Mat4.fromColumnMajor(*camera.transformation.matrix), way = -1f))
         }
     }
 
     override fun createSystems(): List<System> {
-        return listOf(RotatingSystem())
+        return listOf(RotatingSystem(), CameraSystem())
     }
 
     override fun createRenderStage(): List<WorldRenderStage> {
@@ -146,16 +151,15 @@ class WorldRenderStage : RenderStage<WorldVertexShader, WorldFragmentShader>(
         }
     }
 
-    override fun uniforms() {
-        camera?.run {
-            // TODO: the combine could be computed here for beter performance
-            vertex.uViewMatrix.apply(program, inverse(this[Position::class].first().transformation))
-            vertex.uProjectionMatrix.apply(program, this[Camera::class].first().projection)
-        }
-    }
-
     override fun update(delta: Seconds, entity: Entity) {
-        vertex.uModelMatrix.apply(program, entity[Position::class].first().transformation)
+        val combined = camera?.let {
+            val view = it[Position::class].first().transformation
+            val projection = it[Camera::class].first().projection
+            projection * view
+        } ?: Mat4.identity()
+        val model = entity[Position::class].first().transformation
+
+        vertex.uModelView.apply(program, combined * model)
 
         entity[MeshPrimitive::class].forEach { primitive ->
             vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
