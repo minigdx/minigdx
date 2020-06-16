@@ -6,10 +6,12 @@ class WorldVertexShader : VertexShader(
     val uModelView =
         ShaderParameter.UniformMat4("uModelView")
     val aVertexPosition =
-        ShaderParameter.AtributeVec3("aVertexPosition")
+        ShaderParameter.AttributeVec3("aVertexPosition")
+    val aUVPosition = ShaderParameter.AttributeVec2("aUVPosition")
 
     override val parameters: List<ShaderParameter> = listOf(
         uModelView,
-        aVertexPosition
+        aVertexPosition,
+        aUVPosition
     )
 }

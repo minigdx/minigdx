@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.Mat4
+import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.Buffer
@@ -12,6 +13,7 @@ import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.VertexShader
 
 data class RenderOptions(
@@ -26,9 +28,13 @@ class Camera(val projection: Mat4) : Component
 class Light : Component
 
 class MeshPrimitive(
+    var isCompiled: Boolean = false,
     val primitive: Primitive,
+    val material: Material,
     var verticesBuffer: Buffer? = null,
-    var verticesOrderBuffer: Buffer? = null
+    var uvBuffer: Buffer? = null,
+    var verticesOrderBuffer: Buffer? = null,
+    var textureReference: TextureReference? = null
 ) : Component
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(

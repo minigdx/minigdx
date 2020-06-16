@@ -8,7 +8,9 @@ import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
+import java.nio.ByteBuffer
 import org.lwjgl.opengl.GL11.glTexParameteri
+import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL20.glUniform2i
 import org.lwjgl.opengl.GL20.glUniform3f
 import org.lwjgl.opengl.GL20.glUniform3i
@@ -227,6 +229,33 @@ class LwjglGL(override val screen: Screen) : GL {
             source.glType,
             source.pixels
         )
+    }
+
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        width: Int,
+        height: Int,
+        type: Int,
+        source: ByteArray
+    ) {
+        glTexImage2D(
+            target,
+            level,
+            internalformat,
+            width,
+            height,
+            0,
+            format,
+            type,
+            ByteBuffer.wrap(source)
+        )
+    }
+
+    override fun activeTexture(byteMask: ByteMask) {
+        glActiveTexture(byteMask)
     }
 
     override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {

@@ -14,8 +14,6 @@ import kotlin.reflect.KClass
 interface Component
 
 abstract class BufferComponent(var buffer: Buffer? = null) : Component
-class WithUV(buffer: Buffer? = null) : BufferComponent(buffer)
-class WithColor(buffer: Buffer? = null) : BufferComponent(buffer)
 
 data class Position(
     var transformation: Mat4 = Mat4.identity(),

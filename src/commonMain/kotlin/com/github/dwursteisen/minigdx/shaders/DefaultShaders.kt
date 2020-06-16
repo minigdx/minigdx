@@ -12,9 +12,13 @@ object DefaultShaders {
         
         uniform mat4 uModelView;
         attribute vec3 aVertexPosition;
+        attribute vec2 aUVPosition;
+        
+        varying vec2 vUVPosition;
         
         void main() {
             gl_Position = uModelView * vec4(aVertexPosition, 1.0);
+            vUVPosition = aUVPosition;
         }
     """.trimIndent()
 
@@ -23,9 +27,13 @@ object DefaultShaders {
         #ifdef GL_ES
         precision highp float;
         #endif
+        
+        varying vec2 vUVPosition;
+
+        uniform sampler2D uUV;
 
         void main() {
-              gl_FragColor = vec4(0.0, 0.5, 0.5, 1.0);
+              gl_FragColor = texture2D(uUV, vUVPosition);
         }
     """.trimIndent()
 
