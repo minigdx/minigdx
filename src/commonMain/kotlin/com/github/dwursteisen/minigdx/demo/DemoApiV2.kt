@@ -170,18 +170,18 @@ class WorldRenderStage : RenderStage<WorldVertexShader, WorldFragmentShader>(
                 val textureReference = gl.createTexture()
                 gl.bindTexture(GL.TEXTURE_2D, textureReference)
 
+                gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST)
+                gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST)
                 gl.texImage2D(
                     GL.TEXTURE_2D,
                     0,
                     GL.RGBA,
                     GL.RGBA,
-                    2,
+                    primitive.material.width,
                     primitive.material.height,
                     GL.UNSIGNED_BYTE,
                     primitive.material.data
                 )
-                gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST)
-                gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST)
 
                 primitive.textureReference = textureReference
 

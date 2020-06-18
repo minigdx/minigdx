@@ -241,6 +241,11 @@ class LwjglGL(override val screen: Screen) : GL {
         type: Int,
         source: ByteArray
     ) {
+        // glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        val buffer = ByteBuffer.allocateDirect(source.size)
+        buffer.put(source)
+        buffer.position(0)
+
         glTexImage2D(
             target,
             level,
@@ -250,7 +255,7 @@ class LwjglGL(override val screen: Screen) : GL {
             0,
             format,
             type,
-            ByteBuffer.wrap(source)
+            buffer
         )
     }
 
