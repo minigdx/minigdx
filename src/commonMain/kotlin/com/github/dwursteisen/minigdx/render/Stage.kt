@@ -1,6 +1,8 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.Mat4
+import com.dwursteisen.minigdx.scene.api.Keyframe
+import com.dwursteisen.minigdx.scene.api.armature.Armature
 import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.Seconds
@@ -26,6 +28,26 @@ interface Stage
 class Camera(val projection: Mat4) : Component
 
 class Light : Component
+
+class AnimatedModel(
+    var animation: List<Keyframe>,
+    val referencePose: Armature,
+    val currentPose: Array<Mat4> = Array(20) { Mat4.identity() },
+    var time: Float
+
+) : Component
+
+class AnimatedMeshPrimitive(
+    var isCompiled: Boolean = false,
+    val primitive: Primitive,
+    val material: Material,
+    var verticesBuffer: Buffer? = null,
+    var uvBuffer: Buffer? = null,
+    var verticesOrderBuffer: Buffer? = null,
+    var weightBuffer: Buffer? = null,
+    var jointBuffer: Buffer? = null,
+    var textureReference: TextureReference? = null
+) : Component
 
 class MeshPrimitive(
     var isCompiled: Boolean = false,

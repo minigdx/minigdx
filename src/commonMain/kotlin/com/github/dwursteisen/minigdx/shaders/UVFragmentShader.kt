@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx.shaders
 
-class WorldFragmentShader : FragmentShader(DefaultShaders.simpleFragmentShader) {
+class UVFragmentShader : FragmentShader(DefaultShaders.simpleFragmentShader) {
 
     val uUV =
         ShaderParameter.UniformSample2D("uUV")

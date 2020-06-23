@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx.shaders
 
-class WorldVertexShader : VertexShader(
+class MeshVertexShader : VertexShader(
     shader = DefaultShaders.simpleVertexShader
 ) {
     val uModelView =

@@ -4,6 +4,7 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.gl
+import kotlin.jvm.JvmName
 
 sealed class ShaderParameter(val name: String) {
     abstract fun create(program: ShaderProgram)
@@ -15,6 +16,30 @@ sealed class ShaderParameter(val name: String) {
 
         fun apply(program: ShaderProgram, matrix: Mat4) {
             gl.uniformMatrix4fv(program.getUniform(name), false, matrix)
+        }
+    }
+
+    class UniformArrayMat4(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        @JvmName("applyArray")
+        fun apply(program: ShaderProgram, matrix: Array<Mat4>) = apply(program, *matrix)
+
+        fun apply(program: ShaderProgram, matrix: List<Mat4>) = apply(program, matrix.toTypedArray())
+
+        fun apply(program: ShaderProgram, vararg matrix: Mat4) {
+            val tmpMatrix = Array(matrix.size * 16) { 0f }
+
+            // Copy all matrix values, aligned
+            matrix.forEachIndexed { x, mat ->
+                val values = mat.asGLArray()
+                (0 until 16).forEach { y ->
+                    tmpMatrix[x * 16 + y] = values[y]
+                }
+            }
+            gl.uniformMatrix4fv(program.getUniform(name), false, tmpMatrix)
         }
     }
 
