@@ -6,7 +6,7 @@ private const val shader: String = """
         precision highp float;
         #endif
 
-        const int MAX_JOINTS = 20;
+        const int MAX_JOINTS = 40;
         const int MAX_WEIGHTS = 4;
         
         uniform mat4 uModelView;

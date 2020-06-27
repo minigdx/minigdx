@@ -4,8 +4,8 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.perspective
 import com.curiouscreature.kotlin.math.translation
-import com.dwursteisen.minigdx.scene.api.Keyframe
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.dwursteisen.minigdx.scene.api.armature.Frame
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Component
@@ -60,6 +60,25 @@ class RotatingSystem : System(EntityQuery(Rotating::class)) {
     }
 }
 
+class ArmatureUpdateSystem : System(EntityQuery(AnimatedModel::class)) {
+
+    override fun update(delta: Seconds, entity: Entity) {
+        entity[AnimatedModel::class].forEach {
+            it.time += delta
+            if (it.time > it.duration) {
+                it.time = 0f
+            }
+
+            val currentFrame = it.animation.lastOrNull { f -> f.time <= it.time } ?: it.animation.first()
+
+            (it.referencePose.joints.indices).forEach { index ->
+                it.currentPose[index] = Mat4.fromColumnMajor(*currentFrame.globalTransformations[index].matrix) *
+                        Mat4.fromColumnMajor(*it.referencePose.joints[index].inverseGlobalTransformation.matrix)
+            }
+        }
+    }
+}
+
 @ExperimentalStdlibApi
 class DemoScreen : Screen {
 
@@ -83,12 +102,14 @@ class DemoScreen : Screen {
                         ))
                     }
                     val armature = scene.armatures[model.armatureId]!!
-                    val animation: List<Keyframe> = scene.animations.values.first()
+                    val animation = scene.animations[model.armatureId]!!.first()
+                    val frames: List<Frame> = animation.frames
                     add(
                         AnimatedModel(
                             time = 0f,
                             referencePose = armature,
-                            animation = animation
+                            animation = frames,
+                            duration = animation.duration
                         )
                     )
                 }
@@ -112,7 +133,7 @@ class DemoScreen : Screen {
     }
 
     override fun createSystems(): List<System> {
-        return listOf(RotatingSystem(), CameraSystem())
+        return listOf(ArmatureUpdateSystem(), RotatingSystem(), CameraSystem())
     }
 
     override fun createRenderStage(): List<RenderStage<*, *>> {

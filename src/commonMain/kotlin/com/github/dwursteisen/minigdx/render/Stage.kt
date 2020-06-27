@@ -1,8 +1,8 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.Mat4
-import com.dwursteisen.minigdx.scene.api.Keyframe
 import com.dwursteisen.minigdx.scene.api.armature.Armature
+import com.dwursteisen.minigdx.scene.api.armature.Frame
 import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.Seconds
@@ -30,11 +30,11 @@ class Camera(val projection: Mat4) : Component
 class Light : Component
 
 class AnimatedModel(
-    var animation: List<Keyframe>,
+    var animation: List<Frame>,
     val referencePose: Armature,
-    val currentPose: Array<Mat4> = Array(20) { Mat4.identity() },
-    var time: Float
-
+    val currentPose: Array<Mat4> = Array(40) { Mat4.identity() },
+    var time: Float,
+    val duration: Float
 ) : Component
 
 class AnimatedMeshPrimitive(

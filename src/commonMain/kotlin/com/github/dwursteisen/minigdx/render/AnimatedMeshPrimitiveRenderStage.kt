@@ -101,8 +101,8 @@ class AnimatedMeshPrimitiveRenderStage : RenderStage<AnimatedMeshVertexShader, U
         return DataSource.FloatDataSource(this.toFloatArray())
     }
 
-    private fun List<Int>.jointDatasource(): DataSource.IntDataSource {
-        return DataSource.IntDataSource(this.toIntArray())
+    private fun List<Int>.jointDatasource(): DataSource.FloatDataSource {
+        return DataSource.FloatDataSource(this.map { it.toFloat() }.toFloatArray())
     }
 
     override fun update(delta: Seconds, entity: Entity) {
@@ -127,7 +127,8 @@ class AnimatedMeshPrimitiveRenderStage : RenderStage<AnimatedMeshVertexShader, U
             gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, primitive.verticesOrderBuffer!!)
             gl.drawElements(
                 GL.TRIANGLES, primitive.primitive.verticesOrder.size,
-                GL.UNSIGNED_SHORT, 0)
+                GL.UNSIGNED_SHORT, 0
+            )
         }
     }
 }
