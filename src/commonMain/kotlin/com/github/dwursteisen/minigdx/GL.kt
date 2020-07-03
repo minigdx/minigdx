@@ -65,6 +65,7 @@ interface GL {
     fun useProgram(shaderProgram: ShaderProgram)
 
     fun createTexture(): TextureReference
+    fun activeTexture(byteMask: ByteMask)
     fun bindTexture(target: Int, textureReference: TextureReference)
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Mat4) =
@@ -74,7 +75,11 @@ interface GL {
         uniformMatrix4fv(uniform, transpose, data.toTypedArray())
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Array<Float>)
+
     fun uniform1i(uniform: Uniform, data: Int)
+    fun uniform2i(uniform: Uniform, a: Int, b: Int)
+    fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int)
+
     fun uniform2f(uniform: Uniform, first: Float, second: Float)
     fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float)
 
@@ -85,6 +90,16 @@ interface GL {
     fun viewport(x: Int, y: Int, width: Int, height: Int)
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage)
+    fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        width: Int,
+        height: Int,
+        type: Int,
+        source: ByteArray
+    )
 
     fun texParameteri(target: Int, paramName: Int, paramValue: Int)
 

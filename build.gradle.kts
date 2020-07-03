@@ -2,28 +2,20 @@ plugins {
     id("com.android.application")
     kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.dwursteisen.collada") version "1.0-SNAPSHOT"
+    id("com.github.dwursteisen.collada") version "1.0.0-alpha6"
 }
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    maven(
+        url = uri("https://dl.bintray.com/dwursteisen/minigdx")
+    )
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
-    maven(url = "https://maven.pkg.github.com/dwursteisen/kotlin-math") {
-        this.credentials {
-            this.username = System.getenv("GITHUB_USERNAME")
-            this.password = System.getenv("GITHUB_TOKEN")
-        }
-    }
-    maven(url = "https://maven.pkg.github.com/dwursteisen/collada-parser") {
-        this.credentials {
-            this.username = System.getenv("GITHUB_USERNAME")
-            this.password = System.getenv("GITHUB_TOKEN")
-        }
-    }
     google()
     mavenCentral()
+    jcenter()
     mavenLocal()
 }
 
@@ -106,8 +98,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0-SNAPSHOT")
-                implementation("com.github.dwursteisen.collada:collada-api:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
+                implementation("com.github.dwursteisen.collada:collada-api:1.0.0-alpha6")
             }
         }
         val commonTest by getting {
@@ -120,7 +112,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-alpha17")
             }
         }
 
@@ -133,7 +125,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-alpha17")
 
                 val lwjglVersion = "3.2.3"
                 implementation("org.lwjgl:lwjgl:$lwjglVersion")
@@ -176,16 +168,9 @@ kotlin {
 
 colladaPlugin {
     create("assetsProtobuf") {
-        this.daeDirectory.set(project.projectDir.resolve("src/assets"))
-        this.gltfDirectory.set(project.projectDir.resolve("src/assets"))
-        this.target.set(project.projectDir.resolve("src/commonMain/resources"))
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets/v2"))
+        this.target.set(project.projectDir.resolve("src/commonMain/resources/v2"))
         this.format.set(collada.Format.PROTOBUF as collada.Format)
-    }
-    create("assetsJson") {
-        this.daeDirectory.set(project.projectDir.resolve("src/assets"))
-        this.gltfDirectory.set(project.projectDir.resolve("src/assets"))
-        this.target.set(project.projectDir.resolve("src/commonMain/resources"))
-        this.format.set(collada.Format.JSON as collada.Format)
     }
 }
 

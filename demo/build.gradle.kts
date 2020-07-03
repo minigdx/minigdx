@@ -5,19 +5,8 @@ plugins {
 }
 
 repositories {
+    maven(url = "https://dl.bintray.com/dwursteisen/minigdx")
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
-    maven(url = "https://maven.pkg.github.com/dwursteisen/kotlin-math") {
-        this.credentials {
-            this.username = System.getenv("GITHUB_USERNAME")
-            this.password = System.getenv("GITHUB_TOKEN")
-        }
-    }
-    maven(url = "https://maven.pkg.github.com/dwursteisen/collada-parser") {
-        this.credentials {
-            this.username = System.getenv("GITHUB_USERNAME")
-            this.password = System.getenv("GITHUB_TOKEN")
-        }
-    }
     mavenCentral()
     mavenLocal()
 }
@@ -35,5 +24,5 @@ application {
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = rootDir.resolve("src/commonMain/resources").absoluteFile
-    this.args = listOf("--game", "light")
+    this.args = listOf("--game", "v2")
 }

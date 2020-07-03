@@ -8,8 +8,12 @@ import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
+import java.nio.ByteBuffer
 import org.lwjgl.opengl.GL11.glTexParameteri
+import org.lwjgl.opengl.GL13.glActiveTexture
+import org.lwjgl.opengl.GL20.glUniform2i
 import org.lwjgl.opengl.GL20.glUniform3f
+import org.lwjgl.opengl.GL20.glUniform3i
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
 import org.lwjgl.opengl.GL30.glBindTexture
@@ -170,6 +174,14 @@ class LwjglGL(override val screen: Screen) : GL {
         glUniform1i(uniform.address, data)
     }
 
+    override fun uniform2i(uniform: Uniform, a: Int, b: Int) {
+        glUniform2i(uniform.address, a, b)
+    }
+
+    override fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int) {
+        glUniform3i(uniform.address, a, b, c)
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         glUniform2f(uniform.address, first, second)
     }
@@ -217,6 +229,38 @@ class LwjglGL(override val screen: Screen) : GL {
             source.glType,
             source.pixels
         )
+    }
+
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        width: Int,
+        height: Int,
+        type: Int,
+        source: ByteArray
+    ) {
+        // glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        val buffer = ByteBuffer.allocateDirect(source.size)
+        buffer.put(source)
+        buffer.position(0)
+
+        glTexImage2D(
+            target,
+            level,
+            internalformat,
+            width,
+            height,
+            0,
+            format,
+            type,
+            buffer
+        )
+    }
+
+    override fun activeTexture(byteMask: ByteMask) {
+        glActiveTexture(byteMask)
     }
 
     override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {

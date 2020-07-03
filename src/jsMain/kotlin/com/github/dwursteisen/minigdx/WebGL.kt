@@ -11,9 +11,10 @@ import com.github.dwursteisen.minigdx.shaders.Uniform
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.Uint16Array
 import org.khronos.webgl.Uint32Array
-import org.khronos.webgl.WebGLRenderingContext
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.WebGLRenderingContextBase
 
-class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) : GL {
+class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Screen) : GL {
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
         gl.clearColor(r.toPercent(), g.toPercent(), b.toPercent(), a.toPercent())
@@ -71,6 +72,14 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
 
     override fun uniform1i(uniform: Uniform, data: Int) {
         gl.uniform1i(uniform.uniformLocation, data)
+    }
+
+    override fun uniform2i(uniform: Uniform, a: Int, b: Int) {
+        gl.uniform2i(uniform.uniformLocation, a, b)
+    }
+
+    override fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int) {
+        gl.uniform3i(uniform.uniformLocation, a, b, c)
     }
 
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
@@ -156,12 +165,29 @@ class WebGL(private val gl: WebGLRenderingContext, override val screen: Screen) 
         return TextureReference(gl.createTexture()!!)
     }
 
+    override fun activeTexture(byteMask: ByteMask) {
+        gl.activeTexture(byteMask)
+    }
+
     override fun bindTexture(target: Int, textureReference: TextureReference) {
         gl.bindTexture(target, textureReference.reference)
     }
 
     override fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage) {
         gl.texImage2D(target, level, internalformat, format, type, source.source)
+    }
+
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        width: Int,
+        height: Int,
+        type: Int,
+        source: ByteArray
+    ) {
+        gl.texImage2D(target, level, internalformat, width, height, 0, format, type, Uint8Array(source.toTypedArray()))
     }
 
     override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {

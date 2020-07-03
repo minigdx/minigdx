@@ -1,0 +1,31 @@
+name: Publish release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-release:
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-latest, ubuntu-latest]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v2
+
+      - name: Setup build cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Publish artifact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        run: ./gradlew -Pversion="${{github.event.release.tag_name}}" -PcurrentOs=${{ runner.os }} -Pbintray_user=${{secrets.BINTRAY_USER}} -Pbintray_key=${{secrets.BINTRAY_KEY}} bintrayUpload

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MiniGDX - Demo</title>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans"/>
+    <style>
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 600px;
+            height: 600px;
+        }
+
+        body {
+            background: #01BFFF;
+            font-family: "Open Sans";
+            color: white;
+            text-align: center;
+        }
+
+        table {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 400px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            /* border: 1px solid black; */
+            /* background: white; */
+            font-size: large;
+            margin: 1px;
+        }
+
+        table, td {
+            text-align: left;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+<h1>MiniGDX Tech demo</h1>
+<div class="row">
+    <div class="column">
+        <canvas id="canvas" width="800" height="800"></canvas>
+    </div>
+</div>
+</body>
+<script src="3d-skeleton.js"></script>
+</html>

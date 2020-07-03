@@ -9,9 +9,8 @@ import com.github.dwursteisen.minigdx.input.InputManager
 import com.github.dwursteisen.minigdx.input.JsInputHandler
 import com.github.dwursteisen.minigdx.logger.JsLogger
 import com.github.dwursteisen.minigdx.logger.Logger
-import kotlin.browser.document
 import kotlin.browser.window
-import org.khronos.webgl.WebGLRenderingContext
+import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
 
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
@@ -23,10 +22,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     internal actual fun createContext(): GL {
         canvas =
-            configuration.canvas ?: configuration.canvasId?.let { document.getElementById(it) as? HTMLCanvasElement }
-                    ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
+            configuration.canvas ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
-        val context = canvas.getContext("webgl") as WebGLRenderingContext
+        val context = canvas.getContext("webgl2") as WebGLRenderingContextBase
         return WebGL(
             context, Screen(
                 width = canvas.clientWidth,

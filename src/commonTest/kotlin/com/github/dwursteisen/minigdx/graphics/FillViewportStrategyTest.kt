@@ -142,6 +142,10 @@ class FillViewportStrategyTest {
                 TODO("Not yet implemented")
             }
 
+            override fun activeTexture(byteMask: ByteMask) {
+                TODO("Not yet implemented")
+            }
+
             override fun bindTexture(target: Int, textureReference: TextureReference) {
                 TODO("Not yet implemented")
             }
@@ -151,6 +155,14 @@ class FillViewportStrategyTest {
             }
 
             override fun uniform1i(uniform: Uniform, data: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun uniform2i(uniform: Uniform, a: Int, b: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int) {
                 TODO("Not yet implemented")
             }
 
@@ -181,6 +193,19 @@ class FillViewportStrategyTest {
                 format: Int,
                 type: Int,
                 source: TextureImage
+            ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun texImage2D(
+                target: Int,
+                level: Int,
+                internalformat: Int,
+                format: Int,
+                width: Int,
+                height: Int,
+                type: Int,
+                source: ByteArray
             ) {
                 TODO("Not yet implemented")
             }
