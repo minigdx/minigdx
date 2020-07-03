@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.dwursteisen.collada") version "1.0-SNAPSHOT"
+    id("com.github.dwursteisen.collada") version "1.0.0-alpha3"
 }
 
 group = "org.example"
@@ -97,8 +97,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0-SNAPSHOT")
-                implementation("com.github.dwursteisen.collada:collada-api:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
+                implementation("com.github.dwursteisen.collada:collada-api:1.0.0-alpha3")
             }
         }
         val commonTest by getting {
@@ -111,7 +111,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-alpha17")
             }
         }
 
@@ -124,7 +124,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0-SNAPSHOT")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-alpha17")
 
                 val lwjglVersion = "3.2.3"
                 implementation("org.lwjgl:lwjgl:$lwjglVersion")
