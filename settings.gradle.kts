@@ -8,6 +8,7 @@ pluginManagement {
         maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
         gradlePluginPortal()
         google()
+        jcenter()
         mavenLocal()
     }
     // Replace the plugin com.android.application with a dependency with another name.
