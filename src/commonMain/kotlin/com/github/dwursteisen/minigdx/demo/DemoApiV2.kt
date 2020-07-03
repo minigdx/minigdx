@@ -7,6 +7,7 @@ import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.armature.Frame
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
+import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Component
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -17,6 +18,7 @@ import com.github.dwursteisen.minigdx.ecs.System
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.inputs
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitive
@@ -82,7 +84,7 @@ class ArmatureUpdateSystem : System(EntityQuery(AnimatedModel::class)) {
 @ExperimentalStdlibApi
 class DemoScreen : Screen {
 
-    private val scene: Scene by fileHandler.get("v2/animal.protobuf")
+    private val scene: Scene by fileHandler.get("v2/bird.protobuf")
 
     override fun createEntities(engine: Engine) {
         scene.models.values.forEach { model ->
@@ -121,7 +123,7 @@ class DemoScreen : Screen {
             add(
                 Camera(
                     projection = perspective(
-                        fov = camera.fov,
+                        fov = camera.fov / 4f,
                         aspect = 1f, // FIXME,
                         near = camera.near,
                         far = camera.far
@@ -130,6 +132,16 @@ class DemoScreen : Screen {
             )
             add(Position(transformation = Mat4.fromColumnMajor(*camera.transformation.matrix), way = -1f))
         }
+    }
+
+    override fun render(engine: Engine, delta: Seconds) {
+        gl.clearColor(0f, 0f, 0f, 1f)
+        gl.clearDepth(1.0)
+        gl.enable(GL.DEPTH_TEST)
+        gl.depthFunc(GL.LEQUAL)
+        gl.clear(GL.COLOR_BUFFER_BIT or GL.DEPTH_BUFFER_BIT)
+
+        engine.update(delta)
     }
 
     override fun createSystems(): List<System> {

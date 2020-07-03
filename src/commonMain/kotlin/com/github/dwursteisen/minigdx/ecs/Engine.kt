@@ -4,10 +4,8 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.rotation
 import com.github.dwursteisen.minigdx.Degree
-import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.reflect.KClass
 
@@ -140,13 +138,6 @@ abstract class System(private val entityQuery: EntityQuery) {
     abstract fun update(delta: Seconds, entity: Entity)
 
     open fun update(delta: Seconds) {
-        // FIXME: remove me
-        gl.clearColor(0f, 0f, 0f, 1f)
-        gl.clearDepth(1.0)
-        gl.enable(GL.DEPTH_TEST)
-        gl.depthFunc(GL.LEQUAL)
-        gl.clear(GL.COLOR_BUFFER_BIT or GL.DEPTH_BUFFER_BIT)
-
         entities.forEach { update(delta, it) }
     }
 
