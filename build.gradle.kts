@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.dwursteisen.collada") version "1.0.0-alpha3"
+    id("com.github.dwursteisen.collada") version "1.0.0-alpha5"
 }
 
 group = "org.example"
@@ -98,7 +98,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
-                implementation("com.github.dwursteisen.collada:collada-api:1.0.0-alpha3")
+                implementation("com.github.dwursteisen.collada:collada-api:1.0.0-alpha5")
             }
         }
         val commonTest by getting {
