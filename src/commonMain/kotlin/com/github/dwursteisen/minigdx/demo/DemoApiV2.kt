@@ -84,7 +84,7 @@ class ArmatureUpdateSystem : System(EntityQuery(AnimatedModel::class)) {
 @ExperimentalStdlibApi
 class DemoScreen : Screen {
 
-    private val scene: Scene by fileHandler.get("v2/bird.protobuf")
+    private val scene: Scene by fileHandler.get("v2/elephant.protobuf")
 
     override fun createEntities(engine: Engine) {
         scene.models.values.forEach { model ->
@@ -123,7 +123,7 @@ class DemoScreen : Screen {
             add(
                 Camera(
                     projection = perspective(
-                        fov = camera.fov / 4f,
+                        fov = camera.fov,
                         aspect = 1f, // FIXME,
                         near = camera.near,
                         far = camera.far
