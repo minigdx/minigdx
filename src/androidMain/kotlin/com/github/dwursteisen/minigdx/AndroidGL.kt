@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx
 
+import android.opengl.GLES20.glActiveTexture
 import android.opengl.GLES20.glAttachShader
 import android.opengl.GLES20.glBindBuffer
 import android.opengl.GLES20.glBindTexture
@@ -47,6 +48,7 @@ import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
+import java.nio.ByteBuffer
 import java.nio.DoubleBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -198,6 +200,10 @@ class AndroidGL(override val screen: Screen) : GL {
         return TextureReference(pointer = ints[0])
     }
 
+    override fun activeTexture(byteMask: ByteMask) {
+        glActiveTexture(byteMask)
+    }
+
     override fun bindTexture(target: Int, textureReference: TextureReference) {
         glBindTexture(target, textureReference.pointer)
     }
@@ -258,6 +264,22 @@ class AndroidGL(override val screen: Screen) : GL {
             type,
             source.pixels
         )
+    }
+
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        width: Int,
+        height: Int,
+        type: Int,
+        source: ByteArray
+    ) {
+        val buffer = ByteBuffer.allocateDirect(source.size)
+        buffer.put(source)
+        buffer.position(0)
+        glTexImage2D(target, level, internalformat, width, height, 0, format, type, buffer)
     }
 
     override fun generateMipmap(target: Int) {
