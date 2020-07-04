@@ -26,6 +26,7 @@ import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedModel
 import com.github.dwursteisen.minigdx.render.Camera
 import com.github.dwursteisen.minigdx.render.RenderStage
+import com.github.dwursteisen.minigdx.systems.ArmatureUpdateSystem
 
 class Rotating : Component
 
@@ -58,25 +59,6 @@ class RotatingSystem : System(EntityQuery(Rotating::class)) {
     override fun update(delta: Seconds, entity: Entity) {
         entity[Position::class].forEach {
             it.rotateY(10f * delta)
-        }
-    }
-}
-
-class ArmatureUpdateSystem : System(EntityQuery(AnimatedModel::class)) {
-
-    override fun update(delta: Seconds, entity: Entity) {
-        entity[AnimatedModel::class].forEach {
-            it.time += delta
-            if (it.time > it.duration) {
-                it.time = 0f
-            }
-
-            val currentFrame = it.animation.lastOrNull { f -> f.time <= it.time } ?: it.animation.first()
-
-            (it.referencePose.joints.indices).forEach { index ->
-                it.currentPose[index] = Mat4.fromColumnMajor(*currentFrame.globalTransformations[index].matrix) *
-                        Mat4.fromColumnMajor(*it.referencePose.joints[index].inverseGlobalTransformation.matrix)
-            }
         }
     }
 }

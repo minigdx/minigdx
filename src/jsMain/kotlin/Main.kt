@@ -9,7 +9,6 @@ import com.github.dwursteisen.minigdx.demo.DemoGame
 import com.github.dwursteisen.minigdx.demo.DemoKey
 import com.github.dwursteisen.minigdx.demo.DemoLight
 import com.github.dwursteisen.minigdx.demo.DemoMovable
-import com.github.dwursteisen.minigdx.demo.DemoPlanet
 import com.github.dwursteisen.minigdx.demo.DemoSuzanne
 import com.github.dwursteisen.minigdx.demo.DemoSuzanne2
 import com.github.dwursteisen.minigdx.demo.DemoTexture
@@ -48,7 +47,7 @@ fun main() = onlyInBrowser {
     val canvas = document.getElementById("canvas") as? HTMLCanvasElement ?: return@onlyInBrowser
     configuration(GLConfiguration(canvas = canvas)).run {
         val urlParams = URLSearchParams(window.location.search)
-        val default: () -> Game = { DemoPlanet() }
+        val default: () -> Game = { DemoApiV2() }
         val demo = urlParams.get("demo")
         val invoke = factory[demo] ?: default
         invoke()

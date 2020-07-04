@@ -1,12 +1,38 @@
+import java.util.Date
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.dwursteisen.collada") version "1.0.0-alpha6"
+    id("com.github.dwursteisen.gltf") version "1.0.0-alpha7"
+    id("maven-publish")
+    id("com.jfrog.bintray") version "1.8.5"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "com.github.dwursteisen.minigdx"
+version = project.properties["version"] ?: "1.0-SNAPSHOT"
+
+if (version == "unspecified") {
+    version = "1.0-SNAPSHOT"
+}
+
+val properties = Properties()
+if (project.file("local.properties").exists()) {
+    properties.load(project.file("local.properties").inputStream())
+}
+
+val bintrayUser = if (project.hasProperty("bintray_user")) {
+    project.property("bintray_user") as? String
+} else {
+    System.getProperty("BINTRAY_USER")
+}
+
+val bintrayKey = if (project.hasProperty("bintray_key")) {
+    project.property("bintray_key") as? String
+} else {
+    System.getProperty("BINTRAY_KEY")
+}
 
 repositories {
     maven(
@@ -82,24 +108,13 @@ kotlin {
         this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
         this.compilations.getByName("test").kotlinOptions.jvmTarget = "1.8"
     }
-/*
-    macosX64() {
-        binaries {
-            executable {
-                // Change to specify fully qualified name of your application's entry point:
-                entryPoint = "main"
-                // Specify command-line arguments, if necessary:
-                runTask?.args("")
-            }
-        }
-    }
-*/
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
-                implementation("com.github.dwursteisen.collada:collada-api:1.0.0-alpha6")
+                implementation("com.github.dwursteisen.collada:gltf-api:1.0.0-alpha7")
             }
         }
         val commonTest by getting {
@@ -166,11 +181,11 @@ kotlin {
     }
 }
 
-colladaPlugin {
+gltfPlugin {
     create("assetsProtobuf") {
         this.gltfDirectory.set(project.projectDir.resolve("src/assets/v2"))
         this.target.set(project.projectDir.resolve("src/commonMain/resources/v2"))
-        this.format.set(collada.Format.PROTOBUF as collada.Format)
+        this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
     }
 }
 
@@ -199,4 +214,57 @@ project.tasks.create("runJvm").apply {
 project.tasks.create("runAndroid").apply {
     group = "minigdx"
     dependsOn("installDebug")
+}
+
+configure<com.jfrog.bintray.gradle.BintrayExtension> {
+    user = properties.getProperty("bintray.user") ?: bintrayUser
+    key = properties.getProperty("bintray.key") ?: bintrayKey
+    publish = true
+    if (findProperty("currentOs") == "macOS") {
+        setPublications("jvm", "js", "macosX64", "iosArm64", "iosX64", "metadata")
+    } else if (findProperty("currentOs") == "Windows") {
+        setPublications("mingwX64")
+    } else if (findProperty("currentOs") == "Linux") {
+        setPublications("kotlinMultiplatform", "linuxX64")
+    }
+    pkg(delegateClosureOf<com.jfrog.bintray.gradle.BintrayExtension.PackageConfig> {
+        repo = "minigdx"
+        name = project.name
+        githubRepo = "dwursteisen/mini-gdx.git"
+        vcsUrl = "https://github.com/dwursteisen/mini-gdx.git"
+        description = project.description
+        setLabels("java")
+        setLicenses("Apache-2.0")
+        desc = description
+        version(closureOf<com.jfrog.bintray.gradle.BintrayExtension.VersionConfig> {
+            this.name = project.version.toString()
+            released = Date().toString()
+        })
+    })
+}
+
+tasks.named("bintrayUpload") {
+    dependsOn(":publishToMavenLocal")
+}
+
+tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
+    doFirst {
+        project.publishing.publications
+            .filterIsInstance<MavenPublication>()
+            .forEach { publication ->
+                val moduleFile = buildDir.resolve("publications/${publication.name}/module.json")
+                if (moduleFile.exists()) {
+                    publication.artifact(object :
+                        org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact(moduleFile) {
+                        override fun getDefaultExtension() = "module"
+                    })
+                }
+            }
+    }
+}
+
+project.afterEvaluate {
+    project.publishing.publications.forEach {
+        println("Available publication: ${it.name}")
+    }
 }

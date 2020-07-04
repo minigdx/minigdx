@@ -1,9 +1,7 @@
 package com.github.dwursteisen.minigdx.file
 
+import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.entity.CanCopy
-import com.github.dwursteisen.minigdx.entity.animations.AnimatedModel
-import com.github.dwursteisen.minigdx.entity.delegate.Drawable
-import com.github.dwursteisen.minigdx.entity.models.Scene
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.AngelCode
 import com.github.dwursteisen.minigdx.entity.text.Text
@@ -69,14 +67,11 @@ open class Content<R>(val filename: String) {
 }
 
 private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
-    AnimatedModel::class to AnimatedModelLoader(),
-    Drawable::class to ModelLoader(),
     TextureImage::class to TextureImageLoader(),
     Texture::class to TextureLoader(),
     AngelCode::class to AngelCodeLoader(),
     Text::class to TextLoader(),
-    Scene::class to SceneLoader(),
-    com.dwursteisen.minigdx.scene.api.Scene::class to SceneV2Loader()
+    Scene::class to SceneV2Loader()
 )
 
 class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {

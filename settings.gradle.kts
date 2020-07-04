@@ -1,4 +1,4 @@
-rootProject.name = "3d-skeleton"
+rootProject.name = "minigdx"
 
 pluginManagement {
     repositories {
