@@ -82,7 +82,7 @@ class AndroidGL(override val screen: Screen) : GL {
     }
 
     override fun createProgram(): ShaderProgram {
-        return ShaderProgram(PlatformShaderProgram(glCreateProgram()))
+        return ShaderProgram(this, PlatformShaderProgram(glCreateProgram()))
     }
 
     override fun getAttribLocation(shaderProgram: ShaderProgram, name: String): Int {

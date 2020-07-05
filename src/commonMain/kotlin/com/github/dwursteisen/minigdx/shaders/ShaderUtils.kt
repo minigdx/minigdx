@@ -5,9 +5,9 @@ import com.github.dwursteisen.minigdx.gl
 
 object ShaderUtils {
 
-    fun createShaderProgram(vertexShader: String, fragmentShader: String): ShaderProgram {
-        val vertex = compileShader(vertexShader, GL.VERTEX_SHADER)
-        val fragment = compileShader(fragmentShader, GL.FRAGMENT_SHADER)
+    fun createShaderProgram(gl: GL, vertexShader: String, fragmentShader: String): ShaderProgram {
+        val vertex = compileShader(gl, vertexShader, GL.VERTEX_SHADER)
+        val fragment = compileShader(gl, fragmentShader, GL.FRAGMENT_SHADER)
 
         val shaderProgram = gl.createProgram()
         gl.attachShader(shaderProgram, vertex)
@@ -21,7 +21,7 @@ object ShaderUtils {
         return shaderProgram
     }
 
-    fun compileShader(vertexShader: String, type: Int): Shader {
+    fun compileShader(gl: GL, vertexShader: String, type: Int): Shader {
         val shader = gl.createShader(type)
         gl.shaderSource(shader, vertexShader)
         gl.compileShader(shader)

@@ -45,7 +45,7 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
     }
 
     override fun createProgram(): ShaderProgram {
-        return ShaderProgram(PlatformShaderProgram(gl.createProgram()!!))
+        return ShaderProgram(this, PlatformShaderProgram(gl.createProgram()!!))
     }
 
     override fun useProgram(shaderProgram: ShaderProgram) {

@@ -1,10 +1,10 @@
 package com.github.dwursteisen.minigdx.shaders
 
-import com.github.dwursteisen.minigdx.gl
+import com.github.dwursteisen.minigdx.GL
 
 expect class PlatformShaderProgram
 
-class ShaderProgram(val program: PlatformShaderProgram) {
+class ShaderProgram(val gl: GL, val program: PlatformShaderProgram) : GL by gl {
 
     private val attributes = mutableMapOf<String, Int>()
 

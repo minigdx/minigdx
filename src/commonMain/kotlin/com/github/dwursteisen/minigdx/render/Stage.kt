@@ -82,7 +82,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     lateinit var program: ShaderProgram
 
     open fun compile() {
-        program = ShaderUtils.createShaderProgram(vertex.toString(), fragment.toString()).apply {
+        program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)
             }
