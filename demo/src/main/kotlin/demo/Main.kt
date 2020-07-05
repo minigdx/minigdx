@@ -4,6 +4,7 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
+import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -67,7 +68,7 @@ class DemoScreen : Screen {
 }
 
 @ExperimentalStdlibApi
-class DemoApiV2 : GameSystem(DemoScreen())
+class DemoApiV2(gl: GL) : GameSystem(gl, DemoScreen())
 
 @ExperimentalStdlibApi
 class Main {
@@ -85,8 +86,8 @@ class Main {
             ).run {
                 val index = args.indexOf("--game")
                 when (args.getOrElse(index + 1) { "" }) {
-                    "v2" -> DemoApiV2()
-                    else -> DemoApiV2()
+                    "v2" -> DemoApiV2(it)
+                    else -> DemoApiV2(it)
                 }
             }
         }

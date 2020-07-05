@@ -19,18 +19,20 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     private lateinit var game: Game
     private lateinit var inputManager: InputManager
     private lateinit var canvas: HTMLCanvasElement
+    private lateinit var gl: GL
 
     internal actual fun createContext(): GL {
         canvas =
             configuration.canvas ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
         val context = canvas.getContext("webgl2") as WebGLRenderingContextBase
-        return WebGL(
+        gl = WebGL(
             context, Screen(
                 width = canvas.clientWidth,
                 height = canvas.clientHeight
             )
         )
+        return gl
     }
 
     internal actual fun createFileHandler(): FileHandler {
@@ -49,10 +51,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return JsLogger()
     }
 
-    actual fun run(gameFactory: () -> Game) {
+    actual fun run(gameFactory: (GL) -> Game) {
         inputManager = inputs as InputManager
 
-        this.game = gameFactory()
+        this.game = gameFactory(gl)
 
         window.requestAnimationFrame(::loading)
     }
@@ -61,7 +63,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         if (!fileHandler.isFullyLoaded()) {
             window.requestAnimationFrame(::loading)
         } else {
-            viewport.update(game.worldResolution, gl.screen.width, gl.screen.height)
+            viewport.update(gl, game.worldResolution, gl.screen.width, gl.screen.height)
 
             game.create()
             game.resume()
@@ -78,7 +80,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
             canvas.height = canvas.clientHeight
             canvas.width = canvas.clientWidth
 
-            viewport.update(game.worldResolution, gl.screen.width, gl.screen.height)
+            viewport.update(gl, game.worldResolution, gl.screen.width, gl.screen.height)
         }
         inputManager.record()
         val nowInSeconds = now * 0.001

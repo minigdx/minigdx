@@ -8,7 +8,6 @@ import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.MeshVertexShader
 import com.github.dwursteisen.minigdx.shaders.UVFragmentShader
 
@@ -37,7 +36,8 @@ fun List<UV>.uvDatasource(): DataSource.FloatDataSource {
     })
 }
 
-class MeshPrimitiveRenderStage : RenderStage<MeshVertexShader, UVFragmentShader>(
+class MeshPrimitiveRenderStage(gl: GL) : RenderStage<MeshVertexShader, UVFragmentShader>(
+    gl = gl,
     vertex = MeshVertexShader(),
     fragment = UVFragmentShader(),
     query = EntityQuery(MeshPrimitive::class)

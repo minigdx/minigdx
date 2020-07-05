@@ -14,6 +14,8 @@ import org.lwjgl.system.MemoryUtil
 
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
 
+    private lateinit var gl: GL
+
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
         return osName.indexOf("mac") >= 0
@@ -25,12 +27,13 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
                 """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
             )
         }
-        return LwjglGL(
+        gl = LwjglGL(
             screen = Screen(
                 configuration.width,
                 configuration.height
             )
         )
+        return gl
     }
 
     internal actual fun createFileHandler(): FileHandler {
@@ -67,7 +70,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     private var lastFrame: Long = 0L
 
-    actual fun run(gameFactory: () -> Game) {
+    actual fun run(gameFactory: (gl: GL) -> Game) {
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
@@ -119,16 +122,16 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
         // Make the window visible
         GLFW.glfwShowWindow(window)
-        val game = gameFactory()
+        val game = gameFactory(gl)
 
         game.create()
         game.resume()
 
-        viewport.update(game.worldResolution, configuration.width, configuration.height)
+        viewport.update(gl, game.worldResolution, configuration.width, configuration.height)
         glfwSetWindowSizeCallback(window) { _, w, h ->
             gl.screen.width = w
             gl.screen.height = h
-            viewport.update(game.worldResolution, w, h)
+            viewport.update(gl, game.worldResolution, w, h)
         }
 
         // Wireframe mode

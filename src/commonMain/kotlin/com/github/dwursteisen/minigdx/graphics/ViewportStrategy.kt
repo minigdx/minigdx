@@ -1,17 +1,18 @@
 package com.github.dwursteisen.minigdx.graphics
 
+import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.WorldResolution
 import com.github.dwursteisen.minigdx.gl
 import kotlin.math.min
 
 interface ViewportStrategy {
 
-    fun update(worldResolution: WorldResolution, width: Int, height: Int)
+    fun update(gl: GL, worldResolution: WorldResolution, width: Int, height: Int)
 }
 
 class FillViewportStrategy : ViewportStrategy {
 
-    override fun update(worldResolution: WorldResolution, width: Int, height: Int) {
+    override fun update(gl: GL, worldResolution: WorldResolution, width: Int, height: Int) {
         // Fill strategy.
         val sw = width
         val sh = height

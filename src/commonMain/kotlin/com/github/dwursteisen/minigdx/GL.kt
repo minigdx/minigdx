@@ -19,6 +19,7 @@ fun Number.toPercent(): Float {
     return v
 }
 
+@Deprecated("prefer use gl passed in context instead")
 lateinit var gl: GL
 lateinit var fileHandler: FileHandler
 lateinit var inputs: InputHandler

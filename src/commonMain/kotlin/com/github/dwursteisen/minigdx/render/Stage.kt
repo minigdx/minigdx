@@ -5,13 +5,13 @@ import com.dwursteisen.minigdx.scene.api.armature.Armature
 import com.dwursteisen.minigdx.scene.api.armature.Frame
 import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
+import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
@@ -60,6 +60,7 @@ class MeshPrimitive(
 ) : Component
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
+    protected val gl: GL,
     val vertex: V,
     val fragment: F,
     query: EntityQuery,
@@ -80,7 +81,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
 
     lateinit var program: ShaderProgram
 
-    fun compile() {
+    open fun compile() {
         program = ShaderUtils.createShaderProgram(vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)

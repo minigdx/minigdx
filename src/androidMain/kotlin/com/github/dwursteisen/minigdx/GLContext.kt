@@ -13,11 +13,15 @@ import com.github.dwursteisen.minigdx.logger.Logger
 
 @ExperimentalStdlibApi
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
+
+    private lateinit var gl: GL
+
     internal actual fun createContext(): GL {
         val display = configuration.activity.windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
-        return AndroidGL(Screen(size.x, size.y))
+        gl = AndroidGL(Screen(size.x, size.y))
+        return gl
     }
 
     @ExperimentalStdlibApi
@@ -37,8 +41,8 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return AndroidLogger()
     }
 
-    actual fun run(gameFactory: () -> Game) {
-        val surfaceView = MiniGdxSurfaceView(configuration.activity)
+    actual fun run(gameFactory: (GL) -> Game) {
+        val surfaceView = MiniGdxSurfaceView(gl, configuration.activity)
         configuration.activity.setContentView(surfaceView)
     }
 }

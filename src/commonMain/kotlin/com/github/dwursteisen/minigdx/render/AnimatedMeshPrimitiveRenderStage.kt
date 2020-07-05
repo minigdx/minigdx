@@ -11,7 +11,8 @@ import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.AnimatedMeshVertexShader
 import com.github.dwursteisen.minigdx.shaders.UVFragmentShader
 
-class AnimatedMeshPrimitiveRenderStage : RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
+class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
+    gl = gl,
     vertex = AnimatedMeshVertexShader(),
     fragment = UVFragmentShader(),
     query = EntityQuery(AnimatedMeshPrimitive::class)
