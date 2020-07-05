@@ -1,5 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs
 
+import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -23,7 +25,10 @@ class EntityQueryTest {
         val entity = Engine().create {
             add(Name())
         }
-        val query = EntityQuery(include = emptyList(), exclude = listOf(Name::class))
+        val query = EntityQuery(
+            include = emptyList(),
+            exclude = listOf(Name::class)
+        )
 
         assertFalse(query.accept(entity))
     }

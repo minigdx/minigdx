@@ -5,9 +5,9 @@ import com.dwursteisen.minigdx.scene.api.model.UV
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.DataSource
-import com.github.dwursteisen.minigdx.ecs.Entity
-import com.github.dwursteisen.minigdx.ecs.EntityQuery
-import com.github.dwursteisen.minigdx.ecs.Position
+import com.github.dwursteisen.minigdx.ecs.components.Position
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.MeshVertexShader
 import com.github.dwursteisen.minigdx.shaders.UVFragmentShader

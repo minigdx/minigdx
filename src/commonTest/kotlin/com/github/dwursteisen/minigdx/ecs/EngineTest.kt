@@ -1,6 +1,9 @@
 package com.github.dwursteisen.minigdx.ecs
 
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull

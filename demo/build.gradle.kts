@@ -1,7 +1,10 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     java
     application
     kotlin("jvm")
+    id("com.github.dwursteisen.gltf") version "1.0.0-alpha7"
 }
 
 repositories {
@@ -13,16 +16,34 @@ repositories {
 
 dependencies {
     implementation(project(":"))
+    implementation(kotlin("stdlib-jdk8"))
+}
+
+gltfPlugin {
+    create("assetsProtobuf") {
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets/v2"))
+        this.target.set(project.projectDir.resolve("src/main/resources/v2"))
+        this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
+    }
 }
 
 application {
     mainClassName = "demo.Main"
     // applicationDefaultJvmArgs = listOf("-XstartOnFirstThread", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5000")
     applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
-    executableDir = rootDir.resolve("src/commonMain/resources").absolutePath
+    executableDir = projectDir.resolve("src/main/resources").absolutePath
 }
 
 project.tasks.getByName("run", JavaExec::class) {
-    this.workingDir = rootDir.resolve("src/commonMain/resources").absoluteFile
+    this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
     this.args = listOf("--game", "v2")
+}
+
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

@@ -5,7 +5,6 @@ plugins {
     id("com.android.application")
     kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.dwursteisen.gltf") version "1.0.0-alpha7"
     id("maven-publish")
     id("com.jfrog.bintray") version "1.8.5"
 }
@@ -112,9 +111,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
-                implementation("com.github.dwursteisen.collada:gltf-api:1.0.0-alpha7")
+                api(kotlin("stdlib-common"))
+                api("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
+                api("com.github.dwursteisen.collada:gltf-api:1.0.0-alpha7")
             }
         }
         val commonTest by getting {
@@ -181,14 +180,6 @@ kotlin {
     }
 }
 
-gltfPlugin {
-    create("assetsProtobuf") {
-        this.gltfDirectory.set(project.projectDir.resolve("src/assets/v2"))
-        this.target.set(project.projectDir.resolve("src/commonMain/resources/v2"))
-        this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
-    }
-}
-
 // -- convenient task to create the documentation.
 project.tasks.create<Copy>("docs").apply {
     group = "minigdx"
@@ -201,19 +192,9 @@ project.tasks.create<Copy>("docs").apply {
 }
 
 // -- convenient tasks to test the game engine.
-project.tasks.create("runJs").apply {
-    group = "minigdx"
-    dependsOn("jsBrowserDevelopmentRun")
-}
-
 project.tasks.create("runJvm").apply {
     group = "minigdx"
     dependsOn(":demo:run")
-}
-
-project.tasks.create("runAndroid").apply {
-    group = "minigdx"
-    dependsOn("installDebug")
 }
 
 configure<com.jfrog.bintray.gradle.BintrayExtension> {

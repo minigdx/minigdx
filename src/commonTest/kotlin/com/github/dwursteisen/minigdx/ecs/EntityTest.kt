@@ -1,5 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs
 
+import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

@@ -7,10 +7,10 @@ import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.ecs.Component
-import com.github.dwursteisen.minigdx.ecs.Entity
-import com.github.dwursteisen.minigdx.ecs.EntityQuery
-import com.github.dwursteisen.minigdx.ecs.System
+import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
@@ -63,8 +63,12 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     val vertex: V,
     val fragment: F,
     query: EntityQuery,
-    val cameraQuery: EntityQuery = EntityQuery(Camera::class),
-    val lightsQuery: EntityQuery = EntityQuery(Light::class),
+    val cameraQuery: EntityQuery = EntityQuery(
+        Camera::class
+    ),
+    val lightsQuery: EntityQuery = EntityQuery(
+        Light::class
+    ),
     val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
 ) : Stage, System(query) {
 

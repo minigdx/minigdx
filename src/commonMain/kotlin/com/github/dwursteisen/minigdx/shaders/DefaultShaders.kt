@@ -5,39 +5,6 @@ object DefaultShaders {
     val MAX_JOINTS = 20
 
     //language=GLSL
-    val simpleVertexShader = """
-        #ifdef GL_ES
-        precision highp float;
-        #endif
-        
-        uniform mat4 uModelView;
-        attribute vec3 aVertexPosition;
-        attribute vec2 aUVPosition;
-        
-        varying vec2 vUVPosition;
-        
-        void main() {
-            gl_Position = uModelView * vec4(aVertexPosition, 1.0);
-            vUVPosition = aUVPosition;
-        }
-    """.trimIndent()
-
-    //language=GLSL
-    val simpleFragmentShader = """
-        #ifdef GL_ES
-        precision highp float;
-        #endif
-        
-        varying vec2 vUVPosition;
-
-        uniform sampler2D uUV;
-
-        void main() {
-              gl_FragColor = texture2D(uUV, vUVPosition);
-        }
-    """.trimIndent()
-
-    //language=GLSL
     val vertexShader = """
         #ifdef GL_ES
         precision highp float;

@@ -1,7 +1,25 @@
 package com.github.dwursteisen.minigdx.shaders
 
+//language=GLSL
+private val simpleVertexShader = """
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+        
+        uniform mat4 uModelView;
+        attribute vec3 aVertexPosition;
+        attribute vec2 aUVPosition;
+        
+        varying vec2 vUVPosition;
+        
+        void main() {
+            gl_Position = uModelView * vec4(aVertexPosition, 1.0);
+            vUVPosition = aUVPosition;
+        }
+    """.trimIndent()
+
 class MeshVertexShader : VertexShader(
-    shader = DefaultShaders.simpleVertexShader
+    shader = simpleVertexShader
 ) {
     val uModelView =
         ShaderParameter.UniformMat4("uModelView")
