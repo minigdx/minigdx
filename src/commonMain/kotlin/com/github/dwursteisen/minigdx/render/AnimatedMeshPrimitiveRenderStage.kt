@@ -19,7 +19,7 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexS
 ) {
 
     override fun compile(entity: Entity) {
-        entity[AnimatedMeshPrimitive::class]
+        entity.findAll(AnimatedMeshPrimitive::class)
             .filter { !it.isCompiled }
             .forEach { primitive ->
                 // Push the model
@@ -108,17 +108,17 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexS
 
     override fun update(delta: Seconds, entity: Entity) {
         val combined = camera?.let {
-            val view = it[Position::class].first().transformation
-            val projection = it[Camera::class].first().projection
+            val view = it.get(Position::class).transformation
+            val projection = it.get(Camera::class).projection
             projection * view
         } ?: Mat4.identity()
-        val model = entity[Position::class].first().transformation
-        val animatedModel = entity[AnimatedModel::class].first()
+        val model = entity.get(Position::class).transformation
+        val animatedModel = entity.get(AnimatedModel::class)
 
         vertex.uModelView.apply(program, combined * model)
         vertex.uJointTransformationMatrix.apply(program, animatedModel.currentPose)
 
-        entity[AnimatedMeshPrimitive::class].forEach { primitive ->
+        entity.findAll(AnimatedMeshPrimitive::class).forEach { primitive ->
             vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
             vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
             vertex.aWeights.apply(program, primitive.weightBuffer!!)

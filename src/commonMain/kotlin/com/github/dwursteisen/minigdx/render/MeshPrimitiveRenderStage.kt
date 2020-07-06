@@ -44,7 +44,7 @@ class MeshPrimitiveRenderStage(gl: GL) : RenderStage<MeshVertexShader, UVFragmen
 ) {
 
     override fun compile(entity: Entity) {
-        entity[MeshPrimitive::class]
+        entity.findAll(MeshPrimitive::class)
             .filter { !it.isCompiled }
             .forEach { primitive ->
                 // Push the model
@@ -109,15 +109,15 @@ class MeshPrimitiveRenderStage(gl: GL) : RenderStage<MeshVertexShader, UVFragmen
 
     override fun update(delta: Seconds, entity: Entity) {
         val combined = camera?.let {
-            val view = it[Position::class].first().transformation
-            val projection = it[Camera::class].first().projection
+            val view = it.get(Position::class).transformation
+            val projection = it.get(Camera::class).projection
             projection * view
         } ?: Mat4.identity()
-        val model = entity[Position::class].first().transformation
+        val model = entity.get(Position::class).transformation
 
         vertex.uModelView.apply(program, combined * model)
 
-        entity[MeshPrimitive::class].forEach { primitive ->
+        entity.findAll(MeshPrimitive::class).forEach { primitive ->
             vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
             vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
             fragment.uUV.apply(program, primitive.textureReference!!, unit = 0)

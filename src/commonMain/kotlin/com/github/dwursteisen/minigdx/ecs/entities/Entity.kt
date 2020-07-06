@@ -15,8 +15,12 @@ class Entity(
 
     var componentsType: Set<KClass<out Component>> = components.map { it::class }.toSet()
 
-    operator fun <T : Component> get(type: KClass<T>): List<T> {
-        return componentsByType.getValue(type) as List<T>
+    fun <T : Component> get(type: KClass<T>): T {
+        return componentsByType.getValue(type).toList().first() as T
+    }
+
+    fun <T : Component> findAll(type: KClass<T>): List<T> {
+        return componentsByType.getValue(type).toList() as List<T>
     }
 
     fun add(component: Component) = engineUpdate {

@@ -12,7 +12,7 @@ class ArmatureUpdateSystem : System(
 ) {
 
     override fun update(delta: Seconds, entity: Entity) {
-        entity[AnimatedModel::class].forEach {
+        entity.findAll(AnimatedModel::class).forEach {
             it.time += delta
             if (it.time > it.duration) {
                 it.time = 0f
