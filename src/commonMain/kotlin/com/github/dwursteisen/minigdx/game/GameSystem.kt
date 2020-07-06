@@ -8,7 +8,7 @@ import com.github.dwursteisen.minigdx.ecs.Engine
 
 abstract class GameSystem(private val gl: GL, var screen: Screen) : Game {
 
-    override val worldResolution: WorldResolution = WorldResolution(400, 400)
+    override val worldResolution: WorldResolution = WorldResolution(gl.screen.width, gl.screen.height)
 
     private val engine = Engine()
 

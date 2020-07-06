@@ -29,7 +29,10 @@ lateinit var log: Logger
 class Screen(
     var width: Int,
     var height: Int
-)
+) {
+
+    val ratio = width / height.toFloat()
+}
 
 interface GL {
 

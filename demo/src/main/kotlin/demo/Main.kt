@@ -18,7 +18,7 @@ import com.github.dwursteisen.minigdx.render.AnimatedModel
 import com.github.dwursteisen.minigdx.render.Camera
 
 @ExperimentalStdlibApi
-class DemoScreen : Screen {
+class DemoScreen(private val screen: com.github.dwursteisen.minigdx.Screen) : Screen {
 
     private val bird: Scene by fileHandler.get("v2/bird.protobuf")
 
@@ -55,7 +55,7 @@ class DemoScreen : Screen {
                     Camera(
                         projection = perspective(
                             fov = camera.fov,
-                            aspect = 1f, // FIXME,
+                            aspect = screen.ratio,
                             near = camera.near,
                             far = camera.far
                         )
@@ -68,7 +68,7 @@ class DemoScreen : Screen {
 }
 
 @ExperimentalStdlibApi
-class DemoApiV2(gl: GL) : GameSystem(gl, DemoScreen())
+class DemoApiV2(gl: GL) : GameSystem(gl, DemoScreen(gl.screen))
 
 @ExperimentalStdlibApi
 class Main {
