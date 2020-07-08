@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.game.GameSystem
@@ -44,6 +45,7 @@ class DemoScreen(private val screen: com.github.dwursteisen.minigdx.Screen) : Sc
                     )
                 }
                 add(Position(Mat4.fromColumnMajor(*model.transformation.matrix)))
+                add(BoundingBox.from(model.mesh))
             }
         }
 

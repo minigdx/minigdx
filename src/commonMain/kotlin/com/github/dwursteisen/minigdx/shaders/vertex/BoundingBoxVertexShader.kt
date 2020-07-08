@@ -1,4 +1,6 @@
-package com.github.dwursteisen.minigdx.shaders
+package com.github.dwursteisen.minigdx.shaders.vertex
+
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 
 //language=GLSL
 private val simpleVertexShader = """
@@ -8,28 +10,26 @@ private val simpleVertexShader = """
         
         uniform mat4 uModelView;
         attribute vec3 aVertexPosition;
-        attribute vec2 aUVPosition;
+        attribute vec4 aColor;
         
-        varying vec2 vUVPosition;
+        varying vec4 vColor;
         
         void main() {
             gl_Position = uModelView * vec4(aVertexPosition, 1.0);
-            vUVPosition = aUVPosition;
+            vColor = aColor;
         }
     """.trimIndent()
 
-class MeshVertexShader : VertexShader(
-    shader = simpleVertexShader
-) {
+class BoundingBoxVertexShader : VertexShader(simpleVertexShader) {
+
     val uModelView =
         ShaderParameter.UniformMat4("uModelView")
     val aVertexPosition =
         ShaderParameter.AttributeVec3("aVertexPosition")
-    val aUVPosition = ShaderParameter.AttributeVec2("aUVPosition")
+
+    val aColor = ShaderParameter.AttributeVec4("aColor")
 
     override val parameters: List<ShaderParameter> = listOf(
-        uModelView,
-        aVertexPosition,
-        aUVPosition
+        uModelView, aVertexPosition, aColor
     )
 }

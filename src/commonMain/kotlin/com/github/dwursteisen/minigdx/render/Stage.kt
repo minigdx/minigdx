@@ -9,14 +9,15 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.shaders.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 import com.github.dwursteisen.minigdx.shaders.TextureReference
-import com.github.dwursteisen.minigdx.shaders.VertexShader
+import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
+import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 
 data class RenderOptions(
     val renderName: String,
@@ -80,6 +81,15 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         private set
 
     lateinit var program: ShaderProgram
+
+    val combinedMatrix: Mat4
+        get() {
+            return camera?.let {
+                val view = it.get(Position::class).transformation
+                val projection = it.get(Camera::class).projection
+                projection * view
+            } ?: Mat4.identity()
+        }
 
     open fun compile() {
         program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {

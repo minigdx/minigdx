@@ -1,7 +1,19 @@
 package com.github.dwursteisen.minigdx.ecs.components
 
+import kotlin.math.abs
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.fail
+
+fun assertEquals(
+    expected: Float,
+    actual: Float,
+    delta: Float = 0.001f,
+    message: String = "$expected != $actual (𝝙 $delta)"
+) {
+    if (abs(expected - actual) > delta) {
+        fail(message)
+    }
+}
 
 class PositionTest {
 

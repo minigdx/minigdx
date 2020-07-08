@@ -1,4 +1,6 @@
-package com.github.dwursteisen.minigdx.shaders
+package com.github.dwursteisen.minigdx.shaders.vertex
+
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 
 //language=GLSL
 private const val shader: String = """

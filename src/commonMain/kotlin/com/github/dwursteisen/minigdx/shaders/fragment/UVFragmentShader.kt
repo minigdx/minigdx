@@ -1,4 +1,6 @@
-package com.github.dwursteisen.minigdx.shaders
+package com.github.dwursteisen.minigdx.shaders.fragment
+
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 
 //language=GLSL
 private val simpleFragmentShader = """

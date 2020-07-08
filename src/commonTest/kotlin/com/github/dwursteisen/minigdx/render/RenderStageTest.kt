@@ -6,8 +6,8 @@ import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graphics.MockGL
-import com.github.dwursteisen.minigdx.shaders.FragmentShader
-import com.github.dwursteisen.minigdx.shaders.VertexShader
+import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
+import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
