@@ -27,7 +27,7 @@ class DemoScreen(private val screen: com.github.dwursteisen.minigdx.Screen) : Sc
         bird.models.values.forEach { model ->
             log.info("DEMO") { "Create animated model '${model.name}'" }
             engine.create {
-                val animation = bird.animations.values.first().first().frames
+                val animation = bird.animations[0]!!.last().frames
                 add(
                     AnimatedModel(
                         animation = animation,

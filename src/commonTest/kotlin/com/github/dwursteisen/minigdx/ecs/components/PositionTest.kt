@@ -20,19 +20,19 @@ class PositionTest {
     @Test
     fun setRotation_set_rotationX() {
         val rotation = Position().setRotationX(90f).transformation.rotation
-        assertEquals(90f, rotation.x)
+        assertEquals(90f, rotation.x, 0.1f)
     }
 
     @Test
     fun setRotation_set_rotationY() {
         val rotation = Position().setRotationY(90f).transformation.rotation
-        assertEquals(90f, rotation.y)
+        assertEquals(90f, rotation.y, 0.1f)
     }
 
     @Test
     fun setRotation_set_rotationZ() {
         val rotation = Position().setRotationZ(90f).transformation.rotation
-        assertEquals(90f, rotation.z)
+        assertEquals(-90f, rotation.z, 0.1f)
     }
 
     @Test
