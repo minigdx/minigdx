@@ -82,6 +82,7 @@ android {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
     }
 }
 
@@ -97,6 +98,7 @@ kotlin {
                 this.compilation.kotlinOptions {
                     this.sourceMap = true
                     this.sourceMapEmbedSources = "always"
+                    this.freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
                 }
             }
         }
@@ -109,6 +111,12 @@ kotlin {
     jvm {
         this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
         this.compilations.getByName("test").kotlinOptions.jvmTarget = "1.8"
+    }
+
+    metadata {
+        this.compilations.all {
+            this.kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
+        }
     }
 
     sourceSets {
