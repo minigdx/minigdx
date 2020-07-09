@@ -21,8 +21,11 @@ fun Number.toPercent(): Float {
 
 @Deprecated("prefer use gl passed in context instead")
 lateinit var gl: GL
+@Deprecated("prefer use gl passed in context instead")
 lateinit var fileHandler: FileHandler
+@Deprecated("prefer use gl passed in context instead")
 lateinit var inputs: InputHandler
+@Deprecated("prefer use gl passed in context instead")
 lateinit var viewport: ViewportStrategy
 lateinit var log: Logger
 

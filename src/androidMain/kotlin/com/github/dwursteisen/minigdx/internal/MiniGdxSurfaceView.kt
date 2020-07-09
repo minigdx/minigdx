@@ -2,17 +2,15 @@ package com.github.dwursteisen.minigdx.internal
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Game
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.MiniGdxActivity
 import com.github.dwursteisen.minigdx.input.InputManager
-import com.github.dwursteisen.minigdx.inputs
-import com.github.dwursteisen.minigdx.viewport
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 @ExperimentalStdlibApi
-class MiniGdxSurfaceView(private val gl: GL, context: Context) : GLSurfaceView(context) {
+class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context) : GLSurfaceView(context) {
 
     init {
         setEGLContextClientVersion(3)
@@ -35,17 +33,18 @@ class MiniGdxSurfaceView(private val gl: GL, context: Context) : GLSurfaceView(c
             }
 
             override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-                viewport.update(this@MiniGdxSurfaceView.gl, game.worldResolution, width, height)
+                gameContext.viewport.update(gameContext.gl, game.worldResolution, width, height)
             }
 
+            @ExperimentalStdlibApi
             override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-                inputManager = inputs as InputManager
-                game = (context as MiniGdxActivity).createGame()
+                inputManager = gameContext.input as InputManager
+                game = (context as MiniGdxActivity).createGame(gameContext)
                 game.create()
             }
         })
         // Render the view only when there is a change in the drawing data
         renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
-        setOnTouchListener(inputs as OnTouchListener)
+        setOnTouchListener(gameContext.input as OnTouchListener)
     }
 }

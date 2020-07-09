@@ -7,10 +7,10 @@ abstract class MiniGdxActivity : Activity() {
 
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
-        configuration(GLConfiguration(this)).run { createGame() }
+        configuration(GLConfiguration(this)).execute { createGame(it) }
         super.onCreate(savedInstanceState)
     }
 
     @ExperimentalStdlibApi
-    abstract fun createGame(): Game
+    abstract fun createGame(gameContext: GameContext): Game
 }

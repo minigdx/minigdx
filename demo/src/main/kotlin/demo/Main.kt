@@ -4,13 +4,12 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
-import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GLConfiguration
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.fileHandler
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.log
@@ -19,9 +18,9 @@ import com.github.dwursteisen.minigdx.render.AnimatedModel
 import com.github.dwursteisen.minigdx.render.Camera
 
 @ExperimentalStdlibApi
-class DemoScreen(private val screen: com.github.dwursteisen.minigdx.Screen) : Screen {
+class DemoScreen(private val context: GameContext) : Screen {
 
-    private val bird: Scene by fileHandler.get("v2/bird.protobuf")
+    private val bird: Scene by context.fileHandler.get("v2/bird.protobuf")
 
     override fun createEntities(engine: Engine) {
         bird.models.values.forEach { model ->
@@ -57,7 +56,7 @@ class DemoScreen(private val screen: com.github.dwursteisen.minigdx.Screen) : Sc
                     Camera(
                         projection = perspective(
                             fov = camera.fov,
-                            aspect = screen.ratio,
+                            aspect = context.ratio,
                             near = camera.near,
                             far = camera.far
                         )
@@ -70,7 +69,7 @@ class DemoScreen(private val screen: com.github.dwursteisen.minigdx.Screen) : Sc
 }
 
 @ExperimentalStdlibApi
-class DemoApiV2(gl: GL) : GameSystem(gl, DemoScreen(gl.screen))
+class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, DemoScreen(gameContext))
 
 @ExperimentalStdlibApi
 class Main {
@@ -85,7 +84,7 @@ class Main {
                     width = 800,
                     height = 800
                 )
-            ).run {
+            ).execute {
                 val index = args.indexOf("--game")
                 when (args.getOrElse(index + 1) { "" }) {
                     "v2" -> DemoApiV2(it)
