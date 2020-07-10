@@ -8,14 +8,30 @@ import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
 import com.dwursteisen.minigdx.scene.api.model.Model
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.render.Camera
 import com.github.dwursteisen.minigdx.render.MeshPrimitive
 import com.dwursteisen.minigdx.scene.api.camera.Camera as GltfCamera
+
+class GravityComponent(
+    var value: Float = -1f
+) : Component
+
+class GravitySystem : System(EntityQuery(GravityComponent::class)) {
+
+    override fun update(delta: Seconds, entity: Entity) {
+        val gravity = entity.get(GravityComponent::class)
+        entity.get(Position::class).translate(y = gravity.value)
+    }
+}
 
 @ExperimentalStdlibApi
 class GravityScreen(private val context: GameContext) : Screen {
@@ -28,8 +44,15 @@ class GravityScreen(private val context: GameContext) : Screen {
         }
 
         scene.models.values.forEach { model ->
-            engine.createFrom(model, scene, context)
+            val entity = engine.createFrom(model, scene, context)
+            if(model.name == "cube") {
+                entity.add(GravityComponent())
+            }
         }
+    }
+
+    override fun createSystems(): List<System> {
+        return listOf(GravitySystem())
     }
 }
 
