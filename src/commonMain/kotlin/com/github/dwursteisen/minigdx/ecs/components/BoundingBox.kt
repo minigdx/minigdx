@@ -3,8 +3,12 @@ package com.github.dwursteisen.minigdx.ecs.components
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.translation
-import com.dwursteisen.minigdx.scene.api.model.*
+import com.dwursteisen.minigdx.scene.api.model.Boxe
+import com.dwursteisen.minigdx.scene.api.model.Color
+import com.dwursteisen.minigdx.scene.api.model.Mesh
+import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Position
+import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import kotlin.math.max
 import kotlin.math.min

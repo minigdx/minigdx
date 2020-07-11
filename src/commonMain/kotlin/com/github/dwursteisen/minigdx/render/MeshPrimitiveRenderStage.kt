@@ -86,6 +86,9 @@ class MeshPrimitiveRenderStage(gl: GL) : RenderStage<MeshVertexShader, UVFragmen
                 gl.texParameteri(
                     GL.TEXTURE_2D,
                     GL.TEXTURE_MAG_FILTER,
+                    // TODO: this parameter should be configurable at the game level.
+                    //  Maybe add a config object in the GameContext with fields and an extra as Map
+                    //  for custom parameters
                     GL.NEAREST
                 )
                 gl.texParameteri(

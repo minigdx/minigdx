@@ -17,19 +17,33 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.render.Camera
 import com.github.dwursteisen.minigdx.render.MeshPrimitive
 import com.dwursteisen.minigdx.scene.api.camera.Camera as GltfCamera
 
 class GravityComponent(
-    var value: Float = -1f
+    var gravity: Vector3 = Vector3(0, 1, 0),
+    var displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
+
+class ColliderComponent : Component
 
 class GravitySystem : System(EntityQuery(GravityComponent::class)) {
 
+    private val colliders: List<Entity> by interested(EntityQuery(ColliderComponent::class))
+
     override fun update(delta: Seconds, entity: Entity) {
         val gravity = entity.get(GravityComponent::class)
-        entity.get(Position::class).translate(y = gravity.value)
+        val position = entity.get(Position::class)
+        val translation = position.translation
+        val expectedPosition = Vector3(
+            gravity.displacement.x + translation.x,
+            gravity.displacement.y + translation.y,
+            gravity.displacement.z + translation.z
+        )
+        // TODO: for each colliders…
+        position.translate(gravity.displacement)
     }
 }
 
