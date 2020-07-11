@@ -29,14 +29,14 @@ gltfPlugin {
 
 application {
     mainClassName = "demo.Main"
-    // applicationDefaultJvmArgs = listOf("-XstartOnFirstThread", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5000")
+    applicationDefaultJvmArgs = listOf("-XstartOnFirstThread", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5000")
     applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
     executableDir = projectDir.resolve("src/main/resources").absolutePath
 }
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
-    this.args = listOf("--game", "v2")
+    this.args = listOf("--game", "gravity")
 }
 
 val compileKotlin: KotlinCompile by tasks

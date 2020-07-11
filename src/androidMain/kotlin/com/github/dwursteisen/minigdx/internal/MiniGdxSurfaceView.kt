@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.MiniGdxActivity
 import com.github.dwursteisen.minigdx.input.InputManager
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.min
 
 @ExperimentalStdlibApi
 class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context) : GLSurfaceView(context) {
@@ -27,7 +28,7 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
                 val delta = (now - time) / 1000000000.0f
 
                 inputManager.record()
-                game.render(delta)
+                game.render(min(1 / 60f, delta))
                 inputManager.reset()
                 time = now
             }

@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.LwjglInput
 import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
+import kotlin.math.min
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
 import org.lwjgl.system.MemoryUtil
@@ -62,10 +63,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         val time = getTime()
         val delta = (time - lastFrame)
         lastFrame = time
-        return delta / 1000f
+        return min(delta / 1000f, 1 / 60f)
     }
 
-    private var lastFrame: Long = 0L
+    private var lastFrame: Long = getTime()
 
     actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         if (!GLFW.glfwInit()) {

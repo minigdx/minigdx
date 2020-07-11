@@ -23,7 +23,7 @@ import com.github.dwursteisen.minigdx.render.MeshPrimitive
 import com.dwursteisen.minigdx.scene.api.camera.Camera as GltfCamera
 
 class GravityComponent(
-    var gravity: Vector3 = Vector3(0, 1, 0),
+    var gravity: Vector3 = Vector3(0, -1, 0),
     var displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
 
@@ -35,6 +35,9 @@ class GravitySystem : System(EntityQuery(GravityComponent::class)) {
 
     override fun update(delta: Seconds, entity: Entity) {
         val gravity = entity.get(GravityComponent::class)
+        gravity.displacement.x = gravity.gravity.x * delta
+        gravity.displacement.y = gravity.gravity.y * delta
+        gravity.displacement.z = gravity.gravity.z * delta
         val position = entity.get(Position::class)
         val translation = position.translation
         val expectedPosition = Vector3(
@@ -42,9 +45,39 @@ class GravitySystem : System(EntityQuery(GravityComponent::class)) {
             gravity.displacement.y + translation.y,
             gravity.displacement.z + translation.z
         )
-        // TODO: for each colliders…
-        position.translate(gravity.displacement)
+        val hasTouch = colliders.asSequence()
+            .filter { it != entity }
+            .any { it.overlaps(expectedPosition, entity) }
+
+        if (!hasTouch) {
+            position.translate(gravity.displacement)
+        }
     }
+}
+
+fun Entity.overlaps(positionB: Vector3, target: Entity): Boolean {
+    val boxA = this.get(BoundingBox::class)
+    val positionA = this.get(Position::class).translation
+    val boxB = target.get(BoundingBox::class)
+
+    val minXA = boxA.vertices.minBy { it.position.x }!!.position.x + positionA.x
+    val maxXA = boxA.vertices.maxBy { it.position.x }!!.position.x + positionA.x
+    val minYA = boxA.vertices.minBy { it.position.y }!!.position.y + positionA.y
+    val maxYA = boxA.vertices.maxBy { it.position.y }!!.position.y + positionA.y
+    val minZA = boxA.vertices.minBy { it.position.z }!!.position.z + positionA.z
+    val maxZA = boxA.vertices.maxBy { it.position.x }!!.position.z + positionA.z
+
+
+    val minXB = boxB.vertices.minBy { it.position.x }!!.position.x + positionB.x
+    val maxXB = boxB.vertices.maxBy { it.position.x }!!.position.x + positionB.x
+    val minYB = boxB.vertices.minBy { it.position.y }!!.position.y + positionB.y
+    val maxYB = boxB.vertices.maxBy { it.position.y }!!.position.y + positionB.y
+    val minZB = boxB.vertices.minBy { it.position.z }!!.position.z + positionB.z
+    val maxZB = boxB.vertices.maxBy { it.position.x }!!.position.z + positionB.z
+
+    return (minXA < maxXB && maxXA > minXB &&
+            minYA < maxYB && maxYA > minYB &&
+            minZA < maxZB && maxZA > minZB)
 }
 
 @ExperimentalStdlibApi
@@ -59,9 +92,10 @@ class GravityScreen(private val context: GameContext) : Screen {
 
         scene.models.values.forEach { model ->
             val entity = engine.createFrom(model, scene, context)
-            if(model.name == "cube") {
+            if (model.name == "cube") {
                 entity.add(GravityComponent())
             }
+            entity.add(ColliderComponent())
         }
     }
 
