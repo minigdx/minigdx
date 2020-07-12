@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.Position
+import com.github.dwursteisen.minigdx.ecs.createFrom
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitive
