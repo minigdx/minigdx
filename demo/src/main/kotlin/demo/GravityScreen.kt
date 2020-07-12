@@ -134,8 +134,8 @@ fun Engine.createFrom(camera: GltfCamera, context: GameContext): Entity {
             )
         )
         is OrthographicCamera -> {
-            val width = context.gl.screen.width / camera.scale
-            val height = context.gl.screen.height / camera.scale
+            val width = context.gl.screen.width / (camera.scale*2f)
+            val height = context.gl.screen.height / (camera.scale*2f)
             Camera(
                 projection = ortho(
                     l = width * -0.5f,
