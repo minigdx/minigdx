@@ -15,7 +15,7 @@ class SystemTest {
 
     class TestSystem : System(EntityQuery(ExampleComponent::class)) {
 
-        val interested: List<Entity> by interested(EntityQuery(ListeningComponent::class))
+        val interestedBy: List<Entity> by interested(EntityQuery(ListeningComponent::class))
 
         override fun update(delta: Seconds, entity: Entity) {
         }
@@ -36,6 +36,6 @@ class SystemTest {
             add(ListeningComponent())
         }
 
-        assertSame(expected, system.interested.firstOrNull())
+        assertSame(expected, system.interestedBy.firstOrNull())
     }
 }

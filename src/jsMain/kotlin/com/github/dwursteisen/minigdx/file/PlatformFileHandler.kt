@@ -10,7 +10,7 @@ import org.w3c.xhr.ARRAYBUFFER
 import org.w3c.xhr.XMLHttpRequest
 import org.w3c.xhr.XMLHttpRequestResponseType
 
-actual class PlatformFileHandler {
+actual class PlatformFileHandler(val rootPath: String = window.location.protocol + "//" + window.location.host + window.location.pathname) {
 
     @ExperimentalStdlibApi
     actual fun read(filename: String): Content<String> {
@@ -66,7 +66,7 @@ actual class PlatformFileHandler {
     }
 
     private fun computeUrl(filename: String): String {
-        val path = window.location.protocol + "//" + window.location.host + window.location.pathname
+        val path = rootPath
         val url = path + filename
         return url
     }

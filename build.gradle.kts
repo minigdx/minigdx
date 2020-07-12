@@ -10,10 +10,10 @@ plugins {
 }
 
 group = "com.github.dwursteisen.minigdx"
-version = project.properties["version"] ?: "1.0-SNAPSHOT"
+version = project.properties["version"] ?: "1.1-SNAPSHOT"
 
 if (version == "unspecified") {
-    version = "1.0-SNAPSHOT"
+    version = "1.1-SNAPSHOT"
 }
 
 val kotlinMathVersion = "1.0.0-alpha18"

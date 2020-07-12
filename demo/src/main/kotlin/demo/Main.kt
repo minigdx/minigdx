@@ -12,6 +12,10 @@ class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, BirdScreen(g
 class Gravity(gameContext: GameContext) : GameSystem(gameContext, GravityScreen(gameContext))
 
 @ExperimentalStdlibApi
+class GmtkJam(gameContext: GameContext) : GameSystem(gameContext, GmtkJamScreen(gameContext))
+
+
+@ExperimentalStdlibApi
 class Main {
 
     companion object {
@@ -21,14 +25,15 @@ class Main {
             configuration(
                 GLConfiguration(
                     name = "Kotin/JVM",
-                    width = 800,
-                    height = 800
+                    width = 1280,
+                    height = 720
                 )
             ).execute {
                 val index = args.indexOf("--game")
                 when (args.getOrElse(index + 1) { "" }) {
                     "v2" -> DemoApiV2(it)
                     "gravity" -> Gravity(it)
+                    "gmtkjam" -> GmtkJam(it)
                     else -> DemoApiV2(it)
                 }
             }

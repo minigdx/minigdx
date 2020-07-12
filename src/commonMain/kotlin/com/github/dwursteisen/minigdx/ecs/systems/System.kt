@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
 abstract class System(private val entityQuery: EntityQuery) {
@@ -42,6 +43,7 @@ abstract class System(private val entityQuery: EntityQuery) {
         return entities.map { this.remove(it) }.any { it }
     }
 
+    @JsName("interested")
     fun interested(query: EntityQuery): InterestedDelegate {
         val delegate = InterestedDelegate(query)
         listeners = listeners + delegate
@@ -51,7 +53,7 @@ abstract class System(private val entityQuery: EntityQuery) {
 
 class InterestedDelegate(private val query: EntityQuery) {
 
-    private val entities: MutableList<Entity> = mutableListOf()
+    val entities: MutableList<Entity> = mutableListOf()
 
     fun add(entity: Entity) {
         if (query.accept(entity)) {
