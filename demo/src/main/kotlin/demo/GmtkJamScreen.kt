@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
+import com.github.dwursteisen.minigdx.ecs.createFrom
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
@@ -16,12 +17,9 @@ import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.lerp
 import kotlin.math.abs
 import kotlin.math.round
-
-fun lerp(target: Float, current: Float, step: Float = 0.9f): Float {
-    return target + step * (current - target)
-}
 
 class Player(
     val spawn: Vector3,
