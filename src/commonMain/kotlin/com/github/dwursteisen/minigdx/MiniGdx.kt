@@ -1,12 +1,9 @@
 package com.github.dwursteisen.minigdx
 
 @ExperimentalStdlibApi
-fun configuration(configuration: GLConfiguration): GLContext {
+fun configuration(configuration: GLConfiguration): GameContext {
     val glContext = GLContext(configuration)
-    gl = glContext.createContext()
-    fileHandler = glContext.createFileHandler()
-    inputs = glContext.createInputHandler()
-    viewport = glContext.createViewportStrategy()
+    val gameContext = GameContext(glContext = glContext)
     log = glContext.createLogger()
-    return glContext
+    return gameContext
 }

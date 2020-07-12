@@ -1,6 +1,5 @@
 package com.github.dwursteisen.minigdx.render
 
-import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.DataSource
@@ -8,8 +7,8 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.gl
-import com.github.dwursteisen.minigdx.shaders.AnimatedMeshVertexShader
-import com.github.dwursteisen.minigdx.shaders.UVFragmentShader
+import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
+import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 
 class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
     gl = gl,
@@ -107,15 +106,10 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexS
     }
 
     override fun update(delta: Seconds, entity: Entity) {
-        val combined = camera?.let {
-            val view = it.get(Position::class).transformation
-            val projection = it.get(Camera::class).projection
-            projection * view
-        } ?: Mat4.identity()
         val model = entity.get(Position::class).transformation
         val animatedModel = entity.get(AnimatedModel::class)
 
-        vertex.uModelView.apply(program, combined * model)
+        vertex.uModelView.apply(program, combinedMatrix * model)
         vertex.uJointTransformationMatrix.apply(program, animatedModel.currentPose)
 
         entity.findAll(AnimatedMeshPrimitive::class).forEach { primitive ->

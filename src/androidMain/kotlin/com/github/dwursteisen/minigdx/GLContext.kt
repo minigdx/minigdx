@@ -11,7 +11,6 @@ import com.github.dwursteisen.minigdx.internal.MiniGdxSurfaceView
 import com.github.dwursteisen.minigdx.logger.AndroidLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 
-@ExperimentalStdlibApi
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
 
     private lateinit var gl: GL
@@ -24,7 +23,6 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return gl
     }
 
-    @ExperimentalStdlibApi
     internal actual fun createFileHandler(): FileHandler {
         return FileHandler(handler = PlatformFileHandler(configuration.activity))
     }
@@ -41,8 +39,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return AndroidLogger()
     }
 
-    actual fun run(gameFactory: (GL) -> Game) {
-        val surfaceView = MiniGdxSurfaceView(gl, configuration.activity)
+    @ExperimentalStdlibApi
+    actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+        val surfaceView = MiniGdxSurfaceView(gameContext, configuration.activity)
         configuration.activity.setContentView(surfaceView)
     }
 }

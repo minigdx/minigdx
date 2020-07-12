@@ -4,8 +4,8 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.shaders.FragmentShader
-import com.github.dwursteisen.minigdx.shaders.VertexShader
+import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
+import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 
 object EmptyVertexShader : VertexShader("")
 object EmptyFragmentShader : FragmentShader("")

@@ -16,6 +16,9 @@ if (version == "unspecified") {
     version = "1.0-SNAPSHOT"
 }
 
+val kotlinMathVersion = "1.0.0-alpha18"
+val gltfApiVersion = "1.0.0-alpha8"
+
 val properties = Properties()
 if (project.file("local.properties").exists()) {
     properties.load(project.file("local.properties").inputStream())
@@ -79,6 +82,7 @@ android {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
     }
 }
 
@@ -94,6 +98,7 @@ kotlin {
                 this.compilation.kotlinOptions {
                     this.sourceMap = true
                     this.sourceMapEmbedSources = "always"
+                    this.freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
                 }
             }
         }
@@ -108,12 +113,18 @@ kotlin {
         this.compilations.getByName("test").kotlinOptions.jvmTarget = "1.8"
     }
 
+    metadata {
+        this.compilations.all {
+            this.kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
+        }
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
-                api("com.github.dwursteisen.kotlin-math:kotlin-math:1.0.0-alpha17")
-                api("com.github.dwursteisen.collada:gltf-api:1.0.0-alpha7")
+                api("com.github.dwursteisen.kotlin-math:kotlin-math:$kotlinMathVersion")
+                api("com.github.dwursteisen.gltf:gltf-api:$gltfApiVersion")
             }
         }
         val commonTest by getting {
@@ -126,7 +137,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:1.0.0-alpha17")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:$kotlinMathVersion")
             }
         }
 
@@ -139,7 +150,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:1.0.0-alpha17")
+                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
 
                 val lwjglVersion = "3.2.3"
                 implementation("org.lwjgl:lwjgl:$lwjglVersion")

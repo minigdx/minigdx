@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.shaders
 
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.gl
+import kotlin.math.min
 
 object ShaderUtils {
 
@@ -29,7 +30,7 @@ object ShaderUtils {
         if (!gl.getShaderParameterB(shader, GL.COMPILE_STATUS)) {
             val log = gl.getShaderInfoLog(shader)
             gl.deleteShader(shader)
-            throw RuntimeException("Shader compilation error: $log")
+            throw RuntimeException("Shader compilation error: $log (${vertexShader.substring(0, min(vertexShader.length, 128))})")
         }
         return shader
     }

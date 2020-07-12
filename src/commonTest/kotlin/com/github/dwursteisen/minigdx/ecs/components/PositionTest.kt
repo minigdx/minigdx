@@ -1,26 +1,38 @@
 package com.github.dwursteisen.minigdx.ecs.components
 
+import kotlin.math.abs
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.fail
+
+fun assertEquals(
+    expected: Float,
+    actual: Float,
+    delta: Float = 0.001f,
+    message: String = "$expected != $actual (𝝙 $delta)"
+) {
+    if (abs(expected - actual) > delta) {
+        fail(message)
+    }
+}
 
 class PositionTest {
 
     @Test
     fun setRotation_set_rotationX() {
         val rotation = Position().setRotationX(90f).transformation.rotation
-        assertEquals(90f, rotation.x)
+        assertEquals(90f, rotation.x, 0.1f)
     }
 
     @Test
     fun setRotation_set_rotationY() {
         val rotation = Position().setRotationY(90f).transformation.rotation
-        assertEquals(90f, rotation.y)
+        assertEquals(90f, rotation.y, 0.1f)
     }
 
     @Test
     fun setRotation_set_rotationZ() {
         val rotation = Position().setRotationZ(90f).transformation.rotation
-        assertEquals(90f, rotation.z)
+        assertEquals(-90f, rotation.z, 0.1f)
     }
 
     @Test

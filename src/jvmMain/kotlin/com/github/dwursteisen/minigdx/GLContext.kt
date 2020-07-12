@@ -8,13 +8,12 @@ import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.LwjglInput
 import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
+import kotlin.math.min
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
 import org.lwjgl.system.MemoryUtil
 
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
-
-    private lateinit var gl: GL
 
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
@@ -27,13 +26,12 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
                 """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
             )
         }
-        gl = LwjglGL(
+        return LwjglGL(
             screen = Screen(
                 configuration.width,
                 configuration.height
             )
         )
-        return gl
     }
 
     internal actual fun createFileHandler(): FileHandler {
@@ -65,15 +63,17 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         val time = getTime()
         val delta = (time - lastFrame)
         lastFrame = time
-        return delta / 1000f
+        return min(delta / 1000f, 1 / 60f)
     }
 
-    private var lastFrame: Long = 0L
+    private var lastFrame: Long = getTime()
 
-    actual fun run(gameFactory: (gl: GL) -> Game) {
+    actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
+
+        val gl = gameContext.gl
 
         GLFW.glfwDefaultWindowHints() // optional, the current window hints are already the default
 
@@ -117,21 +117,21 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         org.lwjgl.opengl.GL.createCapabilities()
 
         // Attach input before game creation.
-        val inputManager = inputs as LwjglInput
+        val inputManager = gameContext.input as LwjglInput
         inputManager.attachHandler(window)
 
         // Make the window visible
         GLFW.glfwShowWindow(window)
-        val game = gameFactory(gl)
+        val game = gameFactory(gameContext)
 
         game.create()
         game.resume()
 
-        viewport.update(gl, game.worldResolution, configuration.width, configuration.height)
+        gameContext.viewport.update(gl, game.worldResolution, configuration.width, configuration.height)
         glfwSetWindowSizeCallback(window) { _, w, h ->
             gl.screen.width = w
             gl.screen.height = h
-            viewport.update(gl, game.worldResolution, w, h)
+            gameContext.viewport.update(gl, game.worldResolution, w, h)
         }
 
         // Wireframe mode

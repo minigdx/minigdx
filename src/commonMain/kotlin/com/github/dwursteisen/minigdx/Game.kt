@@ -6,6 +6,7 @@ package com.github.dwursteisen.minigdx
  * Create your 2D interface using this resolution.
  * The game will scale up your game to match this resolution.
  */
+@Deprecated("see above")
 data class WorldResolution(val width: Int, val height: Int) {
 
     val ratio: Float = width / height.toFloat()
@@ -13,6 +14,7 @@ data class WorldResolution(val width: Int, val height: Int) {
 
 interface Game {
 
+    @Deprecated("world resolution in the new API has always the same values than gl.screen. Prefer gl.screen")
     val worldResolution: WorldResolution
 
     fun create() = Unit
