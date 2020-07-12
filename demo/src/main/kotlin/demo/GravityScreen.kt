@@ -81,17 +81,17 @@ fun Entity.overlaps(positionB: Vector3, target: Entity): Boolean {
 }
 
 @ExperimentalStdlibApi
-class GravityScreen(private val context: GameContext) : Screen {
+class GravityScreen(override val gameContext: GameContext) : Screen {
 
-    private val scene: Scene by context.fileHandler.get("v2/gravity.protobuf")
+    private val scene: Scene by gameContext.fileHandler.get("v2/gravity.protobuf")
 
     override fun createEntities(engine: Engine) {
         scene.perspectiveCameras.values.forEach { camera ->
-            engine.createFrom(camera, context)
+            engine.createFrom(camera, gameContext)
         }
 
         scene.models.values.forEach { model ->
-            val entity = engine.createFrom(model, scene, context)
+            val entity = engine.createFrom(model, scene, gameContext)
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }
@@ -133,16 +133,20 @@ fun Engine.createFrom(camera: GltfCamera, context: GameContext): Entity {
                 far = camera.far
             )
         )
-        is OrthographicCamera -> Camera(
-            projection = ortho(
-                l = context.gl.screen.width * -0.5f,
-                r = context.gl.screen.width * 0.5f,
-                b = context.gl.screen.height * -0.5f,
-                t = context.gl.screen.height * 0.5f,
-                n = camera.near,
-                f = camera.far
+        is OrthographicCamera -> {
+            val width = context.gl.screen.width / camera.scale
+            val height = context.gl.screen.height / camera.scale
+            Camera(
+                projection = ortho(
+                    l = width * -0.5f,
+                    r = width * 0.5f,
+                    b = height * -0.5f,
+                    t = height * 0.5f,
+                    n = camera.near,
+                    f = camera.far
+                )
             )
-        )
+        }
         else -> throw IllegalArgumentException("${camera::class} is not supported")
     }
 
