@@ -71,7 +71,7 @@ private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     Texture::class to TextureLoader(),
     AngelCode::class to AngelCodeLoader(),
     Text::class to TextLoader(),
-    Scene::class to SceneV2Loader()
+    Scene::class to SceneLoader()
 )
 
 class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {

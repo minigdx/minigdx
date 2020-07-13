@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.Scene
 
-class SceneV2Loader : FileLoader<Scene> {
+class SceneLoader : FileLoader<Scene> {
 
     @ExperimentalStdlibApi
     private fun load(filename: String, content: ByteArray): Scene {

@@ -5,8 +5,6 @@ import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.CanDraw
 import com.github.dwursteisen.minigdx.entity.CanMove
-import com.github.dwursteisen.minigdx.entity.animations.Armature
-import com.github.dwursteisen.minigdx.entity.animations.Joint
 import com.github.dwursteisen.minigdx.entity.primitives.DrawType
 import com.github.dwursteisen.minigdx.entity.primitives.Mesh
 import com.github.dwursteisen.minigdx.entity.primitives.Vertice
@@ -18,8 +16,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
  * Render a mesh on a screen.
  */
 class Drawable(
-    val mesh: Mesh,
-    val pose: Armature? = null
+    val mesh: Mesh
 ) : CanCopy<Drawable>, CanDraw, CanMove by mesh {
 
     /**
@@ -69,41 +66,12 @@ class Drawable(
         gl.bufferData(GL.ARRAY_BUFFER, mesh.vertices.convertWeights(), GL.STATIC_DRAW)
     }
 
-    private val jointsCache = generateCache()
-    private val tmpMatrix = Array(jointsCache.size * 16) { 0f }
-
-    // Create List of joint ordered by index.
-    private fun generateCache(): Array<Joint> {
-        return if (pose == null) {
-            emptyArray()
-        } else {
-            Array(pose.allJoints.size) {
-                pose[it]
-            }
-        }
-    }
-
     override fun draw(shader: ShaderProgram) {
 
         // Set the model matrix
         gl.uniformMatrix4fv(shader.getUniform("uModelMatrix"), false, mesh.modelMatrix)
 
-        if (this.pose != null) {
-            // Set if an armature is present
-            gl.uniform1i(shader.getUniform("uArmature"), 1)
-
-            // Copy all matrix values, aligned
-            jointsCache.forEachIndexed { x, joint ->
-                val values = joint.animationTransformation.toArray()
-                (0 until 16).forEach { y ->
-                    tmpMatrix[x * 16 + y] = values[y]
-                }
-            }
-
-            gl.uniformMatrix4fv(shader.getUniform("uJointTransformationMatrix"), false, tmpMatrix)
-        } else {
-            gl.uniform1i(shader.getUniform("uArmature"), -1)
-        }
+        gl.uniform1i(shader.getUniform("uArmature"), -1)
 
         // set buffer to attribute
         gl.bindBuffer(GL.ARRAY_BUFFER, vertices)
@@ -167,8 +135,7 @@ class Drawable(
     }
 
     override fun copy() = Drawable(
-        mesh = mesh.copy(),
-        pose = this.pose
+        mesh = mesh.copy()
     )
 
     private fun Array<Vertice>.convertNormals(): DataSource.FloatDataSource {
