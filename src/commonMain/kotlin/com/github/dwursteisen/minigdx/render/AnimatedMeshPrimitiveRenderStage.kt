@@ -3,10 +3,11 @@ package com.github.dwursteisen.minigdx.render
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedMeshPrimitive
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.gl
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 

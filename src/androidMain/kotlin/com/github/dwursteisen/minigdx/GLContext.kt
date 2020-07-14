@@ -24,7 +24,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(handler = PlatformFileHandler(configuration.activity))
+        return FileHandler(platformFileHandler = PlatformFileHandler(configuration.activity))
     }
 
     internal actual fun createViewportStrategy(): ViewportStrategy {

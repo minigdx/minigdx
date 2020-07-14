@@ -34,6 +34,7 @@ class Main {
                     "v2" -> DemoApiV2(it)
                     "gravity" -> Gravity(it)
                     "gmtkjam" -> GmtkJam(it)
+                    "text" -> TextGame(it)
                     else -> DemoApiV2(it)
                 }
             }

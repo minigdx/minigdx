@@ -9,8 +9,8 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.createFrom
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.log
-import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitive
-import com.github.dwursteisen.minigdx.render.AnimatedModel
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedMeshPrimitive
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 
 @ExperimentalStdlibApi
 class BirdScreen(override val gameContext: GameContext) : Screen {

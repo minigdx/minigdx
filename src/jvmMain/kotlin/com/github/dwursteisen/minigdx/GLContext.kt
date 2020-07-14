@@ -35,7 +35,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     }
 
     internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(handler = PlatformFileHandler())
+        return FileHandler(platformFileHandler = PlatformFileHandler())
     }
 
     internal actual fun createInputHandler(): InputHandler {

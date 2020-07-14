@@ -7,7 +7,7 @@ import com.github.dwursteisen.minigdx.entity.text.FontInfo
 class AngelCodeLoader : FileLoader<AngelCode> {
 
     @ExperimentalStdlibApi
-    override fun load(filename: String, handler: PlatformFileHandler): Content<AngelCode> = handler.read(filename).map {
+    override fun load(filename: String, handler: FileHandler): Content<AngelCode> = handler.platformFileHandler.read(filename).map {
         val groups = it.split("\n")
             .filter { it.isNotBlank() }
             .groupBy { it.split(" ").first() }

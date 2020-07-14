@@ -1,12 +1,6 @@
 package demo
 
-import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.ortho
-import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
-import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
-import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
-import com.dwursteisen.minigdx.scene.api.model.Model
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -19,9 +13,6 @@ import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.math.Vector3
-import com.github.dwursteisen.minigdx.render.Camera
-import com.github.dwursteisen.minigdx.render.MeshPrimitive
-import com.dwursteisen.minigdx.scene.api.camera.Camera as GltfCamera
 
 class GravityComponent(
     var gravity: Vector3 = Vector3(0, -1, 0),

@@ -4,13 +4,13 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.AngelCode
-import com.github.dwursteisen.minigdx.entity.text.Text
+import com.github.dwursteisen.minigdx.entity.text.Font
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 interface FileLoader<T> {
 
-    fun load(filename: String, handler: PlatformFileHandler): Content<T>
+    fun load(filename: String, handler: FileHandler): Content<T>
 }
 
 class UnsupportedTypeException(val type: KClass<*>) : RuntimeException("Unsupported type '${type::class}'")
@@ -70,11 +70,11 @@ private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     TextureImage::class to TextureImageLoader(),
     Texture::class to TextureLoader(),
     AngelCode::class to AngelCodeLoader(),
-    Text::class to TextLoader(),
+    Font::class to FontLoader(),
     Scene::class to SceneLoader()
 )
 
-class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {
+class FileHandler(val platformFileHandler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {
 
     private val assets = mutableMapOf<String, Content<*>>()
 
@@ -110,7 +110,7 @@ class FileHandler(val handler: PlatformFileHandler, val loaders: Map<KClass<*>, 
         if (loader == null) {
             throw UnsupportedTypeException(clazz)
         } else {
-            return loader.load(filename, handler) as Content<R>
+            return loader.load(filename, this) as Content<R>
         }
     }
 

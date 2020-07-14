@@ -4,6 +4,7 @@ import com.dwursteisen.minigdx.scene.api.model.UV
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.ecs.components.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
@@ -79,6 +80,7 @@ class MeshPrimitiveRenderStage(gl: GL) : RenderStage<MeshVertexShader, UVFragmen
                     usage = GL.STATIC_DRAW
                 )
 
+                // TODO: The same texture can be use multiple time. It should use the same buffer.
                 // Push the texture
                 val textureReference = gl.createTexture()
                 gl.bindTexture(GL.TEXTURE_2D, textureReference)

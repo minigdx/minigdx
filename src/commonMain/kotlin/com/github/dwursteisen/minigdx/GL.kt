@@ -76,7 +76,7 @@ interface GL {
     fun bindTexture(target: Int, textureReference: TextureReference)
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Mat4) =
-        uniformMatrix4fv(uniform, transpose, data.toFloatArray())
+        uniformMatrix4fv(uniform, transpose, data.asGLArray())
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: FloatArray) =
         uniformMatrix4fv(uniform, transpose, data.toTypedArray())
