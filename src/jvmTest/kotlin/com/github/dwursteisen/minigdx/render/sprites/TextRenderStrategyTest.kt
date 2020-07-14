@@ -44,7 +44,6 @@ class TextRenderStrategyTest {
             return this.toFloat() / font.fontSprite.height.toFloat()
         }
 
-        println(positions)
         // Vertices letter 'a'
         assertEquals(Vector3(0f, -12f, -0.1f), positions[0])
         assertEquals(Vector3(0f, -35f, -0.1f), positions[1])

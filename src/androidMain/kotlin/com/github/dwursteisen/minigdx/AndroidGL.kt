@@ -14,6 +14,7 @@ import android.opengl.GLES20.glCreateProgram
 import android.opengl.GLES20.glCreateShader
 import android.opengl.GLES20.glDeleteShader
 import android.opengl.GLES20.glDepthFunc
+import android.opengl.GLES20.glDisable
 import android.opengl.GLES20.glDrawArrays
 import android.opengl.GLES20.glDrawElements
 import android.opengl.GLES20.glEnable
@@ -75,6 +76,10 @@ class AndroidGL(override val screen: Screen) : GL {
 
     override fun enable(mask: ByteMask) {
         glEnable(mask)
+    }
+
+    override fun disable(mask: ByteMask) {
+        glDisable(mask)
     }
 
     override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {

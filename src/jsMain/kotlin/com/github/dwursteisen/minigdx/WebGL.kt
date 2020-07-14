@@ -32,6 +32,10 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
         gl.enable(mask)
     }
 
+    override fun disable(mask: ByteMask) {
+        gl.disable(mask)
+    }
+
     override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
         gl.blendFunc(sfactor, dfactor)
     }

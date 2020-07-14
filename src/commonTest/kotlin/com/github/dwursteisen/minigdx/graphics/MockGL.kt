@@ -37,6 +37,10 @@ class MockGL : GL {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun disable(mask: ByteMask) {
+        TODO("Not yet implemented")
+    }
+
     override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
         TODO("Not yet implemented")
     }
