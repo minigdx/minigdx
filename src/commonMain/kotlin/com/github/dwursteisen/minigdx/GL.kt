@@ -3,10 +3,7 @@ package com.github.dwursteisen.minigdx
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.buffer.DataSource
-import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.TextureImage
-import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
-import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
@@ -19,14 +16,6 @@ fun Number.toPercent(): Float {
     return v
 }
 
-@Deprecated("prefer use gl passed in context instead")
-lateinit var gl: GL
-@Deprecated("prefer use gl passed in context instead")
-lateinit var fileHandler: FileHandler
-@Deprecated("prefer use gl passed in context instead")
-lateinit var inputs: InputHandler
-@Deprecated("prefer use gl passed in context instead")
-lateinit var viewport: ViewportStrategy
 lateinit var log: Logger
 
 class Screen(

@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.Scene
-import com.github.dwursteisen.minigdx.entity.CanCopy
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.AngelCode
 import com.github.dwursteisen.minigdx.entity.text.Font
@@ -81,9 +80,6 @@ class FileHandler(val platformFileHandler: PlatformFileHandler, val loaders: Map
     @ExperimentalStdlibApi
     inline fun <reified T : Any> get(filename: String): Content<T> = get(filename, T::class)
 
-    @ExperimentalStdlibApi
-    inline fun <reified T> copy(filename: String): Content<T> where T : CanCopy<T> = copy(filename, T::class)
-
     @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
     fun <T, R : Any> get(filename: String, rClazz: KClass<R>, map: (R) -> Content<T>): Content<T> {
@@ -94,13 +90,6 @@ class FileHandler(val platformFileHandler: PlatformFileHandler, val loaders: Map
     @ExperimentalStdlibApi
     fun <T : Any> get(filename: String, clazz: KClass<T>): Content<T> {
         return assets.getOrPut(filename) { load(filename, clazz) } as Content<T>
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    @ExperimentalStdlibApi
-    fun <T> copy(filename: String, clazz: KClass<T>): Content<T> where T : CanCopy<T>, T : Any {
-        val asset: Content<T> = get(filename, clazz)
-        return asset.map { it.copy() }
     }
 
     @Suppress("UNCHECKED_CAST")
