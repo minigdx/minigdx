@@ -8,7 +8,7 @@ class AngelCodeLoader : FileLoader<AngelCode> {
 
     @ExperimentalStdlibApi
     override fun load(filename: String, handler: FileHandler): Content<AngelCode> = handler.platformFileHandler.read(filename).map {
-        val groups = it.split("\n")
+        val groups = it.split("\r\n|\n|\r".toRegex())
             .filter { it.isNotBlank() }
             .groupBy { it.split(" ").first() }
 

@@ -269,3 +269,10 @@ project.afterEvaluate {
         println("Available publication: ${it.name}")
     }
 }
+
+tasks.withType<Test> {
+    this.testLogging {
+        this.showStandardStreams = true
+        this.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}
