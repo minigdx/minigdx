@@ -16,9 +16,13 @@ import com.github.dwursteisen.minigdx.ecs.components.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.components.Text
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.entity.text.Font
+import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
 
 @ExperimentalStdlibApi
-fun Engine.createFrom(model: Model, scene: Scene, context: GameContext): Entity {
+fun Engine.createFrom(
+    model: Model,
+    scene: Scene
+): Entity {
     return this.create {
         if (model.armatureId < 0) {
             model.mesh.primitives.forEach { primitive ->
@@ -74,16 +78,15 @@ fun Engine.createFrom(font: Font, text: String, x: Float, y: Float): Entity {
         add(Position().translate(x = x, y = y, z = 0f))
         add(
             SpritePrimitive(
-            texture = font.fontSprite,
-            renderStrategy = SpritePrimitive.TextRenderStrategy
-        )
+                texture = font.fontSprite,
+                renderStrategy = TextRenderStrategy
+            )
         )
         add(
             Text(
-            text = text,
-            angelCode = font.angelCode,
-            fontSprite = font.fontSprite
-        )
+                text = text,
+                font = font
+            )
         )
     }
 }

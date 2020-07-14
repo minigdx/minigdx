@@ -9,6 +9,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 import java.nio.ByteBuffer
+import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL11.glTexParameteri
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL20.glUniform2i
@@ -66,6 +67,10 @@ class LwjglGL(override val screen: Screen) : GL {
 
     override fun enable(mask: ByteMask) {
         glEnable(mask)
+    }
+
+    override fun disable(mask: ByteMask) {
+        glDisable(mask)
     }
 
     override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {

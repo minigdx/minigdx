@@ -83,7 +83,7 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
         }
 
         scene.models.values.forEach { model ->
-            val entity = engine.createFrom(model, scene, gameContext)
+            val entity = engine.createFrom(model, scene)
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }
