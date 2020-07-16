@@ -13,7 +13,7 @@ abstract class GameSystem(val gameContext: GameContext, var screen: Screen) : Ga
     private val engine = Engine()
 
     override fun create() {
-        screen.createSystems().forEach { engine.addSystem(it) }
+        screen.createSystems(engine).forEach { engine.addSystem(it) }
         val renderStage = screen.createRenderStage(gameContext.gl)
         renderStage.forEach { engine.addSystem(it) }
         screen.createEntities(engine)

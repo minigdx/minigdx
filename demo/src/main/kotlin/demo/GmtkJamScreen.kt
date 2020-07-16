@@ -241,7 +241,7 @@ class GmtkJamScreen(override val gameContext: GameContext) : Screen {
         }
     }
 
-    override fun createSystems(): List<System> {
+    override fun createSystems(engine: Engine): List<System> {
         return listOf(PlayerSystem(gameContext.input))
     }
 }

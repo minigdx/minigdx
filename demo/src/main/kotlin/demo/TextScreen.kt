@@ -14,7 +14,6 @@ import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.entity.text.Font
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
-import com.github.dwursteisen.minigdx.input.Key
 import kotlin.math.cos
 
 @ExperimentalStdlibApi
@@ -47,7 +46,7 @@ class TextScreen(override val gameContext: GameContext) : Screen {
         }
     }
 
-    override fun createSystems(): List<System> {
+    override fun createSystems(engine: Engine): List<System> {
         return listOf(
             object : System(EntityQuery(Text::class)) {
 

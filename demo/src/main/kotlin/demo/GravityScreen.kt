@@ -91,7 +91,7 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
         }
     }
 
-    override fun createSystems(): List<System> {
+    override fun createSystems(engine: Engine): List<System> {
         return listOf(GravitySystem())
     }
 }

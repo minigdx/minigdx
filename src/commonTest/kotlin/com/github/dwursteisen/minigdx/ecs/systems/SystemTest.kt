@@ -1,10 +1,9 @@
-package com.github.dwursteisen.minigdx.ecs
+package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
-import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.ecs.systems.System
 import kotlin.test.Test
 import kotlin.test.assertSame
 

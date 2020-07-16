@@ -19,7 +19,7 @@ interface Screen {
 
     fun createEntities(engine: Engine)
 
-    fun createSystems(): List<System> = listOf(
+    fun createSystems(engine: Engine): List<System> = listOf(
         ArmatureUpdateSystem()
     )
 
