@@ -64,7 +64,12 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         if (!gameContext.fileHandler.isFullyLoaded()) {
             window.requestAnimationFrame(::loading)
         } else {
-            gameContext.viewport.update(gameContext.gl, game.worldResolution, gameContext.gl.screen.width, gameContext.gl.screen.height)
+            gameContext.viewport.update(
+                gameContext.gl,
+                game.worldResolution,
+                gameContext.gl.screen.width,
+                gameContext.gl.screen.height
+            )
 
             game.create()
             game.resume()
@@ -81,7 +86,12 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
             canvas.height = canvas.clientHeight
             canvas.width = canvas.clientWidth
 
-            gameContext.viewport.update(gameContext.gl, game.worldResolution, gameContext.gl.screen.width, gameContext.gl.screen.height)
+            gameContext.viewport.update(
+                gameContext.gl,
+                game.worldResolution,
+                gameContext.gl.screen.width,
+                gameContext.gl.screen.height
+            )
         }
         inputManager.record()
         val nowInSeconds = now * 0.001

@@ -51,14 +51,17 @@ fun Engine.createFrom(camera: Camera, context: GameContext): Entity {
             )
         )
         is OrthographicCamera -> {
-            val width = context.gl.screen.width
-            val height = context.gl.screen.height
+            val (w, h) = if (context.gl.screen.width >= context.gl.screen.height) {
+                1f to (context.gl.screen.height / context.gl.screen.width.toFloat())
+            } else {
+                context.gl.screen.width / context.gl.screen.height.toFloat() to 1f
+            }
             com.github.dwursteisen.minigdx.ecs.components.Camera(
                 projection = ortho(
-                    l = (width * -0.5f) / camera.scale,
-                    r = (width * 0.5f) / camera.scale,
-                    b = (height * -0.5f) / camera.scale,
-                    t = (height * 0.5f) / camera.scale,
+                    l = -camera.scale * 0.5f * w,
+                    r = camera.scale * 0.5f * w,
+                    b = -camera.scale * 0.5f * h,
+                    t = camera.scale * 0.5f * h,
                     n = camera.near,
                     f = camera.far
                 )
