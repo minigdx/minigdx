@@ -2,7 +2,6 @@ package com.github.dwursteisen.minigdx.graphics
 
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.WorldResolution
-import com.github.dwursteisen.minigdx.gl
 import kotlin.math.min
 
 interface ViewportStrategy {
