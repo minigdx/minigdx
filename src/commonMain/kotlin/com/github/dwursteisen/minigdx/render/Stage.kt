@@ -61,12 +61,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
                 it.create(this)
             }
         }
-        entities.forEach {
-            compile(it)
-        }
     }
-
-    open fun compile(entity: Entity) = Unit
 
     open fun uniforms() = Unit
 

@@ -4,7 +4,7 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
-import com.github.dwursteisen.minigdx.ecs.components.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.createFrom
@@ -83,7 +83,7 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
         }
 
         scene.models.values.forEach { model ->
-            val entity = engine.createFrom(model, scene)
+            val entity = engine.createFrom(model, scene, gameContext)
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }

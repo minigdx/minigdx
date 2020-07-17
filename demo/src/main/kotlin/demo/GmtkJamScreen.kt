@@ -209,7 +209,7 @@ class GmtkJamScreen(override val gameContext: GameContext) : Screen {
         }
         log.info("CREATE_ENTITIES") { "Create the player" }
         scene.models.getValue("player").let {
-            val entity = engine.createFrom(it, scene)
+            val entity = engine.createFrom(it, scene, gameContext)
             val spawn = entity.get(Position::class).translation
             entity.add(Player(
                 spawn = spawn.copy(),
@@ -220,7 +220,7 @@ class GmtkJamScreen(override val gameContext: GameContext) : Screen {
 
         log.info("CREATE_ENTITIES") { "Create the play ground" }
         scene.models.filterKeys { it.startsWith("ground") }.values.forEach {
-            engine.createFrom(it, scene)
+            engine.createFrom(it, scene, gameContext)
         }
 
         log.info("CREATE_ENTITIES") { "Create the camera" }
@@ -229,7 +229,7 @@ class GmtkJamScreen(override val gameContext: GameContext) : Screen {
         }
         log.info("CREATE_ENTITIES") { "Create the flag" }
         scene.models.getValue("drapeau").let { model ->
-            val entity = engine.createFrom(model, scene)
+            val entity = engine.createFrom(model, scene, gameContext)
             val target = level1.scan(Tile.TARGET)!!
             entity.remove(Position::class)
             entity.add(

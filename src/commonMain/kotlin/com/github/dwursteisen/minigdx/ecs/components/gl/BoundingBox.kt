@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.ecs.components
+package com.github.dwursteisen.minigdx.ecs.components.gl
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
@@ -18,8 +18,9 @@ data class BoundingBox(
     val order: List<Int>,
     var verticesBuffer: Buffer? = null,
     var orderBuffer: Buffer? = null,
-    var colorBuffer: Buffer? = null
-) : Component {
+    var colorBuffer: Buffer? = null,
+    override var isDirty: Boolean = true
+) : GLResourceComponent {
 
     private class BoxBuilder(
         var minX: Float? = null,

@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.ecs.components
+package com.github.dwursteisen.minigdx.ecs.components.gl
 
 import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
@@ -12,5 +12,6 @@ open class MeshPrimitive(
     var verticesBuffer: Buffer? = null,
     var uvBuffer: Buffer? = null,
     var verticesOrderBuffer: Buffer? = null,
-    var textureReference: TextureReference? = null
-) : Component
+    var textureReference: TextureReference? = null,
+    override var isDirty: Boolean = true
+) : GLResourceComponent

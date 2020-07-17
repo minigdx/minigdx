@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 
@@ -11,6 +12,7 @@ class GameContext(
     val fileHandler: FileHandler = glContext.createFileHandler()
     val input: InputHandler = glContext.createInputHandler()
     val viewport: ViewportStrategy = glContext.createViewportStrategy()
+    val glResourceClient = GLResourceClient(gl)
 
     val ratio = gl.screen.ratio
 

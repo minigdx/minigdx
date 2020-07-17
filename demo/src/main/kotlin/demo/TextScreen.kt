@@ -24,7 +24,7 @@ class TextScreen(override val gameContext: GameContext) : Screen {
     lateinit var txt: Entity
 
     override fun createEntities(engine: Engine) {
-        txt = engine.createFrom(font, "Example Of Text", 50f, 50f)
+        txt = engine.createFrom(font, "Example Of Text", 50f, 50f, gameContext)
 
         engine.create {
             val width = gameContext.gl.screen.width

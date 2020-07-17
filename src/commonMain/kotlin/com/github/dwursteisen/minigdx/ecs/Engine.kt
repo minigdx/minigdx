@@ -11,6 +11,7 @@ class Engine {
 
     interface EntityBuilder {
         fun add(component: Component)
+        fun add(components: Iterable<Component>)
     }
 
     private class InternalEntityBuilder(private val engine: Engine) : EntityBuilder {
@@ -24,6 +25,8 @@ class Engine {
         override fun add(component: Component) {
             components = components + component
         }
+
+        override fun add(components: Iterable<Component>) = components.forEach(::add)
     }
 
     fun create(configuration: EntityBuilder.() -> Unit): Entity {

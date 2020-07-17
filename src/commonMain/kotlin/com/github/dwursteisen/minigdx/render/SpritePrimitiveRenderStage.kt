@@ -4,8 +4,8 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
+import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
@@ -18,44 +18,6 @@ class SpritePrimitiveRenderStage(gl: GL) : RenderStage<MeshVertexShader, UVFragm
     query = EntityQuery(SpritePrimitive::class),
     cameraQuery = EntityQuery(UICamera::class)
 ) {
-
-    override fun compile(entity: Entity) {
-        entity.findAll(SpritePrimitive::class)
-            .filter { !it.isCompiled }
-            .forEach { primitive ->
-                // Push the model
-                primitive.verticesBuffer = gl.createBuffer()
-                primitive.verticesOrderBuffer = gl.createBuffer()
-                val textureReference = gl.createTexture()
-                gl.bindTexture(GL.TEXTURE_2D, textureReference)
-                gl.texParameteri(
-                    GL.TEXTURE_2D,
-                    GL.TEXTURE_MAG_FILTER,
-                    // TODO: this parameter should be configurable at the game level.
-                    //  Maybe add a config object in the GameContext with fields and an extra as Map
-                    //  for custom parameters
-                    GL.LINEAR
-                )
-                gl.texParameteri(
-                    GL.TEXTURE_2D,
-                    GL.TEXTURE_MIN_FILTER,
-                    GL.LINEAR
-                )
-                gl.texImage2D(
-                    GL.TEXTURE_2D,
-                    0,
-                    GL.RGBA,
-                    GL.RGBA,
-                    GL.UNSIGNED_BYTE,
-                    primitive.texture.source
-                )
-
-                primitive.textureReference = textureReference
-
-                primitive.uvBuffer = gl.createBuffer()
-                primitive.isCompiled = true
-            }
-    }
 
     override val combinedMatrix: Mat4
         get() {
