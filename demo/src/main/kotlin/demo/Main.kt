@@ -36,6 +36,7 @@ class Main {
                     "gravity" -> Gravity(it)
                     "gmtkjam" -> GmtkJam(it)
                     "text" -> TextGame(it)
+                    "sprite" -> SpriteGame(it)
                     else -> DemoApiV2(it)
                 }
             }

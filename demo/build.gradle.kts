@@ -38,7 +38,7 @@ application {
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
-    this.args = listOf("--game", "gmtkjam")
+    this.args = listOf("--game", "sprite")
 }
 
 val compileKotlin: KotlinCompile by tasks

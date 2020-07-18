@@ -12,6 +12,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.Text
+import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
@@ -98,6 +99,27 @@ fun Engine.createFrom(camera: Camera, context: GameContext): Entity {
     return this.create {
         add(cameraComponent)
         add(Position(Mat4.fromColumnMajor(*camera.transformation.matrix), way = -1f))
+    }
+}
+
+fun Engine.createUICamera(gameContext: GameContext): Entity {
+    return this.create {
+        val width = gameContext.gl.screen.width
+        val height = gameContext.gl.screen.height
+        add(
+            UICamera(
+                projection = ortho(
+                    l = width * -0.5f,
+                    r = width * 0.5f,
+                    b = height * -0.5f,
+                    t = height * 0.5f,
+                    n = 0.01f,
+                    f = 1f
+                )
+            )
+        )
+        // put the camera in the center of the screen
+        add(Position(way = -1f).translate(x = -width * 0.5f, y = -height * 0.5f))
     }
 }
 

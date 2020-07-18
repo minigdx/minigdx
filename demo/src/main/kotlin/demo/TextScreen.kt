@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.Text
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.createFrom
+import com.github.dwursteisen.minigdx.ecs.createUICamera
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
@@ -25,25 +26,7 @@ class TextScreen(override val gameContext: GameContext) : Screen {
 
     override fun createEntities(engine: Engine) {
         txt = engine.createFrom(font, "Example Of Text", 50f, 50f, gameContext)
-
-        engine.create {
-            val width = gameContext.gl.screen.width
-            val height = gameContext.gl.screen.height
-            add(
-                UICamera(
-                    projection = ortho(
-                        l = width * -0.5f,
-                        r = width * 0.5f,
-                        b = height * -0.5f,
-                        t = height * 0.5f,
-                        n = 0.01f,
-                        f = 1f
-                    )
-                )
-            )
-            // put the camera in the center of the screen
-            add(Position(way = -1f).translate(x = -width * 0.5f, y = -height * 0.5f))
-        }
+        engine.createUICamera(gameContext)
     }
 
     override fun createSystems(engine: Engine): List<System> {
