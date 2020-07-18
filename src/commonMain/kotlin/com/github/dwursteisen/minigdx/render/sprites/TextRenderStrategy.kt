@@ -1,11 +1,11 @@
 package com.github.dwursteisen.minigdx.render.sprites
 
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.ecs.components.Text
 import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.entity.text.Font
+import com.github.dwursteisen.minigdx.shaders.DataSource
 
 object TextRenderStrategy : RenderStrategy {
 

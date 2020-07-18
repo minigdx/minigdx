@@ -41,9 +41,9 @@ import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
 import android.opengl.GLES20.glViewport
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.TextureImage
+import com.github.dwursteisen.minigdx.shaders.Buffer
+import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram

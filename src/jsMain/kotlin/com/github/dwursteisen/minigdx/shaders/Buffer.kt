@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.buffer
+package com.github.dwursteisen.minigdx.shaders
 
 import org.khronos.webgl.WebGLBuffer
 

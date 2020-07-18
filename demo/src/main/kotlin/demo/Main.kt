@@ -25,6 +25,7 @@ class Main {
             configuration(
                 GLConfiguration(
                     name = "Kotin/JVM",
+                    gameName = "Demo",
                     width = 1280,
                     height = 720
                 )

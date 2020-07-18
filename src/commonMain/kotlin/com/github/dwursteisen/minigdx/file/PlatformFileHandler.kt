@@ -1,6 +1,10 @@
 package com.github.dwursteisen.minigdx.file
 
+import com.github.dwursteisen.minigdx.logger.Logger
+
 expect class PlatformFileHandler {
+
+    val logger: Logger
 
     fun read(filename: String): Content<String>
 

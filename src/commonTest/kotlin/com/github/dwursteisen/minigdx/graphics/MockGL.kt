@@ -4,9 +4,9 @@ import com.github.dwursteisen.minigdx.ByteMask
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Screen
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.TextureImage
+import com.github.dwursteisen.minigdx.shaders.Buffer
+import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
@@ -14,12 +14,9 @@ import com.github.dwursteisen.minigdx.shaders.Uniform
 
 data class ViewportCall(val x: Int, val y: Int, val width: Int, val height: Int)
 
-class MockGL : GL {
+class MockGL(override val screen: Screen = Screen(100, 100)) : GL {
 
     lateinit var viewportCall: ViewportCall
-
-    override val screen: Screen
-        get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.

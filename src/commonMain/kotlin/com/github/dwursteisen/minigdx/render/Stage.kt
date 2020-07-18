@@ -52,7 +52,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             } ?: Mat4.identity()
         }
 
-    open fun compile() {
+    open fun compileShaders() {
         program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)

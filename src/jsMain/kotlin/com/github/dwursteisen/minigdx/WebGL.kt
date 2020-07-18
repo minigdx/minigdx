@@ -1,8 +1,8 @@
 package com.github.dwursteisen.minigdx
 
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.TextureImage
+import com.github.dwursteisen.minigdx.shaders.Buffer
+import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram

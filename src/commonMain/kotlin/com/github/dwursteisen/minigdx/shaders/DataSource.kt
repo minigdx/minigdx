@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.buffer
+package com.github.dwursteisen.minigdx.shaders
 
 sealed class DataSource {
 

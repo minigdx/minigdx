@@ -4,9 +4,9 @@ import java.util.logging.Level
 
 typealias LambdaMessage = () -> String
 
-class JavaLoggingLogger : Logger {
+class JavaLoggingLogger(val gameName: String) : Logger {
 
-    private val log = java.util.logging.Logger.getLogger("minigdx")
+    private val log = java.util.logging.Logger.getLogger(gameName)
 
     private fun LambdaMessage.withTag(tag: String): LambdaMessage {
         return { -> "[$tag] ${this.invoke()}" }

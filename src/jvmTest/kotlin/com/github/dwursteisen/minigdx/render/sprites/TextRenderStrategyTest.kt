@@ -10,6 +10,7 @@ import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.file.TextureLoader
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.math.Vector3
+import createLogger
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -17,11 +18,12 @@ class TextRenderStrategyTest {
 
     @Test
     fun generateData() {
-        val fileHandler = FileHandler(PlatformFileHandler(), loaders = mapOf(
+        val logger = createLogger()
+        val fileHandler = FileHandler(PlatformFileHandler(logger), loaders = mapOf(
             Font::class to FontLoader(),
             Texture::class to TextureLoader(),
             AngelCode::class to AngelCodeLoader()
-        ))
+        ), logger = logger)
 
         val font: Font by fileHandler.get("src/jvmTest/resources/pt_font", Font::class)
         val result = TextRenderStrategy.generateTextDate("abcd", font)

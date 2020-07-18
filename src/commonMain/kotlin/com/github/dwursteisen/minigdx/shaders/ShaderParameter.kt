@@ -2,7 +2,6 @@ package com.github.dwursteisen.minigdx.shaders
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.buffer.Buffer
 import kotlin.jvm.JvmName
 
 sealed class ShaderParameter(val name: String) {

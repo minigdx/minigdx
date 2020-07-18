@@ -1,9 +1,9 @@
 package com.github.dwursteisen.minigdx.graphics.compilers
 
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
+import com.github.dwursteisen.minigdx.shaders.DataSource
 
 class BoudingBoxCompiler : GLResourceCompiler {
     override fun compile(gl: GL, component: GLResourceComponent) {

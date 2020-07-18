@@ -9,7 +9,7 @@ import com.dwursteisen.minigdx.scene.api.model.Mesh
 import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Position
 import com.dwursteisen.minigdx.scene.api.model.Vertex
-import com.github.dwursteisen.minigdx.buffer.Buffer
+import com.github.dwursteisen.minigdx.shaders.Buffer
 import kotlin.math.max
 import kotlin.math.min
 

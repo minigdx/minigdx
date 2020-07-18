@@ -1,7 +1,7 @@
 package com.github.dwursteisen.minigdx.graphics.compilers
 
 import com.dwursteisen.minigdx.scene.api.model.UV
-import com.github.dwursteisen.minigdx.buffer.DataSource
+import com.github.dwursteisen.minigdx.shaders.DataSource
 
 fun List<com.dwursteisen.minigdx.scene.api.model.Position>.positionsDatasource(): DataSource.FloatDataSource {
     return DataSource.FloatDataSource(FloatArray(this.size * 3) {

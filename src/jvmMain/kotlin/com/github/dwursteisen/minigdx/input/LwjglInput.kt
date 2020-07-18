@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx.input
 
-import com.github.dwursteisen.minigdx.log
+import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.math.Vector2
 import java.nio.DoubleBuffer
 import org.lwjgl.BufferUtils
@@ -18,7 +18,7 @@ import org.lwjgl.glfw.GLFW.glfwSetInputMode
 import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
 import org.lwjgl.glfw.GLFWKeyCallback
 
-class LwjglInput : InputHandler, InputManager {
+class LwjglInput(val logger: Logger) : InputHandler, InputManager {
 
     private val keys: Array<Long> = Array(GLFW_KEY_LAST + 1) { -1L }
     private val pressed: Array<Long> = Array(GLFW_KEY_LAST + 1) { -1L }
@@ -33,7 +33,7 @@ class LwjglInput : InputHandler, InputManager {
     private val b2: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
 
     private fun keyDown(event: Int) {
-        log.debug("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
+        logger.debug("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
         if (event in (0..GLFW_KEY_LAST)) {
             keys[event] = frame + 1
             pressed[event] = frame + 1
@@ -41,7 +41,7 @@ class LwjglInput : InputHandler, InputManager {
     }
 
     private fun keyUp(event: Int) {
-        log.debug("INPUT_HANDLER") { "Key release $event" }
+        logger.debug("INPUT_HANDLER") { "Key release $event" }
         if (event in (0..GLFW_KEY_LAST)) {
             keys[event] = -1
         }

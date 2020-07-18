@@ -1,8 +1,8 @@
 package com.github.dwursteisen.minigdx.ecs.components.gl
 
-import com.github.dwursteisen.minigdx.buffer.Buffer
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.render.sprites.RenderStrategy
+import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 
 class SpritePrimitive(

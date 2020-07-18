@@ -17,7 +17,7 @@ class ClearBufferRenderStage(gl: GL) : RenderStage<EmptyVertexShader, EmptyFragm
     query = EntityQuery()
 ) {
 
-    override fun compile() = Unit
+    override fun compileShaders() = Unit
 
     override fun update(delta: Seconds) {
         gl.clearColor(1f, 1f, 1f, 1f)

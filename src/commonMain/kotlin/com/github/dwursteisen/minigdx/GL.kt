@@ -1,22 +1,13 @@
 package com.github.dwursteisen.minigdx
 
 import com.curiouscreature.kotlin.math.Mat4
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.TextureImage
-import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.shaders.Buffer
+import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
-
-fun Number.toPercent(): Float {
-    val v = this.toFloat()
-    require(v in 0.0..1.0)
-    return v
-}
-
-lateinit var log: Logger
 
 class Screen(
     var width: Int,

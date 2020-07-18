@@ -18,9 +18,9 @@ class ShaderProgram(val gl: GL, val program: PlatformShaderProgram) : GL by gl {
         uniforms[name] = gl.getUniformLocation(this, name)
     }
 
-    fun getAttrib(name: String): Int = attributes[name] ?: throw RuntimeException("Attributes '$name' not created!")
+    fun getAttrib(name: String): Int = attributes[name] ?: throw IllegalStateException("Attributes '$name' not created!")
 
     fun getUniform(name: String): Uniform {
-        return uniforms[name] ?: throw RuntimeException("Uniform '$name' not created!")
+        return uniforms[name] ?: throw IllegalStateException("Uniform '$name' not created!")
     }
 }

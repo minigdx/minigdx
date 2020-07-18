@@ -4,6 +4,7 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.AngelCode
 import com.github.dwursteisen.minigdx.entity.text.Font
+import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -17,7 +18,7 @@ class UnsupportedTypeException(val type: KClass<*>) : RuntimeException("Unsuppor
 class EarlyAccessException(val filename: String, val property: String) :
     RuntimeException("Content of file '$filename' accessed before being loaded by the property '$property'!")
 
-open class Content<R>(val filename: String) {
+open class Content<R>(val filename: String, val logger: Logger) {
 
     private var isLoaded: Boolean = false
 
@@ -35,11 +36,12 @@ open class Content<R>(val filename: String) {
     open fun load(content: R?) {
         this.content = content!!
         isLoaded = true
+        logger.info("CONTENT") { "Loaded '$filename' content" }
         onLoaded.forEach { it(content) }
     }
 
     fun <T> map(block: (R) -> T): Content<T> {
-        val result = Content<T>(filename)
+        val result = Content<T>(filename, logger)
         this.onLoaded += {
             result.load(block(it))
         }
@@ -50,7 +52,7 @@ open class Content<R>(val filename: String) {
     }
 
     fun <T> flatMap(block: (R) -> Content<T>): Content<T> {
-        val result = Content<T>(filename)
+        val result = Content<T>(filename, logger)
         this.onLoaded += { r ->
             val unit = block(r).map { t -> result.load(t) }
         }
@@ -73,7 +75,7 @@ private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     Scene::class to SceneLoader()
 )
 
-class FileHandler(val platformFileHandler: PlatformFileHandler, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {
+class FileHandler(val platformFileHandler: PlatformFileHandler, val logger: Logger, val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()) {
 
     private val assets = mutableMapOf<String, Content<*>>()
 
@@ -95,6 +97,7 @@ class FileHandler(val platformFileHandler: PlatformFileHandler, val loaders: Map
     @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
     private fun <R : Any> load(filename: String, clazz: KClass<R>): Content<R> {
+        logger.info("FILE_HANDLER") { "Loading '$filename' as '${clazz.simpleName}' type" }
         val loader = loaders[clazz]
         if (loader == null) {
             throw UnsupportedTypeException(clazz)

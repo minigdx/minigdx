@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.ecs.components.gl
 
 import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
-import com.github.dwursteisen.minigdx.buffer.Buffer
+import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 
 open class MeshPrimitive(
