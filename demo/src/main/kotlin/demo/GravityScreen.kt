@@ -1,6 +1,8 @@
 package demo
 
 import com.curiouscreature.kotlin.math.Float3
+import com.curiouscreature.kotlin.math.max
+import com.curiouscreature.kotlin.math.min
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.GameContext
@@ -17,10 +19,15 @@ import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.input.InputHandler
+import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.lerp
+import kotlin.math.max
+import kotlin.math.min
 
 class GravityComponent(
-    var gravity: Vector3 = Vector3(0, -1, 0),
+    var gravity: Vector3 = Vector3(0, -9, 0),
     var displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
 
@@ -49,18 +56,40 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
         val hasTouch = colliders.asSequence()
             .filter { it != entity }
             .any { entityB ->
-                collisionResolution.collide(
-                    entity.get(BoundingBox::class),
+                val boxA = entity.get(BoundingBox::class)
+                val boxB = entityB.get(BoundingBox::class)
+                val collide = collisionResolution.collide(
+                    boxA,
                     expectedTransformation,
-                    entityB.get(BoundingBox::class),
+                    boxB,
                     entityB.get(Position::class).transformation
                 )
+                updateColorIfCollide(collide, boxA, boxB)
             }
 
         // FIXME: if(touch) -> change color of BoudingBox?
         if (!hasTouch) {
             position.translate(gravity.displacement)
+
         }
+    }
+
+    private fun updateColorIfCollide(collide: Boolean, boxA: BoundingBox, boxB: BoundingBox): Boolean {
+        boxA.touch = collide
+        boxB.touch = collide
+        return collide
+    }
+}
+
+class PlayerMoveSystem(val input: InputHandler) : System(EntityQuery(GravityComponent::class)) {
+    override fun update(delta: Seconds, entity: Entity) {
+        val gravity = entity.get(GravityComponent::class)
+        if(input.isKeyPressed(Key.ARROW_LEFT)) {
+            gravity.displacement.x += 3f * delta
+        } else if(input.isKeyPressed(Key.ARROW_RIGHT)) {
+            gravity.displacement.x -= 3f * delta
+        }
+        gravity.displacement.x = lerp(0f, gravity.displacement.x, 0.9f)
     }
 }
 
@@ -84,6 +113,9 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
     }
 
     override fun createSystems(engine: Engine): List<System> {
-        return listOf(GravitySystem(collisionResolution = SATCollisionResolver()))
+        return listOf(
+            PlayerMoveSystem(gameContext.input),
+            GravitySystem(SATCollisionResolver())
+        )
     }
 }

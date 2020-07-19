@@ -19,6 +19,7 @@ data class BoundingBox(
     var verticesBuffer: Buffer? = null,
     var orderBuffer: Buffer? = null,
     var colorBuffer: Buffer? = null,
+    var touch: Boolean = false,
     override var isDirty: Boolean = true
 ) : GLResourceComponent {
 

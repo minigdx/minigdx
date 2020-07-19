@@ -86,12 +86,20 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
         gl.uniform3i(uniform.uniformLocation, a, b, c)
     }
 
+    override fun uniform1f(uniform: Uniform, first: Float) {
+        gl.uniform1f(uniform.uniformLocation, first)
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         gl.uniform2f(uniform.uniformLocation, first, second)
     }
 
     override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
         gl.uniform3f(uniform.uniformLocation, first, second, third)
+    }
+
+    override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
+        gl.uniform4f(uniform.uniformLocation, first, second, third, fourth)
     }
 
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {

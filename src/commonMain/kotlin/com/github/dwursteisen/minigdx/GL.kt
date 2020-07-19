@@ -68,8 +68,10 @@ interface GL {
     fun uniform2i(uniform: Uniform, a: Int, b: Int)
     fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int)
 
+    fun uniform1f(uniform: Uniform, first: Float)
     fun uniform2f(uniform: Uniform, first: Float, second: Float)
     fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float)
+    fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float)
 
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
 

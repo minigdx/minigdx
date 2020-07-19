@@ -24,7 +24,11 @@ class BoundingBoxStage(gl: GL) : RenderStage<BoundingBoxVertexShader, ColorFragm
         val box = entity.get(BoundingBox::class)
         vertex.aVertexPosition.apply(program, box.verticesBuffer!!)
         vertex.aColor.apply(program, box.colorBuffer!!)
-
+        if (box.touch) {
+            vertex.uColor.apply(program, 1f, 0f, 0f, 1f)
+        } else {
+            vertex.uColor.apply(program, -1f, -1f, -1f, -1f)
+        }
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, box.orderBuffer!!)
         gl.drawElements(
             GL.LINES, box.order.size,

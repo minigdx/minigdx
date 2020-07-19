@@ -12,9 +12,11 @@ import java.nio.ByteBuffer
 import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL11.glTexParameteri
 import org.lwjgl.opengl.GL13.glActiveTexture
+import org.lwjgl.opengl.GL20.glUniform1f
 import org.lwjgl.opengl.GL20.glUniform2i
 import org.lwjgl.opengl.GL20.glUniform3f
 import org.lwjgl.opengl.GL20.glUniform3i
+import org.lwjgl.opengl.GL20.glUniform4f
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
 import org.lwjgl.opengl.GL30.glBindTexture
@@ -187,12 +189,20 @@ class LwjglGL(override val screen: Screen) : GL {
         glUniform3i(uniform.address, a, b, c)
     }
 
+    override fun uniform1f(uniform: Uniform, first: Float) {
+        glUniform1f(uniform.address, first)
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         glUniform2f(uniform.address, first, second)
     }
 
     override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
         glUniform3f(uniform.address, first, second, third)
+    }
+
+    override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
+        glUniform4f(uniform.address, first, second, third, fourth)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {

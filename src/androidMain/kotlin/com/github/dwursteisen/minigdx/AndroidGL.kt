@@ -32,11 +32,13 @@ import android.opengl.GLES20.glLinkProgram
 import android.opengl.GLES20.glShaderSource
 import android.opengl.GLES20.glTexImage2D
 import android.opengl.GLES20.glTexParameteri
+import android.opengl.GLES20.glUniform1f
 import android.opengl.GLES20.glUniform1i
 import android.opengl.GLES20.glUniform2f
 import android.opengl.GLES20.glUniform2i
 import android.opengl.GLES20.glUniform3f
 import android.opengl.GLES20.glUniform3i
+import android.opengl.GLES20.glUniform4f
 import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
@@ -230,12 +232,20 @@ class AndroidGL(override val screen: Screen) : GL {
         glUniform3i(uniform.address, a, b, c)
     }
 
+    override fun uniform1f(uniform: Uniform, first: Float) {
+        glUniform1f(uniform.address, first)
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         glUniform2f(uniform.address, first, second)
     }
 
     override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
         glUniform3f(uniform.address, first, second, third)
+    }
+
+    override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
+        glUniform4f(uniform.address, first, second, third, fourth)
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {

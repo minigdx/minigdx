@@ -157,11 +157,19 @@ class MockGL(override val screen: Screen = Screen(100, 100)) : GL {
         TODO("Not yet implemented")
     }
 
+    override fun uniform1f(uniform: Uniform, first: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         TODO("Not yet implemented")
     }
 
     override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
         TODO("Not yet implemented")
     }
 
