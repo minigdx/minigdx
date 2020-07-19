@@ -6,6 +6,7 @@ import kotlin.math.abs
 import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.sign
+import kotlin.math.sqrt
 
 data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
@@ -40,6 +41,20 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
     fun dot(other: Vector3): Float {
         return x * other.x + y * other.y + z * other.z
+    }
+
+    fun normal(): Vector3 {
+        return Vector3(z, y, -x)
+    }
+
+    fun normalize(): Vector3 {
+        val len2: Float = x * x + y * y + z * z
+        return if (len2 == 0f || len2 == 1f) {
+            this
+        } else {
+            val scalar = 1f / sqrt(len2)
+            Vector3(x * scalar, y * scalar, z * scalar)
+        }
     }
 
     companion object {
