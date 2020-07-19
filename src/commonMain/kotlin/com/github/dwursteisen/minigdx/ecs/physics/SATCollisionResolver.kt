@@ -20,7 +20,7 @@ class SATCollisionResolver : CollisionResolver {
 
         val axisB = extractAxis(entityB)
             .map { translation(Float3(it.x, it.y, it.z)) }
-            .map { it * positionA }
+            .map { it * positionB }
             .map { it.translation }
 
         val axis = axisA + axisB
@@ -67,8 +67,8 @@ class SATCollisionResolver : CollisionResolver {
         box: BoundingBox,
         transformation: Mat4
     ): Projection {
-        var minX = Float.POSITIVE_INFINITY
-        var maxX = Float.NEGATIVE_INFINITY
+        var min = Float.POSITIVE_INFINITY
+        var max = Float.NEGATIVE_INFINITY
 
         box.vertices.forEach { vertex ->
             val vertexPosition = Float3(
@@ -79,10 +79,10 @@ class SATCollisionResolver : CollisionResolver {
             val translation = (translation(vertexPosition) * transformation).translation
             val proj = dot(axis, translation)
 
-            minX = min(minX, proj)
-            maxX = max(maxX, proj)
+            min = min(min, proj)
+            max = max(max, proj)
         }
 
-        return Projection(minX, maxX)
+        return Projection(min, max)
     }
 }

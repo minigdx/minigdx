@@ -117,7 +117,7 @@
                 7
             ],
             "mesh" : 2,
-            "name" : "Cube",
+            "name" : "other",
             "rotation" : [
                 0,
                 0.39369091391563416,
@@ -188,7 +188,7 @@
             ]
         },
         {
-            "name" : "Cube.002",
+            "name" : "other",
             "primitives" : [
                 {
                     "attributes" : {

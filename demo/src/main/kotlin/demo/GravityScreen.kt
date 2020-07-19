@@ -22,7 +22,7 @@ import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class GravityComponent(
-    var gravity: Vector3 = Vector3(0, -9, 0),
+    var gravity: Vector3 = Vector3(0, 0, 0),
     var displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
 
@@ -98,6 +98,12 @@ class PlayerMoveSystem(
             position.translate(z = 3f * delta)
         } else if (input.isKeyPressed(Key.ARROW_DOWN)) {
             position.translate(z = -3f * delta)
+        }
+
+        if(input.isKeyPressed(Key.U)) {
+            position.translate(y = 3f * delta)
+        } else if(input.isKeyPressed(Key.D)) {
+            position.translate(y = -3f * delta)
         }
 
         if (input.isKeyJustPressed(Key.R)) {
