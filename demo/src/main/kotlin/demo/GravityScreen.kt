@@ -1,8 +1,6 @@
 package demo
 
 import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.max
-import com.curiouscreature.kotlin.math.min
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.GameContext
@@ -22,9 +20,6 @@ import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
-import com.github.dwursteisen.minigdx.math.lerp
-import kotlin.math.max
-import kotlin.math.min
 
 class GravityComponent(
     var gravity: Vector3 = Vector3(0, -9, 0),
@@ -67,7 +62,6 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
                 updateColorIfCollide(collide, boxA, boxB)
             }
 
-        // FIXME: if(touch) -> change color of BoudingBox?
         if (!hasTouch) {
             position.translate(gravity.displacement)
 
@@ -81,15 +75,34 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
     }
 }
 
-class PlayerMoveSystem(val input: InputHandler) : System(EntityQuery(GravityComponent::class)) {
+class PlayerMoveSystem(
+    val input: InputHandler
+) : System(EntityQuery(GravityComponent::class)) {
+
+    lateinit var reset: Float3
+    override fun add(entity: Entity): Boolean {
+        val v = entity.get(Position::class).transformation.position
+        reset = Float3(v.x, v.y, v.z)
+        return super.add(entity)
+    }
+
     override fun update(delta: Seconds, entity: Entity) {
-        val gravity = entity.get(GravityComponent::class)
-        if(input.isKeyPressed(Key.ARROW_LEFT)) {
-            gravity.displacement.x += 3f * delta
-        } else if(input.isKeyPressed(Key.ARROW_RIGHT)) {
-            gravity.displacement.x -= 3f * delta
+        val position = entity.get(Position::class)
+        if (input.isKeyPressed(Key.ARROW_LEFT)) {
+            position.translate(3f * delta)
+        } else if (input.isKeyPressed(Key.ARROW_RIGHT)) {
+            position.translate(-3f * delta)
         }
-        gravity.displacement.x = lerp(0f, gravity.displacement.x, 0.9f)
+
+        if (input.isKeyPressed(Key.ARROW_UP)) {
+            position.translate(z = 3f * delta)
+        } else if (input.isKeyPressed(Key.ARROW_DOWN)) {
+            position.translate(z = -3f * delta)
+        }
+
+        if (input.isKeyJustPressed(Key.R)) {
+            position.setTranslate(reset.x, reset.y, reset.z)
+        }
     }
 }
 
