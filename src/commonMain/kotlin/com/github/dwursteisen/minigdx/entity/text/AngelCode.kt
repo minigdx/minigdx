@@ -12,14 +12,22 @@ data class FontInfo(
     val charsCount: Int
 )
 
+// http://www.angelcode.com/products/bmfont/doc/file_format.html
 data class AngelCharacter(
     val id: Char,
+    /** The left position of the character image in the texture. */
     val x: Pixel,
+    /** The top position of the character image in the texture. */
     val y: Pixel,
+    /** The width of the character image in the texture. */
     val width: Pixel,
+    /** The height of the character image in the texture. */
     val height: Pixel,
+    /** How much the current position should be offset when copying the image from the texture to the screen */
     val xoffset: Pixel,
+    /** How much the current position should be offset when copying the image from the texture to the screen. */
     val yoffset: Pixel,
+    /** How much the current position should be advanced after drawing the character. */
     val xadvance: Pixel
 )
 

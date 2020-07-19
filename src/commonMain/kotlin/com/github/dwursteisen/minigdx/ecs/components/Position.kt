@@ -7,6 +7,7 @@ import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
+import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.math.Vector3
 
 data class Position(
@@ -115,17 +116,27 @@ data class Position(
 
     fun translate(move: Vector3): Position = translate(move.x, move.y, move.z)
 
-    fun setTranslate(x: Coordinate = translation.x, y: Coordinate = translation.y, z: Coordinate = translation.z): Position {
+    fun setTranslate(
+        x: Coordinate = translation.x,
+        y: Coordinate = translation.y,
+        z: Coordinate = translation.z
+    ): Position {
         return translate(x.toFloat() - translation.x, y.toFloat() - translation.y, z.toFloat() - translation.z)
     }
 
     fun setTranslate(move: Vector3): Position = setTranslate(move.x, move.y, move.z)
 
-    /*
-    fun scale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position
+    fun scale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f): Position {
+        scale.add(x, y, z)
+        transformation *= com.curiouscreature.kotlin.math.scale(Float3(1f + x.toFloat(), 1f + y.toFloat(), 1f + z.toFloat()))
+        return this
+    }
+
     fun scale(scale: Vector3): Position = scale(scale.x, scale.y, scale.z)
 
-    fun setScale(x: Percent = 1, y: Percent = 1, z: Percent = 1): Position
+    fun setScale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position {
+        return scale(x.toFloat() - scale.x, y.toFloat() - scale.y, z.toFloat() - scale.z)
+    }
+
     fun setScale(scale: Vector3): Position = setScale(scale.x, scale.y, scale.z)
-*/
 }

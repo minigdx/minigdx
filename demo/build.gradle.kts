@@ -12,6 +12,7 @@ repositories {
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
     mavenLocal()
+    jcenter()
 }
 
 dependencies {
@@ -29,14 +30,15 @@ gltfPlugin {
 
 application {
     mainClassName = "demo.Main"
+    applicationDefaultJvmArgs = listOf("-XstartOnFirstThread", "-Dorg.lwjgl.util.Debug=true", "-Dorg.lwjgl.util.DebugAllocator=true", "-Dorg.lwjgl.util.DebugStack=true")
     applicationDefaultJvmArgs = listOf("-XstartOnFirstThread", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5000")
-     applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
+    applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
     executableDir = projectDir.resolve("src/main/resources").absolutePath
 }
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
-    this.args = listOf("--game", "gmtkjam")
+    this.args = listOf("--game", "gravity")
 }
 
 val compileKotlin: KotlinCompile by tasks

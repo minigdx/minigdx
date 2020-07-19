@@ -17,10 +17,10 @@ class ClearBufferRenderStage(gl: GL) : RenderStage<EmptyVertexShader, EmptyFragm
     query = EntityQuery()
 ) {
 
-    override fun compile() = Unit
+    override fun compileShaders() = Unit
 
     override fun update(delta: Seconds) {
-        gl.clearColor(0f, 0f, 0f, 1f)
+        gl.clearColor(1f, 1f, 1f, 1f)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)

@@ -15,7 +15,6 @@ import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
-import com.github.dwursteisen.minigdx.log
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.math.lerp
 import kotlin.math.abs
@@ -202,6 +201,8 @@ class GmtkJamScreen(override val gameContext: GameContext) : Screen {
 
     private val scene: Scene by gameContext.fileHandler.get("v2/gmtkjam.protobuf")
 
+    private val log = gameContext.logger
+
     override fun createEntities(engine: Engine) {
         log.info("CREATE_ENTITIES") { "Create the level" }
         engine.create {
@@ -241,7 +242,7 @@ class GmtkJamScreen(override val gameContext: GameContext) : Screen {
         }
     }
 
-    override fun createSystems(): List<System> {
+    override fun createSystems(engine: Engine): List<System> {
         return listOf(PlayerSystem(gameContext.input))
     }
 }

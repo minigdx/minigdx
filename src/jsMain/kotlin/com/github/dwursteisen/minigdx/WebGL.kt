@@ -1,8 +1,8 @@
 package com.github.dwursteisen.minigdx
 
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.buffer.DataSource
 import com.github.dwursteisen.minigdx.file.TextureImage
+import com.github.dwursteisen.minigdx.shaders.Buffer
+import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
@@ -30,6 +30,10 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
 
     override fun enable(mask: ByteMask) {
         gl.enable(mask)
+    }
+
+    override fun disable(mask: ByteMask) {
+        gl.disable(mask)
     }
 
     override fun blendFunc(sfactor: ByteMask, dfactor: ByteMask) {
@@ -82,12 +86,20 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
         gl.uniform3i(uniform.uniformLocation, a, b, c)
     }
 
+    override fun uniform1f(uniform: Uniform, first: Float) {
+        gl.uniform1f(uniform.uniformLocation, first)
+    }
+
     override fun uniform2f(uniform: Uniform, first: Float, second: Float) {
         gl.uniform2f(uniform.uniformLocation, first, second)
     }
 
     override fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float) {
         gl.uniform3f(uniform.uniformLocation, first, second, third)
+    }
+
+    override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
+        gl.uniform4f(uniform.uniformLocation, first, second, third, fourth)
     }
 
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {

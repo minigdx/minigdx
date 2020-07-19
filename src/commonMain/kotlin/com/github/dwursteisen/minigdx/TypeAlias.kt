@@ -19,3 +19,9 @@ typealias Degree = Number
 typealias Coordinate = Number
 
 typealias Pixel = Int
+
+fun Number.toPercent(): Float {
+    val v = this.toFloat()
+    require(v in 0.0..1.0)
+    return v
+}

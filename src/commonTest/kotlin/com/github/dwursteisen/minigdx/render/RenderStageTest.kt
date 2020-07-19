@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx.render
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.Camera
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graphics.MockGL

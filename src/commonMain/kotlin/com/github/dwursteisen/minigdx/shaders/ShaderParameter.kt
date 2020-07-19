@@ -2,7 +2,6 @@ package com.github.dwursteisen.minigdx.shaders
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.buffer.Buffer
 import kotlin.jvm.JvmName
 
 sealed class ShaderParameter(val name: String) {
@@ -60,6 +59,22 @@ sealed class ShaderParameter(val name: String) {
     class UniformVec3(name: String) : ShaderParameter(name) {
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
+        }
+    }
+
+    class UniformFloat(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        fun apply(program: ShaderProgram, vararg value: Float) {
+            when (value.size) {
+                0 -> throw IllegalArgumentException("At least one int is expected")
+                1 -> program.uniform1f(program.getUniform(name), value[0])
+                2 -> program.uniform2f(program.getUniform(name), value[0], value[1])
+                3 -> program.uniform3f(program.getUniform(name), value[0], value[1], value[2])
+                4 -> program.uniform4f(program.getUniform(name), value[0], value[1], value[2], value[3])
+            }
         }
     }
 

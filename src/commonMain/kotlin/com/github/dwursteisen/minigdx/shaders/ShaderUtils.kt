@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx.shaders
 
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.gl
 import kotlin.math.min
 
 object ShaderUtils {

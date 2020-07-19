@@ -2,31 +2,31 @@ package com.github.dwursteisen.minigdx.file
 
 import android.content.Context
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.log
+import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
 import java.nio.ByteBuffer
 
-actual class PlatformFileHandler(private val context: Context) {
+actual class PlatformFileHandler(private val context: Context, actual val logger: Logger) {
 
     @ExperimentalStdlibApi
     actual fun read(filename: String): Content<String> {
         val data = context.assets.open(filename).readBytes().decodeToString()
-        log.info("FILE_HANDLER") { "Reading '$filename' as String content" }
-        val content = Content<String>(filename)
+        logger.info("FILE_HANDLER") { "Reading '$filename' as String content" }
+        val content = Content<String>(filename, logger)
         content.load(data)
         return content
     }
 
     actual fun readData(filename: String): Content<ByteArray> {
         val data = context.assets.open(filename).readBytes()
-        log.info("FILE_HANDLER") { "Reading '$filename' as Byte content" }
-        val content = Content<ByteArray>(filename)
+        logger.info("FILE_HANDLER") { "Reading '$filename' as Byte content" }
+        val content = Content<ByteArray>(filename, logger)
         content.load(data)
         return content
     }
 
     actual fun readTextureImage(filename: String): Content<TextureImage> {
-        val content = Content<TextureImage>(filename)
+        val content = Content<TextureImage>(filename, logger)
         val inputStream = context.assets.open(filename)
 
         val decoder = PNGDecoder(inputStream)

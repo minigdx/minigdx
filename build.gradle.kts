@@ -153,6 +153,8 @@ kotlin {
                 implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
 
                 val lwjglVersion = "3.2.3"
+                val imguiVersion = "1.77-0.16"
+
                 implementation("org.lwjgl:lwjgl:$lwjglVersion")
                 implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-windows")
                 implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-linux")
@@ -165,6 +167,13 @@ kotlin {
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
+
+                // https://github.com/SpaiR/imgui-java
+                implementation("io.imgui.java:binding:$imguiVersion")
+                implementation("io.imgui.java:lwjgl3:$imguiVersion")
+                runtimeOnly("io.imgui.java:natives-linux:$imguiVersion")
+                runtimeOnly("io.imgui.java:natives-macos:$imguiVersion")
+                runtimeOnly("io.imgui.java:natives-windows:$imguiVersion")
 
                 implementation("org.l33tlabs.twl:pngdecoder:1.0")
             }
@@ -258,5 +267,12 @@ tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
 project.afterEvaluate {
     project.publishing.publications.forEach {
         println("Available publication: ${it.name}")
+    }
+}
+
+tasks.withType<Test> {
+    this.testLogging {
+        this.showStandardStreams = true
+        this.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }

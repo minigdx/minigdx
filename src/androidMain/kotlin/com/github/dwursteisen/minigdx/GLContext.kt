@@ -13,30 +13,27 @@ import com.github.dwursteisen.minigdx.logger.Logger
 
 actual class GLContext actual constructor(private val configuration: GLConfiguration) {
 
-    private lateinit var gl: GL
-
     internal actual fun createContext(): GL {
         val display = configuration.activity.windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
-        gl = AndroidGL(Screen(size.x, size.y))
-        return gl
+        return AndroidGL(Screen(size.x, size.y))
     }
 
-    internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(handler = PlatformFileHandler(configuration.activity))
+    internal actual fun createFileHandler(logger: Logger): FileHandler {
+        return FileHandler(platformFileHandler = PlatformFileHandler(configuration.activity, logger), logger = logger)
     }
 
-    internal actual fun createViewportStrategy(): ViewportStrategy {
-        return FillViewportStrategy()
+    internal actual fun createViewportStrategy(logger: Logger): ViewportStrategy {
+        return FillViewportStrategy(logger)
     }
 
-    internal actual fun createInputHandler(): InputHandler {
+    internal actual fun createInputHandler(logger: Logger): InputHandler {
         return AndroidInputHandler()
     }
 
     internal actual fun createLogger(): Logger {
-        return AndroidLogger()
+        return AndroidLogger(configuration.gameName)
     }
 
     @ExperimentalStdlibApi

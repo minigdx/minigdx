@@ -2,8 +2,8 @@ package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
-import com.github.dwursteisen.minigdx.render.AnimatedModel
 
 class ArmatureUpdateSystem : System(
     EntityQuery(

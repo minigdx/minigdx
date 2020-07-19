@@ -34,20 +34,20 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         )
     }
 
-    internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(handler = PlatformFileHandler())
+    internal actual fun createFileHandler(logger: Logger): FileHandler {
+        return FileHandler(platformFileHandler = PlatformFileHandler(logger), logger = logger)
     }
 
-    internal actual fun createInputHandler(): InputHandler {
-        return LwjglInput()
+    internal actual fun createInputHandler(logger: Logger): InputHandler {
+        return LwjglInput(logger)
     }
 
-    internal actual fun createViewportStrategy(): ViewportStrategy {
-        return FillViewportStrategy()
+    internal actual fun createViewportStrategy(logger: Logger): ViewportStrategy {
+        return FillViewportStrategy(logger)
     }
 
     internal actual fun createLogger(): Logger {
-        return JavaLoggingLogger()
+        return JavaLoggingLogger(configuration.name)
     }
 
     /**
@@ -127,11 +127,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         game.create()
         game.resume()
 
-        gameContext.viewport.update(gl, game.worldResolution, configuration.width, configuration.height)
+        gameContext.viewport.update(gl, configuration.width, configuration.height)
         glfwSetWindowSizeCallback(window) { _, w, h ->
             gl.screen.width = w
             gl.screen.height = h
-            gameContext.viewport.update(gl, game.worldResolution, w, h)
+            gameContext.viewport.update(gl, w, h)
         }
 
         // Wireframe mode

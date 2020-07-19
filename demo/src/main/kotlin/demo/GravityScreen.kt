@@ -1,36 +1,35 @@
 package demo
 
-import com.curiouscreature.kotlin.math.Mat4
-import com.curiouscreature.kotlin.math.ortho
-import com.curiouscreature.kotlin.math.perspective
+import com.curiouscreature.kotlin.math.Float3
+import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
-import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
-import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
-import com.dwursteisen.minigdx.scene.api.model.Model
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
-import com.github.dwursteisen.minigdx.ecs.components.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
+import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.createFrom
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
+import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
+import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.input.InputHandler
+import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
-import com.github.dwursteisen.minigdx.render.Camera
-import com.github.dwursteisen.minigdx.render.MeshPrimitive
-import com.dwursteisen.minigdx.scene.api.camera.Camera as GltfCamera
 
 class GravityComponent(
-    var gravity: Vector3 = Vector3(0, -1, 0),
+    var gravity: Vector3 = Vector3(0, -9, 0),
     var displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
 
 class ColliderComponent : Component
 
-class GravitySystem : System(EntityQuery(GravityComponent::class)) {
+class GravitySystem(private val collisionResolution: CollisionResolver = AABBCollisionResolver()) :
+    System(EntityQuery(GravityComponent::class)) {
 
     private val colliders: List<Entity> by interested(EntityQuery(ColliderComponent::class))
 
@@ -40,45 +39,71 @@ class GravitySystem : System(EntityQuery(GravityComponent::class)) {
         gravity.displacement.y = gravity.gravity.y * delta
         gravity.displacement.z = gravity.gravity.z * delta
         val position = entity.get(Position::class)
-        val translation = position.translation
-        val expectedPosition = Vector3(
-            gravity.displacement.x + translation.x,
-            gravity.displacement.y + translation.y,
-            gravity.displacement.z + translation.z
+
+        val expectedTransformation = position.transformation * translation(
+            Float3(
+                gravity.displacement.x,
+                gravity.displacement.y,
+                gravity.displacement.z
+            )
         )
+
         val hasTouch = colliders.asSequence()
             .filter { it != entity }
-            .any { it.overlaps(expectedPosition, entity) }
+            .any { entityB ->
+                val boxA = entity.get(BoundingBox::class)
+                val boxB = entityB.get(BoundingBox::class)
+                val collide = collisionResolution.collide(
+                    boxA,
+                    expectedTransformation,
+                    boxB,
+                    entityB.get(Position::class).transformation
+                )
+                updateColorIfCollide(collide, boxA, boxB)
+            }
 
         if (!hasTouch) {
             position.translate(gravity.displacement)
+
         }
+    }
+
+    private fun updateColorIfCollide(collide: Boolean, boxA: BoundingBox, boxB: BoundingBox): Boolean {
+        boxA.touch = collide
+        boxB.touch = collide
+        return collide
     }
 }
 
-fun Entity.overlaps(positionB: Vector3, target: Entity): Boolean {
-    val boxA = this.get(BoundingBox::class)
-    val positionA = this.get(Position::class).translation
-    val boxB = target.get(BoundingBox::class)
+class PlayerMoveSystem(
+    val input: InputHandler
+) : System(EntityQuery(GravityComponent::class)) {
 
-    val minXA = boxA.vertices.minBy { it.position.x }!!.position.x + positionA.x
-    val maxXA = boxA.vertices.maxBy { it.position.x }!!.position.x + positionA.x
-    val minYA = boxA.vertices.minBy { it.position.y }!!.position.y + positionA.y
-    val maxYA = boxA.vertices.maxBy { it.position.y }!!.position.y + positionA.y
-    val minZA = boxA.vertices.minBy { it.position.z }!!.position.z + positionA.z
-    val maxZA = boxA.vertices.maxBy { it.position.x }!!.position.z + positionA.z
+    lateinit var reset: Float3
+    override fun add(entity: Entity): Boolean {
+        val v = entity.get(Position::class).transformation.position
+        reset = Float3(v.x, v.y, v.z)
+        return super.add(entity)
+    }
 
+    override fun update(delta: Seconds, entity: Entity) {
+        val position = entity.get(Position::class)
+        if (input.isKeyPressed(Key.ARROW_LEFT)) {
+            position.translate(3f * delta)
+        } else if (input.isKeyPressed(Key.ARROW_RIGHT)) {
+            position.translate(-3f * delta)
+        }
 
-    val minXB = boxB.vertices.minBy { it.position.x }!!.position.x + positionB.x
-    val maxXB = boxB.vertices.maxBy { it.position.x }!!.position.x + positionB.x
-    val minYB = boxB.vertices.minBy { it.position.y }!!.position.y + positionB.y
-    val maxYB = boxB.vertices.maxBy { it.position.y }!!.position.y + positionB.y
-    val minZB = boxB.vertices.minBy { it.position.z }!!.position.z + positionB.z
-    val maxZB = boxB.vertices.maxBy { it.position.x }!!.position.z + positionB.z
+        if (input.isKeyPressed(Key.ARROW_UP)) {
+            position.translate(z = 3f * delta)
+        } else if (input.isKeyPressed(Key.ARROW_DOWN)) {
+            position.translate(z = -3f * delta)
+        }
 
-    return (minXA < maxXB && maxXA > minXB &&
-            minYA < maxYB && maxYA > minYB &&
-            minZA < maxZB && maxZA > minZB)
+        if (input.isKeyJustPressed(Key.R)) {
+            position.setTranslate(reset.x, reset.y, reset.z)
+        }
+    }
 }
 
 @ExperimentalStdlibApi
@@ -100,7 +125,10 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
         }
     }
 
-    override fun createSystems(): List<System> {
-        return listOf(GravitySystem())
+    override fun createSystems(engine: Engine): List<System> {
+        return listOf(
+            PlayerMoveSystem(gameContext.input),
+            GravitySystem(SATCollisionResolver())
+        )
     }
 }

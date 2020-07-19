@@ -25,6 +25,7 @@ class Main {
             configuration(
                 GLConfiguration(
                     name = "Kotin/JVM",
+                    gameName = "Demo",
                     width = 1280,
                     height = 720
                 )
@@ -34,6 +35,8 @@ class Main {
                     "v2" -> DemoApiV2(it)
                     "gravity" -> Gravity(it)
                     "gmtkjam" -> GmtkJam(it)
+                    "text" -> TextGame(it)
+                    "sprite" -> SpriteGame(it)
                     else -> DemoApiV2(it)
                 }
             }

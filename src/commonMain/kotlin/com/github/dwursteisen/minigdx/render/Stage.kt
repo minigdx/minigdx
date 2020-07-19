@@ -1,21 +1,16 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.Mat4
-import com.dwursteisen.minigdx.scene.api.armature.Armature
-import com.dwursteisen.minigdx.scene.api.armature.Frame
-import com.dwursteisen.minigdx.scene.api.material.Material
-import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.components.Camera
+import com.github.dwursteisen.minigdx.ecs.components.Light
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
-import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 
@@ -25,40 +20,6 @@ data class RenderOptions(
 )
 
 interface Stage
-
-class Camera(val projection: Mat4) : Component
-
-class Light : Component
-
-class AnimatedModel(
-    var animation: List<Frame>,
-    val referencePose: Armature,
-    val currentPose: Array<Mat4> = Array(40) { Mat4.identity() },
-    var time: Float,
-    val duration: Float
-) : Component
-
-class AnimatedMeshPrimitive(
-    var isCompiled: Boolean = false,
-    val primitive: Primitive,
-    val material: Material,
-    var verticesBuffer: Buffer? = null,
-    var uvBuffer: Buffer? = null,
-    var verticesOrderBuffer: Buffer? = null,
-    var weightBuffer: Buffer? = null,
-    var jointBuffer: Buffer? = null,
-    var textureReference: TextureReference? = null
-) : Component
-
-class MeshPrimitive(
-    var isCompiled: Boolean = false,
-    val primitive: Primitive,
-    val material: Material,
-    var verticesBuffer: Buffer? = null,
-    var uvBuffer: Buffer? = null,
-    var verticesOrderBuffer: Buffer? = null,
-    var textureReference: TextureReference? = null
-) : Component
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     protected val gl: GL,
@@ -82,7 +43,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
 
     lateinit var program: ShaderProgram
 
-    val combinedMatrix: Mat4
+    open val combinedMatrix: Mat4
         get() {
             return camera?.let {
                 val view = it.get(Position::class).transformation
@@ -91,7 +52,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             } ?: Mat4.identity()
         }
 
-    open fun compile() {
+    open fun compileShaders() {
         program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)
@@ -100,12 +61,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
                 it.create(this)
             }
         }
-        entities.forEach {
-            compile(it)
-        }
     }
-
-    open fun compile(entity: Entity) = Unit
 
     open fun uniforms() = Unit
 

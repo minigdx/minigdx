@@ -1,27 +1,28 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
 import java.io.File
 import java.nio.ByteBuffer
 
-actual class PlatformFileHandler {
+actual class PlatformFileHandler(actual val logger: Logger) {
 
     actual fun read(filename: String): Content<String> {
-        val content = Content<String>(filename)
+        val content = Content<String>(filename, logger)
         content.load(File(filename).readText())
         return content
     }
 
     actual fun readData(filename: String): Content<ByteArray> {
-        val content = Content<ByteArray>(filename)
+        val content = Content<ByteArray>(filename, logger)
         content.load(File(filename).readBytes())
         return content
     }
 
     actual fun readTextureImage(filename: String): Content<TextureImage> {
 
-        val content = Content<TextureImage>(filename)
+        val content = Content<TextureImage>(filename, logger)
         val file = File(filename)
 
         val decoder = PNGDecoder(file.inputStream())

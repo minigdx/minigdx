@@ -1,33 +1,13 @@
 package com.github.dwursteisen.minigdx
 
 import com.curiouscreature.kotlin.math.Mat4
-import com.github.dwursteisen.minigdx.buffer.Buffer
-import com.github.dwursteisen.minigdx.buffer.DataSource
-import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.TextureImage
-import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
-import com.github.dwursteisen.minigdx.input.InputHandler
-import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.shaders.Buffer
+import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
-
-fun Number.toPercent(): Float {
-    val v = this.toFloat()
-    require(v in 0.0..1.0)
-    return v
-}
-
-@Deprecated("prefer use gl passed in context instead")
-lateinit var gl: GL
-@Deprecated("prefer use gl passed in context instead")
-lateinit var fileHandler: FileHandler
-@Deprecated("prefer use gl passed in context instead")
-lateinit var inputs: InputHandler
-@Deprecated("prefer use gl passed in context instead")
-lateinit var viewport: ViewportStrategy
-lateinit var log: Logger
 
 class Screen(
     var width: Int,
@@ -45,6 +25,7 @@ interface GL {
     fun clear(mask: ByteMask)
     fun clearDepth(depth: Number)
     fun enable(mask: ByteMask)
+    fun disable(mask: ByteMask)
     fun blendFunc(sfactor: ByteMask, dfactor: ByteMask)
     fun createProgram(): ShaderProgram
     fun getAttribLocation(shaderProgram: ShaderProgram, name: String): Int
@@ -76,7 +57,7 @@ interface GL {
     fun bindTexture(target: Int, textureReference: TextureReference)
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: Mat4) =
-        uniformMatrix4fv(uniform, transpose, data.toFloatArray())
+        uniformMatrix4fv(uniform, transpose, data.asGLArray())
 
     fun uniformMatrix4fv(uniform: Uniform, transpose: Boolean, data: FloatArray) =
         uniformMatrix4fv(uniform, transpose, data.toTypedArray())
@@ -87,8 +68,10 @@ interface GL {
     fun uniform2i(uniform: Uniform, a: Int, b: Int)
     fun uniform3i(uniform: Uniform, a: Int, b: Int, c: Int)
 
+    fun uniform1f(uniform: Uniform, first: Float)
     fun uniform2f(uniform: Uniform, first: Float, second: Float)
     fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float)
+    fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float)
 
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
 

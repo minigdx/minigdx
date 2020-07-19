@@ -26,6 +26,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         canvas =
             configuration.canvas ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
+        @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val context = canvas.getContext("webgl2") as WebGLRenderingContextBase
         return WebGL(
             context, Screen(
@@ -35,20 +36,21 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         )
     }
 
-    internal actual fun createFileHandler(): FileHandler {
-        return FileHandler(PlatformFileHandler(configuration.rootPath))
+    internal actual fun createFileHandler(logger: Logger): FileHandler {
+        logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
+        return FileHandler(PlatformFileHandler(configuration.rootPath, logger), logger = logger)
     }
 
-    internal actual fun createInputHandler(): InputHandler {
+    internal actual fun createInputHandler(logger: Logger): InputHandler {
         return JsInputHandler(canvas)
     }
 
-    internal actual fun createViewportStrategy(): ViewportStrategy {
-        return FillViewportStrategy()
+    internal actual fun createViewportStrategy(logger: Logger): ViewportStrategy {
+        return FillViewportStrategy(logger)
     }
 
     internal actual fun createLogger(): Logger {
-        return JsLogger()
+        return JsLogger(configuration.gameName)
     }
 
     actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
@@ -64,7 +66,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         if (!gameContext.fileHandler.isFullyLoaded()) {
             window.requestAnimationFrame(::loading)
         } else {
-            gameContext.viewport.update(gameContext.gl, game.worldResolution, gameContext.gl.screen.width, gameContext.gl.screen.height)
+            gameContext.viewport.update(
+                gameContext.gl,
+                gameContext.gl.screen.width,
+                gameContext.gl.screen.height
+            )
 
             game.create()
             game.resume()
@@ -75,13 +81,17 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     private fun render(now: Double) {
         // The canvas has been resized
         // if (canvas.clientWidth != gl.screen.width || canvas.clientHeight != gl.screen.height) {
-        if (canvas.clientWidth != game.worldResolution.width || canvas.clientHeight != game.worldResolution.height) {
+        if (canvas.clientWidth != gameContext.gl.screen.width || canvas.clientHeight != gameContext.gl.screen.height) {
             gameContext.gl.screen.width = canvas.clientWidth
             gameContext.gl.screen.height = canvas.clientHeight
             canvas.height = canvas.clientHeight
             canvas.width = canvas.clientWidth
 
-            gameContext.viewport.update(gameContext.gl, game.worldResolution, gameContext.gl.screen.width, gameContext.gl.screen.height)
+            gameContext.viewport.update(
+                gameContext.gl,
+                gameContext.gl.screen.width,
+                gameContext.gl.screen.height
+            )
         }
         inputManager.record()
         val nowInSeconds = now * 0.001
