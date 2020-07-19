@@ -38,6 +38,10 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
     fun add(other: Vector3) = add(other.x, other.y, other.z)
 
+    fun dot(other: Vector3): Float {
+        return x * other.x + y * other.y + z * other.z
+    }
+
     companion object {
 
         val X = Vector3(1, 0, 0)

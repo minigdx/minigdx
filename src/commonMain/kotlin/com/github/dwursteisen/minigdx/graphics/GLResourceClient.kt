@@ -7,7 +7,7 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.graphics.compilers.AnimatedMeshPrimitiveCompiler
-import com.github.dwursteisen.minigdx.graphics.compilers.BoudingBoxCompiler
+import com.github.dwursteisen.minigdx.graphics.compilers.BoundingBoxCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.GLResourceCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.MeshPrimitiveCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.SpritePrimitiveCompiler
@@ -18,7 +18,7 @@ private val basicCompilers: Map<KClass<out GLResourceComponent>, GLResourceCompi
     SpritePrimitive::class to SpritePrimitiveCompiler(),
     MeshPrimitive::class to MeshPrimitiveCompiler(),
     AnimatedMeshPrimitive::class to AnimatedMeshPrimitiveCompiler(),
-    BoundingBox::class to BoudingBoxCompiler()
+    BoundingBox::class to BoundingBoxCompiler()
 )
 
 class MissingGLResourceCompiler(message: String) : RuntimeException(message)

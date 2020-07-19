@@ -5,7 +5,7 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
 import com.github.dwursteisen.minigdx.shaders.DataSource
 
-class BoudingBoxCompiler : GLResourceCompiler {
+class BoundingBoxCompiler : GLResourceCompiler {
     override fun compile(gl: GL, component: GLResourceComponent) {
         component as BoundingBox
         if (component.verticesBuffer == null) {
