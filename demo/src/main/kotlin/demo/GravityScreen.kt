@@ -13,17 +13,18 @@ import com.github.dwursteisen.minigdx.ecs.createFrom
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
-import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.lerp
 
 class GravityComponent(
-    var gravity: Vector3 = Vector3(0, 0, 0),
-    var displacement: Vector3 = Vector3(0f, 0f, 0f)
+    val acceleration: Vector3 = Vector3(0, 0, 0),
+    val velocity: Vector3 = Vector3(0, 0, 0),
+    val displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
 
 class ColliderComponent : Component
@@ -35,9 +36,14 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
 
     override fun update(delta: Seconds, entity: Entity) {
         val gravity = entity.get(GravityComponent::class)
-        gravity.displacement.x = gravity.gravity.x * delta
-        gravity.displacement.y = gravity.gravity.y * delta
-        gravity.displacement.z = gravity.gravity.z * delta
+
+        gravity.velocity.x += gravity.acceleration.x * delta
+        gravity.velocity.y += gravity.acceleration.y * delta
+        gravity.velocity.z += gravity.acceleration.z * delta
+
+        gravity.displacement.x = gravity.velocity.x * delta
+        gravity.displacement.y = gravity.velocity.y * delta
+        gravity.displacement.z = gravity.velocity.z * delta
         val position = entity.get(Position::class)
 
         val acceptedDisplacement = listOf(
@@ -90,28 +96,35 @@ class PlayerMoveSystem(
 
     override fun update(delta: Seconds, entity: Entity) {
         val gravity = entity.get(GravityComponent::class)
-        gravity.gravity.set(0, 0, 0)
 
         if (input.isKeyPressed(Key.ARROW_LEFT)) {
-            gravity.gravity.add(x = -3f)
+            gravity.acceleration.add(x = -6f * delta)
         } else if (input.isKeyPressed(Key.ARROW_RIGHT)) {
-            gravity.gravity.add(x = 3f)
+            gravity.acceleration.add(x = 6f * delta)
+        } else {
+            gravity.acceleration.x = lerp(-gravity.velocity.x, gravity.acceleration.x, 0.9f, delta)
         }
 
         if (input.isKeyPressed(Key.ARROW_UP)) {
-            gravity.gravity.add(z = -3f)
+            gravity.acceleration.add(z = -6f * delta)
         } else if (input.isKeyPressed(Key.ARROW_DOWN)) {
-            gravity.gravity.add(z = 3f)
+            gravity.acceleration.add(z = 6f * delta)
+        } else {
+            gravity.acceleration.z = lerp(-gravity.velocity.z, gravity.acceleration.z, 0.9f, delta)
         }
 
         if (input.isKeyPressed(Key.U)) {
-            gravity.gravity.add(y = 3f)
+            gravity.acceleration.add(y = 6f * delta)
         } else if (input.isKeyPressed(Key.D)) {
-            gravity.gravity.add(y = -3f)
+            gravity.acceleration.add(y = -6f * delta)
+        } else {
+            gravity.acceleration.y = lerp(-gravity.velocity.y, gravity.acceleration.y, 0.9f, delta)
         }
 
         if (input.isKeyJustPressed(Key.R)) {
             entity.get(Position::class).setTranslate(reset.x, reset.y, reset.z)
+            gravity.acceleration.set(0, 0, 0)
+            gravity.velocity.set(0, 0, 0)
         }
     }
 }
