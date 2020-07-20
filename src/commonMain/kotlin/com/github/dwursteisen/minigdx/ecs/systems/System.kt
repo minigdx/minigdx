@@ -5,7 +5,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
-abstract class System(private val entityQuery: EntityQuery) {
+abstract class System(protected val entityQuery: EntityQuery) {
 
     var entities: List<Entity> = emptyList()
 

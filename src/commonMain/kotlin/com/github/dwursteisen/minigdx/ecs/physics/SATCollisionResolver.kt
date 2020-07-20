@@ -15,12 +15,12 @@ class SATCollisionResolver : CollisionResolver {
     override fun collide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean {
         val axisA = extractAxis(entityA)
             .map { translation(Float3(it.x, it.y, it.z)) }
-            .map { it * positionA }
+            .map { positionA * it }
             .map { it.translation }
 
         val axisB = extractAxis(entityB)
             .map { translation(Float3(it.x, it.y, it.z)) }
-            .map { it * positionB }
+            .map { positionB * it }
             .map { it.translation }
 
         val axis = axisA + axisB
@@ -76,7 +76,7 @@ class SATCollisionResolver : CollisionResolver {
                 vertex.position.y,
                 vertex.position.z
             )
-            val translation = (translation(vertexPosition) * transformation).translation
+            val translation = (transformation * translation(vertexPosition)).translation
             val proj = dot(axis, translation)
 
             min = min(min, proj)

@@ -30,7 +30,7 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
     constructor(x: Number, y: Number, z: Number) : this(x.toFloat(), y.toFloat(), z.toFloat())
 
-    fun add(x: Number, y: Number, z: Number): Vector3 {
+    fun add(x: Number = 0f, y: Number = 0f, z: Number = 0f): Vector3 {
         this.x += x.toFloat()
         this.y += y.toFloat()
         this.z += z.toFloat()
@@ -38,6 +38,19 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
     }
 
     fun add(other: Vector3) = add(other.x, other.y, other.z)
+
+    fun sub(other: Vector3) = add(-other.x, -other.y, -other.z)
+
+    fun sub(x: Number = 0f, y: Number = 0f, z: Number = 0f) =
+        add(x.toFloat() * -1f, y.toFloat() * -1f, z.toFloat() * -1f)
+
+    fun set(x: Number = 0f, y: Number = 0f, z: Number = 0f) {
+        this.x = x.toFloat()
+        this.y = y.toFloat()
+        this.z = z.toFloat()
+    }
+
+    fun set(other: Vector3) = set(other.x, other.y, other.z)
 
     fun dot(other: Vector3): Float {
         return x * other.x + y * other.y + z * other.z

@@ -40,31 +40,30 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
         gravity.displacement.z = gravity.gravity.z * delta
         val position = entity.get(Position::class)
 
-        val expectedTransformation = position.transformation * translation(
-            Float3(
-                gravity.displacement.x,
-                gravity.displacement.y,
-                gravity.displacement.z
-            )
-        )
+        val acceptedDisplacement = listOf(
+            Float3(gravity.displacement.x, 0f, 0f),
+            Float3(0f, gravity.displacement.y, 0f),
+            Float3(0f, 0f, gravity.displacement.z)
+        ).filterNot { displacement ->
+            val expectedTransformation = position.transformation * translation(displacement)
 
-        val hasTouch = colliders.asSequence()
-            .filter { it != entity }
-            .any { entityB ->
-                val boxA = entity.get(BoundingBox::class)
-                val boxB = entityB.get(BoundingBox::class)
-                val collide = collisionResolution.collide(
-                    boxA,
-                    expectedTransformation,
-                    boxB,
-                    entityB.get(Position::class).transformation
-                )
-                updateColorIfCollide(collide, boxA, boxB)
-            }
+            colliders.asSequence()
+                .filter { it != entity }
+                .any { entityB ->
+                    val boxA = entity.get(BoundingBox::class)
+                    val boxB = entityB.get(BoundingBox::class)
+                    val collide = collisionResolution.collide(
+                        boxA,
+                        expectedTransformation,
+                        boxB,
+                        entityB.get(Position::class).transformation
+                    )
+                    updateColorIfCollide(collide, boxA, boxB)
+                }
+        }
 
-        if (!hasTouch) {
-            position.translate(gravity.displacement)
-
+        acceptedDisplacement.forEach {
+            position.translate(it.x, it.y, it.z)
         }
     }
 
@@ -80,34 +79,39 @@ class PlayerMoveSystem(
 ) : System(EntityQuery(GravityComponent::class)) {
 
     lateinit var reset: Float3
+
     override fun add(entity: Entity): Boolean {
-        val v = entity.get(Position::class).transformation.position
-        reset = Float3(v.x, v.y, v.z)
+        if (entityQuery.accept(entity)) {
+            val v = entity.get(Position::class).transformation.position
+            reset = Float3(v.x, v.y, v.z)
+        }
         return super.add(entity)
     }
 
     override fun update(delta: Seconds, entity: Entity) {
-        val position = entity.get(Position::class)
+        val gravity = entity.get(GravityComponent::class)
+        gravity.gravity.set(0, 0, 0)
+
         if (input.isKeyPressed(Key.ARROW_LEFT)) {
-            position.translate(3f * delta)
+            gravity.gravity.add(x = -3f)
         } else if (input.isKeyPressed(Key.ARROW_RIGHT)) {
-            position.translate(-3f * delta)
+            gravity.gravity.add(x = 3f)
         }
 
         if (input.isKeyPressed(Key.ARROW_UP)) {
-            position.translate(z = 3f * delta)
+            gravity.gravity.add(z = -3f)
         } else if (input.isKeyPressed(Key.ARROW_DOWN)) {
-            position.translate(z = -3f * delta)
+            gravity.gravity.add(z = 3f)
         }
 
-        if(input.isKeyPressed(Key.U)) {
-            position.translate(y = 3f * delta)
-        } else if(input.isKeyPressed(Key.D)) {
-            position.translate(y = -3f * delta)
+        if (input.isKeyPressed(Key.U)) {
+            gravity.gravity.add(y = 3f)
+        } else if (input.isKeyPressed(Key.D)) {
+            gravity.gravity.add(y = -3f)
         }
 
         if (input.isKeyJustPressed(Key.R)) {
-            position.setTranslate(reset.x, reset.y, reset.z)
+            entity.get(Position::class).setTranslate(reset.x, reset.y, reset.z)
         }
     }
 }
@@ -134,7 +138,7 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
     override fun createSystems(engine: Engine): List<System> {
         return listOf(
             PlayerMoveSystem(gameContext.input),
-            GravitySystem(SATCollisionResolver())
+            GravitySystem(AABBCollisionResolver())
         )
     }
 }
