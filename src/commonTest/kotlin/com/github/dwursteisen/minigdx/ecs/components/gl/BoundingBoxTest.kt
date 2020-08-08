@@ -11,7 +11,7 @@ class BoundingBoxTest {
         val box = BoundingBox(
             vertices = listOf(
                 vertex(1f, 0f, 0f),
-                vertex(0f, 4f, 0f),
+                vertex(0f, -4f, 0f),
                 vertex(0f, 1f, 2f)
             ),
             order = emptyList()

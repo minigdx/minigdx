@@ -10,6 +10,7 @@ import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Position
 import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.shaders.Buffer
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -40,7 +41,7 @@ data class BoundingBox(
 
         private fun radius(vertices: List<Vertex>): Float {
             return vertices.map { it.position }
-                .flatMap { listOf(it.x, it.y, it.z) }
+                .flatMap { listOf(abs(it.x), abs(it.y), abs(it.z)) }
                 .max() ?: 0f
         }
 

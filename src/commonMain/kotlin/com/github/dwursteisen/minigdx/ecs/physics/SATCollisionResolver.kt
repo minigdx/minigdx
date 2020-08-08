@@ -9,10 +9,16 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sqrt
 
 class SATCollisionResolver : CollisionResolver {
 
     override fun collide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean {
+        // Stop collision resolving if the entity can't collide at the moment.
+        if (!mightCollide(entityA, positionA, entityB, positionB)) {
+            return false
+        }
+
         val axisA = extractAxis(entityA)
             .map { translation(Float3(it.x, it.y, it.z)) }
             .map { positionA * it }
@@ -85,5 +91,20 @@ class SATCollisionResolver : CollisionResolver {
         }
 
         return Projection(min, max)
+    }
+
+    fun mightCollide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean {
+        // compute distance between positionA and positionB
+        val midline = positionB.position.minus(positionA.position)
+        val length = midline.length
+        // compute sum of radius
+        val sumRadius = entityA.radius + entityB.radius
+        // radius > length means collision
+        return sumRadius >= length
+    }
+
+    private val Float3.length: Float
+    get() {
+        return sqrt(x * x + y * y + z * z)
     }
 }
