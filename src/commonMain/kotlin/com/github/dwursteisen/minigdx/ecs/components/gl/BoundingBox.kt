@@ -16,6 +16,7 @@ import kotlin.math.min
 data class BoundingBox(
     val vertices: List<Vertex>,
     val order: List<Int>,
+    val radius: Float = radius(vertices),
     var verticesBuffer: Buffer? = null,
     var orderBuffer: Buffer? = null,
     var colorBuffer: Buffer? = null,
@@ -36,6 +37,12 @@ data class BoundingBox(
 
         private val normal = Normal(0f, 0f, 0f)
         private val white = Color(1f, 1f, 1f)
+
+        private fun radius(vertices: List<Vertex>): Float {
+            return vertices.map { it.position }
+                .flatMap { listOf(it.x, it.y, it.z) }
+                .max() ?: 0f
+        }
 
         @ExperimentalStdlibApi
         fun from(mesh: Mesh): BoundingBox {

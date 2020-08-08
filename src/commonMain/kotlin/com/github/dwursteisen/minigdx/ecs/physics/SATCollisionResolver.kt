@@ -46,6 +46,7 @@ class SATCollisionResolver : CollisionResolver {
             Vector3(x, y, z).normal().normalize()
         }
     }
+
     private fun extractAxis(box: BoundingBox): List<Vector3> {
         val triangles = box.order.map { box.vertices[it] }
             .chunked(3)
