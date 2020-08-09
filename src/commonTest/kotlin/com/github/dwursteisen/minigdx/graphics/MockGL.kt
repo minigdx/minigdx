@@ -209,7 +209,7 @@ class MockGL(override val screen: Screen = Screen(100, 100)) : GL {
         TODO("Not yet implemented")
     }
 
-    override fun texParameteri(target: Int, paramNam: Int, paramValue: Int) {
+    override fun texParameteri(target: Int, paramName: Int, paramValue: Int) {
         TODO("Not yet implemented")
     }
 

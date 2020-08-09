@@ -13,6 +13,7 @@ import com.github.dwursteisen.minigdx.ecs.createFrom
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
+import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.game.Screen
@@ -151,7 +152,7 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
     override fun createSystems(engine: Engine): List<System> {
         return listOf(
             PlayerMoveSystem(gameContext.input),
-            GravitySystem(AABBCollisionResolver())
+            GravitySystem(SATCollisionResolver())
         )
     }
 }
