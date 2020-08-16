@@ -47,10 +47,10 @@ class SpritePrimitiveCompiler : GLResourceCompiler {
             1f, 1f, -0.1f
         )
         val uv = floatArrayOf(
-            0f, 0f,
-            1f, 0f,
             0f, 1f,
-            1f, 1f
+            1f, 1f,
+            0f, 0f,
+            1f, 0f
         )
         val order = shortArrayOf(
             1, 3, 2,
