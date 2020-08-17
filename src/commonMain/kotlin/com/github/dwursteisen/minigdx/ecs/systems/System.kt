@@ -11,6 +11,31 @@ abstract class System(protected val entityQuery: EntityQuery) {
 
     var listeners: List<InterestedDelegate> = emptyList()
 
+    class InterestedDelegate(private val query: EntityQuery) {
+
+        val entities: MutableList<Entity> = mutableListOf()
+
+        fun add(entity: Entity) {
+            if (query.accept(entity)) {
+                entities.add(entity)
+            }
+        }
+
+        fun remove(entity: Entity) {
+            if (query.accept(entity)) {
+                entities.remove(entity)
+            }
+        }
+
+        fun destroy() {
+            entities.clear()
+        }
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): List<Entity> {
+            return entities
+        }
+    }
+
     abstract fun update(delta: Seconds, entity: Entity)
 
     open fun update(delta: Seconds) {
@@ -48,30 +73,5 @@ abstract class System(protected val entityQuery: EntityQuery) {
         val delegate = InterestedDelegate(query)
         listeners = listeners + delegate
         return delegate
-    }
-}
-
-class InterestedDelegate(private val query: EntityQuery) {
-
-    val entities: MutableList<Entity> = mutableListOf()
-
-    fun add(entity: Entity) {
-        if (query.accept(entity)) {
-            entities.add(entity)
-        }
-    }
-
-    fun remove(entity: Entity) {
-        if (query.accept(entity)) {
-            entities.remove(entity)
-        }
-    }
-
-    fun destroy() {
-        entities.clear()
-    }
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): List<Entity> {
-        return entities
     }
 }
