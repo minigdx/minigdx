@@ -2,8 +2,10 @@ package com.github.dwursteisen.minigdx.ecs.physics
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.translation
+import com.github.dwursteisen.minigdx.ecs.components.assertEquals as assertEqualsFloat
 import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver.Axis
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -63,8 +65,11 @@ class SATCollisionResolverTest {
             c = Float3(0f, 1f, 0f)
         ).axis
 
-        assertTrue(axis.contains(Axis(0f, 0f, 1f)))
-        assertTrue(axis.contains(Axis(0f, 1f, -0f)))
-        assertTrue(axis.contains(Axis(0.0f, -0.70710677f, -0.70710677f)))
+        val (a, b, c) = axis
+        assertEquals(Axis(0f, 0f, 1f), a)
+        assertEquals(0f, b.x)
+        assertEqualsFloat(-0.70710677f, b.y)
+        assertEqualsFloat(-0.70710677f, b.z)
+        assertEquals(Axis(0f, 1f, -0f), c)
     }
 }
