@@ -2,9 +2,13 @@ package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.events.Event
+import com.github.dwursteisen.minigdx.ecs.states.State
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class StateMachineSystemTest {
 
@@ -54,17 +58,19 @@ class StateMachineSystemTest {
 
         system.update(0f) // state initialization.
 
-        system.onEvent(OffEvent(), entity)
+        system.onEvent(OffEvent())
         // Move to OffState
-        with(entity.get(OnOffStateComponent::class).state!!) {
+        val offState = entity.get(OnOffStateComponent::class).state!!
+        with(offState) {
             assertEquals(OffState::class, this::class)
         }
-        system.onEvent(OffEvent(), entity)
+        system.onEvent(OffEvent())
         // didn't change
         with(entity.get(OnOffStateComponent::class).state!!) {
             assertEquals(OffState::class, this::class)
+            assertSame(offState, this)
         }
-        system.onEvent(OnEvent(), entity)
+        system.onEvent(OnEvent())
         // Move back to OnState
         with(entity.get(OnOffStateComponent::class).state!!) {
             assertEquals(OnState::class, this::class)

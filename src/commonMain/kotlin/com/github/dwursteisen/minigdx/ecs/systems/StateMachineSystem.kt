@@ -1,50 +1,17 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.components.Component
+import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.events.Event
+import com.github.dwursteisen.minigdx.ecs.states.State
 import kotlin.reflect.KClass
 
-interface Event
+abstract class StateMachineSystem(
+    private val stateMachineComponent: KClass<out StateMachineComponent>
+) : System(EntityQuery(stateMachineComponent)) {
 
-class OnCreate : Event
-
-typealias Transition = (event: Event) -> State?
-
-abstract class StateMachineComponent(var state: State? = null) : Component
-
-interface EventListener {
-
-    fun onEvent(event: Event, entity: Entity)
-}
-
-abstract class State {
-
-    private val eventListeners = mutableMapOf<KClass<out Event>, Transition>()
-
-    abstract fun configure()
-
-    open fun onEnter() = Unit
-
-    abstract fun update(delta: Seconds, entity: Entity): State?
-
-    open fun onExit() = Unit
-
-    fun configure(system: StateMachineSystem) {
-        configure()
-        system.eventListeners.putAll(eventListeners)
-    }
-
-    fun onCreate(transition: Transition) = onEvent(OnCreate::class, transition)
-
-    fun onEvent(eventClazz: KClass<out Event>, transition: Transition) {
-        eventListeners[eventClazz] = transition
-    }
-}
-
-abstract class StateMachineSystem(private val stateMachineComponent: KClass<out StateMachineComponent>) : System(EntityQuery(stateMachineComponent)), EventListener {
-
-    internal val eventListeners = mutableMapOf<KClass<out Event>, Transition>()
+    internal val eventsToListen = mutableSetOf<KClass<out Event>>()
 
     abstract fun initialState(entity: Entity): State
 
@@ -61,20 +28,35 @@ abstract class StateMachineSystem(private val stateMachineComponent: KClass<out 
         entity.newState(newState)
     }
 
-    override fun onEvent(event: Event, entity: Entity) {
-        val transition = eventListeners.get(event::class)
-        transition?.run {
-            val newState = transition(event)
-            entity.newState(newState)
+    override fun onEvent(event: Event, entityQuery: EntityQuery?) {
+        if (!eventsToListen.contains(event::class)) {
+            return
+        }
+
+        entities.forEach { entity ->
+            if (entityQuery == null || entityQuery.accept(entity)) {
+                val newState = entity.get(stateMachineComponent).state?.onEvent(event)
+                entity.newState(newState)
+            }
         }
     }
 
     private fun Entity.newState(newState: State?) {
-        newState ?: return
         val component = get(stateMachineComponent)
-        component.state?.onExit()
-        component.state = newState
-        component.state?.configure(this@StateMachineSystem)
-        component.state?.onEnter()
+        if (newState != null) {
+            component.state?.onExit()
+            consumeEvents(component.state)
+            component.state = newState
+            component.state?.configure(this@StateMachineSystem)
+            component.state?.onEnter()
+            consumeEvents(component.state)
+        } else {
+            consumeEvents(component.state)
+        }
+    }
+
+    private fun consumeEvents(state: State?) = state?.run {
+        emit(events)
+        events.clear()
     }
 }
