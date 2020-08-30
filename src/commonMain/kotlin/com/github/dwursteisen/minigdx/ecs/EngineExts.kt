@@ -26,11 +26,12 @@ fun Engine.createFrom(
     model: Model,
     scene: Scene,
     context: GameContext,
-    animationName: String? = null
+    animationName: String? = null,
+    transformation: Mat4 = Mat4.fromColumnMajor(*model.transformation.matrix)
 ): Entity {
     return this.create {
-        val boxes = model.boxes.map { BoundingBox.from(it) }
-        val transformation = Mat4.fromColumnMajor(*model.transformation.matrix)
+        val boxes = model.boxes.map { BoundingBox.from(it) }.ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+
         add(boxes)
         add(Position(transformation))
 
@@ -38,7 +39,9 @@ fun Engine.createFrom(
             val primitives = model.mesh.primitives.map { primitive ->
                 MeshPrimitive(
                     primitive = primitive,
-                    material = scene.materials.values.first { it.id == primitive.materialId }
+                    material = scene.materials.values.firstOrNull { it.id == primitive.materialId } ?: throw IllegalStateException(
+                        "Model ${model.name} doesn't have any material assigned."
+                    )
                 )
             }
             add(primitives)

@@ -44,11 +44,11 @@ abstract class StateMachineSystem(
     private fun Entity.newState(newState: State?) {
         val component = get(stateMachineComponent)
         if (newState != null) {
-            component.state?.onExit()
+            component.state?.onExit(this)
             consumeEvents(component.state)
             component.state = newState
             component.state?.configure(this@StateMachineSystem)
-            component.state?.onEnter()
+            component.state?.onEnter(this)
             consumeEvents(component.state)
         } else {
             consumeEvents(component.state)

@@ -17,13 +17,13 @@ abstract class State {
 
     internal val events = mutableListOf<EventWithQuery>()
 
-    abstract fun configure()
+    open fun configure() = Unit
 
-    open fun onEnter() = Unit
+    open fun onEnter(entity: Entity) = Unit
 
-    abstract fun update(delta: Seconds, entity: Entity): State?
+    open fun update(delta: Seconds, entity: Entity): State? = null
 
-    open fun onExit() = Unit
+    open fun onExit(entity: Entity) = Unit
 
     fun configure(system: StateMachineSystem) {
         configure()
