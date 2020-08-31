@@ -4,10 +4,12 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.rotation
+import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
+import com.github.dwursteisen.minigdx.math.ObjectTransformation
 import com.github.dwursteisen.minigdx.math.Vector3
 
 data class Position(
@@ -33,7 +35,12 @@ data class Position(
             it.z
         )
     },
-    var way: Float = 1f
+    var way: Float = 1f,
+    var positionTransformation: Mat4 = transformation * scale(Float3(
+        1 / transformation.scale.x,
+        1 / transformation.scale.y,
+        1 / transformation.scale.z
+    ))
 ) : Component {
 
     fun rotate(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
@@ -48,40 +55,40 @@ data class Position(
     fun rotateX(angle: Degree): Position {
         val asFloat = angle.toFloat() * way
         rotation.x += asFloat
-        transformation *= rotation(
+        positionTransformation *= rotation(
             Float3(
                 -1f,
                 0f,
                 0f
             ), asFloat
         )
-        return this
+        return updateMatrix()
     }
 
     fun rotateY(angle: Degree): Position {
         val asFloat = angle.toFloat() * way
         rotation.y += asFloat
-        transformation *= rotation(
+        positionTransformation *= rotation(
             Float3(
                 0f,
                 -1f,
                 0f
             ), asFloat
         )
-        return this
+        return updateMatrix()
     }
 
     fun rotateZ(angle: Degree): Position {
         val asFloat = angle.toFloat() * way
         rotation.z += asFloat
-        transformation *= rotation(
+        positionTransformation *= rotation(
             Float3(
                 0f,
                 0f,
                 1f
             ), asFloat
         )
-        return this
+        return updateMatrix()
     }
 
     fun setRotation(quaternion: Quaternion): Position {
@@ -110,8 +117,8 @@ data class Position(
 
     fun translate(x: Coordinate = 0f, y: Coordinate = 0f, z: Coordinate = 0f): Position {
         translation.add(x, y, z)
-        transformation *= translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
-        return this
+        positionTransformation *= translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        return updateMatrix()
     }
 
     fun translate(move: Vector3): Position = translate(move.x, move.y, move.z)
@@ -128,8 +135,7 @@ data class Position(
 
     fun scale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f): Position {
         scale.add(x, y, z)
-        transformation *= com.curiouscreature.kotlin.math.scale(Float3(1f + x.toFloat(), 1f + y.toFloat(), 1f + z.toFloat()))
-        return this
+        return updateMatrix()
     }
 
     fun scale(scale: Vector3): Position = scale(scale.x, scale.y, scale.z)
@@ -139,4 +145,14 @@ data class Position(
     }
 
     fun setScale(scale: Vector3): Position = setScale(scale.x, scale.y, scale.z)
+
+    private fun updateMatrix(): Position {
+        transformation = positionTransformation * scale(Float3(scale.x, scale.y, scale.z))
+        return this
+    }
+
+    fun apply(transformation: ObjectTransformation): Position {
+        transformation.execute(this)
+        return this
+    }
 }
