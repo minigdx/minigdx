@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.ecs.components.gl
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.model.Boxe
 import com.dwursteisen.minigdx.scene.api.model.Color
@@ -164,7 +165,10 @@ data class BoundingBox(
         }
 
         fun from(boxe: Boxe): BoundingBox {
-            val transformation = Mat4.fromColumnMajor(*boxe.transformation.matrix)
+            val modelTransformation = Mat4.fromColumnMajor(*boxe.transformation.matrix)
+            val scale = modelTransformation.scale
+            val transformation = scale(Float3(scale.x, scale.y, scale.z))
+
             val a = (translation(Float3(1f, 1f, 1f)) * transformation).translation
             val b = (translation(Float3(-1f, 1f, 1f)) * transformation).translation
             val c = (translation(Float3(1f, -1f, 1f)) * transformation).translation

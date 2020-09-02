@@ -89,7 +89,7 @@ abstract class System(protected val entityQuery: EntityQuery) : EventListener {
         return if (events.isEmpty()) {
             null
         } else {
-            events.toList()
+            events.toList().also { events.clear() }
         }
     }
 

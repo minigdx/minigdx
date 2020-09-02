@@ -91,7 +91,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             lights -= entity
             count != entities.count()
         } else {
-            super.add(entity)
+            super.remove(entity)
         }
     }
 

@@ -41,7 +41,7 @@ class Entity(
         componentsByType = components.groupBy { it::class }
     }
 
-    fun destroy() = engine.destroy()
+    fun destroy() = engine.destroy(this)
 
     private fun engineUpdate(block: () -> Unit) {
         engine.destroy(this)
