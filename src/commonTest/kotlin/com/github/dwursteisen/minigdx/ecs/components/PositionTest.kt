@@ -4,10 +4,12 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.math.AddTranslation
+import com.github.dwursteisen.minigdx.math.FixedPoint
 import com.github.dwursteisen.minigdx.math.Global
 import com.github.dwursteisen.minigdx.math.Local
 import com.github.dwursteisen.minigdx.math.SetTranslation
 import kotlin.math.abs
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.fail
 
@@ -100,6 +102,16 @@ class PositionTest {
         position.apply(SetTranslation(x = 1f, origin = Local))
         assertEquals(1f, position.transformation.translation.x)
         assertEquals(1f, position.transformation.translation.y)
+        assertEquals(0f, position.transformation.translation.z)
+    }
+
+    @Ignore
+    @Test
+    fun apply_it_set_translation_with_fixed_origin() {
+        val position = Position(transformation = translation(Float3(1f, 0f, 0f)) * rotation(Float3(0f, 0f, 1f), 90f))
+        position.apply(SetTranslation(x = 1f, origin = FixedPoint(3f, 0f, 0f)))
+        assertEquals(4f, position.transformation.translation.x)
+        assertEquals(0f, position.transformation.translation.y)
         assertEquals(0f, position.transformation.translation.z)
     }
 }

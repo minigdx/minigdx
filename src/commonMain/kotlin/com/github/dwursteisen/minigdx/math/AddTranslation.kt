@@ -2,6 +2,8 @@ package com.github.dwursteisen.minigdx.math
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.rotation
+import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.ecs.components.Position
 
@@ -57,11 +59,11 @@ class SetTranslation(
                 -position.transformation.translation.z
             )) * translation(Float3(x, y, z))
             Local -> position.transformation = position.transformation * translation(Float3(x, y, z))
-            is FixedPoint -> position.transformation * translation(Float3(
-                -position.transformation.translation.x,
-                -position.transformation.translation.y,
-                -position.transformation.translation.z
-            )) * translation(Float3(ol.x + x, ol.y + y, ol.z + z))
+            is FixedPoint -> {
+                val rotation = position.transformation.rotation
+                val scale = position.transformation.scale
+                position.transformation = translation(Float3(ol.x + x, ol.y + y, ol.z + z)) * rotation(rotation) * scale(scale)
+            }
         }
     }
 }

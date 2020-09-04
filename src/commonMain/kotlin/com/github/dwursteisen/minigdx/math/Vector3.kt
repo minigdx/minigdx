@@ -70,11 +70,31 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         }
     }
 
+    fun length(): Float {
+        return sqrt(length2())
+    }
+
+    fun length2(): Float {
+        return x * x + y * y + z * z
+    }
+
+    fun dist(other: Vector3): Float {
+        return sqrt(dist2(other))
+    }
+
+    fun dist2(other: Vector3): Float {
+        val a = other.x - x
+        val b = other.y - y
+        val c = other.z - z
+        return a * a + b * b + c * c
+    }
+
     companion object {
 
         val X = Vector3(1, 0, 0)
         val Y = Vector3(0, 1, 0)
         val Z = Vector3(0, 0, 1)
+        val ZERO = Vector3(0, 0, 0)
     }
 }
 

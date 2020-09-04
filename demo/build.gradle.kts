@@ -4,7 +4,7 @@ plugins {
     java
     application
     kotlin("jvm")
-    id("com.github.dwursteisen.gltf") version "1.0.0-alpha8"
+    id("com.github.dwursteisen.gltf") version "1.0-SNAPSHOT"
 }
 
 repositories {
@@ -26,6 +26,12 @@ gltfPlugin {
         this.target.set(project.projectDir.resolve("src/main/resources/v2"))
         this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
     }
+
+    create("assetsProto") {
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets/proto"))
+        this.target.set(project.projectDir.resolve("src/main/resources/proto"))
+        this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
+    }
 }
 
 application {
@@ -38,7 +44,7 @@ application {
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
-    this.args = listOf("--game", "sprite")
+    this.args = listOf("--game", "proto")
 }
 
 val compileKotlin: KotlinCompile by tasks

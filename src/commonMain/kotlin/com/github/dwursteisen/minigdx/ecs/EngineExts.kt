@@ -37,11 +37,13 @@ fun Engine.createFrom(
 
         if (model.armatureId < 0) {
             val primitives = model.mesh.primitives.map { primitive ->
-                MeshPrimitive(
-                    primitive = primitive,
-                    material = scene.materials.values.firstOrNull { it.id == primitive.materialId } ?: throw IllegalStateException(
+                val material =
+                    scene.materials.values.firstOrNull { it.id == primitive.materialId } ?: throw IllegalStateException(
                         "Model ${model.name} doesn't have any material assigned."
                     )
+                MeshPrimitive(
+                    primitive = primitive,
+                    material = material
                 )
             }
             add(primitives)
@@ -134,7 +136,8 @@ fun Engine.createFrom(font: Font, text: String, x: Float, y: Float, gameContext:
             renderStrategy = TextRenderStrategy
         )
         add(spritePrimitive)
-        add(Text(
+        add(
+            Text(
                 text = text,
                 font = font
             )

@@ -9,8 +9,8 @@ object SpriteRenderStrategy : RenderStrategy {
         val spritePrimitive = entity.get(SpritePrimitive::class)
 
         gl.bindTexture(GL.TEXTURE_2D, spritePrimitive.textureReference!!)
-        gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
         gl.enable(GL.BLEND)
+        gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, spritePrimitive.verticesOrderBuffer!!)
         gl.drawElements(

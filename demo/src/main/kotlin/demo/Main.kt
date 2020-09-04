@@ -4,6 +4,8 @@ import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.game.GameSystem
+import proto.Proto
+import proto.ProtoGame
 
 @ExperimentalStdlibApi
 class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, BirdScreen(gameContext))
@@ -37,6 +39,8 @@ class Main {
                     "gmtkjam" -> GmtkJam(it)
                     "text" -> TextGame(it)
                     "sprite" -> SpriteGame(it)
+                    "proto" -> ProtoGame(it)
+                    "scene" -> SceneGame(it)
                     else -> DemoApiV2(it)
                 }
             }
