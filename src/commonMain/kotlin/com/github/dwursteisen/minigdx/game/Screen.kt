@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
@@ -23,13 +24,13 @@ interface Screen {
         ArmatureUpdateSystem()
     )
 
-    fun createRenderStage(gl: GL): List<RenderStage<*, *>> = listOf(
-        ClearBufferRenderStage(gl),
-        MeshPrimitiveRenderStage(gl),
-        AnimatedMeshPrimitiveRenderStage(gl),
-        BoundingBoxStage(gl),
+    fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> = listOf(
+        ClearBufferRenderStage(gl, compiler),
+        MeshPrimitiveRenderStage(gl, compiler),
+        AnimatedMeshPrimitiveRenderStage(gl, compiler),
+        BoundingBoxStage(gl, compiler),
         // 2D space rendering
-        SpritePrimitiveRenderStage(gl)
+        SpritePrimitiveRenderStage(gl, compiler)
     )
 
     fun render(engine: Engine, delta: Seconds) {

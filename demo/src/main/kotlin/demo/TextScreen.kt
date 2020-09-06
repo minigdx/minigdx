@@ -1,13 +1,11 @@
 package demo
 
-import com.curiouscreature.kotlin.math.ortho
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.Text
-import com.github.dwursteisen.minigdx.ecs.components.UICamera
-import com.github.dwursteisen.minigdx.ecs.createFrom
+import com.github.dwursteisen.minigdx.ecs.createModel
 import com.github.dwursteisen.minigdx.ecs.createUICamera
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
@@ -25,7 +23,7 @@ class TextScreen(override val gameContext: GameContext) : Screen {
     lateinit var txt: Entity
 
     override fun createEntities(engine: Engine) {
-        txt = engine.createFrom(font, "Example Of Text", 50f, 50f, gameContext)
+        txt = engine.createModel(font, "Example Of Text", 50f, 50f)
         engine.createUICamera(gameContext)
     }
 

@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.components.gl
 
+import com.dwursteisen.minigdx.scene.api.common.Id
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.render.sprites.RenderStrategy
 import com.github.dwursteisen.minigdx.shaders.Buffer
@@ -19,5 +20,6 @@ class SpritePrimitive(
     var verticesOrderBuffer: Buffer? = null,
     var textureReference: TextureReference? = null,
     var numberOfIndices: Int = 0,
-    override var isDirty: Boolean = true
+    override var isDirty: Boolean = true,
+    override var id: Id = Id()
 ) : GLResourceComponent

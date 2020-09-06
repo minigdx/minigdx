@@ -21,7 +21,6 @@ class SpriteScreen(override val gameContext: GameContext) : Screen {
             y = sprite.height,
             renderStrategy = SpriteRenderStrategy
         )
-        gameContext.glResourceClient.compile("sprite", spriteComponent)
 
         engine.create {
             add(spriteComponent)

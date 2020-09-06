@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.graphics
 
+import com.dwursteisen.minigdx.scene.api.common.Id
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
@@ -29,22 +30,35 @@ class GLResourceClient(
     val compilers: Map<KClass<out GLResourceComponent>, GLResourceCompiler> = basicCompilers
 ) {
 
-    private val cache: MutableMap<String, Iterable<GLResourceComponent>> = mutableMapOf()
+    private val cache: MutableMap<Id, GLResourceComponent> = mutableMapOf()
 
-    fun <T : GLResourceComponent> compile(name: String, component: T) = compile(name, listOf(component))
+    fun <T : GLResourceComponent> compile(component: T) = compile(listOf(component))
 
-    fun <T : GLResourceComponent> compile(name: String, components: Iterable<T>) {
-        log.info("GL_RESOURCE") { "Compiling '$name' components" }
-        components.filter { component -> component.isDirty }
+    fun <T : GLResourceComponent> compile(components: Iterable<T>) {
+        components
+            .onEach { log.info("GL_RESOURCE") { "Compiling '${it.id}' components" } }
+            .onEach { cache[it.id] = it }
+            .filter { component -> component.isDirty }
             .forEach { component ->
-                compilers[component::class]?.compile(gl, component) ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '$${component::class.simpleName}''")
+                compilers[component::class]?.compile(gl, component)
+                    ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '$${component::class.simpleName}''")
             }
-
-        cache[name] = components
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : GLResourceComponent> get(name: String): Iterable<T> {
+    fun <T : GLResourceComponent> get(name: Id): Iterable<T> {
         return cache.getValue(name) as Iterable<T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : GLResourceComponent> getOrCreate(name: Id, factory: () -> T): T {
+        val component = cache[name]
+        return if (component == null) {
+            val newComponent = factory()
+            compile(newComponent)
+            newComponent
+        } else {
+            component as T
+        }
     }
 }

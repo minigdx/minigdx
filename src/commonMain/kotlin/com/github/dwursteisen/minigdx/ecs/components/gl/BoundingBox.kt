@@ -4,7 +4,8 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
-import com.dwursteisen.minigdx.scene.api.model.Boxe
+import com.dwursteisen.minigdx.scene.api.common.Id
+import com.dwursteisen.minigdx.scene.api.model.Box
 import com.dwursteisen.minigdx.scene.api.model.Color
 import com.dwursteisen.minigdx.scene.api.model.Mesh
 import com.dwursteisen.minigdx.scene.api.model.Normal
@@ -23,7 +24,8 @@ data class BoundingBox(
     var orderBuffer: Buffer? = null,
     var colorBuffer: Buffer? = null,
     var touch: Boolean = false,
-    override var isDirty: Boolean = true
+    override var isDirty: Boolean = true,
+    override var id: Id = Id()
 ) : GLResourceComponent {
 
     private class BoxBuilder(
@@ -164,8 +166,8 @@ data class BoundingBox(
             )
         }
 
-        fun from(boxe: Boxe): BoundingBox {
-            val modelTransformation = Mat4.fromColumnMajor(*boxe.transformation.matrix)
+        fun from(box: Box): BoundingBox {
+            val modelTransformation = Mat4.fromColumnMajor(*box.transformation.matrix)
             val scale = modelTransformation.scale
             val transformation = scale(Float3(scale.x, scale.y, scale.z))
 

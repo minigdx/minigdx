@@ -14,10 +14,6 @@ class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, BirdScreen(g
 class Gravity(gameContext: GameContext) : GameSystem(gameContext, GravityScreen(gameContext))
 
 @ExperimentalStdlibApi
-class GmtkJam(gameContext: GameContext) : GameSystem(gameContext, GmtkJamScreen(gameContext))
-
-
-@ExperimentalStdlibApi
 class Main {
 
     companion object {
@@ -26,7 +22,7 @@ class Main {
         fun main(args: Array<String>) {
             configuration(
                 GLConfiguration(
-                    name = "Kotin/JVM",
+                    name = "Kotlin/JVM",
                     gameName = "Demo",
                     width = 1280,
                     height = 720
@@ -36,7 +32,6 @@ class Main {
                 when (args.getOrElse(index + 1) { "" }) {
                     "v2" -> DemoApiV2(it)
                     "gravity" -> Gravity(it)
-                    "gmtkjam" -> GmtkJam(it)
                     "text" -> TextGame(it)
                     "sprite" -> SpriteGame(it)
                     "proto" -> ProtoGame(it)

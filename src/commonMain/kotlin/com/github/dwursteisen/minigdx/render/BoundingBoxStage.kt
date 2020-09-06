@@ -6,11 +6,13 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.ColorFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.BoundingBoxVertexShader
 
-class BoundingBoxStage(gl: GL) : RenderStage<BoundingBoxVertexShader, ColorFragmentShader>(
+class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<BoundingBoxVertexShader, ColorFragmentShader>(
     gl = gl,
+    compiler = compiler,
     vertex = BoundingBoxVertexShader(),
     fragment = ColorFragmentShader(),
     query = EntityQuery(BoundingBox::class)
@@ -22,6 +24,9 @@ class BoundingBoxStage(gl: GL) : RenderStage<BoundingBoxVertexShader, ColorFragm
         vertex.uModelView.apply(program, combinedMatrix * model)
 
         val box = entity.get(BoundingBox::class)
+        if (box.isDirty) {
+            compiler.compile(box)
+        }
         vertex.aVertexPosition.apply(program, box.verticesBuffer!!)
         vertex.aColor.apply(program, box.colorBuffer!!)
         if (box.touch) {

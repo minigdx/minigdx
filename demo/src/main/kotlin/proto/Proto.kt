@@ -6,12 +6,13 @@ import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
-import com.github.dwursteisen.minigdx.ecs.createFrom
+import com.github.dwursteisen.minigdx.ecs.createModel
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
@@ -23,8 +24,6 @@ import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
-import com.github.dwursteisen.minigdx.math.FixedPoint
-import com.github.dwursteisen.minigdx.math.SetTranslation
 import com.github.dwursteisen.minigdx.math.lerp
 import kotlin.math.abs
 import kotlin.math.cos
@@ -52,7 +51,7 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
     class Wait(private val system: ZoneSystem) : State() {
 
         override fun configure() {
-            onEvent(PickItemEvent::class) { event ->
+            onEvent(PickItemEvent::class) { _ ->
                 WaitOn(system)
             }
         }
@@ -296,56 +295,48 @@ class Proto(override val gameContext: GameContext) : Screen {
 
     override fun createEntities(engine: Engine) {
         val arena = assets.children.first { node -> node.name == "arena" }
-        engine.createFrom(assets.perspectiveCameras.values.first(), gameContext)
-        val modelById = assets.models.values.map { it.id to it }.toMap()
-        val model = modelById.getValue(arena.reference)
-        engine.createFrom(model, assets, gameContext)
+        engine.createModel(assets.perspectiveCameras.values.first(), gameContext)
+        engine.createModel(arena, assets)
         val origin = Mat4.fromColumnMajor(*arena.transformation.matrix)
         arena.children.forEach { node ->
-            val fromColumnMajor = Mat4.fromColumnMajor(*node.transformation.matrix)
+            val fromColumnMajor = node.transformation.toMat4()
             when (node.name) {
                 "player_spawn" -> {
-                    val entity = engine.createFrom(
-                        modelById.getValue(node.reference),
+                    val entity = engine.createModel(
+                        node,
                         assets,
-                        gameContext,
                         transformation = origin * fromColumnMajor
                     )
                     entity.add(Player(gameContext.input))
                 }
                 "cube_one" -> {
-                    val entity = engine.createFrom(
-                        modelById.getValue(node.reference),
+                    val entity = engine.createModel(
+                        node,
                         assets,
-                        gameContext,
                         transformation = origin * fromColumnMajor
                     )
                     entity.add(Cube(1))
                 }
                 "zone_detection" -> {
                     val sub = node.children.first()
-                    val subEntity = engine.createFrom(
-                        modelById.getValue(sub.reference),
+                    val subEntity = engine.createModel(
+                        sub,
                         assets,
-                        gameContext,
                         transformation = origin * fromColumnMajor * Mat4.fromColumnMajor(*sub.transformation.matrix)
                     )
                     engine.create {
-                        val box = BoundingBox.from(assets.boxes.values.first { it.id == node.reference })
+                        val box = BoundingBox.from(assets.boxes.getValue(node.reference))
                         add(box)
                         add(Position(transformation = origin * fromColumnMajor))
                         add(Zone(subEntity))
-                        // TODO: this kind of things should be automatically performed by the game engine.
-                        gameContext.glResourceClient.compile(node.name, box)
                     }
                 }
             }
         }
         val circle = assets.children.first { it.name == "circle" }
-        engine.createFrom(
-            modelById.getValue(circle.reference),
+        engine.createModel(
+            circle,
             assets,
-            gameContext,
             transformation = Mat4.identity()
         ).add(Circle())
     }

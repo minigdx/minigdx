@@ -7,8 +7,11 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.Camera
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
-import com.dwursteisen.minigdx.scene.api.model.Model
+import com.dwursteisen.minigdx.scene.api.common.Id
+import com.dwursteisen.minigdx.scene.api.relation.Node
+import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.Text
@@ -22,32 +25,35 @@ import com.github.dwursteisen.minigdx.entity.text.Font
 import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
 
 @ExperimentalStdlibApi
-fun Engine.createFrom(
-    model: Model,
+fun Engine.createModel(
+    node: Node,
     scene: Scene,
-    context: GameContext,
     animationName: String? = null,
-    transformation: Mat4 = Mat4.fromColumnMajor(*model.transformation.matrix)
+    transformation: Mat4 = node.transformation.toMat4()
 ): Entity {
     return this.create {
-        val boxes = model.boxes.map { BoundingBox.from(it) }.ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+        val model = scene.models.getValue(node.reference)
+        val boxes = node.children.filter { it.type == ObjectType.BOX }
+            .map { scene.boxes.getValue(it.reference) }
+            .map { BoundingBox.from(it) }
+            .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
 
         add(boxes)
         add(Position(transformation))
 
-        if (model.armatureId < 0) {
+        if (model.armatureId == Id.None) {
             val primitives = model.mesh.primitives.map { primitive ->
                 val material =
-                    scene.materials.values.firstOrNull { it.id == primitive.materialId } ?: throw IllegalStateException(
+                    scene.materials[primitive.materialId] ?: throw IllegalStateException(
                         "Model ${model.name} doesn't have any material assigned."
                     )
                 MeshPrimitive(
-                    primitive = primitive,
-                    material = material
-                )
+                        id = primitive.id,
+                        primitive = primitive,
+                        material = material
+                    )
             }
             add(primitives)
-            context.glResourceClient.compile(model.name, primitives + boxes)
         } else {
             val allAnimations = scene.animations.getValue(model.armatureId)
             val animation =
@@ -61,17 +67,16 @@ fun Engine.createFrom(
             val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
                 AnimatedMeshPrimitive(
                     primitive = primitive,
-                    material = scene.materials.values.first { it.id == primitive.materialId }
+                    material = scene.materials.getValue(primitive.materialId)
                 )
             }
             add(animatedModel)
             add(animatedMeshPrimitive)
-            context.glResourceClient.compile(model.name, animatedMeshPrimitive + boxes)
         }
     }
 }
 
-fun Engine.createFrom(camera: Camera, context: GameContext): Entity {
+fun Engine.createModel(camera: Camera, context: GameContext): Entity {
     val cameraComponent = when (camera) {
         is PerspectiveCamera -> com.github.dwursteisen.minigdx.ecs.components.Camera(
             projection = perspective(
@@ -128,7 +133,7 @@ fun Engine.createUICamera(gameContext: GameContext): Entity {
     }
 }
 
-fun Engine.createFrom(font: Font, text: String, x: Float, y: Float, gameContext: GameContext): Entity {
+fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
     return this.create {
         add(Position().translate(x = x, y = y, z = 0f))
         val spritePrimitive = SpritePrimitive(
@@ -142,6 +147,5 @@ fun Engine.createFrom(font: Font, text: String, x: Float, y: Float, gameContext:
                 font = font
             )
         )
-        gameContext.glResourceClient.compile(font.angelCode.info.fontFile, spritePrimitive)
     }
 }
