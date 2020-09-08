@@ -4,7 +4,7 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
-import com.github.dwursteisen.minigdx.ecs.createModel
+import com.github.dwursteisen.minigdx.ecs.createFromNode
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 
@@ -16,10 +16,13 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
     override fun createEntities(engine: Engine) {
         val models = scene.children.filter { it.type == ObjectType.MODEL }
         models.forEach { node ->
-            engine.createModel(node, scene)
+            engine.createFromNode(node, gameContext, scene)
         }
 
-        engine.createModel(scene.perspectiveCameras.values.first(), gameContext)
+        val cameras = scene.children.filter { it.type == ObjectType.CAMERA }
+        cameras.forEach { node ->
+            engine.createFromNode(node, gameContext, scene)
+        }
     }
 }
 

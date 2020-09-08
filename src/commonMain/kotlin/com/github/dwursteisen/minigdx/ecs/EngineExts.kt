@@ -4,10 +4,8 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.ortho
 import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
-import com.dwursteisen.minigdx.scene.api.camera.Camera
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
-import com.dwursteisen.minigdx.scene.api.common.Id
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
@@ -25,58 +23,92 @@ import com.github.dwursteisen.minigdx.entity.text.Font
 import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
 
 @ExperimentalStdlibApi
-fun Engine.createModel(
-    node: Node,
-    scene: Scene,
-    animationName: String? = null,
-    transformation: Mat4 = node.transformation.toMat4()
-): Entity {
-    return this.create {
-        val model = scene.models.getValue(node.reference)
-        val boxes = node.children.filter { it.type == ObjectType.BOX }
-            .map { scene.boxes.getValue(it.reference) }
-            .map { BoundingBox.from(it) }
-            .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
-
-        add(boxes)
-        add(Position(transformation))
-
-        if (model.armatureId == Id.None) {
-            val primitives = model.mesh.primitives.map { primitive ->
-                val material =
-                    scene.materials[primitive.materialId] ?: throw IllegalStateException(
-                        "Model ${model.name} doesn't have any material assigned."
-                    )
-                MeshPrimitive(
-                        id = primitive.id,
-                        primitive = primitive,
-                        material = material
-                    )
-            }
-            add(primitives)
-        } else {
-            val allAnimations = scene.animations.getValue(model.armatureId)
-            val animation =
-                allAnimations.firstOrNull { animation -> animation.name == animationName } ?: allAnimations.last()
-            val animatedModel = AnimatedModel(
-                animation = animation.frames,
-                referencePose = scene.armatures.getValue(model.armatureId),
-                time = 0f,
-                duration = animation.frames.maxBy { it.time }?.time ?: 0f
-            )
-            val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
-                AnimatedMeshPrimitive(
-                    primitive = primitive,
-                    material = scene.materials.getValue(primitive.materialId)
-                )
-            }
-            add(animatedModel)
-            add(animatedMeshPrimitive)
-        }
+fun Engine.createFromNode(node: Node, gameContext: GameContext, scene: Scene, transformation: Mat4 = node.transformation.toMat4()): Entity {
+    return when (node.type) {
+        ObjectType.ARMATURE -> createArmature(node, scene, transformation)
+        ObjectType.BOX -> createBox(node, scene, transformation)
+        ObjectType.CAMERA -> createCamera(node, gameContext, scene, transformation)
+        ObjectType.LIGHT -> TODO()
+        ObjectType.MODEL -> createModel(node, scene, transformation)
     }
 }
 
-fun Engine.createModel(camera: Camera, context: GameContext): Entity {
+@ExperimentalStdlibApi
+fun Engine.createBox(
+    node: Node,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val box = scene.boxes.getValue(node.reference)
+    add(BoundingBox.from(box, node.transformation.toMat4()))
+    add(Position(transformation))
+}
+
+@ExperimentalStdlibApi
+fun Engine.createArmature(
+    node: Node,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
+    val boxes = node.children.filter { it.type == ObjectType.BOX }
+        .map { BoundingBox.from(scene.boxes.getValue(it.reference), it.transformation.toMat4()) }
+        .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+    val allAnimations = scene.animations.getValue(node.reference)
+    val animation = allAnimations.last()
+    val animatedModel = AnimatedModel(
+        animation = animation.frames,
+        referencePose = scene.armatures.getValue(node.reference),
+        time = 0f,
+        duration = animation.frames.maxBy { it.time }?.time ?: 0f
+    )
+    val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
+        AnimatedMeshPrimitive(
+            primitive = primitive,
+            material = scene.materials.getValue(primitive.materialId)
+        )
+    }
+    add(boxes)
+    add(Position(transformation))
+    add(animatedModel)
+    add(animatedMeshPrimitive)
+}
+
+@ExperimentalStdlibApi
+fun Engine.createModel(
+    node: Node,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val model = scene.models.getValue(node.reference)
+    val boxes = node.children.filter { it.type == ObjectType.BOX }
+        .map { BoundingBox.from(scene.boxes.getValue(it.reference), it.transformation.toMat4()) }
+        .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+
+    add(boxes)
+    add(Position(transformation))
+
+    val primitives = model.mesh.primitives.map { primitive ->
+        val material =
+            scene.materials[primitive.materialId] ?: throw IllegalStateException(
+                "Model ${model.name} doesn't have any material assigned."
+            )
+        MeshPrimitive(
+            id = primitive.id,
+            primitive = primitive,
+            material = material
+        )
+    }
+    add(primitives)
+}
+
+fun Engine.createCamera(
+    node: Node,
+    context: GameContext,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val camera = scene.perspectiveCameras[node.reference] ?: scene.orthographicCameras.getValue(node.reference)
     val cameraComponent = when (camera) {
         is PerspectiveCamera -> com.github.dwursteisen.minigdx.ecs.components.Camera(
             projection = perspective(
@@ -106,10 +138,8 @@ fun Engine.createModel(camera: Camera, context: GameContext): Entity {
         else -> throw IllegalArgumentException("${camera::class} is not supported")
     }
 
-    return this.create {
-        add(cameraComponent)
-        add(Position(Mat4.fromColumnMajor(*camera.transformation.matrix), way = -1f))
-    }
+    add(cameraComponent)
+    add(Position(transformation, way = -1f))
 }
 
 fun Engine.createUICamera(gameContext: GameContext): Entity {

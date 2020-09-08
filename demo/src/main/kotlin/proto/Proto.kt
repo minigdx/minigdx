@@ -4,6 +4,7 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.api.toMat4
@@ -12,6 +13,7 @@ import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.createFromNode
 import com.github.dwursteisen.minigdx.ecs.createModel
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
@@ -295,23 +297,25 @@ class Proto(override val gameContext: GameContext) : Screen {
 
     override fun createEntities(engine: Engine) {
         val arena = assets.children.first { node -> node.name == "arena" }
-        engine.createModel(assets.perspectiveCameras.values.first(), gameContext)
-        engine.createModel(arena, assets)
+        engine.createFromNode(assets.children.first { it.type == ObjectType.CAMERA },  gameContext, assets)
+        engine.createFromNode(arena, gameContext, assets)
         val origin = Mat4.fromColumnMajor(*arena.transformation.matrix)
         arena.children.forEach { node ->
             val fromColumnMajor = node.transformation.toMat4()
             when (node.name) {
                 "player_spawn" -> {
-                    val entity = engine.createModel(
+                    val entity = engine.createFromNode(
                         node,
+                        gameContext,
                         assets,
                         transformation = origin * fromColumnMajor
                     )
                     entity.add(Player(gameContext.input))
                 }
                 "cube_one" -> {
-                    val entity = engine.createModel(
+                    val entity = engine.createFromNode(
                         node,
+                        gameContext,
                         assets,
                         transformation = origin * fromColumnMajor
                     )
@@ -319,13 +323,14 @@ class Proto(override val gameContext: GameContext) : Screen {
                 }
                 "zone_detection" -> {
                     val sub = node.children.first()
-                    val subEntity = engine.createModel(
+                    val subEntity = engine.createFromNode(
                         sub,
+                        gameContext,
                         assets,
                         transformation = origin * fromColumnMajor * Mat4.fromColumnMajor(*sub.transformation.matrix)
                     )
                     engine.create {
-                        val box = BoundingBox.from(assets.boxes.getValue(node.reference))
+                        val box = BoundingBox.from(assets.boxes.getValue(node.reference), node.transformation.toMat4())
                         add(box)
                         add(Position(transformation = origin * fromColumnMajor))
                         add(Zone(subEntity))

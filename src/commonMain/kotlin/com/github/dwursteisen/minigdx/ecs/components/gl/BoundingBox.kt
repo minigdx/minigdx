@@ -166,8 +166,7 @@ data class BoundingBox(
             )
         }
 
-        fun from(box: Box): BoundingBox {
-            val modelTransformation = Mat4.fromColumnMajor(*box.transformation.matrix)
+        fun from(box: Box, modelTransformation: Mat4): BoundingBox {
             val scale = modelTransformation.scale
             val transformation = scale(Float3(scale.x, scale.y, scale.z))
 

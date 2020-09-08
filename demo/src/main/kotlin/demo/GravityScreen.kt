@@ -3,12 +3,14 @@ package demo
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.createFromNode
 import com.github.dwursteisen.minigdx.ecs.createModel
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
@@ -136,17 +138,14 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
     private val scene: Scene by gameContext.fileHandler.get("v2/gravity.protobuf")
 
     override fun createEntities(engine: Engine) {
-        scene.perspectiveCameras.values.forEach { camera ->
-            engine.createModel(camera, gameContext)
-        }
-
-
         scene.children.forEach { model ->
-            val entity = engine.createModel(model, scene)
+            val entity = engine.createFromNode(model, gameContext, scene)
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }
-            entity.add(ColliderComponent())
+            if(model.type == ObjectType.MODEL) {
+                entity.add(ColliderComponent())
+            }
         }
     }
 
