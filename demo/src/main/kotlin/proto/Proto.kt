@@ -330,7 +330,7 @@ class Proto(override val gameContext: GameContext) : Screen {
                         transformation = origin * fromColumnMajor * Mat4.fromColumnMajor(*sub.transformation.matrix)
                     )
                     engine.create {
-                        val box = BoundingBox.from(assets.boxes.getValue(node.reference), node.transformation.toMat4())
+                        val box = BoundingBox.from(node.transformation.toMat4())
                         add(box)
                         add(Position(transformation = origin * fromColumnMajor))
                         add(Zone(subEntity))

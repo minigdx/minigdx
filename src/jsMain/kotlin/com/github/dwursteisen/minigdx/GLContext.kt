@@ -53,6 +53,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return JsLogger(configuration.gameName)
     }
 
+    internal actual fun createOptions(): Options {
+        return Options(configuration.debug)
+    }
+
     actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         this.gameContext = gameContext
         inputManager = gameContext.input as InputManager

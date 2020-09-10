@@ -50,6 +50,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return JavaLoggingLogger(configuration.name)
     }
 
+    internal actual fun createOptions(): Options {
+        return Options(configuration.debug)
+    }
+
     /**
      * Get the time in milliseconds
      *

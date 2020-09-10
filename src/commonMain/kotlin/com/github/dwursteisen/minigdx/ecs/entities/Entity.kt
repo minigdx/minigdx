@@ -15,10 +15,12 @@ class Entity(
 
     var componentsType: Set<KClass<out Component>> = components.map { it::class }.toSet()
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Component> get(type: KClass<T>): T {
         return componentsByType.getValue(type).toList().first() as T
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Component> findAll(type: KClass<T>): List<T> {
         return componentsByType.getValue(type).toList() as List<T>
     }

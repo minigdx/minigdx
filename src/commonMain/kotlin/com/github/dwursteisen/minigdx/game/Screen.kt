@@ -24,14 +24,17 @@ interface Screen {
         ArmatureUpdateSystem()
     )
 
-    fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> = listOf(
-        ClearBufferRenderStage(gl, compiler),
-        MeshPrimitiveRenderStage(gl, compiler),
-        AnimatedMeshPrimitiveRenderStage(gl, compiler),
-        BoundingBoxStage(gl, compiler),
-        // 2D space rendering
-        SpritePrimitiveRenderStage(gl, compiler)
-    )
+    fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> {
+        val stages = mutableListOf<RenderStage<*, *>>()
+        stages.add(ClearBufferRenderStage(gl, compiler))
+        stages.add(MeshPrimitiveRenderStage(gl, compiler))
+        stages.add(AnimatedMeshPrimitiveRenderStage(gl, compiler))
+        if (gameContext.options.debug) {
+            stages.add(BoundingBoxStage(gl, compiler))
+        }
+        stages.add(SpritePrimitiveRenderStage(gl, compiler))
+        return stages
+    }
 
     fun render(engine: Engine, delta: Seconds) {
         engine.update(delta)

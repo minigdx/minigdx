@@ -5,7 +5,6 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.common.Id
-import com.dwursteisen.minigdx.scene.api.model.Box
 import com.dwursteisen.minigdx.scene.api.model.Color
 import com.dwursteisen.minigdx.scene.api.model.Mesh
 import com.dwursteisen.minigdx.scene.api.model.Normal
@@ -166,7 +165,7 @@ data class BoundingBox(
             )
         }
 
-        fun from(box: Box, modelTransformation: Mat4): BoundingBox {
+        fun from(modelTransformation: Mat4): BoundingBox {
             val scale = modelTransformation.scale
             val transformation = scale(Float3(scale.x, scale.y, scale.z))
 

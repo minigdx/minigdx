@@ -11,6 +11,7 @@ expect class GLContext(configuration: GLConfiguration) {
     internal fun createInputHandler(logger: Logger): InputHandler
     internal fun createViewportStrategy(logger: Logger): ViewportStrategy
     internal fun createLogger(): Logger
+    internal fun createOptions(): Options
 
     fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game)
 }

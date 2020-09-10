@@ -40,7 +40,7 @@ fun Engine.createBox(
     transformation: Mat4
 ): Entity = create {
     val box = scene.boxes.getValue(node.reference)
-    add(BoundingBox.from(box, node.transformation.toMat4()))
+    add(BoundingBox.from(node.transformation.toMat4()))
     add(Position(transformation))
 }
 
@@ -52,7 +52,7 @@ fun Engine.createArmature(
 ): Entity = create {
     val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
     val boxes = node.children.filter { it.type == ObjectType.BOX }
-        .map { BoundingBox.from(scene.boxes.getValue(it.reference), it.transformation.toMat4()) }
+        .map { BoundingBox.from(it.transformation.toMat4()) }
         .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
     val allAnimations = scene.animations.getValue(node.reference)
     val animation = allAnimations.last()
@@ -82,7 +82,7 @@ fun Engine.createModel(
 ): Entity = create {
     val model = scene.models.getValue(node.reference)
     val boxes = node.children.filter { it.type == ObjectType.BOX }
-        .map { BoundingBox.from(scene.boxes.getValue(it.reference), it.transformation.toMat4()) }
+        .map { BoundingBox.from(it.transformation.toMat4()) }
         .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
 
     add(boxes)

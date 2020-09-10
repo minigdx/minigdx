@@ -38,7 +38,7 @@ class AddTranslation(
 ) : ObjectTransformation() {
 
     override fun execute(position: Position) {
-        when (val ol = origin) {
+        when (origin) {
             Global, is FixedPoint -> position.transformation = translation(Float3(x, y, z)) * position.transformation
             Local -> position.transformation = position.transformation * translation(Float3(x, y, z))
         }

@@ -5,6 +5,7 @@ import org.w3c.dom.HTMLCanvasElement
 
 actual class GLConfiguration(
     actual val gameName: String,
+    actual val debug: Boolean,
     val canvas: HTMLCanvasElement? = null,
     val canvasId: String? = null,
     val rootPath: String = window.location.protocol + "//" + window.location.host + window.location.pathname
