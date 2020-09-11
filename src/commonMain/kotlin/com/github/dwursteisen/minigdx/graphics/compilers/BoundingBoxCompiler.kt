@@ -39,6 +39,13 @@ class BoundingBoxCompiler : GLResourceCompiler {
                 usage = GL.STATIC_DRAW
             )
         }
-        component.isDirty = false
+    }
+
+    override fun update(source: GLResourceComponent, target: GLResourceComponent) {
+        source as BoundingBox
+        target as BoundingBox
+        target.colorBuffer = source.colorBuffer
+        target.orderBuffer = source.orderBuffer
+        target.verticesBuffer = source.verticesBuffer
     }
 }

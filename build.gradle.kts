@@ -13,7 +13,7 @@ group = "com.github.dwursteisen.minigdx"
 version = project.properties["version"] ?: "1.1-SNAPSHOT"
 
 if (version == "unspecified") {
-    version = "1.1-SNAPSHOT"
+    version = "1.2-SNAPSHOT"
 }
 
 val kotlinMathVersion = "1.0.0-alpha18"

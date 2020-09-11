@@ -6,4 +6,6 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
 interface GLResourceCompiler {
 
     fun compile(gl: GL, component: GLResourceComponent)
+
+    fun update(source: GLResourceComponent, target: GLResourceComponent)
 }

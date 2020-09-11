@@ -69,7 +69,15 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
             data = component.primitive.vertices.map { it.uv }.uvDatasource(),
             usage = GL.STATIC_DRAW
         )
+    }
 
-        component.isDirty = false
+    override fun update(source: GLResourceComponent, target: GLResourceComponent) {
+        source as MeshPrimitive
+        target as MeshPrimitive
+
+        target.textureReference = source.textureReference
+        target.uvBuffer = source.uvBuffer
+        target.verticesBuffer = source.verticesBuffer
+        target.verticesOrderBuffer = source.verticesOrderBuffer
     }
 }

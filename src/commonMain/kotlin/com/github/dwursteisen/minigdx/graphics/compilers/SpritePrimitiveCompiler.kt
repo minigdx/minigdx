@@ -78,6 +78,15 @@ class SpritePrimitiveCompiler : GLResourceCompiler {
             ), usage = GL.STATIC_DRAW
         )
         component.numberOfIndices = order.size
-        component.isDirty = false
+    }
+
+    override fun update(source: GLResourceComponent, target: GLResourceComponent) {
+        source as SpritePrimitive
+        target as SpritePrimitive
+
+        target.textureReference = source.textureReference
+        target.uvBuffer = source.uvBuffer
+        target.verticesBuffer = source.verticesBuffer
+        target.verticesOrderBuffer = source.verticesOrderBuffer
     }
 }

@@ -36,12 +36,19 @@ class GLResourceClient(
 
     fun <T : GLResourceComponent> compile(components: Iterable<T>) {
         components
-            .onEach { log.info("GL_RESOURCE") { "Compiling '${it.id}' components" } }
-            .onEach { cache[it.id] = it }
-            .filter { component -> component.isDirty }
-            .forEach { component ->
-                compilers[component::class]?.compile(gl, component)
-                    ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '$${component::class.simpleName}''")
+            .filter { it.isDirty }
+            .onEach { component ->
+                val cachedValue = cache[component.id]
+                if (cachedValue != null) {
+                    compilers[component::class]?.update(cachedValue, component)
+                } else {
+                    log.info("GL_RESOURCE") { "Compiling '${component.id}' components" }
+                    cache[component.id] = component
+                    compilers[component::class]?.compile(gl, component)
+                        ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '$${component::class.simpleName}''")
+                }
+            }.forEach {
+                it.isDirty = false
             }
     }
 

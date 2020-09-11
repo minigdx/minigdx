@@ -29,7 +29,7 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
         super.update(delta)
         gl.enable(GL.BLEND)
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
-        transparentPrimitive.sortByDescending { (position, _) -> position.translation.dist2(cameraPosition) }
+        transparentPrimitive.sortByDescending { (position, _) -> cameraPosition.dist2(position.translation) }
         transparentPrimitive.forEach { (position, primitive) ->
             val model = position.transformation
             vertex.uModelView.apply(program, combinedMatrix * model)

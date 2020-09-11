@@ -82,6 +82,16 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
         )
 
         component.isCompiled = true
-        component.isDirty = false
+    }
+
+    override fun update(source: GLResourceComponent, target: GLResourceComponent) {
+        target as AnimatedMeshPrimitive
+        source as AnimatedMeshPrimitive
+        target.jointBuffer = source.jointBuffer
+        target.verticesBuffer = source.verticesBuffer
+        target.weightBuffer = source.weightBuffer
+        target.uvBuffer = source.uvBuffer
+        target.verticesOrderBuffer = source.verticesOrderBuffer
+        target.textureReference = source.textureReference
     }
 }
