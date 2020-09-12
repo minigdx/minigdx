@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.render
 
+import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Position
@@ -25,7 +26,13 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
     private var cameraPosition: Vector3 = Vector3.ZERO
 
     override fun update(delta: Seconds) {
-        cameraPosition = camera?.get(Position::class)?.translation ?: Vector3.ZERO
+        cameraPosition = camera
+                ?.get(Position::class)
+                ?.transformation
+                ?.let { inverse(it).translation }
+                ?.let { Vector3(it.x, it.y, it.z) }
+                ?: Vector3.ZERO
+
         super.update(delta)
         gl.enable(GL.BLEND)
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)

@@ -23,15 +23,18 @@ class Player : Component
 class PlayerSystem(val inputHandler: InputHandler) : System(EntityQuery(Player::class)) {
     override fun update(delta: Seconds, entity: Entity) {
         if (inputHandler.isKeyPressed(Key.ARROW_RIGHT)) {
-            entity.get(Position::class).apply(AddTranslation(5 * delta, origin = Local))
+            // entity.get(Position::class).apply(AddTranslation(5 * delta, origin = Local))
+            entity.get(Position::class).translate( x =5 * delta)
         } else if (inputHandler.isKeyPressed(Key.ARROW_LEFT)) {
-            entity.get(Position::class).apply(AddTranslation(-5 * delta, origin = Local))
+            entity.get(Position::class).translate( x =-5 * delta)
         }
 
         if (inputHandler.isKeyPressed(Key.ARROW_DOWN)) {
-            entity.get(Position::class).apply(AddTranslation(z = 5 * delta, origin = Local))
+            entity.get(Position::class).translate( z =5 * delta)
+            //entity.get(Position::class).apply(AddTranslation(z = 5 * delta, origin = Local))
         } else if (inputHandler.isKeyPressed(Key.ARROW_UP)) {
-            entity.get(Position::class).apply(AddTranslation(z = -5 * delta, origin = Local))
+            entity.get(Position::class).translate( z =-5 * delta)
+            //entity.get(Position::class).apply(AddTranslation(z = -5 * delta, origin = Local))
         }
     }
 }

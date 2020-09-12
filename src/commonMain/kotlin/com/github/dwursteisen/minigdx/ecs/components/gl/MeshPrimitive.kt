@@ -15,5 +15,6 @@ open class MeshPrimitive(
     var verticesOrderBuffer: Buffer? = null,
     var textureReference: TextureReference? = null,
     override var isDirty: Boolean = true,
-    override var id: Id
+    override var id: Id,
+    val name: String
 ) : GLResourceComponent

@@ -96,7 +96,8 @@ fun Engine.createModel(
         MeshPrimitive(
             id = primitive.id,
             primitive = primitive,
-            material = material
+            material = material,
+            name = node.name
         )
     }
     add(primitives)
