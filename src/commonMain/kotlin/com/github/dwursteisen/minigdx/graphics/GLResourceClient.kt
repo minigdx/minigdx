@@ -13,6 +13,7 @@ import com.github.dwursteisen.minigdx.graphics.compilers.GLResourceCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.MeshPrimitiveCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.SpritePrimitiveCompiler
 import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import kotlin.reflect.KClass
 
 private val basicCompilers: Map<KClass<out GLResourceComponent>, GLResourceCompiler> = mapOf(
@@ -32,6 +33,8 @@ class GLResourceClient(
 
     private val cache: MutableMap<Id, GLResourceComponent> = mutableMapOf()
 
+    private val materials: MutableMap<Id, TextureReference> = mutableMapOf()
+
     fun <T : GLResourceComponent> compile(component: T) = compile(listOf(component))
 
     fun <T : GLResourceComponent> compile(components: Iterable<T>) {
@@ -40,12 +43,12 @@ class GLResourceClient(
             .onEach { component ->
                 val cachedValue = cache[component.id]
                 if (cachedValue != null) {
-                    compilers[component::class]?.update(cachedValue, component)
+                    compilers[component::class]?.update(gl, cachedValue, component)
                 } else {
                     log.info("GL_RESOURCE") { "Compiling '${component.id}' components" }
                     cache[component.id] = component
-                    compilers[component::class]?.compile(gl, component)
-                        ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '$${component::class.simpleName}''")
+                    compilers[component::class]?.compile(gl, component, materials)
+                        ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '${component::class.simpleName}'")
                 }
             }.forEach {
                 it.isDirty = false

@@ -6,11 +6,15 @@ import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
+import com.dwursteisen.minigdx.scene.api.model.UV
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
+import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
+import com.dwursteisen.minigdx.scene.api.sprite.SpriteAnimation
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
+import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.Text
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
@@ -20,6 +24,7 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.entity.text.Font
+import com.github.dwursteisen.minigdx.render.sprites.SpriteRenderStrategy
 import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
 
 @ExperimentalStdlibApi
@@ -179,4 +184,24 @@ fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
             )
         )
     }
+}
+
+class SpriteAnimated(
+    val animations: Map<String, SpriteAnimation>,
+    val uvs: List<UV>,
+    var currentFrame: Int = 0,
+    var frameDuration: Float = 0f,
+    var currentAnimation: SpriteAnimation = animations.values.first()
+) : Component
+
+fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
+    add(Position())
+    add(SpriteAnimated(
+        animations = sprite.animations,
+        uvs = sprite.uvs
+    ))
+    add(SpritePrimitive(
+        material = scene.materials.getValue(sprite.materialReference),
+        renderStrategy = SpriteRenderStrategy
+    ))
 }

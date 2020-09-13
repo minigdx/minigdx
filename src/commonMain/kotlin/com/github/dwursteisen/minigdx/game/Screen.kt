@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
+import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
@@ -21,6 +22,7 @@ interface Screen {
     fun createEntities(engine: Engine)
 
     fun createSystems(engine: Engine): List<System> = listOf(
+        SpriteAnimatedSystem(),
         ArmatureUpdateSystem()
     )
 
