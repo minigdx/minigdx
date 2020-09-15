@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.entity.primitives.Texture
 import com.github.dwursteisen.minigdx.entity.text.AngelCode
 import com.github.dwursteisen.minigdx.entity.text.Font
@@ -108,5 +109,10 @@ class FileHandler(val platformFileHandler: PlatformFileHandler, val logger: Logg
 
     fun isFullyLoaded(): Boolean {
         return assets.all { it.value.loaded() }
+    }
+
+    fun loadingProgress(): Percent {
+        val loaded = assets.count { it.value.loaded() }
+        return loaded / assets.count().toFloat()
     }
 }

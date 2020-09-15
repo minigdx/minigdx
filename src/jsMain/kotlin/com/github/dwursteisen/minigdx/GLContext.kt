@@ -68,8 +68,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     private fun loading(now: Double) {
         if (!gameContext.fileHandler.isFullyLoaded()) {
+            configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             window.requestAnimationFrame(::loading)
         } else {
+            configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             gameContext.viewport.update(
                 gameContext.gl,
                 gameContext.gl.screen.width,
