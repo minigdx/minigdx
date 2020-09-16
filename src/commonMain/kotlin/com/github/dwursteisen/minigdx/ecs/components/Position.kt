@@ -9,7 +9,7 @@ import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
-import com.github.dwursteisen.minigdx.math.ObjectTransformation
+import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.math.Vector3
 
 data class Position(
@@ -36,21 +36,23 @@ data class Position(
         )
     },
     var way: Float = 1f,
-    var positionTransformation: Mat4 = transformation * scale(Float3(
-        1 / transformation.scale.x,
-        1 / transformation.scale.y,
-        1 / transformation.scale.z
-    ))
+    var positionTransformation: Mat4 = transformation * scale(
+        Float3(
+            1 / transformation.scale.x,
+            1 / transformation.scale.y,
+            1 / transformation.scale.z
+        )
+    )
 ) : Component {
 
-    fun rotate(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
-        rotateX(x.toFloat())
-        rotateY(y.toFloat())
-        rotateZ(z.toFloat())
+    fun addRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds): Position {
+        rotateX(x.toFloat() * delta)
+        rotateY(y.toFloat() * delta)
+        rotateZ(z.toFloat() * delta)
         return this
     }
 
-    fun rotate(angles: Vector3): Position = rotate(angles.x, angles.y, angles.z)
+    fun addRotation(angles: Vector3, delta: Seconds): Position = addRotation(angles.x, angles.y, angles.z, delta)
 
     fun rotateX(angle: Degree): Position {
         val asFloat = angle.toFloat() * way
@@ -115,13 +117,23 @@ data class Position(
         return rotateZ(angle.toFloat() - rotation.z)
     }
 
+    fun addTranslate(x: Coordinate = 0f, y: Coordinate = 0f, z: Coordinate = 0f, delta: Seconds): Position {
+        return translate(x.toFloat() * delta, y.toFloat() * delta, z.toFloat() * delta)
+    }
+
+    @Deprecated("Prefer addTranslate", ReplaceWith("addTranslate"))
     fun translate(x: Coordinate = 0f, y: Coordinate = 0f, z: Coordinate = 0f): Position {
         translation.add(x, y, z)
         positionTransformation *= translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         return updateMatrix()
     }
 
+    @Deprecated("Prefer addTranslate", ReplaceWith("addTranslate"))
     fun translate(move: Vector3): Position = translate(move.x, move.y, move.z)
+
+    fun addTranslate(move: Vector3, delta: Seconds): Position {
+        return addTranslate(move.x, move.y, move.z, delta)
+    }
 
     fun setTranslate(
         x: Coordinate = translation.x,
@@ -133,26 +145,21 @@ data class Position(
 
     fun setTranslate(move: Vector3): Position = setTranslate(move.x, move.y, move.z)
 
-    fun scale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f): Position {
-        scale.add(x, y, z)
+    fun addScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds): Position {
+        scale.add(x.toFloat() * delta, y.toFloat() * delta, z.toShort() * delta)
         return updateMatrix()
     }
 
-    fun scale(scale: Vector3): Position = scale(scale.x, scale.y, scale.z)
+    fun addScale(scale: Vector3, delta: Seconds): Position = addScale(scale.x, scale.y, scale.z, delta)
 
     fun setScale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position {
-        return scale(x.toFloat() - scale.x, y.toFloat() - scale.y, z.toFloat() - scale.z)
+        return addScale(x.toFloat() - scale.x, y.toFloat() - scale.y, z.toFloat() - scale.z, 1f)
     }
 
     fun setScale(scale: Vector3): Position = setScale(scale.x, scale.y, scale.z)
 
     private fun updateMatrix(): Position {
         transformation = positionTransformation * scale(Float3(scale.x, scale.y, scale.z))
-        return this
-    }
-
-    fun apply(transformation: ObjectTransformation): Position {
-        transformation.execute(this)
         return this
     }
 }

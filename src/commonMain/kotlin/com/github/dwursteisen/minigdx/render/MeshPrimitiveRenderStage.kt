@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.render
 
+import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
@@ -25,6 +26,8 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
 
     private var cameraPosition: Vector3 = Vector3.ZERO
 
+    private val identity = Mat4.identity()
+
     override fun update(delta: Seconds) {
         cameraPosition = camera
                 ?.get(Position::class)
@@ -39,8 +42,7 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
         transparentPrimitive.sortByDescending { (position, _) -> cameraPosition.dist2(position.translation) }
         transparentPrimitive.forEach { (position, primitive) ->
             val model = position.transformation
-            vertex.uModelView.apply(program, combinedMatrix * model)
-            drawPrimitive(primitive)
+            drawPrimitive(primitive, combinedMatrix * model)
         }
         transparentPrimitive.clear()
         gl.disable(GL.BLEND)
@@ -50,22 +52,26 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
         val position = entity.get(Position::class)
         val model = position.transformation
 
-        vertex.uModelView.apply(program, combinedMatrix * model)
-
         entity.findAll(MeshPrimitive::class).forEach { primitive ->
             if (primitive.material.hasAlpha) {
                 // defer rendering
                 transparentPrimitive.add(position to primitive)
             } else {
-                drawPrimitive(primitive)
+                drawPrimitive(primitive, combinedMatrix * model)
             }
         }
     }
 
-    private fun drawPrimitive(primitive: MeshPrimitive) {
+    private fun drawPrimitive(primitive: MeshPrimitive, modelView: Mat4) {
         if (primitive.isDirty) {
             compiler.compile(primitive)
         }
+
+        when (val trans = primitive.transformation) {
+            null -> vertex.uModelView.apply(program, modelView)
+            else -> vertex.uModelView.apply(program, modelView * trans)
+        }
+
         vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
         vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
         fragment.uUV.apply(program, primitive.textureReference!!, unit = 0)

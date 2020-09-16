@@ -6,7 +6,12 @@ import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
+import com.dwursteisen.minigdx.scene.api.common.Id
+import com.dwursteisen.minigdx.scene.api.model.Normal
+import com.dwursteisen.minigdx.scene.api.model.Position as PositionDTO
+import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.dwursteisen.minigdx.scene.api.model.UV
+import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
@@ -24,11 +29,15 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.entity.text.Font
-import com.github.dwursteisen.minigdx.render.sprites.SpriteRenderStrategy
 import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
 
 @ExperimentalStdlibApi
-fun Engine.createFromNode(node: Node, gameContext: GameContext, scene: Scene, transformation: Mat4 = node.transformation.toMat4()): Entity {
+fun Engine.createFromNode(
+    node: Node,
+    gameContext: GameContext,
+    scene: Scene,
+    transformation: Mat4 = node.transformation.toMat4()
+): Entity {
     return when (node.type) {
         ObjectType.ARMATURE -> createArmature(node, scene, transformation)
         ObjectType.BOX -> createBox(node, scene, transformation)
@@ -44,7 +53,6 @@ fun Engine.createBox(
     scene: Scene,
     transformation: Mat4
 ): Entity = create {
-    val box = scene.boxes.getValue(node.reference)
     add(BoundingBox.from(node.transformation.toMat4()))
     add(Position(transformation))
 }
@@ -189,19 +197,38 @@ fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
 class SpriteAnimated(
     val animations: Map<String, SpriteAnimation>,
     val uvs: List<UV>,
-    var currentFrame: Int = 0,
+    var currentFrame: Int = -1,
     var frameDuration: Float = 0f,
     var currentAnimation: SpriteAnimation = animations.values.first()
 ) : Component
 
 fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
     add(Position())
-    add(SpriteAnimated(
-        animations = sprite.animations,
-        uvs = sprite.uvs
-    ))
-    add(SpritePrimitive(
-        material = scene.materials.getValue(sprite.materialReference),
-        renderStrategy = SpriteRenderStrategy
-    ))
+    add(
+        SpriteAnimated(
+            animations = sprite.animations,
+            uvs = sprite.uvs
+        )
+    )
+    add(
+        MeshPrimitive(
+            id = sprite.id,
+            name = "undefined",
+            material = scene.materials.getValue(sprite.materialReference),
+            primitive = Primitive(
+                id = Id(),
+                materialId = sprite.materialReference,
+                vertices = listOf(
+                    Vertex(PositionDTO(0f, 0f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
+                    Vertex(PositionDTO(1f, 0f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
+                    Vertex(PositionDTO(0f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
+                    Vertex(PositionDTO(1f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f))
+                ),
+                verticesOrder = intArrayOf(
+                    0, 1, 2,
+                    2, 1, 3
+                )
+            )
+        )
+    )
 }

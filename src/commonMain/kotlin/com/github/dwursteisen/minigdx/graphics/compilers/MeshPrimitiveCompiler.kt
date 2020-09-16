@@ -13,7 +13,7 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         component as MeshPrimitive
 
         // Push the model
-        component.verticesBuffer = gl.createBuffer()
+        component.verticesBuffer = component.verticesBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.verticesBuffer!!)
 
         gl.bufferData(
@@ -22,7 +22,7 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
             usage = GL.STATIC_DRAW
         )
 
-        component.verticesOrderBuffer = gl.createBuffer()
+        component.verticesOrderBuffer = component.verticesOrderBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.verticesOrderBuffer!!)
         gl.bufferData(
             target = GL.ELEMENT_ARRAY_BUFFER,
@@ -65,7 +65,7 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         component.textureReference = textureReference
 
         // Push UV coordinates
-        component.uvBuffer = gl.createBuffer()
+        component.uvBuffer = component.uvBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.uvBuffer!!)
 
         gl.bufferData(
@@ -81,6 +81,15 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
 
         target.textureReference = source.textureReference
         target.uvBuffer = source.uvBuffer
+        if (target.isUVDirty) {
+            gl.bindBuffer(GL.ARRAY_BUFFER, target.uvBuffer!!)
+
+            gl.bufferData(
+                target = GL.ARRAY_BUFFER,
+                data = target.primitive.vertices.map { it.uv }.uvDatasource(),
+                usage = GL.STATIC_DRAW
+            )
+        }
         target.verticesBuffer = source.verticesBuffer
         target.verticesOrderBuffer = source.verticesOrderBuffer
     }
