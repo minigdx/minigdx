@@ -24,7 +24,7 @@ class Main {
                 GLConfiguration(
                     name = "Kotlin/JVM",
                     gameName = "Demo",
-                    width = 1280,
+                    width = 720,
                     height = 720
                 )
             ).execute {

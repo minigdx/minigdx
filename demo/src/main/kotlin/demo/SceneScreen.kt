@@ -48,7 +48,7 @@ class PlayerSystem(val inputHandler: InputHandler) : System(EntityQuery(Player::
 @ExperimentalStdlibApi
 class SceneScreen(override val gameContext: GameContext) : Screen {
 
-    private val scene: Scene by gameContext.fileHandler.get("proto/empty.protobuf")
+    private val scene: Scene by gameContext.fileHandler.get("proto/asteroid.protobuf")
 
     private val sprite: Scene by gameContext.fileHandler.get("proto/sprite.protobuf")
 

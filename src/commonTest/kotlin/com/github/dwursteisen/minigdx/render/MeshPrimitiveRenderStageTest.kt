@@ -10,8 +10,8 @@ class MeshPrimitiveRenderStageTest {
     fun sort_backToFront_it_sorts() {
         val camera = Position()
         val toSort: MutableList<Pair<Position, *>> = mutableListOf(
-            Position().setTranslate(z = 20f) to "front",
-            Position().setTranslate(z = 50f) to "back"
+            Position().setGlobalTranslation(z = 20f) to "front",
+            Position().setGlobalTranslation(z = 50f) to "back"
         )
         backToFront(camera, toSort)
 
@@ -19,7 +19,7 @@ class MeshPrimitiveRenderStageTest {
         assertEquals("back", backA.second)
         assertEquals("front", frontA.second)
 
-        camera.setTranslate(z = 51f)
+        camera.setGlobalTranslation(z = 51f)
 
         backToFront(camera, toSort)
 
@@ -27,7 +27,7 @@ class MeshPrimitiveRenderStageTest {
         assertEquals("front", backB.second)
         assertEquals("back", frontB.second)
 
-        frontB.first.setTranslate(z = 300f)
+        frontB.first.setGlobalTranslation(z = 300f)
 
         backToFront(camera, toSort)
 

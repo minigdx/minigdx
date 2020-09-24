@@ -18,36 +18,53 @@ fun assertEquals(
 class PositionTest {
 
     @Test
-    fun setRotation_set_rotationX() {
-        val rotation = Position().setRotationX(90f).transformation.rotation
+    fun setRotation_setLocalRotationX() {
+        val position = Position()
+        val rotation = position.setLocalRotation(x = 90f).transformation.rotation
         assertEquals(90f, rotation.x, 0.1f)
+        assertEquals(90f, position.rotation.x, 0.1f)
     }
 
     @Test
-    fun setRotation_set_rotationY() {
-        val rotation = Position().setRotationY(90f).transformation.rotation
+    fun setRotation_setLocalRotationY() {
+        val position = Position()
+        val rotation = position.setLocalRotation(y = 90f).transformation.rotation
         assertEquals(90f, rotation.y, 0.1f)
+        assertEquals(90f, position.rotation.y, 0.1f)
     }
 
     @Test
-    fun setRotation_set_rotationZ() {
-        val rotation = Position().setRotationZ(90f).transformation.rotation
-        assertEquals(-90f, rotation.z, 0.1f)
+    fun setRotation_setLocalRotationZ() {
+        val position = Position()
+        val rotation = position.setLocalRotation(z = 90f).transformation.rotation
+        assertEquals(90f, rotation.z, 0.1f)
+        assertEquals(90f, position.rotation.z, 0.1f)
     }
 
     @Test
-    fun translate_translate() {
-        val translate = Position().addTranslate(3, 4, 5, 1f).transformation.translation
+    fun translate_addLocalTranslation() {
+        val position = Position()
+        val translate = position.addLocalTranslation(3, 4, 5, 1f).transformation.translation
         assertEquals(3f, translate.x)
         assertEquals(4f, translate.y)
         assertEquals(5f, translate.z)
+        assertEquals(3f, position.translation.x)
+        assertEquals(4f, position.translation.y)
+        assertEquals(5f, position.translation.z)
     }
 
     @Test
-    fun translate_setTranslate() {
-        val translate = Position().addTranslate(3, 4, 5, 1f).setTranslate(1, 2, 3).transformation.translation
+    fun translate_setGlobalTranslation() {
+        val position = Position()
+        val translate = position
+            .addImmediateLocalTranslation(7, 8, 9)
+            .setGlobalTranslation(1, 2, 3)
+            .transformation.translation
         assertEquals(1f, translate.x)
         assertEquals(2f, translate.y)
         assertEquals(3f, translate.z)
+        assertEquals(1f, position.translation.x)
+        assertEquals(2f, position.translation.y)
+        assertEquals(3f, position.translation.z)
     }
 }

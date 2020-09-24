@@ -173,13 +173,13 @@ fun Engine.createUICamera(gameContext: GameContext): Entity {
             )
         )
         // put the camera in the center of the screen
-        add(Position(way = -1f).translate(x = -width * 0.5f, y = -height * 0.5f))
+        add(Position(way = -1f).setGlobalTranslation(x = -width * 0.5f, y = -height * 0.5f))
     }
 }
 
 fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
     return this.create {
-        add(Position().translate(x = x, y = y, z = 0f))
+        add(Position().setGlobalTranslation(x = x, y = y, z = 0f))
         val spritePrimitive = SpritePrimitive(
             texture = font.fontSprite,
             renderStrategy = TextRenderStrategy

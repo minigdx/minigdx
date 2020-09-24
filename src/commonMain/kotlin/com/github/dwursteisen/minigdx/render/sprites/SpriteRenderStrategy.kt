@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 
+@Deprecated("To be removed")
 object SpriteRenderStrategy : RenderStrategy {
     override fun render(gl: GL, entity: Entity) {
         val spritePrimitive = entity.get(SpritePrimitive::class)

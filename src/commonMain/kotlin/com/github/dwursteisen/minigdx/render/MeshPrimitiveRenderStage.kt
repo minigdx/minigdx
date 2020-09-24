@@ -26,8 +26,6 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
 
     private var cameraPosition: Vector3 = Vector3.ZERO
 
-    private val identity = Mat4.identity()
-
     override fun update(delta: Seconds) {
         cameraPosition = camera
                 ?.get(Position::class)
