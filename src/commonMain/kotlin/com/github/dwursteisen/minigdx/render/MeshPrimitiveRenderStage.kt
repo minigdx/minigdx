@@ -4,7 +4,9 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.Camera
 import com.github.dwursteisen.minigdx.ecs.components.Position
+import com.github.dwursteisen.minigdx.ecs.components.UIComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
@@ -13,12 +15,23 @@ import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
 
-class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<MeshVertexShader, UVFragmentShader>(
+class MeshPrimitiveRenderStage(
+    gl: GL,
+    compiler: GLResourceClient,
+    query: EntityQuery = EntityQuery(
+        listOf(MeshPrimitive::class),
+        listOf(UIComponent::class)
+    ),
+    cameraQuery: EntityQuery = EntityQuery(
+        Camera::class
+    )
+) : RenderStage<MeshVertexShader, UVFragmentShader>(
     gl = gl,
     compiler = compiler,
     vertex = MeshVertexShader(),
     fragment = UVFragmentShader(),
-    query = EntityQuery(MeshPrimitive::class)
+    query = query,
+    cameraQuery = cameraQuery
 ) {
 
     // Distance ; Mesh
@@ -28,11 +41,11 @@ class MeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage
 
     override fun update(delta: Seconds) {
         cameraPosition = camera
-                ?.get(Position::class)
-                ?.transformation
-                ?.let { inverse(it).translation }
-                ?.let { Vector3(it.x, it.y, it.z) }
-                ?: Vector3.ZERO
+            ?.get(Position::class)
+            ?.transformation
+            ?.let { inverse(it).translation }
+            ?.let { Vector3(it.x, it.y, it.z) }
+            ?: Vector3.ZERO
 
         super.update(delta)
         gl.enable(GL.BLEND)
