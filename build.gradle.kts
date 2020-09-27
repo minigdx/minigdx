@@ -17,7 +17,7 @@ if (version == "unspecified") {
 }
 
 val kotlinMathVersion = "1.0.0-alpha18"
-val gltfApiVersion = "1.0-SNAPSHOT"
+val gltfApiVersion = "1.0.0-alpha11"
 
 val properties = Properties()
 if (project.file("local.properties").exists()) {

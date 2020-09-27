@@ -4,7 +4,7 @@ plugins {
     java
     application
     kotlin("jvm")
-    id("com.github.dwursteisen.gltf") version "1.0-SNAPSHOT"
+    id("com.github.dwursteisen.gltf") version "1.0.0-alpha11"
 }
 
 repositories {
@@ -44,7 +44,7 @@ application {
 
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
-    this.args = listOf("--game", "scene")
+    this.args = listOf("--game", "gravity")
 }
 
 val compileKotlin: KotlinCompile by tasks
