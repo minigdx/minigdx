@@ -24,7 +24,7 @@ class SpriteScreen(override val gameContext: GameContext) : Screen {
 
         engine.create {
             add(spriteComponent)
-            add(Position().translate(x = 600, y = 300).setScale(x = 300, y = 300))
+            add(Position().setGlobalTranslation(x = 600, y = 300).setScale(x = 300, y = 300))
         }
 
         engine.createUICamera(gameContext)

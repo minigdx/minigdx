@@ -32,6 +32,12 @@ class Engine {
         override fun add(components: Iterable<Component>) = components.forEach(::add)
     }
 
+    internal fun onGameStart() {
+        systems.forEach {
+            it.onGameStart(this)
+        }
+    }
+
     fun create(configuration: EntityBuilder.() -> Unit): Entity {
         val builder = InternalEntityBuilder(this)
         builder.configuration()

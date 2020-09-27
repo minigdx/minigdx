@@ -72,7 +72,7 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
         }
 
         acceptedDisplacement.forEach {
-            position.translate(it.x, it.y, it.z)
+            position.addImmediateLocalTranslation(it.x, it.y, it.z)
         }
     }
 
@@ -125,7 +125,7 @@ class PlayerMoveSystem(
         }
 
         if (input.isKeyJustPressed(Key.R)) {
-            entity.get(Position::class).setTranslate(reset.x, reset.y, reset.z)
+            entity.get(Position::class).setGlobalTranslation(reset.x, reset.y, reset.z)
             gravity.acceleration.set(0, 0, 0)
             gravity.velocity.set(0, 0, 0)
         }

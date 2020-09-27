@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.events.EventListener
@@ -40,6 +41,8 @@ abstract class System(protected val entityQuery: EntityQuery) : EventListener {
             return entities
         }
     }
+
+    open fun onGameStart(engine: Engine) = Unit
 
     abstract fun update(delta: Seconds, entity: Entity)
 

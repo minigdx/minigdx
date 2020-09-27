@@ -45,6 +45,10 @@ class Entity(
 
     fun destroy() = engine.destroy(this)
 
+    fun hasComponent(componentClass: KClass<out Component>): Boolean {
+        return componentsType.contains(componentClass)
+    }
+
     private fun engineUpdate(block: () -> Unit) {
         engine.destroy(this)
         block()

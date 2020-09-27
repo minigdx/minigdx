@@ -35,7 +35,7 @@ class TextScreen(override val gameContext: GameContext) : Screen {
                 override fun update(delta: Seconds, entity: Entity) {
                     time += delta
 
-                    entity.get(Position::class).setTranslate(x = cos(time) * 300f)
+                    entity.get(Position::class).setGlobalTranslation(x = cos(time) * 300f)
                 }
             }
         )

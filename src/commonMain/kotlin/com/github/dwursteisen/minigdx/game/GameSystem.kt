@@ -17,6 +17,7 @@ abstract class GameSystem(val gameContext: GameContext, var screen: Screen) : Ga
         )
         renderStage.forEach { engine.addSystem(it) }
         screen.createEntities(engine)
+        engine.onGameStart()
         renderStage.forEach { it.compileShaders() }
     }
 

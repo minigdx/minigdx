@@ -45,7 +45,7 @@ class GLResourceClient(
                 if (cachedValue != null) {
                     compilers[component::class]?.update(gl, cachedValue, component)
                 } else {
-                    log.info("GL_RESOURCE") { "Compiling '${component.id}' components" }
+                    log.info("GL_RESOURCE") { "Compiling '${component.id}' (${component::class.simpleName}) component" }
                     cache[component.id] = component
                     compilers[component::class]?.compile(gl, component, materials)
                         ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '${component::class.simpleName}'")

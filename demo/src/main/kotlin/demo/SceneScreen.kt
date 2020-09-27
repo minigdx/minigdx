@@ -29,15 +29,15 @@ class PlayerSystem(val inputHandler: InputHandler) : System(EntityQuery(Player::
     override fun update(delta: Seconds, entity: Entity) {
         time += delta
         if (inputHandler.isKeyPressed(Key.ARROW_RIGHT)) {
-            entity.position.addTranslate(x = 5, delta = delta)
+            entity.position.addLocalTranslation(x = 5, delta = delta)
         } else if (inputHandler.isKeyPressed(Key.ARROW_LEFT)) {
-            entity.position.addTranslate(x = -5, delta = delta)
+            entity.position.addLocalTranslation(x = -5, delta = delta)
         }
 
         if (inputHandler.isKeyPressed(Key.ARROW_DOWN)) {
-            entity.position.addTranslate(y = 5, delta = delta)
+            entity.position.addLocalTranslation(y = 5, delta = delta)
         } else if (inputHandler.isKeyPressed(Key.ARROW_UP)) {
-            entity.position.addTranslate(y = -5, delta = delta)
+            entity.position.addLocalTranslation(y = -5, delta = delta)
         }
 
        // entity.position.setScale(x = cos(time) * 3f, y = cos(time) * 3f)
@@ -69,6 +69,9 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
 
         val models = scene.children.filter { it.type == ObjectType.MODEL }
         models.forEach { node ->
+            engine.createFromNode(node, gameContext, scene)
+            engine.createFromNode(node, gameContext, scene)
+            engine.createFromNode(node, gameContext, scene)
             engine.createFromNode(node, gameContext, scene)
         }
 

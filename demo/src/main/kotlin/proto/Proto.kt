@@ -68,11 +68,11 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
         override fun onEnter(entity: Entity) {
             val circleEntity = system.circles.first()
             circle = system.engine.create {
-                add(circleEntity.components.filter { it::class != Position::class && it::class  != Circle::class })
+                add(circleEntity.components.filter { it::class != Position::class && it::class != Circle::class })
                 add(Position())
             }
             val position = entity.get(Position::class).translation
-            circle.get(Position::class).setTranslate(position.x, position.y + 0.1f, position.z)
+            circle.get(Position::class).setGlobalTranslation(position.x, position.y + 0.1f, position.z)
         }
 
         override fun onExit(entity: Entity) {
@@ -104,7 +104,7 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
             val sub = entity.get(Zone::class).subEntity
             return if (system.collider.collide(entity, system.players.first())) {
                 time += delta
-                sub.get(Position::class).setTranslate(y = y - abs(cos(time * 3f)) * 0.05f)
+                sub.get(Position::class).setGlobalTranslation(y = y - abs(cos(time * 3f)) * 0.05f)
                 null
             } else {
                 WaitOn(system)
@@ -113,7 +113,7 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
 
         override fun onExit(entity: Entity) {
             val sub = entity.get(Zone::class).subEntity
-            sub.get(Position::class).setTranslate(y = y)
+            sub.get(Position::class).setGlobalTranslation(y = y)
         }
     }
 
@@ -142,15 +142,15 @@ class CubeSystem() : StateMachineSystem(Cube::class) {
         }
 
         override fun onExit(entity: Entity) {
-            entity.get(Position::class).setTranslate(y = y)
+            entity.get(Position::class).setGlobalTranslation(y = y)
         }
 
         override fun update(delta: Seconds, entity: Entity): State? {
-            if(waitOnZone) {
+            if (waitOnZone) {
                 return WaitOnZone(system)
             }
             time += delta
-            entity.get(Position::class).setTranslate(y = y + abs(cos(time * 3f)) * 0.5f)
+            entity.get(Position::class).setGlobalTranslation(y = y + abs(cos(time * 3f)) * 0.5f)
 
             val player = system.players.first()
             return if (system.collider.collide(player, entity)) {
@@ -170,7 +170,7 @@ class CubeSystem() : StateMachineSystem(Cube::class) {
         }
 
         override fun update(delta: Seconds, entity: Entity): State? {
-            entity.get(Position::class).rotateY(delta * 360f)
+            entity.get(Position::class).addLocalRotation(y = 360f, delta = delta)
             val player = system.players.first()
             return if (player.get(Player::class).input.isKeyJustPressed(Key.SPACE)) {
                 Move(system)
@@ -182,7 +182,7 @@ class CubeSystem() : StateMachineSystem(Cube::class) {
         }
 
         override fun onExit(entity: Entity) {
-            entity.get(Position::class).setRotationY(rotation)
+            entity.get(Position::class).setLocalRotation(y = rotation)
         }
     }
 
@@ -203,7 +203,7 @@ class CubeSystem() : StateMachineSystem(Cube::class) {
 
             val position = entity.get(Position::class)
             position
-                .setTranslate(
+                .setGlobalTranslation(
                     x = lerp(target.x, position.translation.x),
                     z = lerp(target.z, position.translation.z)
                 )
@@ -258,18 +258,18 @@ class PlayerSystem(private val inputHandler: InputHandler) : StateMachineSystem(
         override fun update(delta: Seconds, entity: Entity): State? {
             var isKeyPressed = false
             if (inputHandler.isKeyPressed(Key.ARROW_UP)) {
-                entity.get(Position::class).translate(z = MOVE_SPEED * delta)
+                entity.get(Position::class).addLocalTranslation(z = MOVE_SPEED, delta = delta)
                 isKeyPressed = true
             } else if (inputHandler.isKeyPressed(Key.ARROW_DOWN)) {
-                entity.get(Position::class).translate(z = -MOVE_SPEED * delta)
+                entity.get(Position::class).addLocalTranslation(z = -MOVE_SPEED, delta = delta)
                 isKeyPressed = true
             }
 
             if (inputHandler.isKeyPressed(Key.ARROW_LEFT)) {
-                entity.get(Position::class).translate(x = MOVE_SPEED * delta)
+                entity.get(Position::class).addLocalTranslation(x = MOVE_SPEED, delta = delta)
                 isKeyPressed = true
             } else if (inputHandler.isKeyPressed(Key.ARROW_RIGHT)) {
-                entity.get(Position::class).translate(x = -MOVE_SPEED * delta)
+                entity.get(Position::class).addLocalTranslation(x = -MOVE_SPEED, delta = delta)
                 isKeyPressed = true
             }
 
@@ -297,7 +297,7 @@ class Proto(override val gameContext: GameContext) : Screen {
 
     override fun createEntities(engine: Engine) {
         val arena = assets.children.first { node -> node.name == "arena" }
-        engine.createFromNode(assets.children.first { it.type == ObjectType.CAMERA },  gameContext, assets)
+        engine.createFromNode(assets.children.first { it.type == ObjectType.CAMERA }, gameContext, assets)
         engine.createFromNode(arena, gameContext, assets)
         val origin = Mat4.fromColumnMajor(*arena.transformation.matrix)
         arena.children.forEach { node ->
