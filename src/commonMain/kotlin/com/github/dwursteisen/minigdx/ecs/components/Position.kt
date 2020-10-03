@@ -24,7 +24,8 @@ data class Position(
     var way: Float = 1f
 ) : Component {
 
-    private var quaternion = normalize(Quaternion.from(transformation))
+    var quaternion = normalize(Quaternion.from(transformation))
+    private set
 
     val translation: Vector3 = Vector3()
     val rotation: Vector3 = Vector3()
