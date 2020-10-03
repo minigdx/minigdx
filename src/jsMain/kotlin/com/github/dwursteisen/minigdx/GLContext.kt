@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx
 
+import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
@@ -38,7 +39,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     internal actual fun createFileHandler(logger: Logger): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
-        return FileHandler(PlatformFileHandler(configuration.rootPath, logger), logger = logger)
+        return FileHandler(PlatformFileHandler(
+            configuration.rootPath,
+            AudioContext(),
+            logger
+        ), logger = logger)
     }
 
     internal actual fun createInputHandler(logger: Logger): InputHandler {

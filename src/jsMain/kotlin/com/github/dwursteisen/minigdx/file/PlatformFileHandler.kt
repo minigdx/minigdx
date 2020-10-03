@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.file
 
+import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.browser.window
 import org.khronos.webgl.ArrayBuffer
@@ -13,17 +14,18 @@ import org.w3c.xhr.XMLHttpRequestResponseType
 
 actual class PlatformFileHandler(
     val rootPath: String = window.location.protocol + "//" + window.location.host + window.location.pathname,
+    val audioContext: AudioContext,
     actual val logger: Logger
 ) {
 
     @ExperimentalStdlibApi
     actual fun read(filename: String): Content<String> {
-        return asyncContent(filename) { it.decodeToString() }
+        return asyncContent(filename) { it.toByteArray().decodeToString() }
     }
 
     @ExperimentalStdlibApi
     actual fun readData(filename: String): Content<ByteArray> {
-        return asyncContent(filename) { it }
+        return asyncContent(filename) { it.toByteArray() }
     }
 
     actual fun readTextureImage(filename: String): Content<TextureImage> {
@@ -46,10 +48,20 @@ actual class PlatformFileHandler(
         return content
     }
 
+    actual fun readSound(filename: String): Content<Sound> {
+        return asyncContent(filename) { it }.flatMap { bytes ->
+            val content = Content<Sound>(filename, logger)
+            audioContext.decodeAudioData(bytes) { buffer ->
+                content.load(Sound(buffer, audioContext))
+            }
+            content
+        }
+    }
+
     // https://youtrack.jetbrains.com/issue/KT-30098
     fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
 
-    private fun <T> asyncContent(filename: String, enc: (ByteArray) -> T): Content<T> {
+    private fun <T> asyncContent(filename: String, enc: (ArrayBuffer) -> T): Content<T> {
         val url = computeUrl(filename)
 
         val jsonFile = XMLHttpRequest()
@@ -60,7 +72,7 @@ actual class PlatformFileHandler(
 
         jsonFile.onload = { _ ->
             if (jsonFile.readyState == 4.toShort() && jsonFile.status == 200.toShort()) {
-                val element = enc((jsonFile.response as ArrayBuffer).toByteArray())
+                val element = enc(jsonFile.response as ArrayBuffer)
                 content.load(element)
             }
         }
