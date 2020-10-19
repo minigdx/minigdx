@@ -212,7 +212,7 @@ fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
     )
     add(
         MeshPrimitive(
-            id = sprite.id,
+            id = Id(),
             name = "undefined",
             material = scene.materials.getValue(sprite.materialReference),
             primitive = Primitive(

@@ -14,15 +14,17 @@ class SpriteAnimatedSystem : System(EntityQuery(SpriteAnimated::class)) {
         sprite.frameDuration -= delta
         if (sprite.frameDuration <= 0f) {
             sprite.currentFrame = advanceToNextFrame(sprite.currentFrame, sprite.currentAnimation)
-            sprite.frameDuration = sprite.currentAnimation.frames[sprite.currentFrame].duration
+            val frame = sprite.currentAnimation.frames[sprite.currentFrame]
+            sprite.frameDuration = frame.duration
             spritePrimitive.isDirty = true
             spritePrimitive.isUVDirty = true
 
+            // FIXME: prendre en compte l' annimation courante
             // TODO: quick fix to get UVs in the same order than the model.
-            val a = sprite.uvs[sprite.currentFrame * 4]
-            val b = sprite.uvs[sprite.currentFrame * 4 + 1]
-            val c = sprite.uvs[sprite.currentFrame * 4 + 2]
-            val d = sprite.uvs[sprite.currentFrame * 4 + 3]
+            val a = sprite.uvs[frame.uvIndex]
+            val b = sprite.uvs[frame.uvIndex + 1]
+            val c = sprite.uvs[frame.uvIndex + 2]
+            val d = sprite.uvs[frame.uvIndex + 3]
 
             val uvs = arrayOf(a, d, b, c)
 
