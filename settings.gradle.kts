@@ -25,4 +25,4 @@ pluginManagement {
     }
 }
 
-include("demo")
+// include("demo")
