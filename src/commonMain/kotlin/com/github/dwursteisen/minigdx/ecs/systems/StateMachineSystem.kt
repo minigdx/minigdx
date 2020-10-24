@@ -1,14 +1,17 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
+import com.github.dwursteisen.minigdx.MiniGdx
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.states.State
+import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.reflect.KClass
 
 abstract class StateMachineSystem(
-    private val stateMachineComponent: KClass<out StateMachineComponent>
+    private val stateMachineComponent: KClass<out StateMachineComponent>,
+    private val logger: Logger
 ) : System(EntityQuery(stateMachineComponent)) {
 
     internal val eventsToListen = mutableSetOf<KClass<out Event>>()
@@ -46,6 +49,13 @@ abstract class StateMachineSystem(
         if (newState != null) {
             component.state?.onExit(this)
             consumeEvents(component.state)
+
+            if (MiniGdx.debugStates) {
+                logger.info("STATES") {
+                    "[${this@StateMachineSystem::class}] (${component.state?.let { it::class } ?: "??"}) --> (${newState::class})"
+                }
+            }
+
             component.state = newState
             component.state?.configure(this@StateMachineSystem)
             component.state?.onEnter(this)

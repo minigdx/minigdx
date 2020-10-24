@@ -200,7 +200,17 @@ class SpriteAnimated(
     var currentFrame: Int = -1,
     var frameDuration: Float = 0f,
     var currentAnimation: SpriteAnimation = animations.values.first()
-) : Component
+) : Component {
+
+    fun switchToAnimation(name: String) {
+        val newAnimation = animations[name]
+        if (newAnimation != null) {
+            currentAnimation = newAnimation
+            currentFrame = 0
+            frameDuration = currentAnimation.frames.firstOrNull()?.duration ?: 0f
+        }
+    }
+}
 
 fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
     add(Position())

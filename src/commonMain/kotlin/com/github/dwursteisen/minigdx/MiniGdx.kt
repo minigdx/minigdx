@@ -6,3 +6,9 @@ fun configuration(configuration: GLConfiguration): GameContext {
     val gameContext = GameContext(glContext = glContext)
     return gameContext
 }
+
+object MiniGdx {
+
+    var debugHitbox: Boolean = false
+    var debugStates: Boolean = true
+}

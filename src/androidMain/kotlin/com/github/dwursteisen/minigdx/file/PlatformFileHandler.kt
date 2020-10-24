@@ -50,4 +50,8 @@ actual class PlatformFileHandler(private val context: Context, actual val logger
         ))
         return content
     }
+
+    actual fun readSound(filename: String): Content<Sound> {
+        TODO("Not yet implemented")
+    }
 }

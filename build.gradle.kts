@@ -167,6 +167,13 @@ kotlin {
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm32")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm64")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86")
 
                 // https://github.com/SpaiR/imgui-java
                 implementation("io.imgui.java:binding:$imguiVersion")
@@ -174,6 +181,8 @@ kotlin {
                 runtimeOnly("io.imgui.java:natives-linux:$imguiVersion")
                 runtimeOnly("io.imgui.java:natives-macos:$imguiVersion")
                 runtimeOnly("io.imgui.java:natives-windows:$imguiVersion")
+
+                implementation("fr.delthas:javamp3:1.0.1")
 
                 implementation("org.l33tlabs.twl:pngdecoder:1.0")
             }

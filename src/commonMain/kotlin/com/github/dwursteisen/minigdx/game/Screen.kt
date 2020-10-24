@@ -34,9 +34,8 @@ interface Screen {
         stages.add(ClearBufferRenderStage(gl, compiler))
         stages.add(MeshPrimitiveRenderStage(gl, compiler))
         stages.add(AnimatedMeshPrimitiveRenderStage(gl, compiler))
-        if (gameContext.options.debug) {
-            stages.add(BoundingBoxStage(gl, compiler))
-        }
+        stages.add(BoundingBoxStage(gl, compiler))
+
         // display UI component only trough the UI Camera
         stages.add(
             MeshPrimitiveRenderStage(
