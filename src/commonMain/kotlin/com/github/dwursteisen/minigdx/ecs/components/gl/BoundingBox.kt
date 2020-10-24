@@ -2,25 +2,29 @@ package com.github.dwursteisen.minigdx.ecs.components.gl
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
-import com.dwursteisen.minigdx.scene.api.model.Boxe
+import com.dwursteisen.minigdx.scene.api.common.Id
 import com.dwursteisen.minigdx.scene.api.model.Color
 import com.dwursteisen.minigdx.scene.api.model.Mesh
 import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Position
 import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.shaders.Buffer
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 data class BoundingBox(
     val vertices: List<Vertex>,
     val order: List<Int>,
+    val radius: Float = radius(vertices),
     var verticesBuffer: Buffer? = null,
     var orderBuffer: Buffer? = null,
     var colorBuffer: Buffer? = null,
     var touch: Boolean = false,
-    override var isDirty: Boolean = true
+    override var isDirty: Boolean = true,
+    override var id: Id = Id()
 ) : GLResourceComponent {
 
     private class BoxBuilder(
@@ -36,6 +40,12 @@ data class BoundingBox(
 
         private val normal = Normal(0f, 0f, 0f)
         private val white = Color(1f, 1f, 1f)
+
+        private fun radius(vertices: List<Vertex>): Float {
+            return vertices.map { it.position }
+                .flatMap { listOf(abs(it.x), abs(it.y), abs(it.z)) }
+                .max() ?: 0f
+        }
 
         @ExperimentalStdlibApi
         fun from(mesh: Mesh): BoundingBox {
@@ -155,8 +165,10 @@ data class BoundingBox(
             )
         }
 
-        fun from(boxe: Boxe): BoundingBox {
-            val transformation = Mat4.fromColumnMajor(*boxe.transformation.matrix)
+        fun from(modelTransformation: Mat4): BoundingBox {
+            val scale = modelTransformation.scale
+            val transformation = scale(Float3(scale.x, scale.y, scale.z))
+
             val a = (translation(Float3(1f, 1f, 1f)) * transformation).translation
             val b = (translation(Float3(-1f, 1f, 1f)) * transformation).translation
             val c = (translation(Float3(1f, -1f, 1f)) * transformation).translation

@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx
 
+import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
@@ -38,7 +39,11 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     internal actual fun createFileHandler(logger: Logger): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
-        return FileHandler(PlatformFileHandler(configuration.rootPath, logger), logger = logger)
+        return FileHandler(PlatformFileHandler(
+            configuration.rootPath,
+            AudioContext(),
+            logger
+        ), logger = logger)
     }
 
     internal actual fun createInputHandler(logger: Logger): InputHandler {
@@ -53,6 +58,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         return JsLogger(configuration.gameName)
     }
 
+    internal actual fun createOptions(): Options {
+        return Options(configuration.debug)
+    }
+
     actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         this.gameContext = gameContext
         inputManager = gameContext.input as InputManager
@@ -64,8 +73,10 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     private fun loading(now: Double) {
         if (!gameContext.fileHandler.isFullyLoaded()) {
+            configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             window.requestAnimationFrame(::loading)
         } else {
+            configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             gameContext.viewport.update(
                 gameContext.gl,
                 gameContext.gl.screen.width,

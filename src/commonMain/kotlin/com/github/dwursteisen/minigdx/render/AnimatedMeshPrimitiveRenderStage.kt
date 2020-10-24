@@ -7,11 +7,13 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 
-class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
+class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
     gl = gl,
+    compiler = compiler,
     vertex = AnimatedMeshVertexShader(),
     fragment = UVFragmentShader(),
     query = EntityQuery(AnimatedMeshPrimitive::class)
@@ -25,6 +27,9 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL) : RenderStage<AnimatedMeshVertexS
         vertex.uJointTransformationMatrix.apply(program, animatedModel.currentPose)
 
         entity.findAll(AnimatedMeshPrimitive::class).forEach { primitive ->
+            if (primitive.isDirty) {
+                compiler.compile(primitive)
+            }
             vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
             vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
             vertex.aWeights.apply(program, primitive.weightBuffer!!)

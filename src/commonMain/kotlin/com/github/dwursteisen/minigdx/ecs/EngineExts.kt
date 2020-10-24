@@ -4,12 +4,22 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.ortho
 import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
-import com.dwursteisen.minigdx.scene.api.camera.Camera
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
-import com.dwursteisen.minigdx.scene.api.model.Model
+import com.dwursteisen.minigdx.scene.api.common.Id
+import com.dwursteisen.minigdx.scene.api.model.Normal
+import com.dwursteisen.minigdx.scene.api.model.Position as PositionDTO
+import com.dwursteisen.minigdx.scene.api.model.Primitive
+import com.dwursteisen.minigdx.scene.api.model.UV
+import com.dwursteisen.minigdx.scene.api.model.Vertex
+import com.dwursteisen.minigdx.scene.api.relation.Node
+import com.dwursteisen.minigdx.scene.api.relation.ObjectType
+import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
+import com.dwursteisen.minigdx.scene.api.sprite.SpriteAnimation
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
+import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.Text
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
@@ -22,51 +32,97 @@ import com.github.dwursteisen.minigdx.entity.text.Font
 import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
 
 @ExperimentalStdlibApi
-fun Engine.createFrom(
-    model: Model,
+fun Engine.createFromNode(
+    node: Node,
+    gameContext: GameContext,
     scene: Scene,
-    context: GameContext,
-    animationName: String? = null
+    transformation: Mat4 = node.transformation.toMat4()
 ): Entity {
-    return this.create {
-        val boxes = model.boxes.map { BoundingBox.from(it) }
-        val transformation = Mat4.fromColumnMajor(*model.transformation.matrix)
-        add(boxes)
-        add(Position(transformation))
-
-        if (model.armatureId < 0) {
-            val primitives = model.mesh.primitives.map { primitive ->
-                MeshPrimitive(
-                    primitive = primitive,
-                    material = scene.materials.values.first { it.id == primitive.materialId }
-                )
-            }
-            add(primitives)
-            context.glResourceClient.compile(model.name, primitives + boxes)
-        } else {
-            val allAnimations = scene.animations.getValue(model.armatureId)
-            val animation =
-                allAnimations.firstOrNull { animation -> animation.name == animationName } ?: allAnimations.last()
-            val animatedModel = AnimatedModel(
-                animation = animation.frames,
-                referencePose = scene.armatures.getValue(model.armatureId),
-                time = 0f,
-                duration = animation.frames.maxBy { it.time }?.time ?: 0f
-            )
-            val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
-                AnimatedMeshPrimitive(
-                    primitive = primitive,
-                    material = scene.materials.values.first { it.id == primitive.materialId }
-                )
-            }
-            add(animatedModel)
-            add(animatedMeshPrimitive)
-            context.glResourceClient.compile(model.name, animatedMeshPrimitive + boxes)
-        }
+    return when (node.type) {
+        ObjectType.ARMATURE -> createArmature(node, scene, transformation)
+        ObjectType.BOX -> createBox(node, scene, transformation)
+        ObjectType.CAMERA -> createCamera(node, gameContext, scene, transformation)
+        ObjectType.LIGHT -> TODO()
+        ObjectType.MODEL -> createModel(node, scene, transformation)
     }
 }
 
-fun Engine.createFrom(camera: Camera, context: GameContext): Entity {
+@ExperimentalStdlibApi
+fun Engine.createBox(
+    node: Node,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    add(BoundingBox.from(node.transformation.toMat4()))
+    add(Position(transformation))
+}
+
+@ExperimentalStdlibApi
+fun Engine.createArmature(
+    node: Node,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
+    val boxes = node.children.filter { it.type == ObjectType.BOX }
+        .map { BoundingBox.from(it.transformation.toMat4()) }
+        .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+    val allAnimations = scene.animations.getValue(node.reference)
+    val animation = allAnimations.last()
+    val animatedModel = AnimatedModel(
+        animation = animation.frames,
+        referencePose = scene.armatures.getValue(node.reference),
+        time = 0f,
+        duration = animation.frames.maxBy { it.time }?.time ?: 0f
+    )
+    val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
+        AnimatedMeshPrimitive(
+            primitive = primitive,
+            material = scene.materials.getValue(primitive.materialId)
+        )
+    }
+    add(boxes)
+    add(Position(transformation))
+    add(animatedModel)
+    add(animatedMeshPrimitive)
+}
+
+@ExperimentalStdlibApi
+fun Engine.createModel(
+    node: Node,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val model = scene.models.getValue(node.reference)
+    val boxes = node.children.filter { it.type == ObjectType.BOX }
+        .map { BoundingBox.from(it.transformation.toMat4()) }
+        .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+
+    add(boxes)
+    add(Position(transformation))
+
+    val primitives = model.mesh.primitives.map { primitive ->
+        val material =
+            scene.materials[primitive.materialId] ?: throw IllegalStateException(
+                "Model ${model.name} doesn't have any material assigned."
+            )
+        MeshPrimitive(
+            id = primitive.id,
+            primitive = primitive,
+            material = material,
+            name = node.name
+        )
+    }
+    add(primitives)
+}
+
+fun Engine.createCamera(
+    node: Node,
+    context: GameContext,
+    scene: Scene,
+    transformation: Mat4
+): Entity = create {
+    val camera = scene.perspectiveCameras[node.reference] ?: scene.orthographicCameras.getValue(node.reference)
     val cameraComponent = when (camera) {
         is PerspectiveCamera -> com.github.dwursteisen.minigdx.ecs.components.Camera(
             projection = perspective(
@@ -96,10 +152,8 @@ fun Engine.createFrom(camera: Camera, context: GameContext): Entity {
         else -> throw IllegalArgumentException("${camera::class} is not supported")
     }
 
-    return this.create {
-        add(cameraComponent)
-        add(Position(Mat4.fromColumnMajor(*camera.transformation.matrix), way = -1f))
-    }
+    add(cameraComponent)
+    add(Position(transformation, way = -1f))
 }
 
 fun Engine.createUICamera(gameContext: GameContext): Entity {
@@ -119,23 +173,72 @@ fun Engine.createUICamera(gameContext: GameContext): Entity {
             )
         )
         // put the camera in the center of the screen
-        add(Position(way = -1f).translate(x = -width * 0.5f, y = -height * 0.5f))
+        add(Position(way = -1f).setGlobalTranslation(x = -width * 0.5f, y = -height * 0.5f))
     }
 }
 
-fun Engine.createFrom(font: Font, text: String, x: Float, y: Float, gameContext: GameContext): Entity {
+fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
     return this.create {
-        add(Position().translate(x = x, y = y, z = 0f))
+        add(Position().setGlobalTranslation(x = x, y = y, z = 0f))
         val spritePrimitive = SpritePrimitive(
             texture = font.fontSprite,
             renderStrategy = TextRenderStrategy
         )
         add(spritePrimitive)
-        add(Text(
+        add(
+            Text(
                 text = text,
                 font = font
             )
         )
-        gameContext.glResourceClient.compile(font.angelCode.info.fontFile, spritePrimitive)
     }
+}
+
+class SpriteAnimated(
+    val animations: Map<String, SpriteAnimation>,
+    val uvs: List<UV>,
+    var currentFrame: Int = -1,
+    var frameDuration: Float = 0f,
+    var currentAnimation: SpriteAnimation = animations.values.first()
+) : Component {
+
+    fun switchToAnimation(name: String) {
+        val newAnimation = animations[name]
+        if (newAnimation != null) {
+            currentAnimation = newAnimation
+            currentFrame = 0
+            frameDuration = currentAnimation.frames.firstOrNull()?.duration ?: 0f
+        }
+    }
+}
+
+fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
+    add(Position())
+    add(
+        SpriteAnimated(
+            animations = sprite.animations,
+            uvs = sprite.uvs
+        )
+    )
+    add(
+        MeshPrimitive(
+            id = Id(),
+            name = "undefined",
+            material = scene.materials.getValue(sprite.materialReference),
+            primitive = Primitive(
+                id = Id(),
+                materialId = sprite.materialReference,
+                vertices = listOf(
+                    Vertex(PositionDTO(0f, 0f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
+                    Vertex(PositionDTO(1f, 0f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
+                    Vertex(PositionDTO(0f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
+                    Vertex(PositionDTO(1f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f))
+                ),
+                verticesOrder = intArrayOf(
+                    0, 1, 2,
+                    2, 1, 3
+                )
+            )
+        )
+    )
 }

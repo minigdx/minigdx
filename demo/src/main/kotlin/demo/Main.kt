@@ -4,16 +4,14 @@ import com.github.dwursteisen.minigdx.GLConfiguration
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.configuration
 import com.github.dwursteisen.minigdx.game.GameSystem
+import proto.Proto
+import proto.ProtoGame
 
 @ExperimentalStdlibApi
 class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, BirdScreen(gameContext))
 
 @ExperimentalStdlibApi
 class Gravity(gameContext: GameContext) : GameSystem(gameContext, GravityScreen(gameContext))
-
-@ExperimentalStdlibApi
-class GmtkJam(gameContext: GameContext) : GameSystem(gameContext, GmtkJamScreen(gameContext))
-
 
 @ExperimentalStdlibApi
 class Main {
@@ -24,9 +22,9 @@ class Main {
         fun main(args: Array<String>) {
             configuration(
                 GLConfiguration(
-                    name = "Kotin/JVM",
+                    name = "Kotlin/JVM",
                     gameName = "Demo",
-                    width = 1280,
+                    width = 720,
                     height = 720
                 )
             ).execute {
@@ -34,9 +32,10 @@ class Main {
                 when (args.getOrElse(index + 1) { "" }) {
                     "v2" -> DemoApiV2(it)
                     "gravity" -> Gravity(it)
-                    "gmtkjam" -> GmtkJam(it)
                     "text" -> TextGame(it)
                     "sprite" -> SpriteGame(it)
+                    "proto" -> ProtoGame(it)
+                    "scene" -> SceneGame(it)
                     else -> DemoApiV2(it)
                 }
             }

@@ -15,10 +15,12 @@ class Entity(
 
     var componentsType: Set<KClass<out Component>> = components.map { it::class }.toSet()
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Component> get(type: KClass<T>): T {
         return componentsByType.getValue(type).toList().first() as T
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Component> findAll(type: KClass<T>): List<T> {
         return componentsByType.getValue(type).toList() as List<T>
     }
@@ -41,7 +43,11 @@ class Entity(
         componentsByType = components.groupBy { it::class }
     }
 
-    fun destroy() = engine.destroy()
+    fun destroy() = engine.destroy(this)
+
+    fun hasComponent(componentClass: KClass<out Component>): Boolean {
+        return componentsType.contains(componentClass)
+    }
 
     private fun engineUpdate(block: () -> Unit) {
         engine.destroy(this)

@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.components.gl
 
+import com.dwursteisen.minigdx.scene.api.common.Id
 import com.dwursteisen.minigdx.scene.api.material.Material
 import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.shaders.Buffer
@@ -15,5 +16,6 @@ class AnimatedMeshPrimitive(
     var weightBuffer: Buffer? = null,
     var jointBuffer: Buffer? = null,
     var textureReference: TextureReference? = null,
-    override var isDirty: Boolean = true
+    override var isDirty: Boolean = true,
+    override var id: Id = Id()
 ) : GLResourceComponent

@@ -4,14 +4,16 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 
 object EmptyVertexShader : VertexShader("")
 object EmptyFragmentShader : FragmentShader("")
 
-class ClearBufferRenderStage(gl: GL) : RenderStage<EmptyVertexShader, EmptyFragmentShader>(
+class ClearBufferRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<EmptyVertexShader, EmptyFragmentShader>(
     gl = gl,
+    compiler = compiler,
     vertex = EmptyVertexShader,
     fragment = EmptyFragmentShader,
     query = EntityQuery()

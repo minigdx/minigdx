@@ -4,7 +4,7 @@ plugins {
     java
     application
     kotlin("jvm")
-    id("com.github.dwursteisen.gltf") version "1.0.0-alpha8"
+    id("com.github.dwursteisen.gltf") version "1.0.0-alpha11"
 }
 
 repositories {
@@ -24,6 +24,12 @@ gltfPlugin {
     create("assetsProtobuf") {
         this.gltfDirectory.set(project.projectDir.resolve("src/assets/v2"))
         this.target.set(project.projectDir.resolve("src/main/resources/v2"))
+        this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
+    }
+
+    create("assetsProto") {
+        this.gltfDirectory.set(project.projectDir.resolve("src/assets/proto"))
+        this.target.set(project.projectDir.resolve("src/main/resources/proto"))
         this.format.set(com.github.dwursteisen.gltf.Format.PROTOBUF)
     }
 }

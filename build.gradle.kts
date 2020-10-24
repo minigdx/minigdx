@@ -13,11 +13,11 @@ group = "com.github.dwursteisen.minigdx"
 version = project.properties["version"] ?: "1.1-SNAPSHOT"
 
 if (version == "unspecified") {
-    version = "1.1-SNAPSHOT"
+    version = "1.2-SNAPSHOT"
 }
 
 val kotlinMathVersion = "1.0.0-alpha18"
-val gltfApiVersion = "1.0.0-alpha8"
+val gltfApiVersion = "1.0.0-alpha11"
 
 val properties = Properties()
 if (project.file("local.properties").exists()) {
@@ -167,6 +167,13 @@ kotlin {
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
                 implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm32")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm64")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows")
+                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86")
 
                 // https://github.com/SpaiR/imgui-java
                 implementation("io.imgui.java:binding:$imguiVersion")
@@ -174,6 +181,8 @@ kotlin {
                 runtimeOnly("io.imgui.java:natives-linux:$imguiVersion")
                 runtimeOnly("io.imgui.java:natives-macos:$imguiVersion")
                 runtimeOnly("io.imgui.java:natives-windows:$imguiVersion")
+
+                implementation("fr.delthas:javamp3:1.0.1")
 
                 implementation("org.l33tlabs.twl:pngdecoder:1.0")
             }

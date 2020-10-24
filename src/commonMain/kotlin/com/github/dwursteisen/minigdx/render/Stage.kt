@@ -9,6 +9,7 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
@@ -23,6 +24,7 @@ interface Stage
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     protected val gl: GL,
+    val compiler: GLResourceClient,
     val vertex: V,
     val fragment: F,
     query: EntityQuery,
@@ -91,7 +93,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             lights -= entity
             count != entities.count()
         } else {
-            super.add(entity)
+            super.remove(entity)
         }
     }
 

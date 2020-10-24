@@ -24,8 +24,8 @@ object TextRenderStrategy : RenderStrategy {
         val spritePrimitive = entity.get(SpritePrimitive::class)
 
         gl.bindTexture(GL.TEXTURE_2D, spritePrimitive.textureReference!!)
-        gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
         gl.enable(GL.BLEND)
+        gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
         if (text.text != text.previousText) {
             val textData = generateTextDate(text.text, text.font)

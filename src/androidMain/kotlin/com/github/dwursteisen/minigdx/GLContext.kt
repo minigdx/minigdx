@@ -11,7 +11,9 @@ import com.github.dwursteisen.minigdx.internal.MiniGdxSurfaceView
 import com.github.dwursteisen.minigdx.logger.AndroidLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 
-actual class GLContext actual constructor(private val configuration: GLConfiguration) {
+actual class GLContext actual constructor(
+    private val configuration: GLConfiguration
+) {
 
     internal actual fun createContext(): GL {
         val display = configuration.activity.windowManager.defaultDisplay
@@ -34,6 +36,12 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     internal actual fun createLogger(): Logger {
         return AndroidLogger(configuration.gameName)
+    }
+
+    internal actual fun createOptions(): Options {
+        return Options(
+            debug = configuration.debug
+        )
     }
 
     @ExperimentalStdlibApi

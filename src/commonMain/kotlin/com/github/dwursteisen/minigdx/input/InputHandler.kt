@@ -139,6 +139,18 @@ interface InputHandler {
      */
     fun isKeyPressed(key: Key): Boolean
 
+    /**
+     * Is any of [keys] passed in parameter are actually pressed?
+     */
+    fun isAnyKeysPressed(vararg keys: Key): Boolean = keys.any { isKeyPressed(it) }
+
+    /**
+     * Is all of [keys] passed in parameter are been just pressed?
+     */
+    fun isAllKeysPressed(vararg keys: Key): Boolean = keys.all { isKeyPressed(it) }
+
+    fun isNoneKeysPressed(vararg keys: Key): Boolean = keys.none { isKeyPressed(it) }
+
     fun isTouched(signal: TouchSignal): Vector2?
 
     fun isJustTouched(signal: TouchSignal): Vector2?

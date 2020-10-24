@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.graphics
 
+import com.dwursteisen.minigdx.scene.api.common.Id
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
@@ -12,6 +13,7 @@ import com.github.dwursteisen.minigdx.graphics.compilers.GLResourceCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.MeshPrimitiveCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.SpritePrimitiveCompiler
 import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 import kotlin.reflect.KClass
 
 private val basicCompilers: Map<KClass<out GLResourceComponent>, GLResourceCompiler> = mapOf(
@@ -29,22 +31,44 @@ class GLResourceClient(
     val compilers: Map<KClass<out GLResourceComponent>, GLResourceCompiler> = basicCompilers
 ) {
 
-    private val cache: MutableMap<String, Iterable<GLResourceComponent>> = mutableMapOf()
+    private val cache: MutableMap<Id, GLResourceComponent> = mutableMapOf()
 
-    fun <T : GLResourceComponent> compile(name: String, component: T) = compile(name, listOf(component))
+    private val materials: MutableMap<Id, TextureReference> = mutableMapOf()
 
-    fun <T : GLResourceComponent> compile(name: String, components: Iterable<T>) {
-        log.info("GL_RESOURCE") { "Compiling '$name' components" }
-        components.filter { component -> component.isDirty }
-            .forEach { component ->
-                compilers[component::class]?.compile(gl, component) ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '$${component::class.simpleName}''")
+    fun <T : GLResourceComponent> compile(component: T) = compile(listOf(component))
+
+    fun <T : GLResourceComponent> compile(components: Iterable<T>) {
+        components
+            .filter { it.isDirty }
+            .onEach { component ->
+                val cachedValue = cache[component.id]
+                if (cachedValue != null) {
+                    compilers[component::class]?.update(gl, cachedValue, component)
+                } else {
+                    log.info("GL_RESOURCE") { "Compiling '${component.id}' (${component::class.simpleName}) component" }
+                    cache[component.id] = component
+                    compilers[component::class]?.compile(gl, component, materials)
+                        ?: throw MissingGLResourceCompiler("Missing GLResourceCompiler for the type '${component::class.simpleName}'")
+                }
+            }.forEach {
+                it.isDirty = false
             }
-
-        cache[name] = components
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : GLResourceComponent> get(name: String): Iterable<T> {
+    fun <T : GLResourceComponent> get(name: Id): Iterable<T> {
         return cache.getValue(name) as Iterable<T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : GLResourceComponent> getOrCreate(name: Id, factory: () -> T): T {
+        val component = cache[name]
+        return if (component == null) {
+            val newComponent = factory()
+            compile(newComponent)
+            newComponent
+        } else {
+            component as T
+        }
     }
 }

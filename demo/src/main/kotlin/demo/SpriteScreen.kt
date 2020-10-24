@@ -21,11 +21,10 @@ class SpriteScreen(override val gameContext: GameContext) : Screen {
             y = sprite.height,
             renderStrategy = SpriteRenderStrategy
         )
-        gameContext.glResourceClient.compile("sprite", spriteComponent)
 
         engine.create {
             add(spriteComponent)
-            add(Position().translate(x = 600, y = 300).setScale(x = 600, y = -600))
+            add(Position().setGlobalTranslation(x = 600, y = 300).setScale(x = 300, y = 300))
         }
 
         engine.createUICamera(gameContext)

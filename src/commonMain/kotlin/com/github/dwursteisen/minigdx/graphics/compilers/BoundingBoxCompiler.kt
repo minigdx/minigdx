@@ -1,12 +1,14 @@
 package com.github.dwursteisen.minigdx.graphics.compilers
 
+import com.dwursteisen.minigdx.scene.api.common.Id
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
 import com.github.dwursteisen.minigdx.shaders.DataSource
+import com.github.dwursteisen.minigdx.shaders.TextureReference
 
 class BoundingBoxCompiler : GLResourceCompiler {
-    override fun compile(gl: GL, component: GLResourceComponent) {
+    override fun compile(gl: GL, component: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
         component as BoundingBox
         if (component.verticesBuffer == null) {
             component.verticesBuffer = gl.createBuffer()
@@ -39,6 +41,13 @@ class BoundingBoxCompiler : GLResourceCompiler {
                 usage = GL.STATIC_DRAW
             )
         }
-        component.isDirty = false
+    }
+
+    override fun update(gl: GL, source: GLResourceComponent, target: GLResourceComponent) {
+        source as BoundingBox
+        target as BoundingBox
+        target.colorBuffer = source.colorBuffer
+        target.orderBuffer = source.orderBuffer
+        target.verticesBuffer = source.verticesBuffer
     }
 }

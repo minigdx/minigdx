@@ -3,13 +3,15 @@ package demo
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.translation
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
-import com.github.dwursteisen.minigdx.ecs.createFrom
+import com.github.dwursteisen.minigdx.ecs.createFromNode
+import com.github.dwursteisen.minigdx.ecs.createModel
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
@@ -20,10 +22,12 @@ import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.lerp
 
 class GravityComponent(
-    var gravity: Vector3 = Vector3(0, -9, 0),
-    var displacement: Vector3 = Vector3(0f, 0f, 0f)
+    val acceleration: Vector3 = Vector3(0, 0, 0),
+    val velocity: Vector3 = Vector3(0, 0, 0),
+    val displacement: Vector3 = Vector3(0f, 0f, 0f)
 ) : Component
 
 class ColliderComponent : Component
@@ -35,36 +39,40 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
 
     override fun update(delta: Seconds, entity: Entity) {
         val gravity = entity.get(GravityComponent::class)
-        gravity.displacement.x = gravity.gravity.x * delta
-        gravity.displacement.y = gravity.gravity.y * delta
-        gravity.displacement.z = gravity.gravity.z * delta
+
+        gravity.velocity.x += gravity.acceleration.x * delta
+        gravity.velocity.y += gravity.acceleration.y * delta
+        gravity.velocity.z += gravity.acceleration.z * delta
+
+        gravity.displacement.x = gravity.velocity.x * delta
+        gravity.displacement.y = gravity.velocity.y * delta
+        gravity.displacement.z = gravity.velocity.z * delta
         val position = entity.get(Position::class)
 
-        val expectedTransformation = position.transformation * translation(
-            Float3(
-                gravity.displacement.x,
-                gravity.displacement.y,
-                gravity.displacement.z
-            )
-        )
+        val acceptedDisplacement = listOf(
+            Float3(gravity.displacement.x, 0f, 0f),
+            Float3(0f, gravity.displacement.y, 0f),
+            Float3(0f, 0f, gravity.displacement.z)
+        ).filterNot { displacement ->
+            val expectedTransformation = position.transformation * translation(displacement)
 
-        val hasTouch = colliders.asSequence()
-            .filter { it != entity }
-            .any { entityB ->
-                val boxA = entity.get(BoundingBox::class)
-                val boxB = entityB.get(BoundingBox::class)
-                val collide = collisionResolution.collide(
-                    boxA,
-                    expectedTransformation,
-                    boxB,
-                    entityB.get(Position::class).transformation
-                )
-                updateColorIfCollide(collide, boxA, boxB)
-            }
+            colliders.asSequence()
+                .filter { it != entity }
+                .any { entityB ->
+                    val boxA = entity.get(BoundingBox::class)
+                    val boxB = entityB.get(BoundingBox::class)
+                    val collide = collisionResolution.collide(
+                        boxA,
+                        expectedTransformation,
+                        boxB,
+                        entityB.get(Position::class).transformation
+                    )
+                    updateColorIfCollide(collide, boxA, boxB)
+                }
+        }
 
-        if (!hasTouch) {
-            position.translate(gravity.displacement)
-
+        acceptedDisplacement.forEach {
+            position.addImmediateLocalTranslation(it.x, it.y, it.z)
         }
     }
 
@@ -80,28 +88,46 @@ class PlayerMoveSystem(
 ) : System(EntityQuery(GravityComponent::class)) {
 
     lateinit var reset: Float3
+
     override fun add(entity: Entity): Boolean {
-        val v = entity.get(Position::class).transformation.position
-        reset = Float3(v.x, v.y, v.z)
+        if (entityQuery.accept(entity)) {
+            val v = entity.get(Position::class).transformation.position
+            reset = Float3(v.x, v.y, v.z)
+        }
         return super.add(entity)
     }
 
     override fun update(delta: Seconds, entity: Entity) {
-        val position = entity.get(Position::class)
+        val gravity = entity.get(GravityComponent::class)
+
         if (input.isKeyPressed(Key.ARROW_LEFT)) {
-            position.translate(3f * delta)
+            gravity.acceleration.add(x = -6f * delta)
         } else if (input.isKeyPressed(Key.ARROW_RIGHT)) {
-            position.translate(-3f * delta)
+            gravity.acceleration.add(x = 6f * delta)
+        } else {
+            gravity.acceleration.x = lerp(-gravity.velocity.x, gravity.acceleration.x, 0.9f, delta)
         }
 
         if (input.isKeyPressed(Key.ARROW_UP)) {
-            position.translate(z = 3f * delta)
+            gravity.acceleration.add(z = -6f * delta)
         } else if (input.isKeyPressed(Key.ARROW_DOWN)) {
-            position.translate(z = -3f * delta)
+            gravity.acceleration.add(z = 6f * delta)
+        } else {
+            gravity.acceleration.z = lerp(-gravity.velocity.z, gravity.acceleration.z, 0.9f, delta)
+        }
+
+        if (input.isKeyPressed(Key.U)) {
+            gravity.acceleration.add(y = 6f * delta)
+        } else if (input.isKeyPressed(Key.D)) {
+            gravity.acceleration.add(y = -6f * delta)
+        } else {
+            gravity.acceleration.y = lerp(-gravity.velocity.y, gravity.acceleration.y, 0.9f, delta)
         }
 
         if (input.isKeyJustPressed(Key.R)) {
-            position.setTranslate(reset.x, reset.y, reset.z)
+            entity.get(Position::class).setGlobalTranslation(reset.x, reset.y, reset.z)
+            gravity.acceleration.set(0, 0, 0)
+            gravity.velocity.set(0, 0, 0)
         }
     }
 }
@@ -112,16 +138,14 @@ class GravityScreen(override val gameContext: GameContext) : Screen {
     private val scene: Scene by gameContext.fileHandler.get("v2/gravity.protobuf")
 
     override fun createEntities(engine: Engine) {
-        scene.perspectiveCameras.values.forEach { camera ->
-            engine.createFrom(camera, gameContext)
-        }
-
-        scene.models.values.forEach { model ->
-            val entity = engine.createFrom(model, scene, gameContext)
+        scene.children.forEach { model ->
+            val entity = engine.createFromNode(model, gameContext, scene)
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }
-            entity.add(ColliderComponent())
+            if(model.type == ObjectType.MODEL) {
+                entity.add(ColliderComponent())
+            }
         }
     }
 
