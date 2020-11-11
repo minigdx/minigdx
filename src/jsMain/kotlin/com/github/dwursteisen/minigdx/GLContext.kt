@@ -10,6 +10,7 @@ import com.github.dwursteisen.minigdx.input.InputManager
 import com.github.dwursteisen.minigdx.input.JsInputHandler
 import com.github.dwursteisen.minigdx.logger.JsLogger
 import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.logger.profile
 import kotlin.browser.window
 import kotlin.math.min
 import org.khronos.webgl.WebGLRenderingContextBase
@@ -67,7 +68,6 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         inputManager = gameContext.input as InputManager
 
         this.game = gameFactory(gameContext)
-
         window.requestAnimationFrame(::loading)
     }
 
@@ -108,7 +108,9 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         val nowInSeconds = now * 0.001
         val delta = nowInSeconds - then
         then = nowInSeconds
-        game.render(min(1 / 60f, delta.toFloat()))
+        profile("render") {
+            game.render(min(1 / 60f, delta.toFloat()))
+        }
         inputManager.reset()
 
         window.requestAnimationFrame(::render)
