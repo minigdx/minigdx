@@ -26,6 +26,7 @@ import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.math.lerp
 import kotlin.math.abs
 import kotlin.math.cos
@@ -43,7 +44,7 @@ class PickItemEvent : Event
 
 class ReleaseItemEvent : Event
 
-class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
+class ZoneSystem(private val engine: Engine, logger: Logger) : StateMachineSystem(Zone::class, logger) {
 
     private val players by interested(EntityQuery(Player::class))
     private val circles by interested(EntityQuery(Circle::class))
@@ -121,7 +122,7 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
 
 }
 
-class CubeSystem() : StateMachineSystem(Cube::class) {
+class CubeSystem(logger: Logger) : StateMachineSystem(Cube::class, logger) {
 
     private val collider = AABBCollisionResolver()
 
@@ -232,7 +233,7 @@ class CubeSystem() : StateMachineSystem(Cube::class) {
     }
 }
 
-class PlayerSystem(private val inputHandler: InputHandler) : StateMachineSystem(Player::class) {
+class PlayerSystem(private val inputHandler: InputHandler, logger: Logger) : StateMachineSystem(Player::class, logger) {
 
     private class Waiting(private val inputHandler: InputHandler) : State() {
         override fun configure() = Unit
@@ -348,9 +349,9 @@ class Proto(override val gameContext: GameContext) : Screen {
 
     override fun createSystems(engine: Engine): List<System> {
         return listOf(
-            PlayerSystem(gameContext.input),
-            CubeSystem(),
-            ZoneSystem(engine)
+            PlayerSystem(gameContext.input, gameContext.logger),
+            CubeSystem(gameContext.logger),
+            ZoneSystem(engine, gameContext.logger)
         ) + super.createSystems(engine)
     }
 }

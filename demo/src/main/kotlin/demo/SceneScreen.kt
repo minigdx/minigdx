@@ -14,6 +14,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.file.Sound
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -22,7 +23,7 @@ import kotlin.math.cos
 
 class Player : Component
 
-class PlayerSystem(val inputHandler: InputHandler) : System(EntityQuery(Player::class)) {
+class PlayerSystem(val inputHandler: InputHandler, val sound: Sound) : System(EntityQuery(Player::class)) {
 
     private var time = 0f
 
@@ -40,6 +41,10 @@ class PlayerSystem(val inputHandler: InputHandler) : System(EntityQuery(Player::
             entity.position.addLocalTranslation(y = -5, delta = delta)
         }
 
+        if(inputHandler.isKeyJustPressed(Key.SPACE)) {
+            println("play")
+            sound.play()
+        }
        // entity.position.setScale(x = cos(time) * 3f, y = cos(time) * 3f)
       //  entity.position.setRotationX(cos(time) * 360f)
     }
@@ -51,6 +56,8 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
     private val scene: Scene by gameContext.fileHandler.get("proto/asteroid.protobuf")
 
     private val sprite: Scene by gameContext.fileHandler.get("proto/sprite.protobuf")
+
+    private val sound: Sound by gameContext.fileHandler.get("shoot.mp3")
 
     override fun createEntities(engine: Engine) {
         /*
@@ -72,7 +79,7 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
             engine.createFromNode(node, gameContext, scene)
             engine.createFromNode(node, gameContext, scene)
             engine.createFromNode(node, gameContext, scene)
-            engine.createFromNode(node, gameContext, scene)
+            engine.createFromNode(node, gameContext, scene).add(Player())
         }
 
 
@@ -88,7 +95,7 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
     }
 
     override fun createSystems(engine: Engine): List<System> {
-        return listOf(PlayerSystem(gameContext.input)) + super.createSystems(engine)
+        return listOf(PlayerSystem(gameContext.input, sound)) + super.createSystems(engine)
     }
 }
 
