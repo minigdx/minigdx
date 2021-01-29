@@ -32,7 +32,7 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         )
 
         // Push the texture
-        val textureReference = materials.getOrPut(component.material.id) {
+        val textureReference = materials.getOrPut(component.material?.id ?: component.texture?.id!!) {
             gl.createTexture().apply {
                 gl.bindTexture(GL.TEXTURE_2D, this)
 
@@ -49,16 +49,28 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
                     GL.TEXTURE_MIN_FILTER,
                     GL.NEAREST
                 )
-                gl.texImage2D(
-                    GL.TEXTURE_2D,
-                    0,
-                    GL.RGBA,
-                    GL.RGBA,
-                    component.material.width,
-                    component.material.height,
-                    GL.UNSIGNED_BYTE,
-                    component.material.data
-                )
+
+                if (component.material != null) {
+                    gl.texImage2D(
+                        GL.TEXTURE_2D,
+                        0,
+                        GL.RGBA,
+                        GL.RGBA,
+                        component.material.width,
+                        component.material.height,
+                        GL.UNSIGNED_BYTE,
+                        component.material.data
+                    )
+                } else if (component.texture != null) (
+                        gl.texImage2D(
+                            GL.TEXTURE_2D,
+                            0,
+                            GL.RGBA,
+                            GL.RGBA,
+                            GL.UNSIGNED_BYTE,
+                            component.texture.source
+                        )
+                        )
             }
         }
 

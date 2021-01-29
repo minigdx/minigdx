@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.entity.text
+package com.github.dwursteisen.minigdx.file
 
 import com.github.dwursteisen.minigdx.Pixel
 

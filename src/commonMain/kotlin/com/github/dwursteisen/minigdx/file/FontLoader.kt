@@ -1,9 +1,5 @@
 package com.github.dwursteisen.minigdx.file
 
-import com.github.dwursteisen.minigdx.entity.primitives.Texture
-import com.github.dwursteisen.minigdx.entity.text.AngelCode
-import com.github.dwursteisen.minigdx.entity.text.Font
-
 class FontLoader : FileLoader<Font> {
 
     @ExperimentalStdlibApi

@@ -1,7 +1,5 @@
 package com.github.dwursteisen.minigdx.file
 
-import com.github.dwursteisen.minigdx.entity.primitives.Texture
-
 class TextureLoader : FileLoader<Texture> {
 
     private val textureImageLoader = TextureImageLoader()

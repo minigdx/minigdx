@@ -64,7 +64,7 @@ class MeshPrimitiveRenderStage(
         val model = position.transformation
 
         entity.findAll(MeshPrimitive::class).forEach { primitive ->
-            if (primitive.material.hasAlpha) {
+            if (primitive.hasAlpha) {
                 // defer rendering
                 transparentPrimitive.add(position to primitive)
             } else {

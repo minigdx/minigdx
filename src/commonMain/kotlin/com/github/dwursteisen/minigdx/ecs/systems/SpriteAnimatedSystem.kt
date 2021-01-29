@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.dwursteisen.minigdx.scene.api.sprite.SpriteAnimation
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.SpriteAnimated
+import com.github.dwursteisen.minigdx.ecs.components.SpriteAnimated
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 

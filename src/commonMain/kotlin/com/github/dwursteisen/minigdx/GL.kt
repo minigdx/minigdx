@@ -80,6 +80,7 @@ interface GL {
     fun viewport(x: Int, y: Int, width: Int, height: Int)
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage)
+
     fun texImage2D(
         target: Int,
         level: Int,

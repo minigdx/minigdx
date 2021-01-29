@@ -1,7 +1,6 @@
-package com.github.dwursteisen.minigdx.entity.primitives
+package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.common.Id
-import com.github.dwursteisen.minigdx.file.TextureImage
 
 class Texture(val source: TextureImage) {
     val id = Id()

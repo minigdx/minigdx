@@ -1,8 +1,5 @@
 package com.github.dwursteisen.minigdx.render.sprites
 
-import com.github.dwursteisen.minigdx.entity.primitives.Texture
-import com.github.dwursteisen.minigdx.entity.text.AngelCode
-import com.github.dwursteisen.minigdx.entity.text.Font
 import com.github.dwursteisen.minigdx.file.AngelCodeLoader
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.FontLoader
@@ -10,6 +7,9 @@ import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.file.TextureLoader
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.text.AngelCode
+import com.github.dwursteisen.minigdx.text.Font
+import com.github.dwursteisen.minigdx.texture.Texture
 import createLogger
 import org.junit.Assert.assertEquals
 import org.junit.Test

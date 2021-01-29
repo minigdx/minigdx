@@ -3,12 +3,10 @@ package demo
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.createUICamera
-import com.github.dwursteisen.minigdx.entity.primitives.Texture
+import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
-import com.github.dwursteisen.minigdx.render.sprites.SpriteRenderStrategy
 
 @ExperimentalStdlibApi
 class SpriteScreen(override val gameContext: GameContext) : Screen {
@@ -16,14 +14,7 @@ class SpriteScreen(override val gameContext: GameContext) : Screen {
     private val sprite: Texture by gameContext.fileHandler.get("pt_font.png")
 
     override fun createEntities(engine: Engine) {
-        val spriteComponent = SpritePrimitive(
-            texture = sprite,
-            y = sprite.height,
-            renderStrategy = SpriteRenderStrategy
-        )
-
         engine.create {
-            add(spriteComponent)
             add(Position().setGlobalTranslation(x = 600, y = 300).setScale(x = 300, y = 300))
         }
 
