@@ -187,10 +187,26 @@ fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
                 id = Id(),
                 materialId = Id.None,
                 vertices = listOf(
-                    Vertex(com.dwursteisen.minigdx.scene.api.model.Position(0f, 0f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f)),
-                    Vertex(com.dwursteisen.minigdx.scene.api.model.Position(1f, 0f, 0f), Normal(0f, 0f, 0f), uv = UV(1f, 0f)),
-                    Vertex(com.dwursteisen.minigdx.scene.api.model.Position(0f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(1f, 1f)),
-                    Vertex(com.dwursteisen.minigdx.scene.api.model.Position(1f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 1f))
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(0f, 0f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(0f, 0f)
+                    ),
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(1f, 0f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(1f, 0f)
+                    ),
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(0f, 1f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(1f, 1f)
+                    ),
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(1f, 1f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(0f, 1f)
+                    )
                 ),
                 verticesOrder = intArrayOf(
                     0, 1, 2,

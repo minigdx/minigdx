@@ -3,13 +3,15 @@ package com.github.dwursteisen.minigdx.ecs.systems
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.events.EventListener
 import com.github.dwursteisen.minigdx.ecs.events.EventWithQuery
 import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
-abstract class System(protected val entityQuery: EntityQuery) : EventListener {
+abstract class System(protected val entityQuery: EntityQuery) : EventListener, EntityFactory by EntityFactoryDelegate() {
 
     var entities: List<Entity> = emptyList()
 

@@ -4,10 +4,11 @@ import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 
 abstract class GameSystem(val gameContext: GameContext, var screen: Screen) : Game {
 
-    private val engine = Engine()
+    private val engine = Engine(gameContext)
 
     override fun create() {
         screen.createSystems(engine).forEach { engine.addSystem(it) }
@@ -16,7 +17,12 @@ abstract class GameSystem(val gameContext: GameContext, var screen: Screen) : Ga
             gameContext.glResourceClient
         )
         renderStage.forEach { engine.addSystem(it) }
-        screen.createEntities(engine)
+
+        val entityFactoryDelegate = EntityFactoryDelegate()
+        entityFactoryDelegate.engine = engine
+        entityFactoryDelegate.gameContext = gameContext
+
+        screen.createEntities(entityFactoryDelegate)
         engine.onGameStart()
         renderStage.forEach { it.compileShaders() }
     }

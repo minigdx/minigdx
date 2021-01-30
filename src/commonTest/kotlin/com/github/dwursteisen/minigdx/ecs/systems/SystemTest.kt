@@ -22,7 +22,7 @@ class SystemTest {
 
     @Test
     fun interested_it_returns_list_of_entities() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
         val system = TestSystem()
 
         engine.addSystem(system)

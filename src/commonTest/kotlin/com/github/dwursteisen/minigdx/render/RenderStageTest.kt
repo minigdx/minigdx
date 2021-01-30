@@ -21,7 +21,7 @@ class RenderStageTest {
 
     @Test
     fun add__it_should_add_the_camera() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
 
         val vertex = EmptyVertexShader()
         val fragment = EmptyFragmentShader()

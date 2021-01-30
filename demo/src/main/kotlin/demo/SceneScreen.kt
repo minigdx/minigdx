@@ -10,6 +10,7 @@ import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
@@ -64,8 +65,8 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
 
     private val sound: Sound by gameContext.fileHandler.get("shoot.mp3")
 
-    override fun createEntities(engine: Engine) {
-        engine.create {
+    override fun createEntities(entityFactory: EntityFactory) {
+        entityFactory.create {
             val meshPrimitive = MeshPrimitive(
                 id = Id(),
                 name = "undefined",

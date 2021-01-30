@@ -46,7 +46,7 @@ class StateMachineSystemTest {
         override fun update(delta: Seconds, entity: Entity): State? = null
     }
 
-    private val engine = Engine()
+    private val engine = Engine(gameContext)
 
     @Test
     fun state_machine_it_describes_a_state_machine() {

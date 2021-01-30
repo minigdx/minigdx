@@ -7,6 +7,7 @@ import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.components.UIComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
@@ -22,7 +23,7 @@ interface Screen {
 
     val gameContext: GameContext
 
-    fun createEntities(engine: Engine)
+    fun createEntities(entityFactory: EntityFactory)
 
     fun createSystems(engine: Engine): List<System> = listOf(
         SpriteAnimatedSystem(),

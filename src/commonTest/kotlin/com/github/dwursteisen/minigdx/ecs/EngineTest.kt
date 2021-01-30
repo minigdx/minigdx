@@ -21,7 +21,7 @@ class EngineTest {
 
     @Test
     fun create__it_should_add_the_created_entity_into_related_system() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -35,7 +35,7 @@ class EngineTest {
 
     @Test
     fun remove__it_should_remove_the_entity_from_the_related_system() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -52,7 +52,7 @@ class EngineTest {
 
     @Test
     fun add_component__it_add_the_entity_in_a_system_when_a_component_is_added() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -66,7 +66,7 @@ class EngineTest {
 
     @Test
     fun remove_component__it_remove_the_entity_from_a_system_when_a_component_is_removed() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -81,7 +81,7 @@ class EngineTest {
 
     @Test
     fun update__it_update_systems() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
         var isCalled = false
         val system = object : System(EntityQuery(Name::class)) {
 
@@ -102,7 +102,7 @@ class EngineTest {
 
     @Test
     fun destroy__it_destroy_all_entities() {
-        val engine = Engine()
+        val engine = Engine(gameContext)
 
         var isCalled = false
         val system = object : System(EntityQuery(Name::class)) {
