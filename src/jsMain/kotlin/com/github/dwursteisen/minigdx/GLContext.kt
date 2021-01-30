@@ -16,7 +16,7 @@ import kotlin.math.min
 import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
 
-actual class GLContext actual constructor(private val configuration: GLConfiguration) {
+actual open class GLContext actual constructor(private val configuration: GLConfiguration) {
 
     private var then = 0.0
     private lateinit var game: Game
@@ -24,7 +24,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
     private lateinit var canvas: HTMLCanvasElement
     private lateinit var gameContext: GameContext
 
-    internal actual fun createContext(): GL {
+    internal actual open fun createContext(): GL {
         canvas =
             configuration.canvas ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
@@ -38,7 +38,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         )
     }
 
-    internal actual fun createFileHandler(logger: Logger): FileHandler {
+    internal actual open fun createFileHandler(logger: Logger): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
         return FileHandler(PlatformFileHandler(
             configuration.rootPath,
@@ -47,23 +47,23 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         ), logger = logger)
     }
 
-    internal actual fun createInputHandler(logger: Logger): InputHandler {
+    internal actual open fun createInputHandler(logger: Logger): InputHandler {
         return JsInputHandler(canvas)
     }
 
-    internal actual fun createViewportStrategy(logger: Logger): ViewportStrategy {
+    internal actual open fun createViewportStrategy(logger: Logger): ViewportStrategy {
         return FillViewportStrategy(logger)
     }
 
-    internal actual fun createLogger(): Logger {
+    internal actual open fun createLogger(): Logger {
         return JsLogger(configuration.gameName)
     }
 
-    internal actual fun createOptions(): Options {
+    internal actual open fun createOptions(): Options {
         return Options(configuration.debug)
     }
 
-    actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+    actual open fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         this.gameContext = gameContext
         inputManager = gameContext.input as InputManager
 

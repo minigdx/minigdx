@@ -1,10 +1,12 @@
 package com.github.dwursteisen.minigdx.ecs
 
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import createGlContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -21,7 +23,7 @@ class EngineTest {
 
     @Test
     fun create__it_should_add_the_created_entity_into_related_system() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -35,7 +37,7 @@ class EngineTest {
 
     @Test
     fun remove__it_should_remove_the_entity_from_the_related_system() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -52,7 +54,7 @@ class EngineTest {
 
     @Test
     fun add_component__it_add_the_entity_in_a_system_when_a_component_is_added() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -66,7 +68,7 @@ class EngineTest {
 
     @Test
     fun remove_component__it_remove_the_entity_from_a_system_when_a_component_is_removed() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
         val system = TestSystem()
 
         engine.addSystem(system)
@@ -81,7 +83,7 @@ class EngineTest {
 
     @Test
     fun update__it_update_systems() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
         var isCalled = false
         val system = object : System(EntityQuery(Name::class)) {
 
@@ -102,7 +104,7 @@ class EngineTest {
 
     @Test
     fun destroy__it_destroy_all_entities() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
 
         var isCalled = false
         val system = object : System(EntityQuery(Name::class)) {

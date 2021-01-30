@@ -19,7 +19,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.SpriteAnimated
+import com.github.dwursteisen.minigdx.ecs.components.SpriteComponent
 import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
@@ -222,7 +222,7 @@ fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
 fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
     add(Position())
     add(
-        SpriteAnimated(
+        SpriteComponent(
             animations = sprite.animations,
             uvs = sprite.uvs
         )

@@ -5,13 +5,13 @@ import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
 
-expect class GLContext(configuration: GLConfiguration) {
-    internal fun createContext(): GL
-    internal fun createFileHandler(logger: Logger): FileHandler
-    internal fun createInputHandler(logger: Logger): InputHandler
-    internal fun createViewportStrategy(logger: Logger): ViewportStrategy
-    internal fun createLogger(): Logger
-    internal fun createOptions(): Options
+expect open class GLContext(configuration: GLConfiguration) {
+    internal open fun createContext(): GL
+    internal open fun createFileHandler(logger: Logger): FileHandler
+    internal open fun createInputHandler(logger: Logger): InputHandler
+    internal open fun createViewportStrategy(logger: Logger): ViewportStrategy
+    internal open fun createLogger(): Logger
+    internal open fun createOptions(): Options
 
-    fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game)
+    open fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game)
 }

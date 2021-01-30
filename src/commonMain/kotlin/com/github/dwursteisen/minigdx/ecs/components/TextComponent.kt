@@ -10,6 +10,9 @@ import com.github.dwursteisen.minigdx.file.Font
 import kotlin.math.min
 
 class TextComponent(
+    /**
+     * Text to display by the component.
+     */
     text: String,
     var font: Font,
     var meshPrimitive: MeshPrimitive,
@@ -22,7 +25,7 @@ class TextComponent(
     var currentLine: String = text
         private set
 
-    var text: String = text
+    var text: String = ""
         set(value) {
             meshPrimitive.isUVDirty = true
             meshPrimitive.isDirty = true
@@ -40,25 +43,25 @@ class TextComponent(
         }
 
     init {
+        // Force the setter to get called
         this.text = text
     }
 
     class TextData(
         var currentX: Float = 0f,
         var currentY: Float = 0f,
-        @Deprecated("to be removed. Use verticces instead")
-        val vertisesPositions: FloatArray,
-        @Deprecated("to be removed")
-        val uvPositions: FloatArray,
-        @Deprecated("to be removed")
-        val vertisesOrder: ShortArray,
         val textureWidth: Float,
         val textureHeight: Float,
         var vertices: List<Vertex> = emptyList(),
         var verticesOrder: IntArray = IntArray(0)
     )
 
-    fun currentLineInPixel(text: String, font: Font): Pixel {
+    /**
+     * Compute the length of the [text] in pixel using the [font].
+     *
+     * The text should be only one line otherwise the length will be cumulative.
+     */
+    private fun currentLineInPixel(text: String, font: Font): Pixel {
         return text.mapIndexed { index, char ->
             val angelCharacter = font[char]
             var xAdvance = angelCharacter.xadvance
@@ -71,12 +74,9 @@ class TextComponent(
         }.sum()
     }
 
-    fun createMesh(scale: Float, text: String, font: Font): TextData {
+    private fun createMesh(scale: Float, text: String, font: Font): TextData {
 
         val textData = TextData(
-            vertisesPositions = FloatArray(text.length * 3 * 4) { 0f },
-            uvPositions = FloatArray(text.length * 2 * 4) { 0f },
-            vertisesOrder = ShortArray(text.length * 6) { 0 },
             textureHeight = font.fontSprite.height.toFloat(),
             textureWidth = font.fontSprite.width.toFloat()
         )
@@ -97,43 +97,6 @@ class TextComponent(
                     val xLeft = currentX + code.xoffset
                     val xRight = xLeft + code.width
                     val yBottom = yTop - code.height
-
-                    vertisesPositions[index * 3 * 4 + 0] = scale * xLeft
-                    vertisesPositions[index * 3 * 4 + 1] = scale * yTop
-                    vertisesPositions[index * 3 * 4 + 2] = 0f
-
-                    vertisesPositions[index * 3 * 4 + 3] = scale * xLeft
-                    vertisesPositions[index * 3 * 4 + 4] = scale * yBottom
-                    vertisesPositions[index * 3 * 4 + 5] = 0f
-
-                    vertisesPositions[index * 3 * 4 + 6] = scale * xRight
-                    vertisesPositions[index * 3 * 4 + 7] = scale * yBottom
-                    vertisesPositions[index * 3 * 4 + 8] = 0f
-
-                    vertisesPositions[index * 3 * 4 + 9] = scale * xRight
-                    vertisesPositions[index * 3 * 4 + 10] = scale * yTop
-                    vertisesPositions[index * 3 * 4 + 11] = 0f
-
-                    uvPositions[index * 2 * 4 + 0] = code.x / textureWidth
-                    uvPositions[index * 2 * 4 + 1] = code.y / textureHeight
-
-                    uvPositions[index * 2 * 4 + 2] = code.x / textureWidth
-                    uvPositions[index * 2 * 4 + 3] = (code.y + code.height) / textureHeight
-
-                    uvPositions[index * 2 * 4 + 4] = (code.x + code.width) / textureWidth
-                    uvPositions[index * 2 * 4 + 5] = (code.y + code.height) / textureHeight
-
-                    uvPositions[index * 2 * 4 + 6] = (code.x + code.width) / textureWidth
-                    uvPositions[index * 2 * 4 + 7] = code.y / textureHeight
-
-                    // lower triangle
-                    vertisesOrder[index * 6 + 0] = (index * 4).toShort()
-                    vertisesOrder[index * 6 + 1] = (index * 4 + 1).toShort()
-                    vertisesOrder[index * 6 + 2] = (index * 4 + 2).toShort()
-                    // upper triangle
-                    vertisesOrder[index * 6 + 3] = (index * 4).toShort()
-                    vertisesOrder[index * 6 + 4] = (index * 4 + 2).toShort()
-                    vertisesOrder[index * 6 + 5] = (index * 4 + 3).toShort()
 
                     // up left
                     val a = Vertex(
@@ -204,6 +167,11 @@ class TextComponent(
         return textData
     }
 
+    /**
+     * Generate the mesh corresponding to the current text.
+     *
+     * Each characters will be assigned two triangles.
+     */
     private fun generateMesh(meshPrimitive: MeshPrimitive) {
         val lineInPixel: Pixel = currentLineInPixel(currentLine, font)
         val lineInWorldUnit = (1f / charactersPerLine) * currentCharactersPerLine

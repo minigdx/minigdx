@@ -13,14 +13,14 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
 import org.lwjgl.system.MemoryUtil
 
-actual class GLContext actual constructor(private val configuration: GLConfiguration) {
+actual open class GLContext actual constructor(private val configuration: GLConfiguration) {
 
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
         return osName.indexOf("mac") >= 0
     }
 
-    internal actual fun createContext(): GL {
+    internal actual open fun createContext(): GL {
         if (isMacOs()) {
             System.err.println(
                 """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
@@ -34,23 +34,23 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
         )
     }
 
-    internal actual fun createFileHandler(logger: Logger): FileHandler {
+    internal actual open fun createFileHandler(logger: Logger): FileHandler {
         return FileHandler(platformFileHandler = PlatformFileHandler(logger), logger = logger)
     }
 
-    internal actual fun createInputHandler(logger: Logger): InputHandler {
+    internal actual open fun createInputHandler(logger: Logger): InputHandler {
         return LwjglInput(logger)
     }
 
-    internal actual fun createViewportStrategy(logger: Logger): ViewportStrategy {
+    internal actual open fun createViewportStrategy(logger: Logger): ViewportStrategy {
         return FillViewportStrategy(logger)
     }
 
-    internal actual fun createLogger(): Logger {
+    internal actual open fun createLogger(): Logger {
         return JavaLoggingLogger(configuration.name)
     }
 
-    internal actual fun createOptions(): Options {
+    internal actual open fun createOptions(): Options {
         return Options(configuration.debug)
     }
 
@@ -72,7 +72,7 @@ actual class GLContext actual constructor(private val configuration: GLConfigura
 
     private var lastFrame: Long = getTime()
 
-    actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+    actual open fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
