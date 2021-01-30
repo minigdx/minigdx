@@ -11,42 +11,42 @@ import com.github.dwursteisen.minigdx.internal.MiniGdxSurfaceView
 import com.github.dwursteisen.minigdx.logger.AndroidLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 
-actual class GLContext actual constructor(
+actual open class GLContext actual constructor(
     private val configuration: GLConfiguration
 ) {
 
-    internal actual fun createContext(): GL {
-        val display = configuration.activity.windowManager.defaultDisplay
+    internal actual open fun createContext(): GL {
+        val display = configuration.activity!!.windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
         return AndroidGL(Screen(size.x, size.y))
     }
 
-    internal actual fun createFileHandler(logger: Logger): FileHandler {
-        return FileHandler(platformFileHandler = PlatformFileHandler(configuration.activity, logger), logger = logger)
+    internal actual open fun createFileHandler(logger: Logger): FileHandler {
+        return FileHandler(platformFileHandler = PlatformFileHandler(configuration.activity!!, logger), logger = logger)
     }
 
-    internal actual fun createViewportStrategy(logger: Logger): ViewportStrategy {
+    internal actual open fun createViewportStrategy(logger: Logger): ViewportStrategy {
         return FillViewportStrategy(logger)
     }
 
-    internal actual fun createInputHandler(logger: Logger): InputHandler {
+    internal actual open fun createInputHandler(logger: Logger): InputHandler {
         return AndroidInputHandler()
     }
 
-    internal actual fun createLogger(): Logger {
+    internal actual open fun createLogger(): Logger {
         return AndroidLogger(configuration.gameName)
     }
 
-    internal actual fun createOptions(): Options {
+    internal actual open fun createOptions(): Options {
         return Options(
             debug = configuration.debug
         )
     }
 
     @ExperimentalStdlibApi
-    actual fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
-        val surfaceView = MiniGdxSurfaceView(gameContext, configuration.activity)
+    actual open fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+        val surfaceView = MiniGdxSurfaceView(gameContext, configuration.activity!!)
         configuration.activity.setContentView(surfaceView)
     }
 }

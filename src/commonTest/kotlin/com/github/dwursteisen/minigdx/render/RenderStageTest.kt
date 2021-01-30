@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.Mat4
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Camera
@@ -11,6 +12,7 @@ import com.github.dwursteisen.minigdx.graphics.MockGL
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
+import createGlContext
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -21,7 +23,7 @@ class RenderStageTest {
 
     @Test
     fun add__it_should_add_the_camera() {
-        val engine = Engine(gameContext)
+        val engine = Engine(GameContext(createGlContext()))
 
         val vertex = EmptyVertexShader()
         val fragment = EmptyFragmentShader()

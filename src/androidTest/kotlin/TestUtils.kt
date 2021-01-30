@@ -1,4 +1,10 @@
 
+import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GLConfiguration
+import com.github.dwursteisen.minigdx.GLContext
+import com.github.dwursteisen.minigdx.Game
+import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.graphics.MockGL
 import com.github.dwursteisen.minigdx.logger.Logger
 
 actual fun createLogger(): Logger {
@@ -36,5 +42,21 @@ actual fun createLogger(): Logger {
         }
 
         override var rootLevel: Logger.LogLevel = Logger.LogLevel.DEBUG
+    }
+}
+
+actual fun createGlContext(): GLContext {
+    return object : GLContext(
+        GLConfiguration(
+            "test-game", false, null
+        )
+    ) {
+        override fun createContext(): GL = MockGL()
+
+        override fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) = Unit
+
+        override fun createFileHandler(logger: com.github.dwursteisen.minigdx.logger.Logger): com.github.dwursteisen.minigdx.file.FileHandler {
+            TODO("Not Implemented")
+        }
     }
 }
