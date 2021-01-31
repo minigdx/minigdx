@@ -22,6 +22,8 @@ import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.math.lerp
+import com.github.dwursteisen.minigdx.file.get
+
 
 class GravityComponent(
     val acceleration: Vector3 = Vector3(0, 0, 0),

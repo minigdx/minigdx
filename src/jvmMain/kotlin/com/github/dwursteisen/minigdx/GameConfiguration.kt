@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx
 
-actual class GLConfiguration(
+actual class GameConfiguration(
     val name: String,
     actual val gameName: String,
     val width: Pixels,

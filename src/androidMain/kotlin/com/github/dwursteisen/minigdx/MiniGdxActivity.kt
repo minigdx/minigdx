@@ -7,7 +7,14 @@ abstract class MiniGdxActivity(private val gameName: String = "missing game name
 
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
-        configuration(GLConfiguration(gameName, debug, this)).execute { createGame(it) }
+        GameApplicationBuilder(
+            gameConfigurationFactory = {
+                GameConfiguration(gameName, debug, this)
+            },
+            gameFactory = {
+                createGame(it)
+            }
+        )
         super.onCreate(savedInstanceState)
     }
 

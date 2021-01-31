@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.file.FileHandlerCommon
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
@@ -13,14 +14,14 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
 import org.lwjgl.system.MemoryUtil
 
-actual open class GLContext actual constructor(private val configuration: GLConfiguration) {
+actual open class PlatformContextCommon actual constructor(private val configuration: GameConfiguration) : PlatformContext {
 
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
         return osName.indexOf("mac") >= 0
     }
 
-    internal actual open fun createContext(): GL {
+    actual override fun createGL(): GL {
         if (isMacOs()) {
             System.err.println(
                 """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
@@ -34,23 +35,23 @@ actual open class GLContext actual constructor(private val configuration: GLConf
         )
     }
 
-    internal actual open fun createFileHandler(logger: Logger): FileHandler {
-        return FileHandler(platformFileHandler = PlatformFileHandler(logger), logger = logger)
+    actual override fun createFileHandler(logger: Logger): FileHandler {
+        return FileHandlerCommon(platformFileHandler = PlatformFileHandler(logger), logger = logger)
     }
 
-    internal actual open fun createInputHandler(logger: Logger): InputHandler {
+    actual override fun createInputHandler(logger: Logger): InputHandler {
         return LwjglInput(logger)
     }
 
-    internal actual open fun createViewportStrategy(logger: Logger): ViewportStrategy {
+    actual override fun createViewportStrategy(logger: Logger): ViewportStrategy {
         return FillViewportStrategy(logger)
     }
 
-    internal actual open fun createLogger(): Logger {
+    actual override fun createLogger(): Logger {
         return JavaLoggingLogger(configuration.name)
     }
 
-    internal actual open fun createOptions(): Options {
+    actual override fun createOptions(): Options {
         return Options(configuration.debug)
     }
 
@@ -72,7 +73,7 @@ actual open class GLContext actual constructor(private val configuration: GLConf
 
     private var lastFrame: Long = getTime()
 
-    actual open fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+    actual override fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }

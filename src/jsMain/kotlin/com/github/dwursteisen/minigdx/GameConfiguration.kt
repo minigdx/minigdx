@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx
 import kotlin.browser.window
 import org.w3c.dom.HTMLCanvasElement
 
-actual class GLConfiguration(
+actual class GameConfiguration(
     actual val gameName: String,
     actual val debug: Boolean,
     val loadingListener: (Percent) -> Unit = { _ -> Unit },

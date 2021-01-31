@@ -1,13 +1,13 @@
 package com.github.dwursteisen.minigdx.graphics
 
+import MockLogger
 import com.github.dwursteisen.minigdx.Screen
-import createLogger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FillViewportStrategyTest {
 
-    private val fillViewportStrategy = FillViewportStrategy(createLogger())
+    private val fillViewportStrategy = FillViewportStrategy(MockLogger())
 
     @Test
     fun updateSquareWorldSquareScreen() {

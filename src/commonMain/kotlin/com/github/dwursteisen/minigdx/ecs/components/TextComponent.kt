@@ -27,10 +27,12 @@ class TextComponent(
 
     var text: String = ""
         set(value) {
+            field = value
+
             meshPrimitive.isUVDirty = true
             meshPrimitive.isDirty = true
 
-            val longestLine = text.split("\n")
+            val longestLine = value.split("\n")
                 .maxBy { it.length }
                 ?: ""
 
@@ -38,8 +40,6 @@ class TextComponent(
             currentLine = longestLine.take(currentCharactersPerLine)
 
             generateMesh(meshPrimitive)
-
-            field = value
         }
 
     init {

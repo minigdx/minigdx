@@ -1,6 +1,5 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
-import com.github.dwursteisen.minigdx.MiniGdx
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
@@ -49,12 +48,6 @@ abstract class StateMachineSystem(
         if (newState != null) {
             component.state?.onExit(this)
             consumeEvents(component.state)
-
-            if (MiniGdx.debugStates) {
-                logger.info("STATES") {
-                    "[${this@StateMachineSystem::class}] (${component.state?.let { it::class } ?: "??"}) --> (${newState::class})"
-                }
-            }
 
             component.state = newState
             component.state?.configure(this@StateMachineSystem)

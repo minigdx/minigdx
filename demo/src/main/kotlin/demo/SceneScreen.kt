@@ -24,6 +24,7 @@ import com.github.dwursteisen.minigdx.game.Screen
 import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
+import com.github.dwursteisen.minigdx.file.get
 
 class Player : Component
 

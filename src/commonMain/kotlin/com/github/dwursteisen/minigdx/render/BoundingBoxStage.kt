@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.MiniGdx
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
@@ -18,12 +17,6 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
     fragment = ColorFragmentShader(),
     query = EntityQuery(BoundingBox::class)
 ) {
-
-    override fun update(delta: Seconds) {
-        if (MiniGdx.debugHitbox) {
-            super.update(delta)
-        }
-    }
 
     override fun update(delta: Seconds, entity: Entity) {
         val model = entity.get(Position::class).transformation

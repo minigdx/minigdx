@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.file.FileHandlerCommon
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
@@ -16,7 +17,7 @@ import kotlin.math.min
 import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
 
-actual open class GLContext actual constructor(private val configuration: GLConfiguration) {
+actual open class PlatformContextCommon actual constructor(private val configuration: GameConfiguration) : PlatformContext {
 
     private var then = 0.0
     private lateinit var game: Game
@@ -24,7 +25,7 @@ actual open class GLContext actual constructor(private val configuration: GLConf
     private lateinit var canvas: HTMLCanvasElement
     private lateinit var gameContext: GameContext
 
-    internal actual open fun createContext(): GL {
+    actual override fun createGL(): GL {
         canvas =
             configuration.canvas ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
@@ -38,32 +39,32 @@ actual open class GLContext actual constructor(private val configuration: GLConf
         )
     }
 
-    internal actual open fun createFileHandler(logger: Logger): FileHandler {
+    actual override fun createFileHandler(logger: Logger): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
-        return FileHandler(PlatformFileHandler(
+        return FileHandlerCommon(PlatformFileHandler(
             configuration.rootPath,
             AudioContext(),
             logger
         ), logger = logger)
     }
 
-    internal actual open fun createInputHandler(logger: Logger): InputHandler {
+    actual override fun createInputHandler(logger: Logger): InputHandler {
         return JsInputHandler(canvas)
     }
 
-    internal actual open fun createViewportStrategy(logger: Logger): ViewportStrategy {
+    actual override fun createViewportStrategy(logger: Logger): ViewportStrategy {
         return FillViewportStrategy(logger)
     }
 
-    internal actual open fun createLogger(): Logger {
+    actual override fun createLogger(): Logger {
         return JsLogger(configuration.gameName)
     }
 
-    internal actual open fun createOptions(): Options {
+    actual override fun createOptions(): Options {
         return Options(configuration.debug)
     }
 
-    actual open fun run(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+    actual override fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
         this.gameContext = gameContext
         inputManager = gameContext.input as InputManager
 
@@ -71,7 +72,7 @@ actual open class GLContext actual constructor(private val configuration: GLConf
         window.requestAnimationFrame(::loading)
     }
 
-    private fun loading(now: Double) {
+    private fun loading(@Suppress("UNUSED_PARAMETER") now: Double) {
         if (!gameContext.fileHandler.isFullyLoaded()) {
             configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             window.requestAnimationFrame(::loading)

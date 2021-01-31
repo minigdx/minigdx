@@ -9,20 +9,21 @@ import com.github.dwursteisen.minigdx.logger.Logger
 class Options(var debug: Boolean)
 
 class GameContext(
-    private val glContext: GLContext
+    private val platformContext: PlatformContext
 ) {
-    val gl: GL = glContext.createContext()
-    val logger: Logger = glContext.createLogger()
+    val gl: GL = platformContext.createGL()
+    val logger: Logger = platformContext.createLogger()
 
-    val fileHandler: FileHandler = glContext.createFileHandler(logger)
-    val input: InputHandler = glContext.createInputHandler(logger)
-    val viewport: ViewportStrategy = glContext.createViewportStrategy(logger)
+    val fileHandler: FileHandler = platformContext.createFileHandler(logger)
+    val input: InputHandler = platformContext.createInputHandler(logger)
+    val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
     val glResourceClient = GLResourceClient(gl, logger)
 
     val ratio = gl.screen.ratio
-    val options = glContext.createOptions()
+    val options = platformContext.createOptions()
 
-    fun execute(block: (GameContext) -> Game) {
-        glContext.run(this, block)
+    @Deprecated("Use the start method on the platform context instead")
+    fun start(block: (GameContext) -> Game) {
+        platformContext.start(this, block)
     }
 }

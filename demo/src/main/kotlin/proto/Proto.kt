@@ -30,6 +30,7 @@ import com.github.dwursteisen.minigdx.math.lerp
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import com.github.dwursteisen.minigdx.file.get
 
 class Player(val input: InputHandler) : StateMachineComponent()
 

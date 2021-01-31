@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.file.get
 
 @ExperimentalStdlibApi
 class SpriteScreen(override val gameContext: GameContext) : Screen {

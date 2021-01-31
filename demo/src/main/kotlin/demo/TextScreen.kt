@@ -16,6 +16,7 @@ import com.github.dwursteisen.minigdx.file.Font
 import com.github.dwursteisen.minigdx.game.GameSystem
 import com.github.dwursteisen.minigdx.game.Screen
 import kotlin.math.cos
+import com.github.dwursteisen.minigdx.file.get
 
 @ExperimentalStdlibApi
 class TextScreen(override val gameContext: GameContext) : Screen {
