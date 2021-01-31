@@ -13,13 +13,13 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.file.Font
-import com.github.dwursteisen.minigdx.game.GameSystem
-import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.game.GameWrapper
+import com.github.dwursteisen.minigdx.game.Game
 import kotlin.math.cos
 import com.github.dwursteisen.minigdx.file.get
 
 @ExperimentalStdlibApi
-class TextScreen(override val gameContext: GameContext) : Screen {
+class TextGame(override val gameContext: GameContext) : Game {
 
     private val font: Font by gameContext.fileHandler.get("pt_font")
 
@@ -45,6 +45,3 @@ class TextScreen(override val gameContext: GameContext) : Screen {
         )
     }
 }
-
-@ExperimentalStdlibApi
-class TextGame(gameContext: GameContext) : GameSystem(gameContext, TextScreen(gameContext))

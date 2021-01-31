@@ -9,7 +9,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 
-class Screen(
+class ScreenConfiguration(
     var width: Int,
     var height: Int
 ) {
@@ -19,7 +19,7 @@ class Screen(
 
 interface GL {
 
-    val screen: Screen
+    val screen: ScreenConfiguration
 
     fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent)
     fun clear(mask: ByteMask)

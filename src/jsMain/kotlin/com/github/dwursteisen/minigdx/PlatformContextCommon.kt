@@ -4,6 +4,8 @@ import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.FileHandlerCommon
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
+import com.github.dwursteisen.minigdx.game.Game
+import com.github.dwursteisen.minigdx.game.GameWrapper
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -20,7 +22,7 @@ import org.w3c.dom.HTMLCanvasElement
 actual open class PlatformContextCommon actual constructor(private val configuration: GameConfiguration) : PlatformContext {
 
     private var then = 0.0
-    private lateinit var game: Game
+    private lateinit var gameWrapper: GameWrapper
     private lateinit var inputManager: InputManager
     private lateinit var canvas: HTMLCanvasElement
     private lateinit var gameContext: GameContext
@@ -32,7 +34,7 @@ actual open class PlatformContextCommon actual constructor(private val configura
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val context = canvas.getContext("webgl2") as WebGLRenderingContextBase
         return WebGL(
-            context, Screen(
+            context, ScreenConfiguration(
                 width = canvas.clientWidth,
                 height = canvas.clientHeight
             )
@@ -68,7 +70,8 @@ actual open class PlatformContextCommon actual constructor(private val configura
         this.gameContext = gameContext
         inputManager = gameContext.input as InputManager
 
-        this.game = gameFactory(gameContext)
+        val game = gameFactory(gameContext)
+        this.gameWrapper = GameWrapper(gameContext, game)
         window.requestAnimationFrame(::loading)
     }
 
@@ -84,8 +87,8 @@ actual open class PlatformContextCommon actual constructor(private val configura
                 gameContext.gl.screen.height
             )
 
-            game.create()
-            game.resume()
+            gameWrapper.create()
+            gameWrapper.resume()
             window.requestAnimationFrame(::render)
         }
     }
@@ -110,7 +113,7 @@ actual open class PlatformContextCommon actual constructor(private val configura
         val delta = nowInSeconds - then
         then = nowInSeconds
         profile("render") {
-            game.render(min(1 / 60f, delta.toFloat()))
+            gameWrapper.render(min(1 / 60f, delta.toFloat()))
         }
         inputManager.reset()
 

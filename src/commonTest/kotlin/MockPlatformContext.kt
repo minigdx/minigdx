@@ -1,9 +1,9 @@
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Options
 import com.github.dwursteisen.minigdx.PlatformContext
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.MockGL
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy

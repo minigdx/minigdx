@@ -1,7 +1,18 @@
 package com.github.dwursteisen.minigdx
 
+import com.github.dwursteisen.minigdx.game.Game
+
 class GameApplicationBuilder(
+    /**
+     * Factory to build the game configuration.
+     */
     val gameConfigurationFactory: () -> GameConfiguration,
+
+    /**
+     * Factory to build the game.
+     * The game should be instantiated through it and NOT earlier
+     * otherwise resources required by the game might not yet exist.
+     */
     val gameFactory: (gameContext: GameContext) -> Game
 ) {
 

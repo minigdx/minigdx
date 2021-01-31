@@ -5,10 +5,10 @@ import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.file.get
-import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.game.Game
 
 @ExperimentalStdlibApi
-class BirdScreen(override val gameContext: GameContext) : Screen {
+class BirdGame(override val gameContext: GameContext) : Game {
 
     private val bird: Scene by gameContext.fileHandler.get("v2/bird.protobuf")
 

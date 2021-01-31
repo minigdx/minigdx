@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView
 import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.MiniGdxActivity
+import com.github.dwursteisen.minigdx.game.GameWrapper
 import com.github.dwursteisen.minigdx.input.InputManager
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -20,7 +21,7 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
 
             private var time = 0f
 
-            lateinit var game: Game
+            lateinit var gameWrapper: Game
             lateinit var inputManager: InputManager
 
             override fun onDrawFrame(gl: GL10?) {
@@ -28,7 +29,7 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
                 val delta = (now - time) / 1000000000.0f
 
                 inputManager.record()
-                game.render(min(1 / 60f, delta))
+                gameWrapper.render(min(1 / 60f, delta))
                 inputManager.reset()
                 time = now
             }
@@ -40,8 +41,9 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
             @ExperimentalStdlibApi
             override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
                 inputManager = gameContext.input as InputManager
-                game = (context as MiniGdxActivity).createGame(gameContext)
-                game.create()
+                val game = (context as MiniGdxActivity).createGame(gameContext)
+                gameWrapper = GameWrapper(gameContext, game)
+                gameWrapper.create()
             }
         })
         // Render the view only when there is a change in the drawing data

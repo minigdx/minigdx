@@ -14,7 +14,7 @@ import org.khronos.webgl.Uint32Array
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.WebGLRenderingContextBase
 
-class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Screen) : GL {
+class WebGL(private val gl: WebGLRenderingContextBase, override val screen: ScreenConfiguration) : GL {
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
         gl.clearColor(r.toPercent(), g.toPercent(), b.toPercent(), a.toPercent())

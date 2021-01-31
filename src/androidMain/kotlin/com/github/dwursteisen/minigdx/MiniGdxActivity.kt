@@ -19,5 +19,5 @@ abstract class MiniGdxActivity(private val gameName: String = "missing game name
     }
 
     @ExperimentalStdlibApi
-    abstract fun createGame(gameContext: GameContext): Game
+    abstract fun createGame(gameContext: GameContext): Screen
 }

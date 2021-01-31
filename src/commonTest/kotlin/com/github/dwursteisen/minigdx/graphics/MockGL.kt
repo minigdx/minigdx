@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx.graphics
 import com.github.dwursteisen.minigdx.ByteMask
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Percent
-import com.github.dwursteisen.minigdx.Screen
+import com.github.dwursteisen.minigdx.ScreenConfiguration
 import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
@@ -14,7 +14,7 @@ import com.github.dwursteisen.minigdx.shaders.Uniform
 
 data class ViewportCall(val x: Int, val y: Int, val width: Int, val height: Int)
 
-class MockGL(override val screen: Screen = Screen(100, 100)) : GL {
+class MockGL(override val screen: ScreenConfiguration = ScreenConfiguration(100, 100)) : GL {
 
     lateinit var viewportCall: ViewportCall
 

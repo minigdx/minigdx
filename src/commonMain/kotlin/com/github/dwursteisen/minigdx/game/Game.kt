@@ -19,7 +19,7 @@ import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
 import com.github.dwursteisen.minigdx.render.MeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.RenderStage
 
-interface Screen {
+interface Game {
 
     val gameContext: GameContext
 

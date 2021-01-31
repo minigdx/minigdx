@@ -4,6 +4,7 @@ import android.graphics.Point
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.FileHandlerCommon
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.AndroidInputHandler
@@ -20,7 +21,7 @@ actual open class PlatformContextCommon actual constructor(
         val display = configuration.activity!!.windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
-        return AndroidGL(Screen(size.x, size.y))
+        return AndroidGL(ScreenConfiguration(size.x, size.y))
     }
 
     actual override fun createFileHandler(logger: Logger): FileHandler {

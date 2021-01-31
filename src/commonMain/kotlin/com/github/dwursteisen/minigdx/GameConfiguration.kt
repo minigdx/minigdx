@@ -1,8 +1,14 @@
 package com.github.dwursteisen.minigdx
 
-// TODO: Rename this class without the GL. Like GameConfiguration
 expect class GameConfiguration {
 
+    /**
+     * Name of the game
+     */
     val gameName: String
+
+    /**
+     * Is debug mode turned on
+     */
     val debug: Boolean
 }

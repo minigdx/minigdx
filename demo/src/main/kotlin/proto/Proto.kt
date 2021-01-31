@@ -21,8 +21,8 @@ import com.github.dwursteisen.minigdx.ecs.states.State
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.StateMachineSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.game.GameSystem
-import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.game.GameWrapper
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.logger.Logger
@@ -292,7 +292,7 @@ class PlayerSystem(private val inputHandler: InputHandler, logger: Logger) : Sta
 }
 
 @ExperimentalStdlibApi
-class Proto(override val gameContext: GameContext) : Screen {
+class ProtoGame(override val gameContext: GameContext) : Game {
 
     private val assets by gameContext.fileHandler.get<Scene>("proto/assets.protobuf")
 
@@ -352,6 +352,3 @@ class Proto(override val gameContext: GameContext) : Screen {
         ) + super.createSystems(engine)
     }
 }
-
-@ExperimentalStdlibApi
-class ProtoGame(gameContext: GameContext) : GameSystem(gameContext, Proto(gameContext))

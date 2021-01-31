@@ -3,6 +3,8 @@ package com.github.dwursteisen.minigdx
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.FileHandlerCommon
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
+import com.github.dwursteisen.minigdx.game.Game
+import com.github.dwursteisen.minigdx.game.GameWrapper
 import com.github.dwursteisen.minigdx.graphics.FillViewportStrategy
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -28,7 +30,7 @@ actual open class PlatformContextCommon actual constructor(private val configura
             )
         }
         return LwjglGL(
-            screen = Screen(
+            screen = ScreenConfiguration(
                 configuration.width,
                 configuration.height
             )
@@ -127,7 +129,7 @@ actual open class PlatformContextCommon actual constructor(private val configura
 
         // Make the window visible
         GLFW.glfwShowWindow(window)
-        val game = gameFactory(gameContext)
+        val game = GameWrapper(gameContext, gameFactory(gameContext))
 
         game.create()
         game.resume()

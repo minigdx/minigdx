@@ -9,7 +9,7 @@ import com.github.dwursteisen.minigdx.logger.Logger
 class Options(var debug: Boolean)
 
 class GameContext(
-    private val platformContext: PlatformContext
+    platformContext: PlatformContext
 ) {
     val gl: GL = platformContext.createGL()
     val logger: Logger = platformContext.createLogger()
@@ -21,9 +21,4 @@ class GameContext(
 
     val ratio = gl.screen.ratio
     val options = platformContext.createOptions()
-
-    @Deprecated("Use the start method on the platform context instead")
-    fun start(block: (GameContext) -> Game) {
-        platformContext.start(this, block)
-    }
 }

@@ -17,7 +17,7 @@ import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
@@ -134,7 +134,7 @@ class PlayerMoveSystem(
 }
 
 @ExperimentalStdlibApi
-class GravityScreen(override val gameContext: GameContext) : Screen {
+class GravityGame(override val gameContext: GameContext) : Game {
 
     private val scene: Scene by gameContext.fileHandler.get("v2/gravity.protobuf")
 

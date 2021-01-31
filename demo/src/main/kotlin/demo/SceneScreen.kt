@@ -19,8 +19,8 @@ import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.file.Font
 import com.github.dwursteisen.minigdx.file.Sound
-import com.github.dwursteisen.minigdx.game.GameSystem
-import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.game.GameWrapper
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
@@ -56,7 +56,7 @@ class PlayerSystem(val inputHandler: InputHandler, val sound: Sound) : System(En
 }
 
 @ExperimentalStdlibApi
-class SceneScreen(override val gameContext: GameContext) : Screen {
+class SceneGame(override val gameContext: GameContext) : Game {
 
     private val scene: Scene by gameContext.fileHandler.get("proto/asteroid.protobuf")
 
@@ -107,8 +107,3 @@ class SceneScreen(override val gameContext: GameContext) : Screen {
         return listOf(PlayerSystem(gameContext.input, sound)) + super.createSystems(engine)
     }
 }
-
-
-@ExperimentalStdlibApi
-class SceneGame(gameContext: GameContext) : GameSystem(gameContext, SceneScreen(gameContext))
-

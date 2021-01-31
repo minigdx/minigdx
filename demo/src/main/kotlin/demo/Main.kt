@@ -1,17 +1,12 @@
 package demo
 
-import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.GameApplicationBuilder
 import com.github.dwursteisen.minigdx.GameConfiguration
 import com.github.dwursteisen.minigdx.GameContext
-import com.github.dwursteisen.minigdx.game.GameSystem
+import com.github.dwursteisen.minigdx.game.Game
+import com.github.dwursteisen.minigdx.game.GameWrapper
 import proto.ProtoGame
 
-@ExperimentalStdlibApi
-class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, BirdScreen(gameContext))
-
-@ExperimentalStdlibApi
-class Gravity(gameContext: GameContext) : GameSystem(gameContext, GravityScreen(gameContext))
 
 @ExperimentalStdlibApi
 class Main {
@@ -32,13 +27,13 @@ class Main {
             val gameFactory: (GameContext) -> Game = {
                 val index = args.indexOf("--game")
                 when (args.getOrElse(index + 1) { "" }) {
-                    "v2" -> DemoApiV2(it)
-                    "gravity" -> Gravity(it)
+                    "bird" -> BirdGame(it)
+                    "gravity" -> GravityGame(it)
                     "text" -> TextGame(it)
                     "sprite" -> SpriteGame(it)
                     "proto" -> ProtoGame(it)
                     "scene" -> SceneGame(it)
-                    else -> DemoApiV2(it)
+                    else -> BirdGame(it)
                 }
             }
 
