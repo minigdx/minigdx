@@ -62,7 +62,7 @@ fun IntArray.asBuffer() = IntBuffer.wrap(this)
 fun DoubleArray.asBuffer() = DoubleBuffer.wrap(this)
 fun ShortArray.asBuffer() = ShortBuffer.wrap(this)
 
-class AndroidGL(override val screen: Screen) : GL {
+class AndroidGL(override val screen: ScreenConfiguration) : GL {
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
         glClearColor(r.toPercent(), g.toPercent(), b.toPercent(), a.toPercent())

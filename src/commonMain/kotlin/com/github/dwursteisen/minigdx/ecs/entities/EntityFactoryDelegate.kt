@@ -56,6 +56,7 @@ class EntityFactoryDelegate : EntityFactory {
             )
             val spritePrimitive = TextComponent(text, font, meshPrimitive)
             add(spritePrimitive)
+            add(meshPrimitive)
         }
     }
 

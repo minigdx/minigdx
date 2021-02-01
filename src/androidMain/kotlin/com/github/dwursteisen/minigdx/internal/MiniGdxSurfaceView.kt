@@ -2,7 +2,6 @@ package com.github.dwursteisen.minigdx.internal
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import com.github.dwursteisen.minigdx.Game
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.MiniGdxActivity
 import com.github.dwursteisen.minigdx.game.GameWrapper
@@ -21,7 +20,7 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
 
             private var time = 0f
 
-            lateinit var gameWrapper: Game
+            lateinit var gameWrapper: GameWrapper
             lateinit var inputManager: InputManager
 
             override fun onDrawFrame(gl: GL10?) {

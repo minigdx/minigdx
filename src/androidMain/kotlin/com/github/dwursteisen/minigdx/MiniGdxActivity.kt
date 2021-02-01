@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import android.app.Activity
 import android.os.Bundle
+import com.github.dwursteisen.minigdx.game.Game
 
 abstract class MiniGdxActivity(private val gameName: String = "missing game name", private val debug: Boolean = false) : Activity() {
 
@@ -14,10 +15,10 @@ abstract class MiniGdxActivity(private val gameName: String = "missing game name
             gameFactory = {
                 createGame(it)
             }
-        )
+        ).start()
         super.onCreate(savedInstanceState)
     }
 
     @ExperimentalStdlibApi
-    abstract fun createGame(gameContext: GameContext): Screen
+    abstract fun createGame(gameContext: GameContext): Game
 }

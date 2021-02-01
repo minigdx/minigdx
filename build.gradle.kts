@@ -2,7 +2,7 @@ import java.util.Date
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     kotlin("multiplatform") version "1.3.70"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     id("maven-publish")
@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.github.dwursteisen.minigdx"
-version = project.properties["version"] ?: "1.1-SNAPSHOT"
+version = project.properties["version"] ?: "1.2-SNAPSHOT"
 
 if (version == "unspecified") {
     version = "1.2-SNAPSHOT"
@@ -106,6 +106,7 @@ kotlin {
     }
 
     android("android") {
+        publishLibraryVariants("release", "debug")
     }
 
     jvm {
@@ -137,7 +138,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-js:$kotlinMathVersion")
+                api("com.github.dwursteisen.kotlin-math:kotlin-math-js:$kotlinMathVersion")
             }
         }
 
@@ -150,7 +151,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                implementation("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
+                api("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
 
                 val lwjglVersion = "3.2.3"
                 val imguiVersion = "1.77-0.16"
@@ -197,6 +198,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("org.l33tlabs.twl:pngdecoder:1.0")
+                api("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
             }
         }
 
@@ -235,7 +237,7 @@ configure<com.jfrog.bintray.gradle.BintrayExtension> {
     } else if (findProperty("currentOs") == "Windows") {
         setPublications("mingwX64")
     } else if (findProperty("currentOs") == "Linux") {
-        setPublications("kotlinMultiplatform", "linuxX64")
+        setPublications("kotlinMultiplatform", "linuxX64", "androidDebug", "androidRelease")
     }
     pkg(delegateClosureOf<com.jfrog.bintray.gradle.BintrayExtension.PackageConfig> {
         repo = "minigdx"
