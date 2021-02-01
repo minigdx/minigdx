@@ -43,7 +43,7 @@ class BoundingBoxCompiler : GLResourceCompiler {
         }
     }
 
-    override fun update(gl: GL, source: GLResourceComponent, target: GLResourceComponent) {
+    override fun synchronize(gl: GL, source: GLResourceComponent, target: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
         source as BoundingBox
         target as BoundingBox
         target.colorBuffer = source.colorBuffer

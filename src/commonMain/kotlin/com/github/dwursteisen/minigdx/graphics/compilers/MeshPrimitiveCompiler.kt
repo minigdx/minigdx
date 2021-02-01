@@ -87,22 +87,17 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         )
     }
 
-    override fun update(gl: GL, source: GLResourceComponent, target: GLResourceComponent) {
+    override fun synchronize(gl: GL, source: GLResourceComponent, target: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
         source as MeshPrimitive
         target as MeshPrimitive
 
         target.textureReference = source.textureReference
         target.uvBuffer = source.uvBuffer
-        if (target.isUVDirty) {
-            gl.bindBuffer(GL.ARRAY_BUFFER, target.uvBuffer!!)
-
-            gl.bufferData(
-                target = GL.ARRAY_BUFFER,
-                data = target.primitive.vertices.map { it.uv }.uvDatasource(),
-                usage = GL.STATIC_DRAW
-            )
-        }
         target.verticesBuffer = source.verticesBuffer
         target.verticesOrderBuffer = source.verticesOrderBuffer
+
+        if (target.isDirty) {
+            compile(gl, target, materials)
+        }
     }
 }

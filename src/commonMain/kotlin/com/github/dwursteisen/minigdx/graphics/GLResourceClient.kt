@@ -40,7 +40,7 @@ class GLResourceClient(
             .onEach { component ->
                 val cachedValue = cache[component.id]
                 if (cachedValue != null) {
-                    compilers[component::class]?.update(gl, cachedValue, component)
+                    compilers[component::class]?.synchronize(gl, cachedValue, component, materials)
                 } else {
                     log.info("GL_RESOURCE") { "Compiling '${component.id}' (${component::class.simpleName}) component" }
                     cache[component.id] = component

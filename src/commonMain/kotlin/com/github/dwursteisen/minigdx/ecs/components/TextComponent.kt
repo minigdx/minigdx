@@ -82,7 +82,8 @@ class TextComponent(
         )
 
         val angelCode = font.angelCode
-        text.forEachIndexed { index, char ->
+        var characterIndex = 0
+        text.forEach { char ->
             with(textData) {
                 if (char == '\n') {
                     currentX = 0f
@@ -152,15 +153,16 @@ class TextComponent(
 
                     vertices += listOf(a, b, c, d)
                     verticesOrder += intArrayOf(
-                        index * 4 + 0,
-                        index * 4 + 1,
-                        index * 4 + 2,
-                        index * 4 + 0,
-                        index * 4 + 2,
-                        index * 4 + 3
+                        characterIndex * 4 + 0,
+                        characterIndex * 4 + 1,
+                        characterIndex * 4 + 2,
+                        characterIndex * 4 + 0,
+                        characterIndex * 4 + 2,
+                        characterIndex * 4 + 3
                     )
 
                     currentX += code.xadvance + code.xoffset
+                    characterIndex++
                 }
             }
         }

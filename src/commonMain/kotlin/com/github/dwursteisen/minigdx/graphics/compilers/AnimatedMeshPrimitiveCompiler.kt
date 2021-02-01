@@ -89,7 +89,7 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
         component.isCompiled = true
     }
 
-    override fun update(gl: GL, source: GLResourceComponent, target: GLResourceComponent) {
+    override fun synchronize(gl: GL, source: GLResourceComponent, target: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
         target as AnimatedMeshPrimitive
         source as AnimatedMeshPrimitive
         target.jointBuffer = source.jointBuffer
