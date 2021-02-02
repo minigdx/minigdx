@@ -36,8 +36,10 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
         }
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, box.orderBuffer!!)
         gl.drawElements(
-            GL.LINES, box.order.size,
-            GL.UNSIGNED_SHORT, 0
+            mask = GL.LINES,
+            vertexCount = box.order.size,
+            type = GL.UNSIGNED_SHORT,
+            offset = 0
         )
     }
 }
