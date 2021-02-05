@@ -34,7 +34,14 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
             }
 
             override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-                gameContext.viewport.update(gameContext.gl, width, height)
+                gameContext.deviceScreen.height = height
+                gameContext.deviceScreen.width = width
+                gameContext.viewport.update(gameContext.gl,
+                        gameContext.deviceScreen.width,
+                        gameContext.deviceScreen.height,
+                        gameContext.gameScreen.width,
+                        gameContext.gameScreen.height
+                )
             }
 
             @ExperimentalStdlibApi

@@ -30,6 +30,11 @@ typealias Coordinate = Number
  */
 typealias Pixel = Int
 
+/**
+ * Ratio. Used in general to deal with screen size.
+ */
+typealias Ratio = Float
+
 fun Number.toPercent(): Float {
     val v = this.toFloat()
     require(v in 0.0..1.0)

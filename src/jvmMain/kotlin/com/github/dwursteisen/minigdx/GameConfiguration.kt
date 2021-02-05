@@ -1,9 +1,16 @@
 package com.github.dwursteisen.minigdx
 
 actual class GameConfiguration(
-    val name: String,
     actual val gameName: String,
-    val width: Pixels,
-    val height: Pixels,
-    actual val debug: Boolean = false
+    actual val gameScreenConfiguration: GameScreenConfiguration,
+    actual val debug: Boolean = false,
+    /**
+     * Configuration of the application window.
+     */
+    val window: Window,
+    /**
+     * Run the game using wireframe as display mode
+     * instead of solid polygons.
+     */
+    val wireframe: Boolean = false
 )

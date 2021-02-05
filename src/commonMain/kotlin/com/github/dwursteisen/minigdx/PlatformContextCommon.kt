@@ -6,7 +6,8 @@ import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
 
-expect open class PlatformContextCommon(configuration: GameConfiguration) : PlatformContext {
+expect class PlatformContextCommon(configuration: GameConfiguration) : PlatformContext {
+    override val configuration: GameConfiguration
     override fun createGL(): GL
     override fun createFileHandler(logger: Logger): FileHandler
     override fun createInputHandler(logger: Logger): InputHandler
@@ -14,5 +15,5 @@ expect open class PlatformContextCommon(configuration: GameConfiguration) : Plat
     override fun createLogger(): Logger
     override fun createOptions(): Options
 
-    override fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game)
+    override fun start(gameFactory: (GameContext) -> Game)
 }

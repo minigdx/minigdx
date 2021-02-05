@@ -8,8 +8,13 @@ import com.github.dwursteisen.minigdx.logger.Logger
 
 class Options(var debug: Boolean)
 
+class GameScreen(val width: Pixel, val height: Pixel, val ratio: Ratio = width / height.toFloat())
+
+class DeviceScreen(var width: Pixel, var height: Pixel)
+
 class GameContext(
-    platformContext: PlatformContext
+    platformContext: PlatformContext,
+    gameResolution: Resolution
 ) {
     val gl: GL = platformContext.createGL()
     val logger: Logger = platformContext.createLogger()
@@ -19,6 +24,16 @@ class GameContext(
     val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
     val glResourceClient = GLResourceClient(gl, logger)
 
-    val ratio = gl.screen.ratio
+    val gameScreen: GameScreen = GameScreen(
+        gameResolution.width,
+        gameResolution.height,
+        gameResolution.ratio
+    )
+
+    val deviceScreen: DeviceScreen = DeviceScreen(
+        gameResolution.width,
+        gameResolution.height
+    )
+
     val options = platformContext.createOptions()
 }

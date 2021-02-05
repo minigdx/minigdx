@@ -11,6 +11,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.createFromNode
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
@@ -140,7 +141,7 @@ class GravityGame(override val gameContext: GameContext) : Game {
 
     override fun createEntities(entityFactory: EntityFactory) {
         scene.children.forEach { model ->
-            val entity = entityFactory.createFromNode(model, scene)
+            val entity = entityFactory.engine.createFromNode(model, gameContext, scene)
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }

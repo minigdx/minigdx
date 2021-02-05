@@ -37,7 +37,7 @@ fun Engine.createFromNode(
 ): Entity {
     return when (node.type) {
         ObjectType.ARMATURE -> createArmature(node, scene, transformation)
-        ObjectType.BOX -> createBox(node, scene, transformation)
+        ObjectType.BOX -> createBox(node, transformation)
         ObjectType.CAMERA -> createCamera(node, gameContext, scene, transformation)
         ObjectType.LIGHT -> TODO()
         ObjectType.MODEL -> createModel(node, scene, transformation)
@@ -47,7 +47,6 @@ fun Engine.createFromNode(
 @ExperimentalStdlibApi
 fun Engine.createBox(
     node: Node,
-    scene: Scene,
     transformation: Mat4
 ): Entity = create {
     add(BoundingBox.from(node.transformation.toMat4()))
@@ -124,16 +123,18 @@ fun Engine.createCamera(
         is PerspectiveCamera -> com.github.dwursteisen.minigdx.ecs.components.Camera(
             projection = perspective(
                 fov = camera.fov,
-                aspect = context.ratio,
+                aspect = context.gameScreen.ratio,
                 near = camera.near,
                 far = camera.far
             )
         )
         is OrthographicCamera -> {
-            val (w, h) = if (context.gl.screen.width >= context.gl.screen.height) {
-                1f to (context.gl.screen.height / context.gl.screen.width.toFloat())
+            val (w, h) = if (context.gameScreen.width >= context.gameScreen.height) {
+                // 1 / GameScreen.ratio
+                1f to (context.gameScreen.height / context.gameScreen.width.toFloat())
             } else {
-                context.gl.screen.width / context.gl.screen.height.toFloat() to 1f
+                // GameScreen.ratio
+                context.gameScreen.width / context.gameScreen.height.toFloat() to 1f
             }
             com.github.dwursteisen.minigdx.ecs.components.Camera(
                 projection = ortho(
@@ -155,8 +156,8 @@ fun Engine.createCamera(
 
 fun Engine.createUICamera(gameContext: GameContext): Entity {
     return this.create {
-        val width = gameContext.gl.screen.width
-        val height = gameContext.gl.screen.height
+        val width = gameContext.gameScreen.width
+        val height = gameContext.gameScreen.height
         add(
             UICamera(
                 projection = ortho(

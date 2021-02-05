@@ -1,8 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
 import MockLogger
-import MockPlatformContext
-import com.github.dwursteisen.minigdx.GameContext
+import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
@@ -48,7 +47,7 @@ class StateMachineSystemTest {
         override fun update(delta: Seconds, entity: Entity): State? = null
     }
 
-    private val engine = Engine(GameContext(MockPlatformContext()))
+    private val engine = Engine(gameContext())
 
     @Test
     fun state_machine_it_describes_a_state_machine() {

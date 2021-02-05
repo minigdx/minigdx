@@ -19,7 +19,9 @@ import kotlin.math.min
 import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
 
-actual open class PlatformContextCommon actual constructor(private val configuration: GameConfiguration) : PlatformContext {
+actual open class PlatformContextCommon actual constructor(
+    actual override val configuration: GameConfiguration
+) : PlatformContext {
 
     private var then = 0.0
     private lateinit var gameWrapper: GameWrapper
@@ -28,26 +30,20 @@ actual open class PlatformContextCommon actual constructor(private val configura
     private lateinit var gameContext: GameContext
 
     actual override fun createGL(): GL {
-        canvas =
-            configuration.canvas ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
-
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val context = canvas.getContext("webgl2") as WebGLRenderingContextBase
-        return WebGL(
-            context, ScreenConfiguration(
-                width = canvas.clientWidth,
-                height = canvas.clientHeight
-            )
-        )
+        return WebGL(context)
     }
 
     actual override fun createFileHandler(logger: Logger): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
-        return FileHandlerCommon(PlatformFileHandler(
-            configuration.rootPath,
-            AudioContext(),
-            logger
-        ), logger = logger)
+        return FileHandlerCommon(
+            PlatformFileHandler(
+                configuration.rootPath,
+                AudioContext(),
+                logger
+            ), logger = logger
+        )
     }
 
     actual override fun createInputHandler(logger: Logger): InputHandler {
@@ -66,8 +62,18 @@ actual open class PlatformContextCommon actual constructor(private val configura
         return Options(configuration.debug)
     }
 
-    actual override fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
-        this.gameContext = gameContext
+    actual override fun start(gameFactory: (GameContext) -> Game) {
+        canvas = configuration.canvas
+                ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
+
+        val resolution = configuration.gameScreenConfiguration.screen(
+            canvas.clientWidth,
+            canvas.clientHeight
+        )
+        this.gameContext = GameContext(this, resolution)
+        this.gameContext.deviceScreen.width = canvas.clientWidth
+        this.gameContext.deviceScreen.height = canvas.clientHeight
+
         inputManager = gameContext.input as InputManager
 
         val game = gameFactory(gameContext)
@@ -83,8 +89,10 @@ actual open class PlatformContextCommon actual constructor(private val configura
             configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             gameContext.viewport.update(
                 gameContext.gl,
-                gameContext.gl.screen.width,
-                gameContext.gl.screen.height
+                gameContext.deviceScreen.width,
+                gameContext.deviceScreen.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
             )
 
             gameWrapper.create()
@@ -95,17 +103,20 @@ actual open class PlatformContextCommon actual constructor(private val configura
 
     private fun render(now: Double) {
         // The canvas has been resized
-        // if (canvas.clientWidth != gl.screen.width || canvas.clientHeight != gl.screen.height) {
-        if (canvas.clientWidth != gameContext.gl.screen.width || canvas.clientHeight != gameContext.gl.screen.height) {
-            gameContext.gl.screen.width = canvas.clientWidth
-            gameContext.gl.screen.height = canvas.clientHeight
-            canvas.height = canvas.clientHeight
+        if (canvas.clientWidth != gameContext.deviceScreen.width ||
+            canvas.clientHeight != gameContext.deviceScreen.height
+        ) {
+            gameContext.deviceScreen.width = canvas.clientWidth
+            gameContext.deviceScreen.height = canvas.clientHeight
             canvas.width = canvas.clientWidth
+            canvas.height = canvas.clientHeight
 
             gameContext.viewport.update(
                 gameContext.gl,
-                gameContext.gl.screen.width,
-                gameContext.gl.screen.height
+                gameContext.deviceScreen.width,
+                gameContext.deviceScreen.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
             )
         }
         inputManager.record()

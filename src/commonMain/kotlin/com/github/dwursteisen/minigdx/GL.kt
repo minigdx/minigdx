@@ -9,17 +9,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 
-class ScreenConfiguration(
-    var width: Int,
-    var height: Int
-) {
-
-    val ratio = width / height.toFloat()
-}
-
 interface GL {
-
-    val screen: ScreenConfiguration
 
     fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent)
     fun clear(mask: ByteMask)
@@ -77,7 +67,7 @@ interface GL {
 
     fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int)
 
-    fun viewport(x: Int, y: Int, width: Int, height: Int)
+    fun viewport(x: Pixel, y: Pixel, width: Pixel, height: Pixel)
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage)
 

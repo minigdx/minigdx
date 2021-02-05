@@ -24,7 +24,6 @@ class GameApplicationBuilder(
     fun start() {
         val configuration = gameConfigurationFactory()
         val platformContext = PlatformContextCommon(configuration)
-        val gameContext = GameContext(platformContext)
-        platformContext.start(gameContext, gameFactory)
+        platformContext.start(gameFactory)
     }
 }

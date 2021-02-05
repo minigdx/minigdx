@@ -14,14 +14,11 @@ import com.github.dwursteisen.minigdx.logger.AndroidLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 
 actual open class PlatformContextCommon actual constructor(
-    private val configuration: GameConfiguration
+    actual override val configuration: GameConfiguration
 ) : PlatformContext {
 
     actual override fun createGL(): GL {
-        val display = configuration.activity!!.windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        return AndroidGL(ScreenConfiguration(size.x, size.y))
+        return AndroidGL()
     }
 
     actual override fun createFileHandler(logger: Logger): FileHandler {
@@ -47,8 +44,17 @@ actual open class PlatformContextCommon actual constructor(
     }
 
     @ExperimentalStdlibApi
-    actual override fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
-        val surfaceView = MiniGdxSurfaceView(gameContext, configuration.activity!!)
-        configuration.activity.setContentView(surfaceView)
+    actual override fun start(gameFactory: (GameContext) -> Game) {
+        val activity = configuration.activity!!
+        val display = activity.windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        val resolution = configuration.gameScreenConfiguration.screen(size.x, size.y)
+
+        val gameContext = GameContext(this, resolution)
+        gameContext.deviceScreen.width = size.x
+        gameContext.deviceScreen.height = size.y
+        val surfaceView = MiniGdxSurfaceView(gameContext, activity)
+        activity.setContentView(surfaceView)
     }
 }

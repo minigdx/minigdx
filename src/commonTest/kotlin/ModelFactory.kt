@@ -1,6 +1,8 @@
 import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Position
 import com.dwursteisen.minigdx.scene.api.model.Vertex
+import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Resolution
 
 object ModelFactory {
 
@@ -10,4 +12,9 @@ object ModelFactory {
             normal = Normal(nx.toFloat(), ny.toFloat(), nz.toFloat())
         )
     }
+
+    fun gameContext() = GameContext(
+        MockPlatformContext(createGameConfiguration()),
+        Resolution(100, 100)
+    )
 }

@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
-import MockPlatformContext
-import com.github.dwursteisen.minigdx.GameContext
+import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
@@ -38,7 +37,7 @@ class EventQueueTest {
 
     @Test
     fun emit_it_reacts_to_emitter_event() {
-        val engine = Engine(GameContext(MockPlatformContext()))
+        val engine = Engine(gameContext())
         val listenerSystem = ListenerSystem()
         val event = RandomIntEvent()
 

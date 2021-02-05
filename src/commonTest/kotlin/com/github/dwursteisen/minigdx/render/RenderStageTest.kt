@@ -1,9 +1,8 @@
 package com.github.dwursteisen.minigdx.render
 
 import MockLogger
-import MockPlatformContext
+import ModelFactory.gameContext
 import com.curiouscreature.kotlin.math.Mat4
-import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Camera
@@ -23,7 +22,7 @@ class RenderStageTest {
 
     @Test
     fun add__it_should_add_the_camera() {
-        val engine = Engine(GameContext(MockPlatformContext()))
+        val engine = Engine(gameContext())
 
         val vertex = EmptyVertexShader()
         val fragment = EmptyFragmentShader()

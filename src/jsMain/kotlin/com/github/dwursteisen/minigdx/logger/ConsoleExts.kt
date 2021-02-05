@@ -12,8 +12,8 @@ external interface ChromeConsole : Console {
 @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
 inline fun <T> profile(name: String, block: () -> T): T {
     val p = console as ChromeConsole
-    p.time(name)
+    // p.time(name)
     val result = block()
-    p.timeEnd(name)
+    // p.timeEnd(name)
     return result
 }

@@ -4,9 +4,9 @@ import com.github.dwursteisen.minigdx.GameApplicationBuilder
 import com.github.dwursteisen.minigdx.GameConfiguration
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.game.Game
-import com.github.dwursteisen.minigdx.game.GameWrapper
+import com.github.dwursteisen.minigdx.Window
 import proto.ProtoGame
-
+import com.github.dwursteisen.minigdx.GameScreenConfiguration
 
 @ExperimentalStdlibApi
 class Main {
@@ -17,10 +17,13 @@ class Main {
         fun main(args: Array<String>) {
             val gameConfigurationFactory = {
                 GameConfiguration(
-                    name = "Kotlin/JVM",
                     gameName = "Demo",
-                    width = 720,
-                    height = 720
+                    window = Window(
+                        width = 1024,
+                        height = 728,
+                        name = "Kotlin/JVM"
+                    ),
+                    gameScreenConfiguration = GameScreenConfiguration.WithRatio(1f)
                 )
             }
 

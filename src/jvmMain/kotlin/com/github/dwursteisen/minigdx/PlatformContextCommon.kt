@@ -13,10 +13,12 @@ import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.math.min
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
+import org.lwjgl.opengl.GL11.GL_LINE
 import org.lwjgl.system.MemoryUtil
 
-actual open class PlatformContextCommon actual constructor(private val configuration: GameConfiguration) : PlatformContext {
+actual open class PlatformContextCommon actual constructor(actual override val configuration: GameConfiguration) : PlatformContext {
 
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
@@ -29,12 +31,7 @@ actual open class PlatformContextCommon actual constructor(private val configura
                 """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
             )
         }
-        return LwjglGL(
-            screen = ScreenConfiguration(
-                configuration.width,
-                configuration.height
-            )
-        )
+        return LwjglGL()
     }
 
     actual override fun createFileHandler(logger: Logger): FileHandler {
@@ -50,7 +47,7 @@ actual open class PlatformContextCommon actual constructor(private val configura
     }
 
     actual override fun createLogger(): Logger {
-        return JavaLoggingLogger(configuration.name)
+        return JavaLoggingLogger(configuration.window.name)
     }
 
     actual override fun createOptions(): Options {
@@ -75,12 +72,10 @@ actual open class PlatformContextCommon actual constructor(private val configura
 
     private var lastFrame: Long = getTime()
 
-    actual override fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game) {
+    actual override fun start(gameFactory: (GameContext) -> Game) {
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
-
-        val gl = gameContext.gl
 
         GLFW.glfwDefaultWindowHints() // optional, the current window hints are already the default
 
@@ -95,9 +90,9 @@ actual open class PlatformContextCommon actual constructor(private val configura
 
         // Create the window
         val window = GLFW.glfwCreateWindow(
-            configuration.width,
-            configuration.height,
-            configuration.name,
+            configuration.window.width,
+            configuration.window.height,
+            configuration.window.name,
             MemoryUtil.NULL,
             MemoryUtil.NULL
         )
@@ -112,8 +107,8 @@ actual open class PlatformContextCommon actual constructor(private val configura
         // Center our window
         GLFW.glfwSetWindowPos(
             window,
-            (vidmode.width() - configuration.width) / 2,
-            (vidmode.height() - configuration.height) / 2
+            (vidmode.width() - configuration.window.width) / 2,
+            (vidmode.height() - configuration.window.height) / 2
         )
 
         // Make the OpenGL context current
@@ -123,27 +118,67 @@ actual open class PlatformContextCommon actual constructor(private val configura
 
         org.lwjgl.opengl.GL.createCapabilities()
 
+        // Make the window visible
+        GLFW.glfwShowWindow(window)
+
+        // Get the size of the framebuffer
+        val tmpWidth = MemoryUtil.memAllocInt(1)
+        val tmpHeight = MemoryUtil.memAllocInt(1)
+        GLFW.glfwGetFramebufferSize(window, tmpWidth, tmpHeight)
+
+        // Compute the Game Resolution regarding the configuration
+        val gameResolution = configuration.gameScreenConfiguration.screen(
+                tmpWidth.get(0),
+                tmpHeight.get(0)
+        )
+        val gameContext = GameContext(this, gameResolution)
+        // Update the device screen regarding the actual size of the window.
+        gameContext.deviceScreen.width = tmpWidth.get(0)
+        gameContext.deviceScreen.height = tmpHeight.get(0)
+
+        GLFW.glfwSetFramebufferSizeCallback(window) { _, width, height ->
+            gameContext.deviceScreen.width = width
+            gameContext.deviceScreen.height = height
+            gameContext.viewport.update(
+                    gameContext.gl,
+                    gameContext.deviceScreen.width,
+                    gameContext.deviceScreen.height,
+                    gameContext.gameScreen.width,
+                    gameContext.gameScreen.height
+            )
+        }
+
+        GLFW.glfwSetWindowPosCallback(window) { _, _, _ ->
+            // The window moved. The viewport needs to be refreshed in this situation too.
+            gameContext.viewport.update(
+                    gameContext.gl,
+                    gameContext.deviceScreen.width,
+                    gameContext.deviceScreen.height,
+                    gameContext.gameScreen.width,
+                    gameContext.gameScreen.height
+            )
+        }
+
         // Attach input before game creation.
         val inputManager = gameContext.input as LwjglInput
         inputManager.attachHandler(window)
 
-        // Make the window visible
-        GLFW.glfwShowWindow(window)
         val game = GameWrapper(gameContext, gameFactory(gameContext))
 
         game.create()
         game.resume()
 
-        gameContext.viewport.update(gl, configuration.width, configuration.height)
-        glfwSetWindowSizeCallback(window) { _, w, h ->
-            gl.screen.width = w
-            gl.screen.height = h
-            gameContext.viewport.update(gl, w, h)
-        }
-
         // Wireframe mode
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-
+        if (configuration.wireframe) {
+            GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        }
+        gameContext.viewport.update(
+                gameContext.gl,
+                gameContext.deviceScreen.width,
+                gameContext.deviceScreen.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
+        )
         while (!GLFW.glfwWindowShouldClose(window)) {
             inputManager.record()
             game.render(getDelta())

@@ -6,6 +6,13 @@ import org.w3c.dom.HTMLCanvasElement
 actual class GameConfiguration(
     actual val gameName: String,
     actual val debug: Boolean,
+    /**
+     * Configuration of the game screen.
+     *
+     * Note that the game screen will be resized
+     * regarding the current viewport strategy.
+     */
+    actual val gameScreenConfiguration: GameScreenConfiguration,
     val loadingListener: (Percent) -> Unit = { _ -> Unit },
     val canvas: HTMLCanvasElement? = null,
     val canvasId: String? = null,

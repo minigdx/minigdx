@@ -8,6 +8,10 @@ import com.github.dwursteisen.minigdx.logger.Logger
 
 interface PlatformContext {
     /**
+     * Configuration used to create the game and the platform.
+     */
+    val configuration: GameConfiguration
+    /**
      * Create the GL object, used for communicating with the GL Driver.
      */
     fun createGL(): GL
@@ -39,7 +43,8 @@ interface PlatformContext {
 
     /**
      * Start the game using the platform specific creation code.
-     * The game will be created by [gameFactory] using the [gameContext].
+     * The game will be created by [gameFactory] using the [gameContext]
+     * created in by the platform.
      */
-    fun start(gameContext: GameContext, gameFactory: (GameContext) -> Game)
+    fun start(gameFactory: (GameContext) -> Game)
 }
