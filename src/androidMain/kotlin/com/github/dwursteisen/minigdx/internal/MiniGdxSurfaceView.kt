@@ -14,7 +14,7 @@ import kotlin.math.min
 class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context) : GLSurfaceView(context) {
 
     init {
-        setEGLContextClientVersion(3)
+        setEGLContextClientVersion(2)
 
         setRenderer(object : Renderer {
 
