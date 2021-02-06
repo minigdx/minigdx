@@ -121,7 +121,6 @@ class EntityFactoryDelegate : EntityFactory {
         return engine.create {}
     }
 
-
     fun createCamera(
         node: Node,
         scene: Scene,

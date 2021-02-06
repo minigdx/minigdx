@@ -22,8 +22,8 @@ import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.math.Vector3
-import com.github.dwursteisen.minigdx.math.lerp
 import com.github.dwursteisen.minigdx.file.get
+import com.github.dwursteisen.minigdx.math.Interpolations.lerp
 
 
 class GravityComponent(

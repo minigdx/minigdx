@@ -54,7 +54,7 @@ actual open class PlatformContextCommon actual constructor(
         val gameContext = GameContext(this, resolution)
         gameContext.deviceScreen.width = size.x
         gameContext.deviceScreen.height = size.y
-        val surfaceView = MiniGdxSurfaceView(gameContext, activity)
+        val surfaceView = MiniGdxSurfaceView(gameContext, gameFactory, activity)
         activity.setContentView(surfaceView)
     }
 }

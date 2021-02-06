@@ -26,11 +26,11 @@ import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
 import com.github.dwursteisen.minigdx.logger.Logger
-import com.github.dwursteisen.minigdx.math.lerp
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 import com.github.dwursteisen.minigdx.file.get
+import com.github.dwursteisen.minigdx.math.Interpolations.lerp
 
 class Player(val input: InputHandler) : StateMachineComponent()
 
@@ -73,7 +73,8 @@ class ZoneSystem(logger: Logger) : StateMachineSystem(Zone::class, logger) {
                 add(Position())
             }
             val position = entity.get(Position::class).translation
-            circle.get(Position::class).setGlobalTranslation(position.x, position.y + 0.1f, position.z)
+            circle.get(Position::class)
+                .setGlobalTranslation(position.x, position.y + 0.1f, position.z)
         }
 
         override fun onExit(entity: Entity) {
@@ -233,7 +234,8 @@ class CubeSystem(logger: Logger) : StateMachineSystem(Cube::class, logger) {
     }
 }
 
-class PlayerSystem(private val inputHandler: InputHandler, logger: Logger) : StateMachineSystem(Player::class, logger) {
+class PlayerSystem(private val inputHandler: InputHandler, logger: Logger) :
+    StateMachineSystem(Player::class, logger) {
 
     private class Waiting(private val inputHandler: InputHandler) : State() {
         override fun configure() = Unit

@@ -3,7 +3,7 @@ package com.github.dwursteisen.minigdx.internal
 import android.content.Context
 import android.opengl.GLSurfaceView
 import com.github.dwursteisen.minigdx.GameContext
-import com.github.dwursteisen.minigdx.MiniGdxActivity
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.game.GameWrapper
 import com.github.dwursteisen.minigdx.input.InputManager
 import javax.microedition.khronos.egl.EGLConfig
@@ -11,7 +11,11 @@ import javax.microedition.khronos.opengles.GL10
 import kotlin.math.min
 
 @ExperimentalStdlibApi
-class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context) : GLSurfaceView(context) {
+class MiniGdxSurfaceView(
+    private val gameContext: GameContext,
+    private val gameFactory: (gameContext: GameContext) -> Game,
+    context: Context
+) : GLSurfaceView(context) {
 
     init {
         setEGLContextClientVersion(2)
@@ -47,7 +51,7 @@ class MiniGdxSurfaceView(private val gameContext: GameContext, context: Context)
             @ExperimentalStdlibApi
             override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
                 inputManager = gameContext.input as InputManager
-                val game = (context as MiniGdxActivity).createGame(gameContext)
+                val game = gameFactory(gameContext)
                 gameWrapper = GameWrapper(gameContext, game)
                 gameWrapper.create()
             }
