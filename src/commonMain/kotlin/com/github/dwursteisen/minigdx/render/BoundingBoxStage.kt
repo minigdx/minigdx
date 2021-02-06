@@ -19,6 +19,7 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
 ) {
 
     override fun update(delta: Seconds, entity: Entity) {
+        // TODO: enable this stage on the fly, regarding options ?
         val model = entity.get(Position::class).transformation
 
         vertex.uModelView.apply(program, combinedMatrix * model)
