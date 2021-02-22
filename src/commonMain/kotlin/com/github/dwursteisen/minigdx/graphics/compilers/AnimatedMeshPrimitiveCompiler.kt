@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.graphics.compilers
 
 import com.dwursteisen.minigdx.scene.api.common.Id
+import com.dwursteisen.minigdx.scene.api.model.Influence
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
@@ -70,7 +71,28 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
             usage = GL.STATIC_DRAW
         )
 
-        val influences = component.primitive.vertices.flatMap { it.influences }
+        val influences = component.primitive.vertices.map { it.influences }
+            .flatMap { influence ->
+                if (influence.isEmpty()) {
+                    // Create "void" influence, if any attached on this vertex.
+                    listOf(
+                        Influence(
+                            jointId = -1, weight = 0f
+                        ),
+                        Influence(
+                            jointId = -1, weight = 0f
+                        ),
+                        Influence(
+                            jointId = -1, weight = 0f
+                        ),
+                        Influence(
+                            jointId = -1, weight = 0f
+                        )
+                    )
+                } else {
+                    influence
+                }
+            }
 
         component.weightBuffer = component.weightBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.weightBuffer!!)

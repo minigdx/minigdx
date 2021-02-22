@@ -10,7 +10,7 @@ import com.github.dwursteisen.minigdx.game.Game
 @ExperimentalStdlibApi
 class BirdGame(override val gameContext: GameContext) : Game {
 
-    private val bird: Scene by gameContext.fileHandler.get("v2/bird.protobuf")
+    private val bird: Scene by gameContext.fileHandler.get("kong.protobuf")
 
     override fun createEntities(entityFactory: EntityFactory) {
         val models = bird.children.filter { it.type == ObjectType.ARMATURE }

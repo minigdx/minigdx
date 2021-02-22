@@ -44,7 +44,7 @@ class PickItemEvent : Event
 
 class ReleaseItemEvent : Event
 
-class ZoneSystem(logger: Logger) : StateMachineSystem(Zone::class, logger) {
+class ZoneSystem : StateMachineSystem(Zone::class) {
 
     private val players by interested(EntityQuery(Player::class))
     private val circles by interested(EntityQuery(Circle::class))
@@ -123,7 +123,7 @@ class ZoneSystem(logger: Logger) : StateMachineSystem(Zone::class, logger) {
 
 }
 
-class CubeSystem(logger: Logger) : StateMachineSystem(Cube::class, logger) {
+class CubeSystem : StateMachineSystem(Cube::class) {
 
     private val collider = AABBCollisionResolver()
 
@@ -234,8 +234,8 @@ class CubeSystem(logger: Logger) : StateMachineSystem(Cube::class, logger) {
     }
 }
 
-class PlayerSystem(private val inputHandler: InputHandler, logger: Logger) :
-    StateMachineSystem(Player::class, logger) {
+class PlayerSystem(private val inputHandler: InputHandler) :
+    StateMachineSystem(Player::class) {
 
     private class Waiting(private val inputHandler: InputHandler) : State() {
         override fun configure() = Unit
@@ -348,9 +348,9 @@ class ProtoGame(override val gameContext: GameContext) : Game {
 
     override fun createSystems(engine: Engine): List<System> {
         return listOf(
-            PlayerSystem(gameContext.input, gameContext.logger),
-            CubeSystem(gameContext.logger),
-            ZoneSystem(gameContext.logger)
+            PlayerSystem(gameContext.input),
+            CubeSystem(),
+            ZoneSystem()
         ) + super.createSystems(engine)
     }
 }

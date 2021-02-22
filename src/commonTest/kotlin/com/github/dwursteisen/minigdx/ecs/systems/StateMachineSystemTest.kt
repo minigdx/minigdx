@@ -1,6 +1,5 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
-import MockLogger
 import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -16,7 +15,7 @@ class StateMachineSystemTest {
 
     class OnOffStateComponent : StateMachineComponent()
 
-    class OnOffStateMachine : StateMachineSystem(OnOffStateComponent::class, MockLogger()) {
+    class OnOffStateMachine : StateMachineSystem(OnOffStateComponent::class) {
 
         override fun initialState(entity: Entity): State {
             return OnState()
