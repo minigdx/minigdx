@@ -12,7 +12,7 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
     override fun compile(gl: GL, component: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
         component as AnimatedMeshPrimitive
         // Push the model
-        component.verticesBuffer = gl.createBuffer()
+        component.verticesBuffer = component.verticesBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.verticesBuffer!!)
 
         gl.bufferData(
@@ -21,7 +21,7 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
             usage = GL.STATIC_DRAW
         )
 
-        component.verticesOrderBuffer = gl.createBuffer()
+        component.verticesOrderBuffer = component.verticesOrderBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.verticesOrderBuffer!!)
         gl.bufferData(
             target = GL.ELEMENT_ARRAY_BUFFER,
@@ -58,10 +58,10 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
             }
         }
 
-        component.textureReference = textureReference
+        component.textureReference = component.textureReference ?: textureReference
 
         // Push UV coordinates
-        component.uvBuffer = gl.createBuffer()
+        component.uvBuffer = component.uvBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.uvBuffer!!)
 
         gl.bufferData(
@@ -70,23 +70,23 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
             usage = GL.STATIC_DRAW
         )
 
-        component.weightBuffer = gl.createBuffer()
+        val influences = component.primitive.vertices.flatMap { it.influences }
+
+        component.weightBuffer = component.weightBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.weightBuffer!!)
         gl.bufferData(
             target = GL.ARRAY_BUFFER,
-            data = component.primitive.vertices.flatMap { it.influences }.map { it.weight }.weightDatasource(),
+            data = influences.map { it.weight }.weightDatasource(),
             usage = GL.STATIC_DRAW
         )
 
-        component.jointBuffer = gl.createBuffer()
+        component.jointBuffer = component.jointBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.jointBuffer!!)
         gl.bufferData(
             target = GL.ARRAY_BUFFER,
-            data = component.primitive.vertices.flatMap { it.influences }.map { it.jointId }.jointDatasource(),
+            data = influences.map { it.jointId }.jointDatasource(),
             usage = GL.STATIC_DRAW
         )
-
-        component.isCompiled = true
     }
 
     override fun synchronize(gl: GL, source: GLResourceComponent, target: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
@@ -98,5 +98,9 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
         target.uvBuffer = source.uvBuffer
         target.verticesOrderBuffer = source.verticesOrderBuffer
         target.textureReference = source.textureReference
+
+        if (target.isDirty) {
+            compile(gl, target, materials)
+        }
     }
 }

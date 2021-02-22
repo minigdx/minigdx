@@ -44,7 +44,12 @@ interface EntityFactory {
     fun createModel(node: Node, scene: Scene, transformation: Mat4): Entity
 
     /**
-     * Create a entity for the camera that can be use for the game interface.
+     * Create an entity from an armature and the attached model.
+     */
+    fun createArmature(node: Node, scene: Scene, transformation: Mat4): Entity
+
+    /**
+     * Create an entity for the camera that can be use for the game interface.
      */
     fun createUICamera(): Entity
 }

@@ -16,8 +16,10 @@ import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.TextComponent
+import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.file.Font
@@ -32,7 +34,7 @@ class EntityFactoryDelegate : EntityFactory {
     @ExperimentalStdlibApi
     override fun createFromNode(node: Node, scene: Scene, transformation: Mat4): Entity {
         return when (node.type) {
-            ObjectType.ARMATURE -> TODO()
+            ObjectType.ARMATURE -> createArmature(node, scene, transformation)
             ObjectType.BOX -> createBox(node, scene, transformation)
             ObjectType.CAMERA -> createCamera(node, scene, transformation)
             ObjectType.LIGHT -> TODO()
@@ -119,6 +121,43 @@ class EntityFactoryDelegate : EntityFactory {
 
     override fun createUICamera(): Entity {
         return engine.create {}
+    }
+
+    @ExperimentalStdlibApi
+    override fun createArmature(
+        node: Node,
+        scene: Scene,
+        transformation: Mat4
+    ): Entity = create {
+        // Get the model attached to the armature
+        val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
+
+        // Look for the bounding box or create it from the mesh.
+        val boxes = node.children.filter { it.type == ObjectType.BOX }
+            .map { BoundingBox.from(it.transformation.toMat4()) }
+            .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+
+        // Create animations
+        val allAnimations = scene.animations.getValue(node.reference)
+        val animation = allAnimations.last()
+        val animatedModel = AnimatedModel(
+            animation = animation.frames,
+            referencePose = scene.armatures.getValue(node.reference),
+            time = 0f,
+            duration = animation.frames.maxBy { it.time }?.time ?: 0f
+        )
+        val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
+            AnimatedMeshPrimitive(
+                primitive = primitive,
+                material = scene.materials.getValue(primitive.materialId)
+            )
+        }
+
+        // Create components
+        it.add(boxes)
+        it.add(Position(transformation))
+        it.add(animatedModel)
+        it.add(animatedMeshPrimitive)
     }
 
     fun createCamera(

@@ -6,9 +6,9 @@ val Key.keyCode: Int
 get() {
     return when (this) {
         Key.ANY_KEY -> KeyEvent.KEYCODE_UNKNOWN
-        Key.BACKSPACE -> TODO()
-        Key.TAB -> TODO()
-        Key.ENTER -> TODO()
+        Key.BACKSPACE -> KeyEvent.KEYCODE_BACK
+        Key.TAB -> KeyEvent.KEYCODE_TAB
+        Key.ENTER -> KeyEvent.KEYCODE_ENTER
         Key.SHIFT -> TODO()
         Key.CTRL -> TODO()
         Key.ALT -> TODO()
@@ -16,7 +16,7 @@ get() {
         Key.CAPS_LOCK -> TODO()
         Key.ESCAPE -> TODO()
         Key.PAGE_UP -> TODO()
-        Key.SPACE -> TODO()
+        Key.SPACE -> KeyEvent.KEYCODE_SPACE
         Key.PAGE_DOWN -> TODO()
         Key.END -> TODO()
         Key.HOME -> TODO()
@@ -27,55 +27,55 @@ get() {
         Key.PRINT_SCREEN -> TODO()
         Key.INSERT -> TODO()
         Key.DELETE -> TODO()
-        Key.NUM0 -> TODO()
-        Key.NUM1 -> TODO()
-        Key.NUM2 -> TODO()
-        Key.NUM3 -> TODO()
-        Key.NUM4 -> TODO()
-        Key.NUM5 -> TODO()
-        Key.NUM6 -> TODO()
-        Key.NUM7 -> TODO()
-        Key.NUM8 -> TODO()
-        Key.NUM9 -> TODO()
-        Key.A -> TODO()
-        Key.B -> TODO()
-        Key.C -> TODO()
-        Key.D -> TODO()
-        Key.E -> TODO()
-        Key.F -> TODO()
-        Key.G -> TODO()
-        Key.H -> TODO()
-        Key.I -> TODO()
-        Key.J -> TODO()
-        Key.K -> TODO()
-        Key.L -> TODO()
-        Key.M -> TODO()
-        Key.N -> TODO()
-        Key.O -> TODO()
-        Key.P -> TODO()
-        Key.Q -> TODO()
-        Key.R -> TODO()
-        Key.S -> TODO()
-        Key.T -> TODO()
-        Key.U -> TODO()
-        Key.V -> TODO()
-        Key.W -> TODO()
-        Key.X -> TODO()
-        Key.Y -> TODO()
-        Key.Z -> TODO()
+        Key.NUM0 -> KeyEvent.KEYCODE_NUMPAD_0
+        Key.NUM1 -> KeyEvent.KEYCODE_NUMPAD_1
+        Key.NUM2 -> KeyEvent.KEYCODE_NUMPAD_2
+        Key.NUM3 -> KeyEvent.KEYCODE_NUMPAD_3
+        Key.NUM4 -> KeyEvent.KEYCODE_NUMPAD_4
+        Key.NUM5 -> KeyEvent.KEYCODE_NUMPAD_5
+        Key.NUM6 -> KeyEvent.KEYCODE_NUMPAD_6
+        Key.NUM7 -> KeyEvent.KEYCODE_NUMPAD_7
+        Key.NUM8 -> KeyEvent.KEYCODE_NUMPAD_8
+        Key.NUM9 -> KeyEvent.KEYCODE_NUMPAD_9
+        Key.A -> KeyEvent.KEYCODE_A
+        Key.B -> KeyEvent.KEYCODE_B
+        Key.C -> KeyEvent.KEYCODE_C
+        Key.D -> KeyEvent.KEYCODE_D
+        Key.E -> KeyEvent.KEYCODE_E
+        Key.F -> KeyEvent.KEYCODE_F
+        Key.G -> KeyEvent.KEYCODE_G
+        Key.H -> KeyEvent.KEYCODE_H
+        Key.I -> KeyEvent.KEYCODE_I
+        Key.J -> KeyEvent.KEYCODE_J
+        Key.K -> KeyEvent.KEYCODE_K
+        Key.L -> KeyEvent.KEYCODE_L
+        Key.M -> KeyEvent.KEYCODE_M
+        Key.N -> KeyEvent.KEYCODE_N
+        Key.O -> KeyEvent.KEYCODE_O
+        Key.P -> KeyEvent.KEYCODE_P
+        Key.Q -> KeyEvent.KEYCODE_Q
+        Key.R -> KeyEvent.KEYCODE_R
+        Key.S -> KeyEvent.KEYCODE_S
+        Key.T -> KeyEvent.KEYCODE_T
+        Key.U -> KeyEvent.KEYCODE_U
+        Key.V -> KeyEvent.KEYCODE_V
+        Key.W -> KeyEvent.KEYCODE_W
+        Key.X -> KeyEvent.KEYCODE_X
+        Key.Y -> KeyEvent.KEYCODE_Y
+        Key.Z -> KeyEvent.KEYCODE_Z
         Key.LEFT_WINDOW_KEY -> TODO()
         Key.RIGHT_WINDOW_KEY -> TODO()
         Key.SELECT_KEY -> KeyEvent.KEYCODE_DPAD_CENTER
-        Key.NUMPAD0 -> TODO()
-        Key.NUMPAD1 -> TODO()
-        Key.NUMPAD2 -> TODO()
-        Key.NUMPAD3 -> TODO()
-        Key.NUMPAD4 -> TODO()
-        Key.NUMPAD5 -> TODO()
-        Key.NUMPAD6 -> TODO()
-        Key.NUMPAD7 -> TODO()
-        Key.NUMPAD8 -> TODO()
-        Key.NUMPAD9 -> TODO()
+        Key.NUMPAD0 -> KeyEvent.KEYCODE_NUMPAD_0
+        Key.NUMPAD1 -> KeyEvent.KEYCODE_NUMPAD_1
+        Key.NUMPAD2 -> KeyEvent.KEYCODE_NUMPAD_2
+        Key.NUMPAD3 -> KeyEvent.KEYCODE_NUMPAD_3
+        Key.NUMPAD4 -> KeyEvent.KEYCODE_NUMPAD_4
+        Key.NUMPAD5 -> KeyEvent.KEYCODE_NUMPAD_5
+        Key.NUMPAD6 -> KeyEvent.KEYCODE_NUMPAD_6
+        Key.NUMPAD7 -> KeyEvent.KEYCODE_NUMPAD_7
+        Key.NUMPAD8 -> KeyEvent.KEYCODE_NUMPAD_8
+        Key.NUMPAD9 -> KeyEvent.KEYCODE_NUMPAD_9
         Key.MULTIPLY -> TODO()
         Key.ADD -> TODO()
         Key.SUBTRACT -> TODO()

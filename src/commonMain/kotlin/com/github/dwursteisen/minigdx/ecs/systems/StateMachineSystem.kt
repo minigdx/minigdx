@@ -5,12 +5,10 @@ import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.states.State
-import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.reflect.KClass
 
 abstract class StateMachineSystem(
-    private val stateMachineComponent: KClass<out StateMachineComponent>,
-    private val logger: Logger
+    private val stateMachineComponent: KClass<out StateMachineComponent>
 ) : System(EntityQuery(stateMachineComponent)) {
 
     internal val eventsToListen = mutableSetOf<KClass<out Event>>()
