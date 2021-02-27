@@ -18,7 +18,8 @@ import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
 import org.lwjgl.opengl.GL11.GL_LINE
 import org.lwjgl.system.MemoryUtil
 
-actual open class PlatformContextCommon actual constructor(actual override val configuration: GameConfiguration) : PlatformContext {
+actual open class PlatformContextCommon actual constructor(actual override val configuration: GameConfiguration) :
+    PlatformContext {
 
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name").toLowerCase()
@@ -128,10 +129,12 @@ actual open class PlatformContextCommon actual constructor(actual override val c
 
         // Compute the Game Resolution regarding the configuration
         val gameResolution = configuration.gameScreenConfiguration.screen(
-                tmpWidth.get(0),
-                tmpHeight.get(0)
+            tmpWidth.get(0),
+            tmpHeight.get(0)
         )
         val gameContext = GameContext(this, gameResolution)
+        gameContext.logPlatform()
+
         // Update the device screen regarding the actual size of the window.
         gameContext.deviceScreen.width = tmpWidth.get(0)
         gameContext.deviceScreen.height = tmpHeight.get(0)
@@ -140,22 +143,22 @@ actual open class PlatformContextCommon actual constructor(actual override val c
             gameContext.deviceScreen.width = width
             gameContext.deviceScreen.height = height
             gameContext.viewport.update(
-                    gameContext.gl,
-                    gameContext.deviceScreen.width,
-                    gameContext.deviceScreen.height,
-                    gameContext.gameScreen.width,
-                    gameContext.gameScreen.height
+                gameContext.gl,
+                gameContext.deviceScreen.width,
+                gameContext.deviceScreen.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
             )
         }
 
         GLFW.glfwSetWindowPosCallback(window) { _, _, _ ->
             // The window moved. The viewport needs to be refreshed in this situation too.
             gameContext.viewport.update(
-                    gameContext.gl,
-                    gameContext.deviceScreen.width,
-                    gameContext.deviceScreen.height,
-                    gameContext.gameScreen.width,
-                    gameContext.gameScreen.height
+                gameContext.gl,
+                gameContext.deviceScreen.width,
+                gameContext.deviceScreen.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
             )
         }
 
@@ -173,11 +176,11 @@ actual open class PlatformContextCommon actual constructor(actual override val c
             GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         }
         gameContext.viewport.update(
-                gameContext.gl,
-                gameContext.deviceScreen.width,
-                gameContext.deviceScreen.height,
-                gameContext.gameScreen.width,
-                gameContext.gameScreen.height
+            gameContext.gl,
+            gameContext.deviceScreen.width,
+            gameContext.deviceScreen.height,
+            gameContext.gameScreen.width,
+            gameContext.gameScreen.height
         )
         while (!GLFW.glfwWindowShouldClose(window)) {
             inputManager.record()

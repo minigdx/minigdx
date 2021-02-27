@@ -50,6 +50,7 @@ class MiniGdxSurfaceView(
 
             @ExperimentalStdlibApi
             override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+                gameContext.logPlatform()
                 inputManager = gameContext.input as InputManager
                 val game = gameFactory(gameContext)
                 gameWrapper = GameWrapper(gameContext, game)
@@ -57,7 +58,7 @@ class MiniGdxSurfaceView(
             }
         })
         // Render the view only when there is a change in the drawing data
-        renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
+        renderMode = RENDERMODE_CONTINUOUSLY
         setOnTouchListener(gameContext.input as OnTouchListener)
     }
 }

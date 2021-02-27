@@ -42,6 +42,7 @@ import org.lwjgl.opengl.GL30.glGetProgramInfoLog
 import org.lwjgl.opengl.GL30.glGetProgrami
 import org.lwjgl.opengl.GL30.glGetShaderInfoLog
 import org.lwjgl.opengl.GL30.glGetShaderi
+import org.lwjgl.opengl.GL30.glGetString
 import org.lwjgl.opengl.GL30.glLinkProgram
 import org.lwjgl.opengl.GL30.glShaderSource
 import org.lwjgl.opengl.GL30.glTexImage2D
@@ -109,6 +110,10 @@ class LwjglGL : GL {
 
     override fun getProgramParameterB(shaderProgram: ShaderProgram, mask: ByteMask): Boolean {
         return (getProgramParameter(shaderProgram, mask) as? Int) == 1
+    }
+
+    override fun getString(parameterName: Int): String? {
+        return glGetString(parameterName)
     }
 
     override fun getShaderParameterB(shader: Shader, mask: ByteMask): Boolean {

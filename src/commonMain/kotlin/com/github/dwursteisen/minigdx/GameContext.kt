@@ -36,4 +36,13 @@ class GameContext(
     )
 
     val options = platformContext.createOptions()
+
+    fun logPlatform() {
+        logger.info("MINIGDX") { "--- Platform information ---" }
+        logger.info("MINIGDX") { "OpenGL Vendor    : \t" + gl.getString(GL.VENDOR) }
+        logger.info("MINIGDX") { "OpenGL Renderer  : \t" + gl.getString(GL.RENDERER) }
+        logger.info("MINIGDX") { "OpenGL Version   : \t" + gl.getString(GL.VERSION) }
+        logger.info("MINIGDX") { "OpenGL Shading   : \t" + gl.getString(GL.SHADING_LANGUAGE_VERSION) }
+        logger.info("MINIGDX") { "OpenGL Extensions: \t" + gl.getString(GL.EXTENSIONS) }
+    }
 }

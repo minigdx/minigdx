@@ -71,6 +71,7 @@ actual open class PlatformContextCommon actual constructor(
             canvas.clientHeight
         )
         this.gameContext = GameContext(this, resolution)
+        this.gameContext.logPlatform()
         this.gameContext.deviceScreen.width = canvas.clientWidth
         this.gameContext.deviceScreen.height = canvas.clientHeight
 

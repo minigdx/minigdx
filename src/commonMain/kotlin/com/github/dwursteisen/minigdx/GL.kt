@@ -22,6 +22,9 @@ interface GL {
     fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform
     fun attachShader(shaderProgram: ShaderProgram, shader: Shader)
     fun linkProgram(shaderProgram: ShaderProgram)
+
+    fun getString(parameterName: Int): String?
+
     fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any
     fun getProgramParameterB(shaderProgram: ShaderProgram, mask: ByteMask): Boolean =
         getProgramParameter(shaderProgram, mask) as Boolean

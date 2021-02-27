@@ -65,6 +65,10 @@ class MockGL : GL {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun getString(parameterName: Int): String? {
+        TODO("Not yet implemented")
+    }
+
     override fun getShaderParameter(shader: Shader, mask: ByteMask): Any {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }

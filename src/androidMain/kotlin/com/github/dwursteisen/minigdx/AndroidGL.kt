@@ -27,6 +27,7 @@ import android.opengl.GLES20.glGetProgramInfoLog
 import android.opengl.GLES20.glGetProgramiv
 import android.opengl.GLES20.glGetShaderInfoLog
 import android.opengl.GLES20.glGetShaderiv
+import android.opengl.GLES20.glGetString
 import android.opengl.GLES20.glGetUniformLocation
 import android.opengl.GLES20.glLinkProgram
 import android.opengl.GLES20.glShaderSource
@@ -113,6 +114,10 @@ class AndroidGL : GL {
         val intBuffer = IntBuffer.allocate(1)
         glGetProgramiv(shaderProgram.program.address, mask, intBuffer)
         return intBuffer[0]
+    }
+
+    override fun getString(parameterName: Int): String? {
+        return glGetString(parameterName)
     }
 
     override fun getShaderParameter(shader: Shader, mask: ByteMask): Any {

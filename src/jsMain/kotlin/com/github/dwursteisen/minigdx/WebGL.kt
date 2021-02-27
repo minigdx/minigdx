@@ -110,6 +110,10 @@ class WebGL(private val gl: WebGLRenderingContextBase) : GL {
         gl.linkProgram(shaderProgram.program.delegate)
     }
 
+    override fun getString(parameterName: Int): String? {
+        return gl.getParameter(parameterName) as? String
+    }
+
     override fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any {
         return gl.getProgramParameter(shaderProgram.program.delegate, mask)!!
     }
