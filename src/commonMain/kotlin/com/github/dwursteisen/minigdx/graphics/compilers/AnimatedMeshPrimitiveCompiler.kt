@@ -72,27 +72,7 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
         )
 
         val influences = component.primitive.vertices.map { it.influences }
-            .flatMap { influence ->
-                if (influence.isEmpty()) {
-                    // Create "void" influence, if any attached on this vertex.
-                    listOf(
-                        Influence(
-                            jointId = -1, weight = 0f
-                        ),
-                        Influence(
-                            jointId = -1, weight = 0f
-                        ),
-                        Influence(
-                            jointId = -1, weight = 0f
-                        ),
-                        Influence(
-                            jointId = -1, weight = 0f
-                        )
-                    )
-                } else {
-                    influence
-                }
-            }
+            .flatten()
 
         component.weightBuffer = component.weightBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.weightBuffer!!)

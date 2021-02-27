@@ -18,7 +18,7 @@ class ArmatureUpdateSystem : System(
                 it.time = 0f
             }
 
-            val currentFrame = it.animation.lastOrNull { f -> f.time <= it.time } ?: it.animation.first()
+            val currentFrame = it.animation.lastOrNull { f -> f.time <= it.time } ?: it.animation.firstOrNull() ?: return@forEach
 
             (it.referencePose.joints.indices).forEach { index ->
                 it.currentPose[index] = Mat4.fromColumnMajor(

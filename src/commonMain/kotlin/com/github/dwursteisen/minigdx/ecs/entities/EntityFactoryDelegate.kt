@@ -138,13 +138,13 @@ class EntityFactoryDelegate : EntityFactory {
             .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
 
         // Create animations
-        val allAnimations = scene.animations.getValue(node.reference)
-        val animation = allAnimations.last()
+        val allAnimations = scene.animations.getOrElse(node.reference) { emptyList() }
+        val animation = allAnimations.lastOrNull()
         val animatedModel = AnimatedModel(
-            animation = animation.frames,
+            animation = animation?.frames ?: emptyList(),
             referencePose = scene.armatures.getValue(node.reference),
             time = 0f,
-            duration = animation.frames.maxBy { it.time }?.time ?: 0f
+            duration = animation?.frames?.maxBy { it.time }?.time ?: 0f
         )
         val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
             AnimatedMeshPrimitive(
