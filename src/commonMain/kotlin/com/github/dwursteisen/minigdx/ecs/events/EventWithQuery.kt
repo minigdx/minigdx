@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.events
 
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.utils.ObjectPool
 
 internal class EventWithQuery(var event: Event, var entityQuery: EntityQuery? = null) {
 

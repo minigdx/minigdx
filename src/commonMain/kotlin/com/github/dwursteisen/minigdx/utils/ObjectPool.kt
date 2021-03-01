@@ -1,4 +1,4 @@
-package com.github.dwursteisen.minigdx.ecs.events
+package com.github.dwursteisen.minigdx.utils
 
 abstract class ObjectPool<T>(private val size: Int) {
 

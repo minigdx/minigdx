@@ -142,6 +142,7 @@ class EntityFactoryDelegate : EntityFactory {
         val animation = allAnimations.lastOrNull()
         val animatedModel = AnimatedModel(
             animation = animation?.frames ?: emptyList(),
+            animations = allAnimations.map { it.name to it }.toMap(),
             referencePose = scene.armatures.getValue(node.reference),
             time = 0f,
             duration = animation?.frames?.maxBy { it.time }?.time ?: 0f

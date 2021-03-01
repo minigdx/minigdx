@@ -132,6 +132,6 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         (justPressed.indices).forEach {
             justPressed[it] = false
         }
-        touchManager.reset()
+        touchManager.processReceivedEvent()
     }
 }

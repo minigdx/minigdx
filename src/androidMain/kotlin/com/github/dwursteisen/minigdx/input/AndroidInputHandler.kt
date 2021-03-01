@@ -65,7 +65,7 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
     override fun record() = Unit
 
     override fun reset() {
-        touchManager.reset()
+        touchManager.processReceivedEvent()
         frame++
     }
 }

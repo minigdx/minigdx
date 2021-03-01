@@ -9,18 +9,16 @@ class SpriteComponent(
     var currentFrame: Int = -1,
     var frameDuration: Float = 0f,
     var currentAnimation: SpriteAnimation? = animations.values.firstOrNull()
-// TODO: Add a field with the related MeshPrimitive
+    // TODO: Add a field with the related MeshPrimitive
 ) : Component {
 
     /**
      * Change the current animation to the animation with the [name].
      */
     fun switchToAnimation(name: String) {
-        val newAnimation = animations[name]
-        if (newAnimation != null) {
-            currentAnimation = newAnimation
-            currentFrame = 0
-            frameDuration = currentAnimation?.frames?.firstOrNull()?.duration ?: 0f
-        }
+        val newAnimation = animations[name] ?: return
+        currentAnimation = newAnimation
+        currentFrame = 0
+        frameDuration = currentAnimation?.frames?.firstOrNull()?.duration ?: 0f
     }
 }
