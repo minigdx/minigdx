@@ -1,6 +1,16 @@
-import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
-import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.GameConfiguration
+import com.github.dwursteisen.minigdx.GameScreenConfiguration
+import com.github.dwursteisen.minigdx.Window
 
-actual fun createLogger(): Logger {
-    return JavaLoggingLogger("test")
+actual fun createGameConfiguration(): GameConfiguration {
+    return GameConfiguration(
+        "game name",
+        GameScreenConfiguration.WithCurrentScreenResolution(),
+        false,
+        window = Window(
+            width = 1024,
+            height = 1024,
+            name = "window name"
+        )
+    )
 }

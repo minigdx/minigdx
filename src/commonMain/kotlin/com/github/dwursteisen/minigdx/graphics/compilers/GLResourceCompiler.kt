@@ -9,5 +9,11 @@ interface GLResourceCompiler {
 
     fun compile(gl: GL, component: GLResourceComponent, materials: MutableMap<Id, TextureReference>)
 
-    fun update(gl: GL, source: GLResourceComponent, target: GLResourceComponent)
+    /**
+     * Copy the target component using the source component data.
+     *
+     * It will synchronize the target with the source
+     * which may be different instance but using the same id.
+     */
+    fun synchronize(gl: GL, source: GLResourceComponent, target: GLResourceComponent, materials: MutableMap<Id, TextureReference>)
 }

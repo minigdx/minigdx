@@ -1,17 +1,12 @@
 package demo
 
-import com.github.dwursteisen.minigdx.GLConfiguration
+import com.github.dwursteisen.minigdx.GameApplicationBuilder
+import com.github.dwursteisen.minigdx.GameConfiguration
 import com.github.dwursteisen.minigdx.GameContext
-import com.github.dwursteisen.minigdx.configuration
-import com.github.dwursteisen.minigdx.game.GameSystem
-import proto.Proto
+import com.github.dwursteisen.minigdx.game.Game
+import com.github.dwursteisen.minigdx.Window
 import proto.ProtoGame
-
-@ExperimentalStdlibApi
-class DemoApiV2(gameContext: GameContext) : GameSystem(gameContext, BirdScreen(gameContext))
-
-@ExperimentalStdlibApi
-class Gravity(gameContext: GameContext) : GameSystem(gameContext, GravityScreen(gameContext))
+import com.github.dwursteisen.minigdx.GameScreenConfiguration
 
 @ExperimentalStdlibApi
 class Main {
@@ -20,25 +15,36 @@ class Main {
 
         @JvmStatic
         fun main(args: Array<String>) {
-            configuration(
-                GLConfiguration(
-                    name = "Kotlin/JVM",
+            val gameConfigurationFactory = {
+                GameConfiguration(
                     gameName = "Demo",
-                    width = 720,
-                    height = 720
+                    window = Window(
+                        width = 1024,
+                        height = 728,
+                        name = "Kotlin/JVM"
+                    ),
+                    gameScreenConfiguration = GameScreenConfiguration.WithRatio(1f)
                 )
-            ).execute {
+            }
+
+            val gameFactory: (GameContext) -> Game = {
                 val index = args.indexOf("--game")
                 when (args.getOrElse(index + 1) { "" }) {
-                    "v2" -> DemoApiV2(it)
-                    "gravity" -> Gravity(it)
+                    "bird" -> BirdGame(it)
+                    "gravity" -> GravityGame(it)
                     "text" -> TextGame(it)
                     "sprite" -> SpriteGame(it)
                     "proto" -> ProtoGame(it)
                     "scene" -> SceneGame(it)
-                    else -> DemoApiV2(it)
+                    else -> BirdGame(it)
                 }
             }
+
+            GameApplicationBuilder(
+                gameConfigurationFactory = gameConfigurationFactory,
+                gameFactory = gameFactory
+
+            ).start()
         }
     }
 }

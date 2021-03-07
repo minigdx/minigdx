@@ -1,5 +1,7 @@
 package com.github.dwursteisen.minigdx.render
 
+import MockLogger
+import ModelFactory.gameContext
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -8,7 +10,6 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.graphics.MockGL
-import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 import kotlin.test.Test
@@ -21,7 +22,7 @@ class RenderStageTest {
 
     @Test
     fun add__it_should_add_the_camera() {
-        val engine = Engine()
+        val engine = Engine(gameContext())
 
         val vertex = EmptyVertexShader()
         val fragment = EmptyFragmentShader()
@@ -30,43 +31,7 @@ class RenderStageTest {
             vertex = vertex,
             fragment = fragment,
             query = EntityQuery(),
-            compiler = GLResourceClient(MockGL(), object : Logger {
-                override fun debug(tag: String, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun debug(tag: String, exception: Throwable, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun info(tag: String, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun info(tag: String, exception: Throwable, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun warn(tag: String, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun warn(tag: String, exception: Throwable, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun error(tag: String, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun error(tag: String, exception: Throwable, message: () -> String) {
-                    TODO("Not yet implemented")
-                }
-
-                override var rootLevel: Logger.LogLevel
-                    get() = TODO("Not yet implemented")
-                    set(value) {}
-            })
+            compiler = GLResourceClient(MockGL(), MockLogger())
         ) {
             override fun update(delta: Seconds, entity: Entity) = Unit
         }

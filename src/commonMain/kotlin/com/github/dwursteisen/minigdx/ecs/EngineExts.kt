@@ -15,21 +15,18 @@ import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
-import com.dwursteisen.minigdx.scene.api.sprite.SpriteAnimation
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
-import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.Text
+import com.github.dwursteisen.minigdx.ecs.components.SpriteComponent
+import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
-import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
-import com.github.dwursteisen.minigdx.entity.text.Font
-import com.github.dwursteisen.minigdx.render.sprites.TextRenderStrategy
+import com.github.dwursteisen.minigdx.file.Font
 
 @ExperimentalStdlibApi
 fun Engine.createFromNode(
@@ -40,7 +37,7 @@ fun Engine.createFromNode(
 ): Entity {
     return when (node.type) {
         ObjectType.ARMATURE -> createArmature(node, scene, transformation)
-        ObjectType.BOX -> createBox(node, scene, transformation)
+        ObjectType.BOX -> createBox(node, transformation)
         ObjectType.CAMERA -> createCamera(node, gameContext, scene, transformation)
         ObjectType.LIGHT -> TODO()
         ObjectType.MODEL -> createModel(node, scene, transformation)
@@ -50,7 +47,6 @@ fun Engine.createFromNode(
 @ExperimentalStdlibApi
 fun Engine.createBox(
     node: Node,
-    scene: Scene,
     transformation: Mat4
 ): Entity = create {
     add(BoundingBox.from(node.transformation.toMat4()))
@@ -127,16 +123,18 @@ fun Engine.createCamera(
         is PerspectiveCamera -> com.github.dwursteisen.minigdx.ecs.components.Camera(
             projection = perspective(
                 fov = camera.fov,
-                aspect = context.ratio,
+                aspect = context.gameScreen.ratio,
                 near = camera.near,
                 far = camera.far
             )
         )
         is OrthographicCamera -> {
-            val (w, h) = if (context.gl.screen.width >= context.gl.screen.height) {
-                1f to (context.gl.screen.height / context.gl.screen.width.toFloat())
+            val (w, h) = if (context.gameScreen.width >= context.gameScreen.height) {
+                // 1 / GameScreen.ratio
+                1f to (context.gameScreen.height / context.gameScreen.width.toFloat())
             } else {
-                context.gl.screen.width / context.gl.screen.height.toFloat() to 1f
+                // GameScreen.ratio
+                context.gameScreen.width / context.gameScreen.height.toFloat() to 1f
             }
             com.github.dwursteisen.minigdx.ecs.components.Camera(
                 projection = ortho(
@@ -158,8 +156,8 @@ fun Engine.createCamera(
 
 fun Engine.createUICamera(gameContext: GameContext): Entity {
     return this.create {
-        val width = gameContext.gl.screen.width
-        val height = gameContext.gl.screen.height
+        val width = gameContext.gameScreen.width
+        val height = gameContext.gameScreen.height
         add(
             UICamera(
                 projection = ortho(
@@ -180,42 +178,52 @@ fun Engine.createUICamera(gameContext: GameContext): Entity {
 fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
     return this.create {
         add(Position().setGlobalTranslation(x = x, y = y, z = 0f))
-        val spritePrimitive = SpritePrimitive(
+        val meshPrimitive = MeshPrimitive(
+            id = Id(),
+            name = "undefined",
+            material = null,
             texture = font.fontSprite,
-            renderStrategy = TextRenderStrategy
-        )
-        add(spritePrimitive)
-        add(
-            Text(
-                text = text,
-                font = font
+            hasAlpha = true,
+            primitive = Primitive(
+                id = Id(),
+                materialId = Id.None,
+                vertices = listOf(
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(0f, 0f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(0f, 0f)
+                    ),
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(1f, 0f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(1f, 0f)
+                    ),
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(0f, 1f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(1f, 1f)
+                    ),
+                    Vertex(
+                        com.dwursteisen.minigdx.scene.api.model.Position(1f, 1f, 0f),
+                        Normal(0f, 0f, 0f),
+                        uv = UV(0f, 1f)
+                    )
+                ),
+                verticesOrder = intArrayOf(
+                    0, 1, 2,
+                    2, 1, 3
+                )
             )
         )
-    }
-}
-
-class SpriteAnimated(
-    val animations: Map<String, SpriteAnimation>,
-    val uvs: List<UV>,
-    var currentFrame: Int = -1,
-    var frameDuration: Float = 0f,
-    var currentAnimation: SpriteAnimation = animations.values.first()
-) : Component {
-
-    fun switchToAnimation(name: String) {
-        val newAnimation = animations[name]
-        if (newAnimation != null) {
-            currentAnimation = newAnimation
-            currentFrame = 0
-            frameDuration = currentAnimation.frames.firstOrNull()?.duration ?: 0f
-        }
+        val spritePrimitive = TextComponent(text, font, meshPrimitive)
+        add(spritePrimitive)
     }
 }
 
 fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
     add(Position())
     add(
-        SpriteAnimated(
+        SpriteComponent(
             animations = sprite.animations,
             uvs = sprite.uvs
         )

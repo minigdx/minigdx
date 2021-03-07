@@ -69,7 +69,7 @@ data class Position(
         .setRotationZ(z)
 
     fun addScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds): Position {
-        scaleMatrix *= scale(Float3(x.toFloat() * delta, y.toFloat() * delta, z.toFloat() * delta))
+        scaleMatrix = scale(Float3(scale.x + x.toFloat(), scale.y + y.toFloat(), scale.z + z.toFloat()))
         return updateMatrix()
     }
 

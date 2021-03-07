@@ -65,7 +65,7 @@ data class BoundingBox(
                     Vertex(
                         position = Position(
                             builder.minX!!,
-                            builder.minY!!,
+                            builder.maxY!!,
                             builder.minZ!!
                         ),
                         normal = normal,
@@ -75,7 +75,7 @@ data class BoundingBox(
                     Vertex(
                         position = Position(
                             builder.maxX!!,
-                            builder.minY!!,
+                            builder.maxY!!,
                             builder.minZ!!
                         ),
                         normal = normal,
@@ -85,7 +85,7 @@ data class BoundingBox(
                     Vertex(
                         position = Position(
                             builder.maxX!!,
-                            builder.maxY!!,
+                            builder.minY!!,
                             builder.minZ!!
                         ),
                         normal = normal,
@@ -95,7 +95,7 @@ data class BoundingBox(
                     Vertex(
                         position = Position(
                             builder.minX!!,
-                            builder.maxY!!,
+                            builder.minY!!,
                             builder.minZ!!
                         ),
                         normal = normal,
@@ -104,7 +104,7 @@ data class BoundingBox(
                     // 4
                     Vertex(
                         position = Position(
-                            builder.minX!!,
+                            builder.maxX!!,
                             builder.maxY!!,
                             builder.maxZ!!
                         ),
@@ -115,7 +115,7 @@ data class BoundingBox(
                     Vertex(
                         position = Position(
                             builder.maxX!!,
-                            builder.maxY!!,
+                            builder.minY!!,
                             builder.maxZ!!
                         ),
                         normal = normal,
@@ -124,8 +124,8 @@ data class BoundingBox(
                     // 6
                     Vertex(
                         position = Position(
-                            builder.maxX!!,
-                            builder.minY!!,
+                            builder.minX!!,
+                            builder.maxY!!,
                             builder.maxZ!!
                         ),
                         normal = normal,
@@ -144,23 +144,21 @@ data class BoundingBox(
                 ),
                 order = listOf(
                     // face A
-                    0, 1, 3,
-                    1, 2, 3,
+                    0, 1,
+                    1, 2,
+                    2, 3,
+                    3, 0,
                     // face B
-                    1, 5, 2,
-                    2, 5, 6,
+                    1, 4,
+                    2, 5,
                     // face C
-                    5, 4, 6,
-                    6, 4, 7,
+                    4, 6,
+                    4, 5,
+                    5, 7,
+                    6, 7,
                     // face D,
-                    4, 0, 7,
-                    7, 0, 3,
-                    // face E,
-                    3, 2, 7,
-                    7, 2, 6,
-                    // face F
-                    0, 1, 4,
-                    4, 1, 5
+                    6, 0,
+                    3, 7
                 )
             )
         }
@@ -169,13 +167,13 @@ data class BoundingBox(
             val scale = modelTransformation.scale
             val transformation = scale(Float3(scale.x, scale.y, scale.z))
 
-            val a = (translation(Float3(1f, 1f, 1f)) * transformation).translation
-            val b = (translation(Float3(-1f, 1f, 1f)) * transformation).translation
+            val a = (translation(Float3(-1f, 1f, 1f)) * transformation).translation
+            val b = (translation(Float3(1f, 1f, 1f)) * transformation).translation
             val c = (translation(Float3(1f, -1f, 1f)) * transformation).translation
             val d = (translation(Float3(-1f, -1f, 1f)) * transformation).translation
             val e = (translation(Float3(1f, 1f, -1f)) * transformation).translation
-            val f = (translation(Float3(-1f, 1f, -1f)) * transformation).translation
-            val g = (translation(Float3(1f, -1f, -1f)) * transformation).translation
+            val f = (translation(Float3(1f, -1f, -1f)) * transformation).translation
+            val g = (translation(Float3(-1f, 1f, -1f)) * transformation).translation
             val h = (translation(Float3(-1f, -1f, -1f)) * transformation).translation
             return BoundingBox(
                 vertices = listOf(
@@ -222,23 +220,21 @@ data class BoundingBox(
                 ),
                 order = listOf(
                     // face A
-                    0, 1, 3,
-                    1, 2, 3,
+                    0, 1,
+                    1, 2,
+                    2, 3,
+                    3, 0,
                     // face B
-                    1, 5, 2,
-                    2, 5, 6,
+                    1, 4,
+                    2, 5,
                     // face C
-                    5, 4, 6,
-                    6, 4, 7,
+                    4, 6,
+                    4, 5,
+                    5, 7,
+                    6, 7,
                     // face D,
-                    4, 0, 7,
-                    7, 0, 3,
-                    // face E,
-                    3, 2, 7,
-                    7, 2, 6,
-                    // face F
-                    0, 1, 4,
-                    4, 1, 5
+                    6, 0,
+                    3, 7
                 )
             )
         }

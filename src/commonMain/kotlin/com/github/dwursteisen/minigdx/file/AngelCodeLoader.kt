@@ -1,13 +1,9 @@
 package com.github.dwursteisen.minigdx.file
 
-import com.github.dwursteisen.minigdx.entity.text.AngelCharacter
-import com.github.dwursteisen.minigdx.entity.text.AngelCode
-import com.github.dwursteisen.minigdx.entity.text.FontInfo
-
 class AngelCodeLoader : FileLoader<AngelCode> {
 
     @ExperimentalStdlibApi
-    override fun load(filename: String, handler: FileHandler): Content<AngelCode> = handler.platformFileHandler.read(filename).map {
+    override fun load(filename: String, handler: FileHandler): Content<AngelCode> = handler.read(filename).map {
         val groups = it.split("\r\n|\n|\r".toRegex())
             .filter { it.isNotBlank() }
             .groupBy { it.split(" ").first() }

@@ -9,12 +9,11 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
-import com.github.dwursteisen.minigdx.ecs.createFromNode
-import com.github.dwursteisen.minigdx.ecs.createModel
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
@@ -22,14 +21,16 @@ import com.github.dwursteisen.minigdx.ecs.states.State
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.StateMachineSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.game.GameSystem
-import com.github.dwursteisen.minigdx.game.Screen
+import com.github.dwursteisen.minigdx.game.GameWrapper
+import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
-import com.github.dwursteisen.minigdx.math.lerp
+import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import com.github.dwursteisen.minigdx.file.get
+import com.github.dwursteisen.minigdx.math.Interpolations.lerp
 
 class Player(val input: InputHandler) : StateMachineComponent()
 
@@ -43,7 +44,7 @@ class PickItemEvent : Event
 
 class ReleaseItemEvent : Event
 
-class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
+class ZoneSystem : StateMachineSystem(Zone::class) {
 
     private val players by interested(EntityQuery(Player::class))
     private val circles by interested(EntityQuery(Circle::class))
@@ -67,12 +68,13 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
 
         override fun onEnter(entity: Entity) {
             val circleEntity = system.circles.first()
-            circle = system.engine.create {
+            circle = system.create {
                 add(circleEntity.components.filter { it::class != Position::class && it::class != Circle::class })
                 add(Position())
             }
             val position = entity.get(Position::class).translation
-            circle.get(Position::class).setGlobalTranslation(position.x, position.y + 0.1f, position.z)
+            circle.get(Position::class)
+                .setGlobalTranslation(position.x, position.y + 0.1f, position.z)
         }
 
         override fun onExit(entity: Entity) {
@@ -121,7 +123,7 @@ class ZoneSystem(private val engine: Engine) : StateMachineSystem(Zone::class) {
 
 }
 
-class CubeSystem() : StateMachineSystem(Cube::class) {
+class CubeSystem : StateMachineSystem(Cube::class) {
 
     private val collider = AABBCollisionResolver()
 
@@ -232,7 +234,8 @@ class CubeSystem() : StateMachineSystem(Cube::class) {
     }
 }
 
-class PlayerSystem(private val inputHandler: InputHandler) : StateMachineSystem(Player::class) {
+class PlayerSystem(private val inputHandler: InputHandler) :
+    StateMachineSystem(Player::class) {
 
     private class Waiting(private val inputHandler: InputHandler) : State() {
         override fun configure() = Unit
@@ -291,31 +294,29 @@ class PlayerSystem(private val inputHandler: InputHandler) : StateMachineSystem(
 }
 
 @ExperimentalStdlibApi
-class Proto(override val gameContext: GameContext) : Screen {
+class ProtoGame(override val gameContext: GameContext) : Game {
 
     private val assets by gameContext.fileHandler.get<Scene>("proto/assets.protobuf")
 
-    override fun createEntities(engine: Engine) {
+    override fun createEntities(entityFactory: EntityFactory) {
         val arena = assets.children.first { node -> node.name == "arena" }
-        engine.createFromNode(assets.children.first { it.type == ObjectType.CAMERA }, gameContext, assets)
-        engine.createFromNode(arena, gameContext, assets)
+        entityFactory.createFromNode(assets.children.first { it.type == ObjectType.CAMERA }, assets)
+        entityFactory.createFromNode(arena, assets)
         val origin = Mat4.fromColumnMajor(*arena.transformation.matrix)
         arena.children.forEach { node ->
             val fromColumnMajor = node.transformation.toMat4()
             when (node.name) {
                 "player_spawn" -> {
-                    val entity = engine.createFromNode(
+                    val entity = entityFactory.createFromNode(
                         node,
-                        gameContext,
                         assets,
                         transformation = origin * fromColumnMajor
                     )
                     entity.add(Player(gameContext.input))
                 }
                 "cube_one" -> {
-                    val entity = engine.createFromNode(
+                    val entity = entityFactory.createFromNode(
                         node,
-                        gameContext,
                         assets,
                         transformation = origin * fromColumnMajor
                     )
@@ -323,13 +324,12 @@ class Proto(override val gameContext: GameContext) : Screen {
                 }
                 "zone_detection" -> {
                     val sub = node.children.first()
-                    val subEntity = engine.createFromNode(
+                    val subEntity = entityFactory.createFromNode(
                         sub,
-                        gameContext,
                         assets,
                         transformation = origin * fromColumnMajor * Mat4.fromColumnMajor(*sub.transformation.matrix)
                     )
-                    engine.create {
+                    entityFactory.create {
                         val box = BoundingBox.from(node.transformation.toMat4())
                         add(box)
                         add(Position(transformation = origin * fromColumnMajor))
@@ -339,7 +339,7 @@ class Proto(override val gameContext: GameContext) : Screen {
             }
         }
         val circle = assets.children.first { it.name == "circle" }
-        engine.createModel(
+        entityFactory.createModel(
             circle,
             assets,
             transformation = Mat4.identity()
@@ -350,10 +350,7 @@ class Proto(override val gameContext: GameContext) : Screen {
         return listOf(
             PlayerSystem(gameContext.input),
             CubeSystem(),
-            ZoneSystem(engine)
+            ZoneSystem()
         ) + super.createSystems(engine)
     }
 }
-
-@ExperimentalStdlibApi
-class ProtoGame(gameContext: GameContext) : GameSystem(gameContext, Proto(gameContext))

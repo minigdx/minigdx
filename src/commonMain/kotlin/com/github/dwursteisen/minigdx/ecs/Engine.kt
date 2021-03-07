@@ -1,12 +1,13 @@
 package com.github.dwursteisen.minigdx.ecs
 
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.EventQueue
 import com.github.dwursteisen.minigdx.ecs.systems.System
 
-class Engine {
+class Engine(val gameContext: GameContext) {
 
     private val eventQueue = EventQueue()
 
@@ -56,6 +57,11 @@ class Engine {
         val entityQuery = systems.last()
         // Put the entity query always at the end of the list.
         systems = systems.dropLast(1) + system + entityQuery
+
+        // Register the game context and the engine on the system
+        system.engine = this
+        system.gameContext = gameContext
+
         eventQueue.register(system)
     }
 

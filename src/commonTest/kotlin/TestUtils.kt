@@ -1,3 +1,3 @@
-import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.GameConfiguration
 
-expect fun createLogger(): Logger
+expect fun createGameConfiguration(): GameConfiguration

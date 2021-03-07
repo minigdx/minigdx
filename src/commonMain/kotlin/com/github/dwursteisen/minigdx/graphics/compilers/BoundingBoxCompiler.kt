@@ -34,16 +34,16 @@ class BoundingBoxCompiler : GLResourceCompiler {
 
         if (component.colorBuffer == null) {
             component.colorBuffer = gl.createBuffer()
-            gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.colorBuffer!!)
+            gl.bindBuffer(GL.ARRAY_BUFFER, component.colorBuffer!!)
             gl.bufferData(
-                target = GL.ELEMENT_ARRAY_BUFFER,
+                target = GL.ARRAY_BUFFER,
                 data = component.vertices.map { it.color }.colorsDatasource(),
                 usage = GL.STATIC_DRAW
             )
         }
     }
 
-    override fun update(gl: GL, source: GLResourceComponent, target: GLResourceComponent) {
+    override fun synchronize(gl: GL, source: GLResourceComponent, target: GLResourceComponent, materials: MutableMap<Id, TextureReference>) {
         source as BoundingBox
         target as BoundingBox
         target.colorBuffer = source.colorBuffer

@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
+import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
@@ -22,7 +23,7 @@ class SystemTest {
 
     @Test
     fun interested_it_returns_list_of_entities() {
-        val engine = Engine()
+        val engine = Engine(gameContext())
         val system = TestSystem()
 
         engine.addSystem(system)

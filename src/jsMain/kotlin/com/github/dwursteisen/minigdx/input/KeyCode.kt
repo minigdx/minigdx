@@ -8,13 +8,13 @@ val Key.keyCode: Int
             Key.ANY_KEY -> UNKNOWN_KEY
             Key.BACKSPACE -> 8
             Key.TAB -> 9
-            Key.ENTER -> TODO()
+            Key.ENTER -> 13
             Key.SHIFT -> TODO()
             Key.CTRL -> TODO()
             Key.ALT -> TODO()
             Key.PAUSE_BREAK -> TODO()
             Key.CAPS_LOCK -> TODO()
-            Key.ESCAPE -> TODO()
+            Key.ESCAPE -> 27
             Key.PAGE_UP -> TODO()
             Key.SPACE -> 32
             Key.PAGE_DOWN -> TODO()

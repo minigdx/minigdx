@@ -8,21 +8,41 @@ import com.github.dwursteisen.minigdx.logger.Logger
 
 class Options(var debug: Boolean)
 
-class GameContext(
-    private val glContext: GLContext
-) {
-    val gl: GL = glContext.createContext()
-    val logger: Logger = glContext.createLogger()
+class GameScreen(val width: Pixel, val height: Pixel, val ratio: Ratio = width / height.toFloat())
 
-    val fileHandler: FileHandler = glContext.createFileHandler(logger)
-    val input: InputHandler = glContext.createInputHandler(logger)
-    val viewport: ViewportStrategy = glContext.createViewportStrategy(logger)
+class DeviceScreen(var width: Pixel, var height: Pixel)
+
+class GameContext(
+    platformContext: PlatformContext,
+    gameResolution: Resolution
+) {
+    val gl: GL = platformContext.createGL()
+    val logger: Logger = platformContext.createLogger()
+
+    val fileHandler: FileHandler = platformContext.createFileHandler(logger)
+    val input: InputHandler = platformContext.createInputHandler(logger)
+    val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
     val glResourceClient = GLResourceClient(gl, logger)
 
-    val ratio = gl.screen.ratio
-    val options = glContext.createOptions()
+    val gameScreen: GameScreen = GameScreen(
+        gameResolution.width,
+        gameResolution.height,
+        gameResolution.ratio
+    )
 
-    fun execute(block: (GameContext) -> Game) {
-        glContext.run(this, block)
+    val deviceScreen: DeviceScreen = DeviceScreen(
+        gameResolution.width,
+        gameResolution.height
+    )
+
+    val options = platformContext.createOptions()
+
+    fun logPlatform() {
+        logger.info("MINIGDX") { "--- Platform information ---" }
+        logger.info("MINIGDX") { "OpenGL Vendor    : \t" + gl.getString(GL.VENDOR) }
+        logger.info("MINIGDX") { "OpenGL Renderer  : \t" + gl.getString(GL.RENDERER) }
+        logger.info("MINIGDX") { "OpenGL Version   : \t" + gl.getString(GL.VERSION) }
+        logger.info("MINIGDX") { "OpenGL Shading   : \t" + gl.getString(GL.SHADING_LANGUAGE_VERSION) }
+        logger.info("MINIGDX") { "OpenGL Extensions: \t" + gl.getString(GL.EXTENSIONS) }
     }
 }

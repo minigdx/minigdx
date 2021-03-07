@@ -39,6 +39,7 @@ open class Content<R>(val filename: String, val logger: Logger) {
     fun <T> flatMap(block: (R) -> Content<T>): Content<T> {
         val result = Content<T>(filename, logger)
         this.onLoaded += { r ->
+            @Suppress("UNUSED_VARIABLE")
             val unit = block(r).map { t -> result.load(t) }
         }
         if (isLoaded) {

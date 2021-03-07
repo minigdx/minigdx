@@ -6,18 +6,15 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
-import com.github.dwursteisen.minigdx.ecs.components.gl.SpritePrimitive
 import com.github.dwursteisen.minigdx.graphics.compilers.AnimatedMeshPrimitiveCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.BoundingBoxCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.GLResourceCompiler
 import com.github.dwursteisen.minigdx.graphics.compilers.MeshPrimitiveCompiler
-import com.github.dwursteisen.minigdx.graphics.compilers.SpritePrimitiveCompiler
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import kotlin.reflect.KClass
 
 private val basicCompilers: Map<KClass<out GLResourceComponent>, GLResourceCompiler> = mapOf(
-    SpritePrimitive::class to SpritePrimitiveCompiler(),
     MeshPrimitive::class to MeshPrimitiveCompiler(),
     AnimatedMeshPrimitive::class to AnimatedMeshPrimitiveCompiler(),
     BoundingBox::class to BoundingBoxCompiler()
@@ -43,7 +40,7 @@ class GLResourceClient(
             .onEach { component ->
                 val cachedValue = cache[component.id]
                 if (cachedValue != null) {
-                    compilers[component::class]?.update(gl, cachedValue, component)
+                    compilers[component::class]?.synchronize(gl, cachedValue, component, materials)
                 } else {
                     log.info("GL_RESOURCE") { "Compiling '${component.id}' (${component::class.simpleName}) component" }
                     cache[component.id] = component

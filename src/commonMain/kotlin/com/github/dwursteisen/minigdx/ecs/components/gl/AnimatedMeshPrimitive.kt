@@ -7,7 +7,6 @@ import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 
 class AnimatedMeshPrimitive(
-    var isCompiled: Boolean = false,
     val primitive: Primitive,
     val material: Material,
     var verticesBuffer: Buffer? = null,

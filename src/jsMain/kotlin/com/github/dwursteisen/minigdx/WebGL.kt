@@ -14,7 +14,7 @@ import org.khronos.webgl.Uint32Array
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.WebGLRenderingContextBase
 
-class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Screen) : GL {
+class WebGL(private val gl: WebGLRenderingContextBase) : GL {
 
     override fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent) {
         gl.clearColor(r.toPercent(), g.toPercent(), b.toPercent(), a.toPercent())
@@ -110,6 +110,10 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
         gl.linkProgram(shaderProgram.program.delegate)
     }
 
+    override fun getString(parameterName: Int): String? {
+        return gl.getParameter(parameterName) as? String
+    }
+
     override fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any {
         return gl.getProgramParameter(shaderProgram.program.delegate, mask)!!
     }
@@ -169,7 +173,7 @@ class WebGL(private val gl: WebGLRenderingContextBase, override val screen: Scre
         gl.drawElements(mask, vertexCount, type, offset)
     }
 
-    override fun viewport(x: Int, y: Int, width: Int, height: Int) {
+    override fun viewport(x: Pixel, y: Pixel, width: Pixel, height: Pixel) {
         gl.viewport(x, y, width, height)
     }
 

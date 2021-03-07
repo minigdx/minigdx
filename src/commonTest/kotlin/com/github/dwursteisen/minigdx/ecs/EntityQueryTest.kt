@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs
 
+import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import kotlin.test.Test
@@ -12,7 +13,7 @@ class EntityQueryTest {
 
     @Test
     fun accept__it_should_accept_included_component() {
-        val entity = Engine().create {
+        val entity = Engine(gameContext()).create {
             add(Name())
         }
         val query = EntityQuery(Name::class)
@@ -22,7 +23,7 @@ class EntityQueryTest {
 
     @Test
     fun accept__it_should_not_accept_excluded_component() {
-        val entity = Engine().create {
+        val entity = Engine(gameContext()).create {
             add(Name())
         }
         val query = EntityQuery(
@@ -35,7 +36,7 @@ class EntityQueryTest {
 
     @Test
     fun accept__it_should_not_accept_not_included_component() {
-        val entity = Engine().create {}
+        val entity = Engine(gameContext()).create {}
         val query = EntityQuery(Name::class)
 
         assertFalse(query.accept(entity))

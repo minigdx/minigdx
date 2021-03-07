@@ -29,7 +29,12 @@ private const val shader: String = """
                 int joinId = int(aJoints[i]);
                 mat4 uJointMatrix = uJointTransformationMatrix[joinId];
                 vec4 posePosition = uJointMatrix * vec4(aVertexPosition, 1.0);
-                totalLocalPos += posePosition * aWeights[i];
+                // For an unknown reason, no evaluating aWeights make the 
+                // computation not working on some devise (ie: reproduced on an Android TV).
+                // This check is useless but make the things works!
+                if(aWeights[i] >= 0.0) {
+                    totalLocalPos += posePosition * aWeights[i];
+                }
             }
         
             gl_Position = uModelView * totalLocalPos;

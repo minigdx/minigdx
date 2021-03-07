@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx.graphics
 import com.github.dwursteisen.minigdx.ByteMask
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Percent
-import com.github.dwursteisen.minigdx.Screen
 import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
@@ -14,7 +13,7 @@ import com.github.dwursteisen.minigdx.shaders.Uniform
 
 data class ViewportCall(val x: Int, val y: Int, val width: Int, val height: Int)
 
-class MockGL(override val screen: Screen = Screen(100, 100)) : GL {
+class MockGL : GL {
 
     lateinit var viewportCall: ViewportCall
 
@@ -64,6 +63,10 @@ class MockGL(override val screen: Screen = Screen(100, 100)) : GL {
 
     override fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getString(parameterName: Int): String? {
+        TODO("Not yet implemented")
     }
 
     override fun getShaderParameter(shader: Shader, mask: ByteMask): Any {

@@ -1,9 +1,9 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
+import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Component
-import com.github.dwursteisen.minigdx.ecs.components.assertEquals
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import kotlin.random.Random
@@ -37,7 +37,7 @@ class EventQueueTest {
 
     @Test
     fun emit_it_reacts_to_emitter_event() {
-        val engine = Engine()
+        val engine = Engine(gameContext())
         val listenerSystem = ListenerSystem()
         val event = RandomIntEvent()
 

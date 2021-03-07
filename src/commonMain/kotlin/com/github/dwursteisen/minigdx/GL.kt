@@ -9,17 +9,7 @@ import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
 
-class Screen(
-    var width: Int,
-    var height: Int
-) {
-
-    val ratio = width / height.toFloat()
-}
-
 interface GL {
-
-    val screen: Screen
 
     fun clearColor(r: Percent, g: Percent, b: Percent, a: Percent)
     fun clear(mask: ByteMask)
@@ -32,6 +22,9 @@ interface GL {
     fun getUniformLocation(shaderProgram: ShaderProgram, name: String): Uniform
     fun attachShader(shaderProgram: ShaderProgram, shader: Shader)
     fun linkProgram(shaderProgram: ShaderProgram)
+
+    fun getString(parameterName: Int): String?
+
     fun getProgramParameter(shaderProgram: ShaderProgram, mask: ByteMask): Any
     fun getProgramParameterB(shaderProgram: ShaderProgram, mask: ByteMask): Boolean =
         getProgramParameter(shaderProgram, mask) as Boolean
@@ -77,9 +70,10 @@ interface GL {
 
     fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int)
 
-    fun viewport(x: Int, y: Int, width: Int, height: Int)
+    fun viewport(x: Pixel, y: Pixel, width: Pixel, height: Pixel)
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage)
+
     fun texImage2D(
         target: Int,
         level: Int,

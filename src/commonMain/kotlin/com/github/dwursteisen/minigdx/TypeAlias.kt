@@ -15,10 +15,25 @@ typealias Percent = Number
  */
 typealias ByteMask = Int
 
+/**
+ * Degree: value between 0 and 360
+ */
 typealias Degree = Number
+
+/**
+ * Coordinate in the related context (in general: world unit)
+ */
 typealias Coordinate = Number
 
+/**
+ * Pixel unit. In general related to an image or the screen.
+ */
 typealias Pixel = Int
+
+/**
+ * Ratio. Used in general to deal with screen size.
+ */
+typealias Ratio = Float
 
 fun Number.toPercent(): Float {
     val v = this.toFloat()

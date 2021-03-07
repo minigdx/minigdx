@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx.render
 
 import com.github.dwursteisen.minigdx.GL
-import com.github.dwursteisen.minigdx.MiniGdx
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
@@ -19,13 +18,8 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
     query = EntityQuery(BoundingBox::class)
 ) {
 
-    override fun update(delta: Seconds) {
-        if (MiniGdx.debugHitbox) {
-            super.update(delta)
-        }
-    }
-
     override fun update(delta: Seconds, entity: Entity) {
+        // TODO: enable this stage on the fly, regarding options ?
         val model = entity.get(Position::class).transformation
 
         vertex.uModelView.apply(program, combinedMatrix * model)
@@ -43,8 +37,10 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
         }
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, box.orderBuffer!!)
         gl.drawElements(
-            GL.LINES, box.order.size,
-            GL.UNSIGNED_SHORT, 0
+            mask = GL.LINES,
+            vertexCount = box.order.size,
+            type = GL.UNSIGNED_SHORT,
+            offset = 0
         )
     }
 }
