@@ -1,6 +1,10 @@
 package com.github.dwursteisen.minigdx.math
 
-import com.curiouscreature.kotlin.math.*
+import com.curiouscreature.kotlin.math.Float3
+import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.Quaternion
+import com.curiouscreature.kotlin.math.scale
+import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Seconds
 import kotlin.math.pow
 
