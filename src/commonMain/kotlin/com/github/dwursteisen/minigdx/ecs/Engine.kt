@@ -35,7 +35,7 @@ class Engine(val gameContext: GameContext) {
 
     internal fun onGameStart() {
         systems.forEach {
-            it.onGameStart(this)
+            it.onGameStarted(this)
         }
     }
 

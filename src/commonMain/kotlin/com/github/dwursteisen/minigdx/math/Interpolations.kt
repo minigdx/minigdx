@@ -3,12 +3,14 @@ package com.github.dwursteisen.minigdx.math
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
+import com.curiouscreature.kotlin.math.interpolate
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Seconds
 import kotlin.math.pow
 
 object Interpolations {
+
     fun lerp(target: Float, current: Float, step: Float = 0.9f): Float {
         return target + step * (current - target)
     }
@@ -27,17 +29,13 @@ object Interpolations {
         val scaleCurrent = current.scale
 
         val t = translation(
-            Float3(lerp(translationTarget.x, translationCurrent.x, step),
+            Float3(
+                lerp(translationTarget.x, translationCurrent.x, step),
                 lerp(translationTarget.y, translationCurrent.y, step),
                 lerp(translationTarget.z, translationCurrent.z, step)
             )
         )
-        val r = Quaternion(
-            x = lerp(rotationTarget.x, rotationCurrent.x, step),
-            y = lerp(rotationTarget.y, rotationCurrent.y, step),
-            z = lerp(rotationTarget.z, rotationCurrent.z, step),
-            w = lerp(rotationTarget.w, rotationCurrent.w, step)
-        )
+        val r = interpolate(rotationTarget, rotationCurrent, -step)
         val s = scale(
             Float3(
                 lerp(scaleTarget.x, scaleCurrent.x, step),

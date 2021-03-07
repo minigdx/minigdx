@@ -31,17 +31,20 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     val cameraQuery: EntityQuery = EntityQuery(
         Camera::class
     ),
-    val lightsQuery: EntityQuery = EntityQuery(
+    lightsQuery: EntityQuery = EntityQuery(
         Light::class
     ),
     val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
 ) : Stage, System(query) {
 
-    var lights: Sequence<Entity> = emptySequence()
-        private set
+    private val lights by interested(lightsQuery)
 
-    var camera: Entity? = null
-        private set
+    private val cameras by interested(cameraQuery)
+
+    val camera: Entity?
+    get() {
+        return cameras.firstOrNull()
+    }
 
     lateinit var program: ShaderProgram
 
@@ -70,32 +73,6 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     open fun uniforms(entity: Entity) = Unit
 
     open fun attributes(entity: Entity) = Unit
-
-    override fun add(entity: Entity): Boolean {
-        return if (cameraQuery.accept(entity)) {
-            camera = entity
-            true
-        } else if (lightsQuery.accept(entity)) {
-            val count = entities.count()
-            lights += entity
-            count != entities.count()
-        } else {
-            super.add(entity)
-        }
-    }
-
-    override fun remove(entity: Entity): Boolean {
-        return if (cameraQuery.accept(entity)) {
-            camera = null
-            true
-        } else if (lightsQuery.accept(entity)) {
-            val count = entities.count()
-            lights -= entity
-            count != entities.count()
-        } else {
-            super.remove(entity)
-        }
-    }
 
     override fun update(delta: Seconds) {
         // TODO: if renderInMemory -> FBO

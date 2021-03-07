@@ -67,4 +67,30 @@ class PositionTest {
         assertEquals(2f, position.translation.y)
         assertEquals(3f, position.translation.z)
     }
+
+    @Test
+    fun scale_setScale() {
+        val position = Position()
+        position.setScale(1f, 2f, 3f)
+        assertEquals(1f, position.scale.x)
+        assertEquals(2f, position.scale.y)
+        assertEquals(3f, position.scale.z)
+        position.setScale(3f, 2f, 1f)
+        assertEquals(3f, position.scale.x)
+        assertEquals(2f, position.scale.y)
+        assertEquals(1f, position.scale.z)
+    }
+
+    @Test
+    fun scale_addScale() {
+        val position = Position()
+        position.addScale(1f, 2f, 3f, 1f)
+        assertEquals(1f, position.scale.x)
+        assertEquals(2f, position.scale.y)
+        assertEquals(3f, position.scale.z)
+        position.addScale(3f, 2f, 1f, 1f)
+        assertEquals(4f, position.scale.x)
+        assertEquals(4f, position.scale.y)
+        assertEquals(4f, position.scale.z)
+    }
 }
