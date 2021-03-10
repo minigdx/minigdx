@@ -23,7 +23,7 @@ class Main {
                         height = 728,
                         name = "Kotlin/JVM"
                     ),
-                    gameScreenConfiguration = GameScreenConfiguration.WithRatio(1f)
+                    gameScreenConfiguration = GameScreenConfiguration.WithRatio(16f / 9f)
                 )
             }
 
@@ -36,6 +36,8 @@ class Main {
                     "sprite" -> SpriteGame(it)
                     "proto" -> ProtoGame(it)
                     "scene" -> SceneGame(it)
+                    "trijam" -> TrijamGame(it)
+                    "interpolation" -> InterpolationGame(it)
                     else -> BirdGame(it)
                 }
             }

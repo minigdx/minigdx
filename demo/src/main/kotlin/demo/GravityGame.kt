@@ -7,24 +7,23 @@ import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
-import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.createFromNode
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.physics.AABBCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.CollisionResolver
 import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.file.get
 import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
-import com.github.dwursteisen.minigdx.math.Vector3
-import com.github.dwursteisen.minigdx.file.get
 import com.github.dwursteisen.minigdx.math.Interpolations.lerp
-
+import com.github.dwursteisen.minigdx.math.Vector3
 
 class GravityComponent(
     val acceleration: Vector3 = Vector3(0, 0, 0),
@@ -85,18 +84,13 @@ class GravitySystem(private val collisionResolution: CollisionResolver = AABBCol
     }
 }
 
-class PlayerMoveSystem(
-    val input: InputHandler
-) : System(EntityQuery(GravityComponent::class)) {
+class PlayerMoveSystem : System(EntityQuery(GravityComponent::class)) {
 
     lateinit var reset: Float3
 
-    override fun add(entity: Entity): Boolean {
-        if (entityQuery.accept(entity)) {
-            val v = entity.get(Position::class).transformation.position
-            reset = Float3(v.x, v.y, v.z)
-        }
-        return super.add(entity)
+    override fun onEntityAdded(entity: Entity) {
+        val v = entity.get(Position::class).transformation.position
+        reset = Float3(v.x, v.y, v.z)
     }
 
     override fun update(delta: Seconds, entity: Entity) {
@@ -145,7 +139,7 @@ class GravityGame(override val gameContext: GameContext) : Game {
             if (model.name == "cube") {
                 entity.add(GravityComponent())
             }
-            if(model.type == ObjectType.MODEL) {
+            if (model.type == ObjectType.MODEL) {
                 entity.add(ColliderComponent())
             }
         }
@@ -153,7 +147,7 @@ class GravityGame(override val gameContext: GameContext) : Game {
 
     override fun createSystems(engine: Engine): List<System> {
         return listOf(
-            PlayerMoveSystem(gameContext.input),
+            PlayerMoveSystem(),
             GravitySystem(SATCollisionResolver())
         )
     }

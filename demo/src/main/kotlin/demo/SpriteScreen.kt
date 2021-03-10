@@ -15,7 +15,7 @@ class SpriteGame(override val gameContext: GameContext) : Game {
 
     override fun createEntities(entityFactory: EntityFactory) {
         entityFactory.create {
-            add(Position().setGlobalTranslation(x = 600, y = 300).setScale(x = 300, y = 300))
+            add(Position().setGlobalTranslation(x = 600, y = 300).setGlobalScale(x = 300, y = 300))
         }
 
         entityFactory.createUICamera()

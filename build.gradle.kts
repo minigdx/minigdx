@@ -16,7 +16,7 @@ if (version == "unspecified") {
     version = "1.2-SNAPSHOT"
 }
 
-val kotlinMathVersion = "1.0.0-alpha18"
+val kotlinMathVersion = "1.0-SNAPSHOT"
 val gltfApiVersion = "1.0.0-alpha11"
 
 val properties = Properties()

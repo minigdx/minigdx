@@ -21,11 +21,9 @@ import com.github.dwursteisen.minigdx.ecs.states.State
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.StateMachineSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.game.GameWrapper
 import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.Key
-import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -68,11 +66,11 @@ class ZoneSystem : StateMachineSystem(Zone::class) {
 
         override fun onEnter(entity: Entity) {
             val circleEntity = system.circles.first()
-            circle = system.create {
+            circle = system.entityFactory.create {
                 add(circleEntity.components.filter { it::class != Position::class && it::class != Circle::class })
                 add(Position())
             }
-            val position = entity.get(Position::class).translation
+            val position = entity.get(Position::class).globalTranslation
             circle.get(Position::class)
                 .setGlobalTranslation(position.x, position.y + 0.1f, position.z)
         }
@@ -84,7 +82,7 @@ class ZoneSystem : StateMachineSystem(Zone::class) {
         override fun update(delta: Seconds, entity: Entity): State? {
             time += delta
             val circleScale = abs(sin(time))
-            circle.get(Position::class).setScale(circleScale, 1f, circleScale)
+            circle.get(Position::class).setGlobalScale(circleScale, 1f, circleScale)
             return if (system.collider.collide(entity, system.players.first())) {
                 TurnOn(system)
             } else {
@@ -99,7 +97,7 @@ class ZoneSystem : StateMachineSystem(Zone::class) {
 
         override fun onEnter(entity: Entity) {
             val sub = entity.get(Zone::class).subEntity
-            y = sub.get(Position::class).translation.y
+            y = sub.get(Position::class).globalTranslation.y
         }
 
         override fun update(delta: Seconds, entity: Entity): State? {
@@ -139,7 +137,7 @@ class CubeSystem : StateMachineSystem(Cube::class) {
         private var waitOnZone: Boolean = false
 
         override fun onEnter(entity: Entity) {
-            y = entity.get(Position::class).translation.y
+            y = entity.get(Position::class).globalTranslation.y
             waitOnZone = system.zones.any { system.collider.collide(it, entity) }
         }
 
@@ -206,8 +204,8 @@ class CubeSystem : StateMachineSystem(Cube::class) {
             val position = entity.get(Position::class)
             position
                 .setGlobalTranslation(
-                    x = lerp(target.x, position.translation.x),
-                    z = lerp(target.z, position.translation.z)
+                    x = lerp(target.x, position.globalTranslation.x),
+                    z = lerp(target.z, position.globalTranslation.z)
                 )
 
             return if (player.get(Player::class).input.isKeyJustPressed(Key.SPACE)) {
@@ -332,7 +330,7 @@ class ProtoGame(override val gameContext: GameContext) : Game {
                     entityFactory.create {
                         val box = BoundingBox.from(node.transformation.toMat4())
                         add(box)
-                        add(Position(transformation = origin * fromColumnMajor))
+                        add(Position(origin * fromColumnMajor))
                         add(Zone(subEntity))
                     }
                 }
