@@ -48,7 +48,7 @@ class EntityFactoryDelegate : EntityFactory {
 
     override fun createText(text: String, font: Font, transformation: Mat4): Entity {
         return engine.create {
-            add(Position(transformation = transformation))
+            add(Position(transformation))
             val meshPrimitive = MeshPrimitive(
                 id = Id(),
                 name = "undefined",

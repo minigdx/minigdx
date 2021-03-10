@@ -7,6 +7,7 @@ import com.curiouscreature.kotlin.math.TWO_PI
 import com.curiouscreature.kotlin.math.interpolate
 import com.curiouscreature.kotlin.math.normalize
 import com.curiouscreature.kotlin.math.radians
+import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Coordinate
@@ -17,19 +18,144 @@ import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.math.cos
 import kotlin.math.sin
 
-data class Position(
-    var transformation: Mat4 = Mat4.identity(),
-    private var translationMatrix: Mat4 = translation(transformation.translation),
-    private var scaleMatrix: Mat4 = scale(transformation.scale),
+class TransformationHolder(transformation: Mat4) {
+
+    private var combined: Mat4 = transformation
+
+    var transalation: Mat4 = translation(transformation)
+        set(value) {
+            field = value
+            combined = updateTransformation()
+        }
+
+    var rotation: Quaternion = normalize(
+        Quaternion.from(
+            rotation(
+                Float3(
+                    transformation.rotation.x,
+                    transformation.rotation.y,
+                    transformation.rotation.z
+                )
+            )
+        )
+    )
+        set(value) {
+            field = value
+            combined = updateTransformation()
+        }
+
+    var scale: Mat4 = scale(transformation)
+        set(value) {
+            field = value
+            combined = updateTransformation()
+        }
+
+    var transformation: Mat4
+        get() = combined
+        set(value) {
+            transalation = translation(value)
+            rotation = normalize(
+                Quaternion.from(
+                    rotation(
+                        Float3(
+                            value.rotation.x,
+                            value.rotation.y,
+                            value.rotation.z
+                        )
+                    )
+                )
+            )
+            scale = scale(value)
+            combined = updateTransformation()
+        }
+
+    private fun updateTransformation(): Mat4 {
+        return transalation * Mat4.from(rotation) * scale
+    }
+}
+
+class Position(
+    globalTransformation: Mat4 = Mat4.identity(),
+    // Inverse rotation, usefull for cameras.
     var way: Float = 1f
 ) : Component {
 
-    var quaternion = normalize(Quaternion.from(transformation))
-    private set
+    /**
+     * Store the global transformation.
+     *
+     */
+    private val globalTransformation = TransformationHolder(globalTransformation)
 
+    /**
+     * Store the local transformation.
+     */
+    private val localTransformation = TransformationHolder(Mat4.identity())
+
+    /**
+     * Transformation given by the global transformation and then the local transformation.
+     */
+    var transformation: Mat4 = this.globalTransformation.transformation * localTransformation.transformation
+        private set
+
+    var quaternion = normalize(Quaternion.from(transformation))
+        private set
+
+    val globalTranslation: Vector3 = Vector3()
+    val localTranslation: Vector3 = Vector3()
     val translation: Vector3 = Vector3()
+
+    val globalRotation: Vector3 = Vector3()
+    val localRotation: Vector3 = Vector3()
     val rotation: Vector3 = Vector3()
+
+    val globalScale: Vector3 = Vector3()
+    val localScale: Vector3 = Vector3()
     val scale: Vector3 = Vector3()
+
+    init {
+        update()
+    }
+
+    fun setLocalTransform(transformation: Mat4): Position {
+        localTransformation.transformation = transformation
+        return update()
+    }
+
+    fun setGlobalTransform(transformation: Mat4): Position {
+        globalTransformation.transformation = transformation
+        return update()
+    }
+
+    fun setGlobalRotation(
+        x: Degree = globalRotation.x,
+        y: Degree = globalRotation.y,
+        z: Degree = globalRotation.z
+    ): Position {
+        globalTransformation.rotation = normalize(
+            Quaternion.from(
+                rotation(
+                    Float3(
+                        x.toFloat() * way,
+                        y.toFloat() * way,
+                        z.toFloat() * way
+                    )
+                )
+            )
+        )
+        return update()
+    }
+
+    fun addGlobalRotation(
+        x: Degree = 0f,
+        y: Degree = 0f,
+        z: Degree = 0f,
+        delta: Seconds
+    ): Position {
+        globalTransformation.rotation *= fromEulers(1f, 0f, 0f, x.toFloat() * delta) *
+            fromEulers(0f, 1f, 0f, y.toFloat() * delta) *
+            fromEulers(0f, 0f, 1f, z.toFloat() * delta)
+        return update()
+    }
 
     fun addLocalRotation(rotation: Quaternion, delta: Seconds): Position {
         quaternion = interpolate(
@@ -44,14 +170,27 @@ data class Position(
             ),
             delta
         )
-        return updateMatrix()
+        return update()
     }
 
     fun addLocalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds): Position {
-        rotateX(x.toFloat() * delta)
-        rotateY(y.toFloat() * delta)
-        rotateZ(z.toFloat() * delta)
-        return this
+        localTransformation.rotation *= fromEulers(
+            1f,
+            0f,
+            0f,
+            x.toFloat() * delta
+        ) * fromEulers(
+            0f,
+            1f,
+            0f,
+            y.toFloat() * delta
+        ) * fromEulers(
+            0f,
+            0f,
+            1f,
+            z.toFloat() * delta
+        )
+        return update()
     }
 
     fun addLocalRotation(angles: Vector3, delta: Seconds): Position =
@@ -59,39 +198,55 @@ data class Position(
 
     fun setLocalRotation(quaternion: Quaternion): Position {
         this.quaternion = quaternion
-        return updateMatrix()
+        return update()
     }
 
     fun setLocalRotation(angles: Vector3): Position = setLocalRotation(angles.x, angles.y, angles.z)
 
-    fun setLocalRotation(x: Degree = rotation.x, y: Degree = rotation.y, z: Degree = rotation.z) = setRotationX(x)
-        .setRotationY(y)
-        .setRotationZ(z)
-
-    fun addScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds): Position {
-        scaleMatrix = scale(Float3(scale.x + x.toFloat(), scale.y + y.toFloat(), scale.z + z.toFloat()))
-        return updateMatrix()
+    fun setLocalRotation(x: Degree = rotation.x, y: Degree = rotation.y, z: Degree = rotation.z): Position {
+        localTransformation.rotation = Quaternion.from(rotation(Float3(x.toFloat(), y.toFloat(), z.toFloat())))
+        return update()
     }
 
-    fun addScale(scale: Vector3, delta: Seconds): Position = addScale(scale.x, scale.y, scale.z, delta)
-
-    fun setScale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position {
-        return addScale(x.toFloat() - scale.x, y.toFloat() - scale.y, z.toFloat() - scale.z, 1f)
+    fun addLocalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds): Position {
+        return setLocalScale(
+            localScale.x + x.toFloat() * delta,
+            localScale.y + y.toFloat() * delta,
+            localScale.z + z.toFloat() * delta
+        )
     }
 
-    fun setScale(scale: Vector3): Position = setScale(scale.x, scale.y, scale.z)
+    fun addLocalScale(scale: Vector3, delta: Seconds): Position = addLocalScale(scale.x, scale.y, scale.z, delta)
+
+    fun setLocalScale(x: Percent = localScale.x, y: Percent = localScale.y, z: Percent = localScale.z): Position {
+        localTransformation.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        return update()
+    }
+
+    fun addGlobalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
+        return setGlobalScale(
+            globalScale.x + x.toFloat() * delta,
+            globalScale.y + y.toFloat() * delta,
+            globalScale.z + z.toFloat() * delta
+        )
+    }
+
+    fun setGlobalScale(x: Percent = globalScale.x, y: Percent = globalScale.y, z: Percent = globalScale.z): Position {
+        globalTransformation.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        return update()
+    }
 
     fun setGlobalTranslation(
         position: Vector3
     ) = setGlobalTranslation(position.x, position.y, position.z)
 
     fun setGlobalTranslation(
-        x: Coordinate = translation.x,
-        y: Coordinate = translation.y,
-        z: Coordinate = translation.z
+        x: Coordinate = globalTranslation.x,
+        y: Coordinate = globalTranslation.y,
+        z: Coordinate = globalTranslation.z
     ): Position {
-        translationMatrix = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
-        return updateMatrix()
+        globalTransformation.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        return update()
     }
 
     fun addGlobalTranslation(
@@ -100,62 +255,65 @@ data class Position(
         z: Coordinate = 0,
         delta: Seconds = 0f
     ): Position {
-        translationMatrix *= translation(Float3(x.toFloat() * delta, y.toFloat() * delta, z.toFloat() * delta))
-        return updateMatrix()
+        globalTransformation.transalation *= translation(
+            Float3(
+                x.toFloat() * delta,
+                y.toFloat() * delta,
+                z.toFloat() * delta
+            )
+        )
+        return update()
+    }
+
+    fun setLocalTranslation(
+        x: Coordinate = localTranslation.x,
+        y: Coordinate = localTranslation.y,
+        z: Coordinate = localTranslation.z
+    ): Position {
+        localTransformation.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        return update()
     }
 
     fun addLocalTranslation(x: Coordinate = 0, y: Coordinate = 0, z: Coordinate = 0, delta: Seconds = 0f): Position {
-        val translated =
-            transformation * translation(Float3(x.toFloat() * delta, y.toFloat() * delta, z.toFloat() * delta))
-        translationMatrix = translation(translated.translation)
-        return updateMatrix()
+        localTransformation.transalation *= translation(
+            Float3(
+                x.toFloat() * delta,
+                y.toFloat() * delta,
+                z.toFloat() * delta
+            )
+        )
+        return update()
     }
 
     fun addImmediateLocalTranslation(x: Coordinate = 0, y: Coordinate = 0, z: Coordinate = 0) =
         addLocalTranslation(x, y, z, 1f)
 
-    private fun setRotationX(angle: Degree): Position {
-        return rotateX(angle.toFloat() - rotation.x)
-    }
+    private fun update(): Position {
+        transformation = globalTransformation.transformation * localTransformation.transformation
+        // Translation
+        val lt = localTransformation.transalation.translation
+        localTranslation.set(lt.x, lt.y, lt.z)
+        val gt = globalTransformation.transalation.translation
+        globalTranslation.set(gt.x, gt.y, gt.z)
+        val ct = transformation.translation
+        translation.set(ct.x, ct.y, ct.z)
 
-    private fun setRotationY(angle: Degree): Position {
-        return rotateY(angle.toFloat() - rotation.y)
-    }
+        // Rotation
+        val lr = Mat4.from(localTransformation.rotation).rotation
+        localRotation.set(lr.x, lr.y, lr.z)
+        val gr = Mat4.from(globalTransformation.rotation).rotation
+        globalRotation.set(gr.x, gr.y, gr.z)
+        val cr = transformation.rotation
+        rotation.set(cr.x, cr.y, cr.z)
 
-    private fun setRotationZ(angle: Degree): Position {
-        return rotateZ(angle.toFloat() - rotation.z)
-    }
+        // Scale
+        val ls = localTransformation.scale.scale
+        localScale.set(ls.x, ls.y, ls.z)
+        val gs = globalTransformation.scale.scale
+        globalScale.set(gs.x, gs.y, gs.z)
+        val cs = transformation.scale
+        scale.set(cs.x, cs.y, cs.z)
 
-    private fun rotateX(angle: Degree): Position {
-        val asFloat = angle.toFloat() * way
-        quaternion *= fromEulers(1f, 0f, 0f, -asFloat)
-        return updateMatrix()
-    }
-
-    private fun rotateY(angle: Degree): Position {
-        val asFloat = angle.toFloat() * way
-        quaternion *= fromEulers(0f, 1f, 0f, -asFloat)
-        return updateMatrix()
-    }
-
-    private fun rotateZ(angle: Degree): Position {
-        val asFloat = angle.toFloat() * way
-        quaternion *= fromEulers(0f, 0f, 1f, -asFloat)
-        return updateMatrix()
-    }
-
-    private fun updateMatrix(): Position {
-        quaternion = normalize(quaternion)
-        transformation = translationMatrix * Mat4.from(quaternion) * scaleMatrix
-        transformation.translation.run {
-            translation.set(x, y, z)
-        }
-        transformation.rotation.run {
-            rotation.set(x, y, z)
-        }
-        transformation.scale.run {
-            scale.set(x, y, z)
-        }
         return this
     }
 }

@@ -59,8 +59,8 @@ class Engine(val gameContext: GameContext) {
         systems = systems.dropLast(1) + system + entityQuery
 
         // Register the game context and the engine on the system
-        system.engine = this
-        system.gameContext = gameContext
+        system.entityFactory.engine = this
+        system.entityFactory.gameContext = gameContext
 
         eventQueue.register(system)
     }

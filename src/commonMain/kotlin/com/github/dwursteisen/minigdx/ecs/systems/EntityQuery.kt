@@ -15,6 +15,29 @@ class EntityQuery(
         if (exclude.isNotEmpty() && entity.componentsType.containsAll(exclude)) {
             return false
         }
+        if (this == all) {
+            return true
+        }
+        if (this == none) {
+            return false
+        }
         return entity.componentsType.containsAll(include)
+    }
+
+    companion object {
+        private val all = EntityQuery()
+        private val none = EntityQuery()
+
+        /**
+         * All entities are refused
+         */
+        fun none() = none
+
+        /**
+         * All entities are accepted
+         */
+        fun all() = all
+
+        fun of(vararg include: KClass<out Component>) = EntityQuery(include.toList())
     }
 }

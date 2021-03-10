@@ -8,16 +8,24 @@ import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.events.EventListener
 import com.github.dwursteisen.minigdx.ecs.events.EventWithQuery
+import com.github.dwursteisen.minigdx.input.InputHandler
+import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
-abstract class System(protected val entityQuery: EntityQuery) : EventListener, EntityFactory by EntityFactoryDelegate() {
+abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none()) : EventListener {
 
     var entities: List<Entity> = emptyList()
 
     private var listeners: List<InterestedDelegate> = emptyList()
 
     private val events = mutableListOf<EventWithQuery>()
+
+    val entityFactory: EntityFactory = EntityFactoryDelegate()
+
+    val logger: Logger by lazy(LazyThreadSafetyMode.NONE) { entityFactory.gameContext.logger }
+
+    val input: InputHandler by lazy(LazyThreadSafetyMode.NONE) { entityFactory.gameContext.input }
 
     class InterestedDelegate(private val query: EntityQuery) {
 
