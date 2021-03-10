@@ -3,10 +3,9 @@ package com.github.dwursteisen.minigdx.ecs.components
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
-import com.curiouscreature.kotlin.math.TWO_PI
+import com.curiouscreature.kotlin.math.Quaternion.Companion.fromEulers
 import com.curiouscreature.kotlin.math.interpolate
 import com.curiouscreature.kotlin.math.normalize
-import com.curiouscreature.kotlin.math.radians
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
@@ -15,8 +14,6 @@ import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.math.Vector3
-import kotlin.math.cos
-import kotlin.math.sin
 
 class TransformationHolder(transformation: Mat4) {
 
@@ -111,6 +108,11 @@ class Position(
     val globalScale: Vector3 = Vector3()
     val localScale: Vector3 = Vector3()
     val scale: Vector3 = Vector3()
+
+    val localQuaternion: Quaternion
+        get() = localTransformation.rotation
+    val globalQuaternion: Quaternion
+        get() = globalTransformation.rotation
 
     init {
         update()
@@ -306,6 +308,8 @@ class Position(
         val cr = transformation.rotation
         rotation.set(cr.x, cr.y, cr.z)
 
+        quaternion = Quaternion.from(transformation)
+
         // Scale
         val ls = localTransformation.scale.scale
         localScale.set(ls.x, ls.y, ls.z)
@@ -318,27 +322,4 @@ class Position(
     }
 }
 
-/** Multiplies this quaternion with another one in the form of this = this * other
- *
- * @param other Quaternion to multiply with
- * @return This quaternion for chaining
- */
-fun Quaternion.mul(other: Quaternion): Quaternion {
-    val newX: Float = this.w * other.x + this.x * other.w + this.y * other.z - this.z * other.y
-    val newY: Float = this.w * other.y + this.y * other.w + this.z * other.x - this.x * other.z
-    val newZ: Float = this.w * other.z + this.z * other.w + this.x * other.y - this.y * other.x
-    val newW: Float = this.w * other.w - this.x * other.x - this.y * other.y - this.z * other.z
-    return Quaternion(newX, newY, newZ, newW)
-}
-
 operator fun Quaternion.times(other: Quaternion): Quaternion = this.mul(other)
-
-fun fromEulers(x: Float, y: Float, z: Float, angle: Degree): Quaternion {
-    var d: Float = Vector3(x, y, z).length()
-    if (d == 0f) return Quaternion.identity()
-    d = 1f / d
-    val radians = radians(angle.toFloat())
-    val l_ang: Float = if (radians < 0) TWO_PI - -radians % TWO_PI else radians % TWO_PI
-    val l_sin = sin(l_ang / 2f)
-    return normalize(Quaternion(d * x * l_sin, d * y * l_sin, d * z * l_sin, cos(l_ang / 2f)))
-}
