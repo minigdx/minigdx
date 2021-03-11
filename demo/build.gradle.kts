@@ -4,7 +4,7 @@ plugins {
     java
     application
     kotlin("jvm")
-    id("com.github.dwursteisen.gltf") version "1.0.0-alpha11"
+    id("com.github.minigdx.gradle.plugin.gltf") version "DEV-SNAPSHOT"
 }
 
 repositories {
