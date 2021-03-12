@@ -140,10 +140,14 @@ class EntityFactoryDelegate : EntityFactory {
         // Create animations
         val allAnimations = scene.animations.getOrElse(node.reference) { emptyList() }
         val animation = allAnimations.lastOrNull()
+        val referencePose = scene.armatures.getValue(node.reference)
+        if (referencePose.joints.size > 100) {
+            throw IllegalArgumentException("Your armature contains more than 100 joints. MiniGDX support only 100 joints")
+        }
         val animatedModel = AnimatedModel(
             animation = animation?.frames ?: emptyList(),
             animations = allAnimations.map { it.name to it }.toMap(),
-            referencePose = scene.armatures.getValue(node.reference),
+            referencePose = referencePose,
             time = 0f,
             duration = animation?.frames?.maxBy { it.time }?.time ?: 0f
         )
