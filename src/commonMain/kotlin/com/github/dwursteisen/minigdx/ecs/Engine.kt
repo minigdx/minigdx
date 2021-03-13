@@ -30,7 +30,7 @@ class Engine(val gameContext: GameContext) {
             components = components + component
         }
 
-        override fun add(components: Iterable<Component>) = components.forEach(::add)
+        override fun add(components: Iterable<Component>) = components.forEach { add(it) }
     }
 
     internal fun onGameStart() {

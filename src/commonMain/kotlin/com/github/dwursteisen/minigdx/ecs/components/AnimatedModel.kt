@@ -20,7 +20,7 @@ class AnimatedModel(
         this.animation = animation.frames
         time = 0f
         loop = 0
-        duration = animation.frames.maxBy { it.time }?.time ?: 0f
+        duration = animation.frames.maxByOrNull { it.time }?.time ?: 0f
     }
 
     fun currentAnimationFinished() = loop > 0

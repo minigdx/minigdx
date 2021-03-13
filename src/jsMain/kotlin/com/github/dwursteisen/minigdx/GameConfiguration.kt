@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx
 
-import kotlin.browser.window
+import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
 
 actual class GameConfiguration(

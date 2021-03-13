@@ -69,7 +69,7 @@ fun Engine.createArmature(
         animation = animation.frames,
         referencePose = scene.armatures.getValue(node.reference),
         time = 0f,
-        duration = animation.frames.maxBy { it.time }?.time ?: 0f
+        duration = animation.frames.maxByOrNull { it.time }?.time ?: 0f
     )
     val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
         AnimatedMeshPrimitive(

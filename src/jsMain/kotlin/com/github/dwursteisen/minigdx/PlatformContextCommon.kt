@@ -14,7 +14,7 @@ import com.github.dwursteisen.minigdx.input.JsInputHandler
 import com.github.dwursteisen.minigdx.logger.JsLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.logger.profile
-import kotlin.browser.window
+import kotlinx.browser.window
 import kotlin.math.min
 import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
