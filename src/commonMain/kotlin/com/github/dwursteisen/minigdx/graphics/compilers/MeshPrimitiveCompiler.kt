@@ -26,8 +26,10 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.verticesOrderBuffer!!)
         gl.bufferData(
             target = GL.ELEMENT_ARRAY_BUFFER,
-            data = DataSource.ShortDataSource(component.primitive.verticesOrder.map { it.toShort() }
-                .toShortArray()),
+            data = DataSource.ShortDataSource(
+                component.primitive.verticesOrder.map { it.toShort() }
+                    .toShortArray()
+            ),
             usage = GL.STATIC_DRAW
         )
 
@@ -62,15 +64,15 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
                         component.material.data
                     )
                 } else if (component.texture != null) (
-                        gl.texImage2D(
-                            GL.TEXTURE_2D,
-                            0,
-                            GL.RGBA,
-                            GL.RGBA,
-                            GL.UNSIGNED_BYTE,
-                            component.texture.source
-                        )
-                        )
+                    gl.texImage2D(
+                        GL.TEXTURE_2D,
+                        0,
+                        GL.RGBA,
+                        GL.RGBA,
+                        GL.UNSIGNED_BYTE,
+                        component.texture.source
+                    )
+                    )
             }
         }
 

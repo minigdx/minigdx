@@ -282,7 +282,7 @@ interface GL {
         const val TEXTURE_WRAP_T = 0x2803
         const val TEXTURE = 0x1702
         const val
-                TEXTURE_CUBE_MAP = 0x8513
+        TEXTURE_CUBE_MAP = 0x8513
         const val TEXTURE_BINDING_CUBE_MAP = 0x8514
         const val TEXTURE_CUBE_MAP_POSITIVE_X = 0x8515
         const val TEXTURE_CUBE_MAP_NEGATIVE_X = 0x8516

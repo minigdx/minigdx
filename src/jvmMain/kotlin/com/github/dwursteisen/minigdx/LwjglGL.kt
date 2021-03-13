@@ -8,7 +8,6 @@ import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 import com.github.dwursteisen.minigdx.shaders.Uniform
-import java.nio.ByteBuffer
 import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL11.glTexParameteri
 import org.lwjgl.opengl.GL13.glActiveTexture
@@ -53,6 +52,7 @@ import org.lwjgl.opengl.GL30.glUseProgram
 import org.lwjgl.opengl.GL30.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.glViewport
 import org.lwjgl.opengl.GL30C.glGetUniformLocation
+import java.nio.ByteBuffer
 
 class LwjglGL : GL {
 

@@ -3,7 +3,8 @@ package com.github.dwursteisen.minigdx.shaders.fragment
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 
 //language=GLSL
-private val simpleFragmentShader = """
+private val simpleFragmentShader =
+    """
         #ifdef GL_ES
         precision highp float;
         #endif

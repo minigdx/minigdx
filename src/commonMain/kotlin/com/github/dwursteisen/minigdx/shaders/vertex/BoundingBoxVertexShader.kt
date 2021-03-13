@@ -3,7 +3,8 @@ package com.github.dwursteisen.minigdx.shaders.vertex
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 
 //language=GLSL
-private val simpleVertexShader = """
+private val simpleVertexShader =
+    """
         #ifdef GL_ES
         precision highp float;
         #endif
@@ -37,6 +38,9 @@ class BoundingBoxVertexShader : VertexShader(simpleVertexShader) {
     val aColor = ShaderParameter.AttributeVec4("aColor")
 
     override val parameters: List<ShaderParameter> = listOf(
-        uModelView, uColor, aVertexPosition, aColor
+        uModelView,
+        uColor,
+        aVertexPosition,
+        aColor
     )
 }

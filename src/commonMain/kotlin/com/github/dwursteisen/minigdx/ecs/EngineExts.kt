@@ -8,13 +8,11 @@ import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
 import com.dwursteisen.minigdx.scene.api.common.Id
 import com.dwursteisen.minigdx.scene.api.model.Normal
-import com.dwursteisen.minigdx.scene.api.model.Position as PositionDTO
 import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.dwursteisen.minigdx.scene.api.model.UV
 import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
-import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
@@ -27,6 +25,8 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.file.Font
+import com.dwursteisen.minigdx.scene.api.model.Position as PositionDTO
+import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
 
 @ExperimentalStdlibApi
 fun Engine.createFromNode(
@@ -210,8 +210,12 @@ fun Engine.createModel(font: Font, text: String, x: Float, y: Float): Entity {
                     )
                 ),
                 verticesOrder = intArrayOf(
-                    0, 1, 2,
-                    2, 1, 3
+                    0,
+                    1,
+                    2,
+                    2,
+                    1,
+                    3
                 )
             )
         )
@@ -243,8 +247,12 @@ fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
                     Vertex(PositionDTO(1f, 1f, 0f), Normal(0f, 0f, 0f), uv = UV(0f, 0f))
                 ),
                 verticesOrder = intArrayOf(
-                    0, 1, 2,
-                    2, 1, 3
+                    0,
+                    1,
+                    2,
+                    2,
+                    1,
+                    3
                 )
             )
         )

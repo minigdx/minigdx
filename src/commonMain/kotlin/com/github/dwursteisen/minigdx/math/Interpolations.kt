@@ -69,8 +69,10 @@ object Interpolations {
         if (q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w) {
             return q1
         }
-        var result = (q1.x * q2.x + q1.y * q2.y + q1.z * q2.z +
-            q1.w * q2.w)
+        var result = (
+            q1.x * q2.x + q1.y * q2.y + q1.z * q2.z +
+                q1.w * q2.w
+            )
         val qq2 = if (result < 0.0f) {
             // Negate the second quaternion and the result of the dot product
             result = -result

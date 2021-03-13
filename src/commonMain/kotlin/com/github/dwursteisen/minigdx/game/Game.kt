@@ -42,9 +42,12 @@ interface Game {
         // display UI component only trough the UI Camera
         stages.add(
             MeshPrimitiveRenderStage(
-                gl, compiler, query = EntityQuery(
+                gl,
+                compiler,
+                query = EntityQuery(
                     listOf(MeshPrimitive::class, UIComponent::class)
-                ), cameraQuery = EntityQuery(UICamera::class)
+                ),
+                cameraQuery = EntityQuery(UICamera::class)
             )
         )
         return stages

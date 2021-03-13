@@ -25,8 +25,10 @@ class AnimatedMeshPrimitiveCompiler : GLResourceCompiler {
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.verticesOrderBuffer!!)
         gl.bufferData(
             target = GL.ELEMENT_ARRAY_BUFFER,
-            data = DataSource.ShortDataSource(component.primitive.verticesOrder.map { it.toShort() }
-                .toShortArray()),
+            data = DataSource.ShortDataSource(
+                component.primitive.verticesOrder.map { it.toShort() }
+                    .toShortArray()
+            ),
             usage = GL.STATIC_DRAW
         )
 

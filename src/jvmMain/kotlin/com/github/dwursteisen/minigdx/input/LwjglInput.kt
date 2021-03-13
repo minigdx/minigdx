@@ -2,7 +2,6 @@ package com.github.dwursteisen.minigdx.input
 
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.math.Vector2
-import java.nio.DoubleBuffer
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW.GLFW_KEY_LAST
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1
@@ -17,6 +16,7 @@ import org.lwjgl.glfw.GLFW.glfwGetMouseButton
 import org.lwjgl.glfw.GLFW.glfwSetInputMode
 import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
 import org.lwjgl.glfw.GLFWKeyCallback
+import java.nio.DoubleBuffer
 
 class LwjglInput(val logger: Logger) : InputHandler, InputManager {
 
@@ -50,15 +50,18 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
     fun attachHandler(windowAddress: Long) {
         window = windowAddress
         glfwSetInputMode(windowAddress, GLFW_STICKY_KEYS, GLFW_TRUE)
-        glfwSetKeyCallback(windowAddress, object : GLFWKeyCallback() {
-            override fun invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
-                if (action == GLFW_PRESS) {
-                    keyDown(key)
-                } else if (action == GLFW_RELEASE) {
-                    keyUp(key)
+        glfwSetKeyCallback(
+            windowAddress,
+            object : GLFWKeyCallback() {
+                override fun invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
+                    if (action == GLFW_PRESS) {
+                        keyDown(key)
+                    } else if (action == GLFW_RELEASE) {
+                        keyUp(key)
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun record() {

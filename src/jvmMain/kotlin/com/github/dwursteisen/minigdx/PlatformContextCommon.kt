@@ -11,12 +11,12 @@ import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.LwjglInput
 import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
-import kotlin.math.min
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
 import org.lwjgl.opengl.GL11.GL_LINE
 import org.lwjgl.system.MemoryUtil
+import kotlin.math.min
 
 actual open class PlatformContextCommon actual constructor(actual override val configuration: GameConfiguration) :
     PlatformContext {

@@ -89,8 +89,10 @@ class MeshPrimitiveRenderStage(
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, primitive.verticesOrderBuffer!!)
         gl.drawElements(
-            GL.TRIANGLES, primitive.primitive.verticesOrder.size,
-            GL.UNSIGNED_SHORT, 0
+            GL.TRIANGLES,
+            primitive.primitive.verticesOrder.size,
+            GL.UNSIGNED_SHORT,
+            0
         )
     }
 }

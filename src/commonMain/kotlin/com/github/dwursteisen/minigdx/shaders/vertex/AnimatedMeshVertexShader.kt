@@ -3,7 +3,8 @@ package com.github.dwursteisen.minigdx.shaders.vertex
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 
 //language=GLSL
-private const val shader: String = """
+private const val shader: String =
+    """
         #ifdef GL_ES
         precision highp float;
         #endif

@@ -3,9 +3,9 @@ package com.github.dwursteisen.minigdx.file
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
-import fr.delthas.javamp3.Sound as Mp3Sound
 import java.io.File
 import java.nio.ByteBuffer
+import fr.delthas.javamp3.Sound as Mp3Sound
 
 actual class PlatformFileHandler(actual val logger: Logger) {
 

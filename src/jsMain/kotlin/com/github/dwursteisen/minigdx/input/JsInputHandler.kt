@@ -5,13 +5,13 @@ import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH2
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH3
 import com.github.dwursteisen.minigdx.math.Vector2
 import kotlinx.browser.document
-import kotlin.experimental.and
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.TouchEvent
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.get
+import kotlin.experimental.and
 
 class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
 

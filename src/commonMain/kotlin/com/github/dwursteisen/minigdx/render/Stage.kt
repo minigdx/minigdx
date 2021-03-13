@@ -42,9 +42,9 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     private val cameras by interested(cameraQuery)
 
     val camera: Entity?
-    get() {
-        return cameras.firstOrNull()
-    }
+        get() {
+            return cameras.firstOrNull()
+        }
 
     lateinit var program: ShaderProgram
 

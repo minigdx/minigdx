@@ -25,7 +25,7 @@ class ArmatureUpdateSystem : System(
                 it.currentPose[index] = Mat4.fromColumnMajor(
                     *currentFrame.globalTransformations[index].matrix
                 ) *
-                        Mat4.fromColumnMajor(*it.referencePose.joints[index].inverseGlobalTransformation.matrix)
+                    Mat4.fromColumnMajor(*it.referencePose.joints[index].inverseGlobalTransformation.matrix)
             }
         }
     }

@@ -34,17 +34,20 @@ actual class PlatformFileHandler(
 
         val content = Content<TextureImage>(filename, logger)
 
-        img.addEventListener("load", object : EventListener {
-            override fun handleEvent(event: Event) {
-                content.load(
-                    TextureImage(
-                        source = img,
-                        width = img.width,
-                        height = img.height
+        img.addEventListener(
+            "load",
+            object : EventListener {
+                override fun handleEvent(event: Event) {
+                    content.load(
+                        TextureImage(
+                            source = img,
+                            width = img.width,
+                            height = img.height
+                        )
                     )
-                )
+                }
             }
-        })
+        )
         return content
     }
 

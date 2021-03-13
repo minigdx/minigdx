@@ -1,8 +1,5 @@
 package com.github.dwursteisen.minigdx.file
 
-import java.nio.ByteBuffer
-import java.nio.IntBuffer
-import java.nio.ShortBuffer
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.AL10.AL_BUFFER
 import org.lwjgl.openal.AL10.AL_FALSE
@@ -28,6 +25,9 @@ import org.lwjgl.openal.AL10.alSourcef
 import org.lwjgl.openal.AL10.alSourcei
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.ALC10
+import java.nio.ByteBuffer
+import java.nio.IntBuffer
+import java.nio.ShortBuffer
 
 actual class Sound(private val buffer: ShortBuffer, val channels: Int, val sampleRate: Int) {
 
