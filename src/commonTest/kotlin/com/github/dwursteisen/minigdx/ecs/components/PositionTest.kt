@@ -4,6 +4,7 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
+import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.fail
@@ -129,5 +130,15 @@ class PositionTest {
         assertEquals(5f, position.scale.x)
         assertEquals(5f, position.scale.y)
         assertEquals(5f, position.scale.z)
+    }
+
+    @Test
+    fun rotation_aroundGlobal() {
+        val position = Position()
+        position.setGlobalTranslation(x = 20)
+        position.addGlobalRotationAround(Vector3(x = 10f), z = 90f)
+        assertEquals(10f, position.translation.x)
+        assertEquals(10f, position.translation.y)
+        assertEquals(0f, position.translation.z)
     }
 }

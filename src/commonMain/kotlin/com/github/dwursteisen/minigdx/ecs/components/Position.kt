@@ -320,6 +320,22 @@ class Position(
 
         return this
     }
+
+    fun addGlobalRotationAround(origin: Vector3, x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
+        val translation = origin.copy().sub(this.translation)
+        val transformation = globalTransformation.transformation
+        val result = transformation * translation(Float3(translation.x, translation.y, translation.z)) *
+            Mat4.from(fromEulers2(x.toFloat(), y.toFloat(), z.toFloat(), delta)) *
+            translation(Float3(-translation.x, -translation.y, -translation.z))
+        globalTransformation.transformation = result
+        return update()
+    }
 }
 
 operator fun Quaternion.times(other: Quaternion): Quaternion = this.mul(other)
+
+private fun fromEulers2(x: Float, y: Float, z: Float, delta: Seconds): Quaternion {
+    return fromEulers(1f, 0f, 0f, x * delta) *
+        fromEulers(0f, 1f, 0f, y * delta) *
+        fromEulers(0f, 0f, 1f, z * delta)
+}
