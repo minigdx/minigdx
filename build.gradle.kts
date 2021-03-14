@@ -45,6 +45,7 @@ android {
 dependencies {
     this.commonMainApi("com.github.minigdx:gltf-api:$gltfApiVersion")
     this.commonMainApi("com.github.minigdx:kotlin-math:$kotlinMathVersion")
+    this.commonMainApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 
     this.jsMainApi("com.github.minigdx:kotlin-math-js:$kotlinMathVersion")
 
