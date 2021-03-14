@@ -151,7 +151,7 @@ class Position(
         x: Degree = 0f,
         y: Degree = 0f,
         z: Degree = 0f,
-        delta: Seconds
+        delta: Seconds = 1f
     ): Position {
         globalTransformation.rotation *= fromEulers(1f, 0f, 0f, x.toFloat() * delta) *
             fromEulers(0f, 1f, 0f, y.toFloat() * delta) *
@@ -159,7 +159,7 @@ class Position(
         return update()
     }
 
-    fun addLocalRotation(rotation: Quaternion, delta: Seconds): Position {
+    fun addLocalRotation(rotation: Quaternion, delta: Seconds = 1f): Position {
         quaternion = interpolate(
             quaternion,
             normalize(
@@ -175,7 +175,7 @@ class Position(
         return update()
     }
 
-    fun addLocalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds): Position {
+    fun addLocalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
         localTransformation.rotation *= fromEulers(
             1f,
             0f,
@@ -195,7 +195,7 @@ class Position(
         return update()
     }
 
-    fun addLocalRotation(angles: Vector3, delta: Seconds): Position =
+    fun addLocalRotation(angles: Vector3, delta: Seconds = 1f): Position =
         addLocalRotation(angles.x, angles.y, angles.z, delta)
 
     fun setLocalRotation(quaternion: Quaternion): Position {
@@ -210,7 +210,7 @@ class Position(
         return update()
     }
 
-    fun addLocalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds): Position {
+    fun addLocalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
         return setLocalScale(
             localScale.x + x.toFloat() * delta,
             localScale.y + y.toFloat() * delta,
@@ -255,7 +255,7 @@ class Position(
         x: Coordinate = 0,
         y: Coordinate = 0,
         z: Coordinate = 0,
-        delta: Seconds = 0f
+        delta: Seconds = 1f
     ): Position {
         globalTransformation.transalation *= translation(
             Float3(
@@ -276,7 +276,7 @@ class Position(
         return update()
     }
 
-    fun addLocalTranslation(x: Coordinate = 0, y: Coordinate = 0, z: Coordinate = 0, delta: Seconds = 0f): Position {
+    fun addLocalTranslation(x: Coordinate = 0, y: Coordinate = 0, z: Coordinate = 0, delta: Seconds = 1f): Position {
         localTransformation.transalation *= translation(
             Float3(
                 x.toFloat() * delta,
