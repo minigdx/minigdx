@@ -140,5 +140,13 @@ class PositionTest {
         assertEquals(10f, position.translation.x)
         assertEquals(10f, position.translation.y)
         assertEquals(0f, position.translation.z)
+        position.addGlobalRotationAround(Vector3(x = 10f), z = 90f)
+        assertEquals(0f, position.translation.x)
+        assertEquals(0f, position.translation.y)
+        assertEquals(0f, position.translation.z)
+        position.addGlobalRotationAround(Vector3(x = 10f), z = -180f)
+        assertEquals(20f, position.translation.x)
+        assertEquals(0f, position.translation.y)
+        assertEquals(0f, position.translation.z)
     }
 }

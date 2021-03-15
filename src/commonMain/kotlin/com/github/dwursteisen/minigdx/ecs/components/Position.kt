@@ -21,7 +21,7 @@ class TransformationHolder(transformation: Mat4) {
 
     var transalation: Mat4 = translation(transformation)
         set(value) {
-            field = value
+            field = translation(value)
             combined = updateTransformation()
         }
 
@@ -43,7 +43,7 @@ class TransformationHolder(transformation: Mat4) {
 
     var scale: Mat4 = scale(transformation)
         set(value) {
-            field = value
+            field = scale(value)
             combined = updateTransformation()
         }
 
@@ -322,19 +322,21 @@ class Position(
     }
 
     fun addGlobalRotationAround(origin: Vector3, x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
-        val translation = origin.copy().sub(this.translation)
-        val transformation = globalTransformation.transformation
-        val result = transformation * translation(Float3(translation.x, translation.y, translation.z)) *
-            Mat4.from(fromEulers2(x.toFloat(), y.toFloat(), z.toFloat(), delta)) *
-            translation(Float3(-translation.x, -translation.y, -translation.z))
-        globalTransformation.transformation = result
+        val translation = this.globalTranslation.copy().sub(origin)
+        val translationFromOrigin = translation(Float3(translation.x, translation.y, translation.z))
+
+        val quaternion1 = fromEulerAngles(x.toFloat(), y.toFloat(), z.toFloat(), delta)
+        val pivot = translation(Float3(origin.x, origin.y, origin.z)) * Mat4.from(quaternion1)
+
+        globalTransformation.transalation = pivot * translationFromOrigin
+        globalTransformation.rotation *= quaternion1
         return update()
     }
 }
 
 operator fun Quaternion.times(other: Quaternion): Quaternion = this.mul(other)
 
-private fun fromEulers2(x: Float, y: Float, z: Float, delta: Seconds): Quaternion {
+private fun fromEulerAngles(x: Float, y: Float, z: Float, delta: Seconds): Quaternion {
     return fromEulers(1f, 0f, 0f, x * delta) *
         fromEulers(0f, 1f, 0f, y * delta) *
         fromEulers(0f, 0f, 1f, z * delta)

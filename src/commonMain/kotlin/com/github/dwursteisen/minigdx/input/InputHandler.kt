@@ -149,9 +149,28 @@ interface InputHandler {
      */
     fun isAllKeysPressed(vararg keys: Key): Boolean = keys.all { isKeyPressed(it) }
 
+    /**
+     * Is none of [keys] passed in parameter has been pressed?
+     */
     fun isNoneKeysPressed(vararg keys: Key): Boolean = keys.none { isKeyPressed(it) }
 
+    /**
+     * Is [signal] touched on the screen?
+     *
+     * @return null if not touched, coordinates otherwise.
+     */
     fun isTouched(signal: TouchSignal): Vector2?
 
+    /**
+     * Is [signal] just touched on the screen?
+     *
+     * @return null if not touched, coordinates otherwise.
+     */
     fun isJustTouched(signal: TouchSignal): Vector2?
+
+    /**
+     * Keys pressed by the user but rendered as text.
+     * Useful to capture text from the user.
+     */
+    fun textJustTyped(): String? = null
 }
