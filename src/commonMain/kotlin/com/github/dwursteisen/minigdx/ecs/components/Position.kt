@@ -15,33 +15,27 @@ import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.math.Vector3
 
-class TransformationHolder(transformation: Mat4) {
+class TransformationHolder(
+    translation: Mat4 = Mat4.identity(),
+    rotation: Mat4 = Mat4.identity(),
+    scale: Mat4 = Mat4.identity()
+) {
 
-    private var combined: Mat4 = transformation
+    private var combined: Mat4 = Mat4.identity()
 
-    var transalation: Mat4 = translation(transformation)
+    var transalation: Mat4 = translation(translation)
         set(value) {
             field = translation(value)
             combined = updateTransformation()
         }
 
-    var rotation: Quaternion = normalize(
-        Quaternion.from(
-            rotation(
-                Float3(
-                    transformation.rotation.x,
-                    transformation.rotation.y,
-                    transformation.rotation.z
-                )
-            )
-        )
-    )
+    var rotation: Quaternion = normalize(Quaternion.from(rotation(rotation)))
         set(value) {
             field = value
             combined = updateTransformation()
         }
 
-    var scale: Mat4 = scale(transformation)
+    var scale: Mat4 = scale(scale)
         set(value) {
             field = scale(value)
             combined = updateTransformation()
@@ -66,27 +60,31 @@ class TransformationHolder(transformation: Mat4) {
             combined = updateTransformation()
         }
 
+    init {
+        combined = updateTransformation()
+    }
+
     private fun updateTransformation(): Mat4 {
         return transalation * Mat4.from(rotation) * scale
     }
 }
 
 class Position(
-    globalTransformation: Mat4 = Mat4.identity(),
-    // Inverse rotation, usefull for cameras.
-    var way: Float = 1f
+    globalTranslation: Mat4 = Mat4.identity(),
+    globalRotation: Mat4 = Mat4.identity(),
+    globalScale: Mat4 = Mat4.identity()
 ) : Component {
 
     /**
      * Store the global transformation.
      *
      */
-    private val globalTransformation = TransformationHolder(globalTransformation)
+    private val globalTransformation = TransformationHolder(globalTranslation, globalRotation, globalScale)
 
     /**
      * Store the local transformation.
      */
-    private val localTransformation = TransformationHolder(Mat4.identity())
+    private val localTransformation = TransformationHolder()
 
     /**
      * Transformation given by the global transformation and then the local transformation.
@@ -137,9 +135,9 @@ class Position(
             Quaternion.from(
                 rotation(
                     Float3(
-                        x.toFloat() * way,
-                        y.toFloat() * way,
-                        z.toFloat() * way
+                        x.toFloat(),
+                        y.toFloat(),
+                        z.toFloat()
                     )
                 )
             )
@@ -321,7 +319,13 @@ class Position(
         return this
     }
 
-    fun addGlobalRotationAround(origin: Vector3, x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
+    fun addGlobalRotationAround(
+        origin: Vector3,
+        x: Degree = 0,
+        y: Degree = 0,
+        z: Degree = 0,
+        delta: Seconds = 1f
+    ): Position {
         val translation = this.globalTranslation.copy().sub(origin)
         val translationFromOrigin = translation(Float3(translation.x, translation.y, translation.z))
 

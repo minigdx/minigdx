@@ -24,7 +24,7 @@ class PositionTest {
 
     @Test
     fun rotation_constructor() {
-        val position = Position(rotation(Float3(90f, 0f, 0f)))
+        val position = Position(globalRotation = rotation(Float3(90f, 0f, 0f)))
         assertEquals(90f, Mat4.from(position.quaternion).rotation.x, 0.1f)
         assertEquals(90f, position.globalRotation.x, 0.1f)
         assertEquals(0f, position.localRotation.x, 0.1f)
@@ -33,7 +33,7 @@ class PositionTest {
 
     @Test
     fun rotation_translation_constructor() {
-        val position = Position(translation(Float3(1f, 2f, 3f)) * rotation(Float3(90f, 0f, 0f)))
+        val position = Position(globalRotation = translation(Float3(1f, 2f, 3f)) * rotation(Float3(90f, 0f, 0f)))
         assertEquals(90f, Mat4.from(position.quaternion).rotation.x, 0.1f)
         assertEquals(90f, position.globalRotation.x, 0.1f)
         assertEquals(0f, position.localRotation.x, 0.1f)

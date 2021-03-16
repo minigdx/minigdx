@@ -1,6 +1,5 @@
 package com.github.dwursteisen.minigdx.ecs.entities
 
-import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.ortho
 import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
@@ -14,6 +13,9 @@ import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.api.r
+import com.github.dwursteisen.minigdx.api.s
+import com.github.dwursteisen.minigdx.api.t
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
@@ -32,23 +34,23 @@ class EntityFactoryDelegate : EntityFactory {
     override fun create(block: (Engine.EntityBuilder) -> Unit): Entity = engine.create(block)
 
     @ExperimentalStdlibApi
-    override fun createFromNode(node: Node, scene: Scene, transformation: Mat4): Entity {
+    override fun createFromNode(node: Node, scene: Scene): Entity {
         return when (node.type) {
-            ObjectType.ARMATURE -> createArmature(node, scene, transformation)
-            ObjectType.BOX -> createBox(node, scene, transformation)
-            ObjectType.CAMERA -> createCamera(node, scene, transformation)
+            ObjectType.ARMATURE -> createArmature(node, scene)
+            ObjectType.BOX -> createBox(node, scene)
+            ObjectType.CAMERA -> createCamera(node, scene)
             ObjectType.LIGHT -> TODO()
-            ObjectType.MODEL -> createModel(node, scene, transformation)
+            ObjectType.MODEL -> createModel(node, scene)
         }
     }
 
-    override fun createBox(node: Node, scene: Scene, transformation: Mat4): Entity {
-        return engine.create {}
+    override fun createBox(node: Node, scene: Scene): Entity {
+        return engine.create { }
     }
 
-    override fun createText(text: String, font: Font, transformation: Mat4): Entity {
+    override fun createText(text: String, font: Font): Entity {
         return engine.create {
-            add(Position(transformation))
+            add(Position())
             val meshPrimitive = MeshPrimitive(
                 id = Id(),
                 name = "undefined",
@@ -97,7 +99,7 @@ class EntityFactoryDelegate : EntityFactory {
     }
 
     @ExperimentalStdlibApi
-    override fun createModel(node: Node, scene: Scene, transformation: Mat4): Entity {
+    override fun createModel(node: Node, scene: Scene): Entity {
         return create {
             val model = scene.models.getValue(node.reference)
             val boxes = node.children.filter { it.type == ObjectType.BOX }
@@ -105,7 +107,13 @@ class EntityFactoryDelegate : EntityFactory {
                 .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
 
             it.add(boxes)
-            it.add(Position(transformation))
+            it.add(
+                Position(
+                    node.transformation.t,
+                    node.transformation.r,
+                    node.transformation.s
+                )
+            )
 
             val primitives = model.mesh.primitives.map { primitive ->
                 val material =
@@ -130,8 +138,7 @@ class EntityFactoryDelegate : EntityFactory {
     @ExperimentalStdlibApi
     override fun createArmature(
         node: Node,
-        scene: Scene,
-        transformation: Mat4
+        scene: Scene
     ): Entity = create {
         // Get the model attached to the armature
         val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
@@ -164,15 +171,20 @@ class EntityFactoryDelegate : EntityFactory {
 
         // Create components
         it.add(boxes)
-        it.add(Position(transformation))
+        it.add(
+            Position(
+                node.transformation.t,
+                node.transformation.r,
+                node.transformation.s,
+            )
+        )
         it.add(animatedModel)
         it.add(animatedMeshPrimitive)
     }
 
     fun createCamera(
         node: Node,
-        scene: Scene,
-        transformation: Mat4
+        scene: Scene
     ): Entity = create {
         val camera = scene.perspectiveCameras[node.reference] ?: scene.orthographicCameras.getValue(node.reference)
         val cameraComponent = when (camera) {
@@ -207,6 +219,12 @@ class EntityFactoryDelegate : EntityFactory {
         }
 
         it.add(cameraComponent)
-        it.add(Position(transformation, way = -1f))
+        it.add(
+            Position(
+                node.transformation.t,
+                node.transformation.r,
+                node.transformation.s
+            )
+        )
     }
 }

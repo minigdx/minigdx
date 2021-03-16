@@ -82,3 +82,4 @@ tests/gdx-tests-android/assets/bitmapWrittenFont.png
 
 #gradle wrapper
 /local.properties
+*.hprof
