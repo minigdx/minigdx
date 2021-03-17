@@ -2,6 +2,8 @@ package com.github.dwursteisen.minigdx.shaders
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.ecs.components.Color
+import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.jvm.JvmName
 
 sealed class ShaderParameter(val name: String) {
@@ -59,6 +61,36 @@ sealed class ShaderParameter(val name: String) {
     class UniformVec3(name: String) : ShaderParameter(name) {
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
+        }
+
+        fun apply(program: ShaderProgram, vec3: Vector3) = apply(program, vec3.x, vec3.y, vec3.z)
+
+        fun apply(program: ShaderProgram, vararg vec3: Float) {
+            when (vec3.size) {
+                3 -> program.uniform3f(program.getUniform(name), vec3[0], vec3[1], vec3[2])
+                else -> throw IllegalArgumentException("3 values are expected. ${vec3.size} received")
+            }
+        }
+    }
+
+    class UniformVec4(name: String) : ShaderParameter(name) {
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        fun apply(program: ShaderProgram, color: Color) = apply(
+            program,
+            color.red.toFloat(),
+            color.green.toFloat(),
+            color.blue.toFloat(),
+            color.alpha.toFloat()
+        )
+
+        fun apply(program: ShaderProgram, vararg vec4: Float) {
+            when (vec4.size) {
+                4 -> program.uniform4f(program.getUniform(name), vec4[0], vec4[1], vec4[2], vec4[3])
+                else -> throw IllegalArgumentException("4 values are expected. ${vec4.size} received")
+            }
         }
     }
 

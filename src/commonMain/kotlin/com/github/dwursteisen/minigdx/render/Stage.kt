@@ -50,6 +50,11 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             return cameras.firstOrNull()
         }
 
+    val light: Entity?
+        get() {
+            return lights.firstOrNull()
+        }
+
     lateinit var program: ShaderProgram
 
     open val combinedMatrix: Mat4

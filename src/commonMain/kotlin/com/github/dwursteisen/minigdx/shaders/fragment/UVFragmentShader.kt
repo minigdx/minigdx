@@ -10,11 +10,13 @@ private val simpleFragmentShader =
         #endif
         
         varying vec2 vUVPosition;
+        varying vec4 vLighting;
 
         uniform sampler2D uUV;
 
         void main() {
-              gl_FragColor = texture2D(uUV, vUVPosition);
+              vec4 texel = texture2D(uUV, vUVPosition);
+              gl_FragColor = vec4(texel.rgb * vLighting.rgb, texel.a);
         }
     """.trimIndent()
 

@@ -1,9 +1,12 @@
 package com.github.dwursteisen.minigdx.graphics.compilers
 
+import com.dwursteisen.minigdx.scene.api.model.Color
+import com.dwursteisen.minigdx.scene.api.model.Normal
+import com.dwursteisen.minigdx.scene.api.model.Position
 import com.dwursteisen.minigdx.scene.api.model.UV
 import com.github.dwursteisen.minigdx.shaders.DataSource
 
-fun List<com.dwursteisen.minigdx.scene.api.model.Position>.positionsDatasource(): DataSource.FloatDataSource {
+fun List<Position>.positionsDatasource(): DataSource.FloatDataSource {
     return DataSource.FloatDataSource(
         FloatArray(this.size * 3) { index ->
             val y = index % 3
@@ -18,7 +21,22 @@ fun List<com.dwursteisen.minigdx.scene.api.model.Position>.positionsDatasource()
     )
 }
 
-fun List<com.dwursteisen.minigdx.scene.api.model.Color>.colorsDatasource(): DataSource.FloatDataSource {
+fun List<Normal>.normalsDatasource(): DataSource.FloatDataSource {
+    return DataSource.FloatDataSource(
+        FloatArray(this.size * 3) { index ->
+            val y = index % 3
+            val x = (index - y) / 3
+            when (y) {
+                0 -> this[x].x
+                1 -> this[x].y
+                2 -> this[x].z
+                else -> throw IllegalArgumentException("index '$index' not expected.")
+            }
+        }
+    )
+}
+
+fun List<Color>.colorsDatasource(): DataSource.FloatDataSource {
     return DataSource.FloatDataSource(
         FloatArray(this.size * 4) { index ->
             val y = index % 4

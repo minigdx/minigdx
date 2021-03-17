@@ -39,6 +39,7 @@ open class MeshPrimitive(
     override var isDirty: Boolean = true,
     // --- Open GL Specific fields --- //
     var verticesBuffer: Buffer? = null,
+    var normalsBuffer: Buffer? = null,
     var uvBuffer: Buffer? = null,
     var verticesOrderBuffer: Buffer? = null,
     var textureReference: TextureReference? = null,

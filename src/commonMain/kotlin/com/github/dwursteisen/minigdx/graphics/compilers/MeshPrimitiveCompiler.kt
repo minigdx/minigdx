@@ -15,10 +15,17 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         // Push the model
         component.verticesBuffer = component.verticesBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.verticesBuffer!!)
-
         gl.bufferData(
             target = GL.ARRAY_BUFFER,
             data = component.primitive.vertices.map { it.position }.positionsDatasource(),
+            usage = GL.STATIC_DRAW
+        )
+
+        component.normalsBuffer = component.normalsBuffer ?: gl.createBuffer()
+        gl.bindBuffer(GL.ARRAY_BUFFER, component.normalsBuffer!!)
+        gl.bufferData(
+            target = GL.ARRAY_BUFFER,
+            data = component.primitive.vertices.map { it.normal }.normalsDatasource(),
             usage = GL.STATIC_DRAW
         )
 

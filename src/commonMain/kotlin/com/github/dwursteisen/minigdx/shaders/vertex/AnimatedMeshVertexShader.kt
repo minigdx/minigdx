@@ -22,6 +22,7 @@ private const val shader: String =
         attribute vec2 aUVPosition;
         
         varying vec2 vUVPosition;
+        varying vec4 vLighting;
         
         void main() {
             vec4 totalLocalPos = vec4(0.0);
@@ -41,6 +42,7 @@ private const val shader: String =
             gl_Position = uModelView * totalLocalPos;
             
             vUVPosition = aUVPosition;
+            vLighting = vec4(0.0); // FIXME: replace with real code :D 
         }
 """
 
