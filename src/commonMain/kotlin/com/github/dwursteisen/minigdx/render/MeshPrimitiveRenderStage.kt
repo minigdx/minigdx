@@ -5,7 +5,6 @@ import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
-import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.components.Light
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.UIComponent
@@ -57,8 +56,8 @@ class MeshPrimitiveRenderStage(
         val currentLight = light
         if (currentLight == null) {
             // If there is not light, we add a transparent light that should have no effect
-            vertex.uLightColor.apply(program, TRANSPARENT_COLOR)
-            vertex.uLightPosition.apply(program, ORIGIN)
+            vertex.uLightColor.apply(program, Light.TRANSPARENT_COLOR)
+            vertex.uLightPosition.apply(program, Light.ORIGIN)
         } else {
             // We configure the current light
             vertex.uLightColor.apply(program, currentLight.get(Light::class).color)
@@ -110,10 +109,5 @@ class MeshPrimitiveRenderStage(
             GL.UNSIGNED_SHORT,
             0
         )
-    }
-
-    companion object {
-        private val ORIGIN = Vector3()
-        private val TRANSPARENT_COLOR = Color(alpha = 0f)
     }
 }
