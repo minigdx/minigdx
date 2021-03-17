@@ -8,8 +8,6 @@ plugins {
 }
 
 repositories {
-    maven(url = "https://dl.bintray.com/dwursteisen/minigdx")
-    maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
     mavenLocal()
     jcenter()
@@ -45,6 +43,8 @@ application {
 project.tasks.getByName("run", JavaExec::class) {
     this.workingDir = projectDir.resolve("src/main/resources").absoluteFile
     this.args = listOf("--game", "interpolation")
+    this.allJvmArgs = listOf("-XstartOnFirstThread")
+    this.dependsOn("gltf")
 }
 
 val compileKotlin: KotlinCompile by tasks

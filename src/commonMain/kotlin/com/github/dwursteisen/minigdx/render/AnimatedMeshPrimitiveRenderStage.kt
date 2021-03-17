@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.render
 
+import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
@@ -12,13 +13,14 @@ import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 
-class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
-    gl = gl,
-    compiler = compiler,
-    vertex = AnimatedMeshVertexShader(),
-    fragment = UVFragmentShader(),
-    query = EntityQuery(AnimatedMeshPrimitive::class)
-) {
+class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) :
+    RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
+        gl = gl,
+        compiler = compiler,
+        vertex = AnimatedMeshVertexShader(),
+        fragment = UVFragmentShader(),
+        query = EntityQuery(AnimatedMeshPrimitive::class)
+    ) {
 
     override fun update(delta: Seconds, entity: Entity) {
         val model = entity.get(Position::class).transformation
@@ -36,7 +38,14 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) : Ren
         } else {
             // We configure the current light
             vertex.uLightColor.apply(program, currentLight.get(Light::class).color)
-            vertex.uLightPosition.apply(program, currentLight.get(Position::class).translation)
+            // Set the light in the projection space
+            val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
+            vertex.uLightPosition.apply(
+                program,
+                translation.x,
+                translation.y,
+                translation.z
+            )
         }
 
         entity.findAll(AnimatedMeshPrimitive::class).forEach { primitive ->
