@@ -16,7 +16,10 @@ private val simpleFragmentShader =
 
         void main() {
               vec4 texel = texture2D(uUV, vUVPosition);
-              gl_FragColor = vec4(texel.rgb * vLighting.rgb, texel.a);
+              // If the light alpha is 0, the light will be vec3(1.0) so the texel will not be altered
+              // otherwise, the light will be vLighting.rgb
+              vec3 light = (vec3(1.0) * (vec3(1.0) - vec3(vLighting.a))) + vLighting.rgb * vLighting.a;
+              gl_FragColor = vec4(texel.rgb * light, texel.a);
         }
     """.trimIndent()
 
