@@ -3,21 +3,28 @@ package com.github.dwursteisen.minigdx.file
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
-import fr.delthas.javamp3.Sound as Mp3Sound
 import java.io.File
 import java.nio.ByteBuffer
+import fr.delthas.javamp3.Sound as Mp3Sound
 
 actual class PlatformFileHandler(actual val logger: Logger) {
 
     actual fun read(filename: String): Content<String> {
         val content = Content<String>(filename, logger)
-        content.load(File(filename).readText())
+
+        // Check if the resource is embedded in the jar
+        val fromJar = PlatformFileHandler::class.java.getResourceAsStream("/$filename")
+        val text = fromJar?.readBytes()?.let { String(it) } ?: File(filename).readText()
+        content.load(text)
         return content
     }
 
     actual fun readData(filename: String): Content<ByteArray> {
         val content = Content<ByteArray>(filename, logger)
-        content.load(File(filename).readBytes())
+        // Check if the resource is embedded in the jar
+        val fromJar = PlatformFileHandler::class.java.getResource("/$filename")
+        val bytes = fromJar?.readBytes() ?: File(filename).readBytes()
+        content.load(bytes)
         return content
     }
 

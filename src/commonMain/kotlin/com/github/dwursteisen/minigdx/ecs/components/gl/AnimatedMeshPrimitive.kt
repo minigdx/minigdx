@@ -10,6 +10,7 @@ class AnimatedMeshPrimitive(
     val primitive: Primitive,
     val material: Material,
     var verticesBuffer: Buffer? = null,
+    var normalsBuffer: Buffer? = null,
     var uvBuffer: Buffer? = null,
     var verticesOrderBuffer: Buffer? = null,
     var weightBuffer: Buffer? = null,

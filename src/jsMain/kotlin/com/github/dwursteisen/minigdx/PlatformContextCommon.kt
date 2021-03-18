@@ -14,10 +14,10 @@ import com.github.dwursteisen.minigdx.input.JsInputHandler
 import com.github.dwursteisen.minigdx.logger.JsLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.logger.profile
-import kotlin.browser.window
-import kotlin.math.min
+import kotlinx.browser.window
 import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
+import kotlin.math.min
 
 actual open class PlatformContextCommon actual constructor(
     actual override val configuration: GameConfiguration
@@ -42,7 +42,8 @@ actual open class PlatformContextCommon actual constructor(
                 configuration.rootPath,
                 AudioContext(),
                 logger
-            ), logger = logger
+            ),
+            logger = logger
         )
     }
 
@@ -64,7 +65,7 @@ actual open class PlatformContextCommon actual constructor(
 
     actual override fun start(gameFactory: (GameContext) -> Game) {
         canvas = configuration.canvas
-                ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
+            ?: throw RuntimeException("<canvas> with id '${configuration.canvasId}' not found")
 
         val resolution = configuration.gameScreenConfiguration.screen(
             canvas.clientWidth,

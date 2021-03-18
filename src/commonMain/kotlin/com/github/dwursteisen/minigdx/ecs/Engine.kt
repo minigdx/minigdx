@@ -30,12 +30,12 @@ class Engine(val gameContext: GameContext) {
             components = components + component
         }
 
-        override fun add(components: Iterable<Component>) = components.forEach(::add)
+        override fun add(components: Iterable<Component>) = components.forEach { add(it) }
     }
 
     internal fun onGameStart() {
         systems.forEach {
-            it.onGameStart(this)
+            it.onGameStarted(this)
         }
     }
 
@@ -59,8 +59,8 @@ class Engine(val gameContext: GameContext) {
         systems = systems.dropLast(1) + system + entityQuery
 
         // Register the game context and the engine on the system
-        system.engine = this
-        system.gameContext = gameContext
+        system.entityFactory.engine = this
+        system.entityFactory.gameContext = gameContext
 
         eventQueue.register(system)
     }

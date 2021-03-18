@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.math
 
+import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Quaternion
 import kotlin.math.PI
 import kotlin.math.abs
@@ -88,6 +89,8 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         val c = other.z - z
         return a * a + b * b + c * c
     }
+
+    fun toFloat3(): Float3 = Float3(x, y, z)
 
     companion object {
 

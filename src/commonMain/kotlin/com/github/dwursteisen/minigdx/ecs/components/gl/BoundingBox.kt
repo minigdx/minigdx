@@ -44,7 +44,7 @@ data class BoundingBox(
         private fun radius(vertices: List<Vertex>): Float {
             return vertices.map { it.position }
                 .flatMap { listOf(abs(it.x), abs(it.y), abs(it.z)) }
-                .max() ?: 0f
+                .maxOrNull() ?: 0f
         }
 
         @ExperimentalStdlibApi

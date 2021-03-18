@@ -15,12 +15,8 @@ abstract class StateMachineSystem(
 
     abstract fun initialState(entity: Entity): State
 
-    override fun add(entity: Entity): Boolean {
-        val isAdded = super.add(entity)
-        if (isAdded) {
-            entity.newState(initialState(entity))
-        }
-        return isAdded
+    override fun onEntityAdded(entity: Entity) {
+        entity.newState(initialState(entity))
     }
 
     override fun update(delta: Seconds, entity: Entity) {

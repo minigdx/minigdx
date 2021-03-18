@@ -1,17 +1,20 @@
-name: Build on all platform
-# This workflow is triggered on pushes to the repository.
-on: [push]
+name: Publish snapshot
+
+on:
+  push:
+    branches:
+      - master
+      - main
 
 jobs:
-  build:
+  publish-release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the repo
+      - name: Checkout latest code
         uses: actions/checkout@v2
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: Cache gradle
+
+      - name: Setup build cache
         uses: actions/cache@v1
         with:
           path: ~/.gradle/caches
@@ -22,8 +25,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: build
-        run: ./gradlew build
+      - name: Publish snpashot artifact
+        run: ./gradlew publishAllPublicationsToSonatypeSnapshotsRepository -Pversion="LATEST-SNAPSHOT" -Psigning.base64.secretKey="${{secrets.SIGNING_BASE_64_SECRET_KEY}}" -Psigning.password="${{secrets.SIGNING_PASSWORD}}" -Psonatype.username="${{secrets.SONATYPE_USERNAME}}" -Psonatype.password="${{secrets.SONATYPE_PASSWORD}}"
 
 env:
   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

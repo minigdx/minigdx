@@ -19,19 +19,19 @@ class AABBCollisionResolver : CollisionResolver {
             it.position
         }
 
-        val minXA = a.minBy { it.x }!!.x
-        val maxXA = a.maxBy { it.x }!!.x
-        val minYA = a.minBy { it.y }!!.y
-        val maxYA = a.maxBy { it.y }!!.y
-        val minZA = a.minBy { it.z }!!.z
-        val maxZA = a.maxBy { it.z }!!.z
+        val minXA = a.minByOrNull { it.x }!!.x
+        val maxXA = a.maxByOrNull { it.x }!!.x
+        val minYA = a.minByOrNull { it.y }!!.y
+        val maxYA = a.maxByOrNull { it.y }!!.y
+        val minZA = a.minByOrNull { it.z }!!.z
+        val maxZA = a.maxByOrNull { it.z }!!.z
 
-        val minXB = b.minBy { it.x }!!.x
-        val maxXB = b.maxBy { it.x }!!.x
-        val minYB = b.minBy { it.y }!!.y
-        val maxYB = b.maxBy { it.y }!!.y
-        val minZB = b.minBy { it.z }!!.z
-        val maxZB = b.maxBy { it.z }!!.z
+        val minXB = b.minByOrNull { it.x }!!.x
+        val maxXB = b.maxByOrNull { it.x }!!.x
+        val minYB = b.minByOrNull { it.y }!!.y
+        val maxYB = b.maxByOrNull { it.y }!!.y
+        val minZB = b.minByOrNull { it.z }!!.z
+        val maxZB = b.maxByOrNull { it.z }!!.z
 
         val xCollide = minXA < maxXB && maxXA > minXB
         val yCollide = minYA < maxYB && maxYA > minYB

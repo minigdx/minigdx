@@ -2,12 +2,12 @@ package com.github.dwursteisen.minigdx.ecs.physics
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.translation
-import com.github.dwursteisen.minigdx.ecs.components.assertEquals as assertEqualsFloat
 import com.github.dwursteisen.minigdx.ecs.physics.SATCollisionResolver.Axis
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import com.github.dwursteisen.minigdx.ecs.components.assertEquals as assertEqualsFloat
 
 class SATCollisionResolverTest {
 

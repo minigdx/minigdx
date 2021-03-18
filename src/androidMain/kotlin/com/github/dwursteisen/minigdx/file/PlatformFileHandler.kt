@@ -41,13 +41,15 @@ actual class PlatformFileHandler(private val context: Context, actual val logger
         // flip the buffer so its ready to read
         buffer.flip()
 
-        content.load(TextureImage(
-            width = decoder.width,
-            height = decoder.height,
-            glFormat = GL.RGBA,
-            glType = GL.UNSIGNED_BYTE,
-            pixels = buffer
-        ))
+        content.load(
+            TextureImage(
+                width = decoder.width,
+                height = decoder.height,
+                glFormat = GL.RGBA,
+                glType = GL.UNSIGNED_BYTE,
+                pixels = buffer
+            )
+        )
         return content
     }
 

@@ -1,12 +1,16 @@
 package com.github.dwursteisen.minigdx.render
 
+import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.lookAt
+import com.curiouscreature.kotlin.math.rotation
+import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
 import com.github.dwursteisen.minigdx.ecs.components.Light
-import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
@@ -31,24 +35,43 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     val cameraQuery: EntityQuery = EntityQuery(
         Camera::class
     ),
-    val lightsQuery: EntityQuery = EntityQuery(
+    lightsQuery: EntityQuery = EntityQuery(
         Light::class
     ),
     val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
 ) : Stage, System(query) {
 
-    var lights: Sequence<Entity> = emptySequence()
-        private set
+    private val lights by interested(lightsQuery)
 
-    var camera: Entity? = null
-        private set
+    private val cameras by interested(cameraQuery)
+
+    val camera: Entity?
+        get() {
+            return cameras.firstOrNull()
+        }
+
+    val light: Entity?
+        get() {
+            return lights.firstOrNull()
+        }
 
     lateinit var program: ShaderProgram
 
     open val combinedMatrix: Mat4
         get() {
             return camera?.let {
-                val view = it.get(Position::class).transformation
+                val eye = it.position.translation.toFloat3()
+                val cameraRotation = it.position.rotation.toFloat3()
+                val direction = (rotation(Float3(cameraRotation.x, cameraRotation.y, cameraRotation.z)) * translation(FRONT_VECTOR)).translation
+                val target = eye + direction
+                // the up vector can be a parameter of the camera.
+                // val up = (rotation(Float3(cameraRotation.x, cameraRotation.y, cameraRotation.z)) * translation(Float3(0f, 1f, 0f))).translation
+                val up = (rotation(Float3(cameraRotation.x, cameraRotation.y, cameraRotation.z)) * translation(Float3(0f, 1f, 0f))).translation
+                val view = lookAt(
+                    eye,
+                    target,
+                    up
+                )
                 val projection = it.get(Camera::class).projection
                 projection * view
             } ?: Mat4.identity()
@@ -71,32 +94,6 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
 
     open fun attributes(entity: Entity) = Unit
 
-    override fun add(entity: Entity): Boolean {
-        return if (cameraQuery.accept(entity)) {
-            camera = entity
-            true
-        } else if (lightsQuery.accept(entity)) {
-            val count = entities.count()
-            lights += entity
-            count != entities.count()
-        } else {
-            super.add(entity)
-        }
-    }
-
-    override fun remove(entity: Entity): Boolean {
-        return if (cameraQuery.accept(entity)) {
-            camera = null
-            true
-        } else if (lightsQuery.accept(entity)) {
-            val count = entities.count()
-            lights -= entity
-            count != entities.count()
-        } else {
-            super.remove(entity)
-        }
-    }
-
     override fun update(delta: Seconds) {
         // TODO: if renderInMemory -> FBO
         gl.useProgram(program)
@@ -105,6 +102,10 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     }
 
     abstract override fun update(delta: Seconds, entity: Entity)
+
+    companion object {
+        private val FRONT_VECTOR = Float3(0f, 0f, -1f)
+    }
 }
 
 class FrameBufferRegistry

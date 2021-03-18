@@ -26,8 +26,10 @@ class BoundingBoxCompiler : GLResourceCompiler {
             gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.orderBuffer!!)
             gl.bufferData(
                 target = GL.ELEMENT_ARRAY_BUFFER,
-                data = DataSource.ShortDataSource(component.order.map { it.toShort() }
-                    .toShortArray()),
+                data = DataSource.ShortDataSource(
+                    component.order.map { it.toShort() }
+                        .toShortArray()
+                ),
                 usage = GL.STATIC_DRAW
             )
         }

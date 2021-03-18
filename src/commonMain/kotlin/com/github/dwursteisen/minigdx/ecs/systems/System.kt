@@ -8,16 +8,24 @@ import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.events.EventListener
 import com.github.dwursteisen.minigdx.ecs.events.EventWithQuery
+import com.github.dwursteisen.minigdx.input.InputHandler
+import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
-abstract class System(protected val entityQuery: EntityQuery) : EventListener, EntityFactory by EntityFactoryDelegate() {
+abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none()) : EventListener {
 
     var entities: List<Entity> = emptyList()
 
     private var listeners: List<InterestedDelegate> = emptyList()
 
     private val events = mutableListOf<EventWithQuery>()
+
+    val entityFactory: EntityFactory = EntityFactoryDelegate()
+
+    val logger: Logger by lazy(LazyThreadSafetyMode.NONE) { entityFactory.gameContext.logger }
+
+    val input: InputHandler by lazy(LazyThreadSafetyMode.NONE) { entityFactory.gameContext.input }
 
     class InterestedDelegate(private val query: EntityQuery) {
 
@@ -44,7 +52,20 @@ abstract class System(protected val entityQuery: EntityQuery) : EventListener, E
         }
     }
 
-    open fun onGameStart(engine: Engine) = Unit
+    /**
+     * The game started.
+     */
+    open fun onGameStarted(engine: Engine) = Unit
+
+    /**
+     * The [entity] has been successfully added to this system.
+     */
+    open fun onEntityAdded(entity: Entity) = Unit
+
+    /**
+     * The [entity] has been successfully removed from this system.
+     */
+    open fun onEntityRemoved(entity: Entity) = Unit
 
     abstract fun update(delta: Seconds, entity: Entity)
 
@@ -52,22 +73,27 @@ abstract class System(protected val entityQuery: EntityQuery) : EventListener, E
         entities.forEach { update(delta, it) }
     }
 
-    open fun add(entity: Entity): Boolean {
+    internal fun add(entity: Entity): Boolean {
         listeners.forEach { it.add(entity) }
         return if (entityQuery.accept(entity)) {
             entities = entities + entity
+            onEntityAdded(entity)
             true
         } else {
             false
         }
     }
 
-    open fun remove(entity: Entity): Boolean {
+    internal fun remove(entity: Entity): Boolean {
         listeners.forEach { it.remove(entity) }
         return if (entityQuery.accept(entity)) {
             val count = entities.count()
             entities = entities - entity
-            return count != entities.count()
+            val wasRemoved = count != entities.count()
+            if (wasRemoved) {
+                onEntityRemoved(entity)
+            }
+            return wasRemoved
         } else {
             false
         }

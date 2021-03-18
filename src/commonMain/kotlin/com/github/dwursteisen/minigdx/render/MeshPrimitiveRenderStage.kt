@@ -5,6 +5,7 @@ import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
+import com.github.dwursteisen.minigdx.ecs.components.Light
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.UIComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
@@ -50,10 +51,11 @@ class MeshPrimitiveRenderStage(
         super.update(delta)
         gl.enable(GL.BLEND)
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
+
         transparentPrimitive.sortByDescending { (position, _) -> cameraPosition.dist2(position.translation) }
         transparentPrimitive.forEach { (position, primitive) ->
             val model = position.transformation
-            drawPrimitive(primitive, combinedMatrix * model)
+            drawPrimitive(primitive, model)
         }
         transparentPrimitive.clear()
         gl.disable(GL.BLEND)
@@ -68,29 +70,47 @@ class MeshPrimitiveRenderStage(
                 // defer rendering
                 transparentPrimitive.add(position to primitive)
             } else {
-                drawPrimitive(primitive, combinedMatrix * model)
+                drawPrimitive(primitive, model)
             }
         }
     }
 
-    private fun drawPrimitive(primitive: MeshPrimitive, modelView: Mat4) {
+    private fun drawPrimitive(primitive: MeshPrimitive, model: Mat4) {
         if (primitive.isDirty) {
             compiler.compile(primitive)
         }
 
-        when (val trans = primitive.transformation) {
-            null -> vertex.uModelView.apply(program, modelView)
-            else -> vertex.uModelView.apply(program, modelView * trans)
+        // Configure the light.
+        val currentLight = light
+        if (currentLight == null) {
+            // If there is not light, we add a transparent light that should have no effect
+            vertex.uLightColor.apply(program, Light.TRANSPARENT_COLOR)
+            vertex.uLightPosition.apply(program, Light.ORIGIN)
+        } else {
+            // We configure the current light
+            vertex.uLightColor.apply(program, currentLight.get(Light::class).color)
+            // Set the light in the projection space
+            val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
+            vertex.uLightPosition.apply(
+                program,
+                translation.x,
+                translation.y,
+                translation.z
+            )
         }
 
+        vertex.uModelView.apply(program, combinedMatrix * model)
         vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
+        vertex.aVertexNormal.apply(program, primitive.normalsBuffer!!)
         vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
         fragment.uUV.apply(program, primitive.textureReference!!, unit = 0)
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, primitive.verticesOrderBuffer!!)
         gl.drawElements(
-            GL.TRIANGLES, primitive.primitive.verticesOrder.size,
-            GL.UNSIGNED_SHORT, 0
+            GL.TRIANGLES,
+            primitive.primitive.verticesOrder.size,
+            GL.UNSIGNED_SHORT,
+            0
         )
     }
 }

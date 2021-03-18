@@ -1,4 +1,0 @@
-package demo
-
-class TrijamGame {
-}
