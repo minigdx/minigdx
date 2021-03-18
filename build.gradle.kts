@@ -83,3 +83,18 @@ dependencies {
     this.androidMainApi("com.github.minigdx:kotlin-math-jvm:$kotlinMathVersion")
     this.androidMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
 }
+
+minigdxDeveloper {
+    this.name.set("miniGDX")
+    this.description.set("Multiplatform 3D Game Engine using Kotlin Multiplatform")
+    this.projectUrl.set("https://github.com/minigdx/minigdx")
+    this.licence {
+        name.set("MIT Licence")
+        url.set("https://github.com/minigdx/minigdx/blob/master/LICENSE")
+    }
+    developer {
+        name.set("David Wursteisen")
+        email.set("david.wursteisen+minigdx@gmail.com")
+        url.set("https://github.com/dwursteisen")
+    }
+}
