@@ -2,11 +2,11 @@
 
 plugins {
     id("com.android.library")
-    id("com.github.minigdx.gradle.plugin.developer.mpp") version "DEV-SNAPSHOT"
+    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.0.0-alpha4"
 }
 
-val kotlinMathVersion = "DEV-SNAPSHOT"
-val gltfApiVersion = "DEV-SNAPSHOT"
+val kotlinMathVersion = "LATEST-SNAPSHOT"
+val gltfApiVersion = "LATEST-SNAPSHOT"
 val lwjglVersion = "3.2.3"
 val imguiVersion = "1.77-0.16"
 
@@ -82,17 +82,4 @@ dependencies {
 
     this.androidMainApi("com.github.minigdx:kotlin-math-jvm:$kotlinMathVersion")
     this.androidMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
-}
-
-// -- convenient tasks to test the game engine.
-project.tasks.create("runJvm").apply {
-    group = "minigdx"
-    dependsOn(":demo:run")
-}
-
-tasks.withType<Test> {
-    this.testLogging {
-        this.showStandardStreams = true
-        this.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-    }
 }
