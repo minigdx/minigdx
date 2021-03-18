@@ -7,17 +7,11 @@ import com.github.dwursteisen.minigdx.math.Vector2
 
 class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
 
-    private val touchManager = TouchManager()
+    private val touchManager = TouchManager(KeyEvent.KEYCODE_PROFILE_SWITCH)
 
-    private var frame: Long = Long.MIN_VALUE + 1
+    override fun isKeyJustPressed(key: Key): Boolean = touchManager.isKeyJustPressed(key.keyCode)
 
-    private val keysJustPressed = LongArray(KeyEvent.KEYCODE_PROFILE_SWITCH)
-    private val keysJustRelease = BooleanArray(KeyEvent.KEYCODE_PROFILE_SWITCH)
-    private val keysPressed = BooleanArray(KeyEvent.KEYCODE_PROFILE_SWITCH)
-
-    override fun isKeyJustPressed(key: Key): Boolean = keysJustPressed[key.keyCode] == frame - 1
-
-    override fun isKeyPressed(key: Key): Boolean = keysPressed[key.keyCode]
+    override fun isKeyPressed(key: Key): Boolean = toucchManager.isKeyPressed(key.keyCode)
 
     override fun isTouched(signal: TouchSignal) = touchManager.isTouched(signal)
 
@@ -52,20 +46,16 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
     }
 
     fun onKeyDown(keyCode: Int) {
-        keysPressed[keyCode] = true
-        keysJustPressed[keyCode] = frame
-        keysJustRelease[keyCode] = false
+        touchManager.onKeyPressed(keyCode)
     }
 
     fun onKeyUp(keyCode: Int) {
-        keysPressed[keyCode] = false
-        keysJustRelease[keyCode] = true
+        touchManager.onKeyReleased(keyCode)
     }
 
     override fun record() = Unit
 
     override fun reset() {
         touchManager.processReceivedEvent()
-        frame++
     }
 }

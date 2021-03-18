@@ -1,14 +1,16 @@
 package com.github.dwursteisen.minigdx.input
 
 import kotlin.test.Test
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class TouchManagerTest {
 
     @Test
     fun touch_down_then_is_just_touched_then_reset() {
-        val touchManager = TouchManager()
+        val touchManager = TouchManager(10)
         touchManager.onTouchDown(TouchSignal.TOUCH1, 0f, 0f)
         assertNull(touchManager.isJustTouched(TouchSignal.TOUCH1))
         touchManager.processReceivedEvent()
@@ -19,11 +21,25 @@ class TouchManagerTest {
 
     @Test
     fun touch_down_then_reset_then_is_just_touched() {
-        val touchManager = TouchManager()
+        val touchManager = TouchManager(10)
         touchManager.onTouchDown(TouchSignal.TOUCH1, 0f, 0f)
         touchManager.processReceivedEvent()
         assertNotNull(touchManager.isJustTouched(TouchSignal.TOUCH1))
         touchManager.processReceivedEvent()
         assertNull(touchManager.isJustTouched(TouchSignal.TOUCH1))
+    }
+
+    @Test
+    fun key_just_presset() {
+        val touchManager = TouchManager(10)
+        touchManager.onKeyPressed(1)
+        touchManager.processReceivedEvent()
+        assertTrue(touchManager.isKeyJustPressed(1))
+        touchManager.processReceivedEvent()
+        assertFalse(touchManager.isKeyJustPressed(1))
+        assertTrue(touchManager.isKeyPressed(1))
+        touchManager.onKeyReleased(1)
+        touchManager.processReceivedEvent()
+        assertFalse(touchManager.isKeyPressed(1))
     }
 }
