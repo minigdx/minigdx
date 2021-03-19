@@ -61,16 +61,14 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         get() {
             return camera?.let {
                 val eye = it.position.translation.toFloat3()
-                val cameraRotation = it.position.rotation.toFloat3()
-                val direction = (rotation(Float3(cameraRotation.x, cameraRotation.y, cameraRotation.z)) * translation(FRONT_VECTOR)).translation
+                val cameraRotation = rotation(it.position.transformation)
+                val direction = (cameraRotation * translation(FRONT)).translation
                 val target = eye + direction
-                // the up vector can be a parameter of the camera.
-                // val up = (rotation(Float3(cameraRotation.x, cameraRotation.y, cameraRotation.z)) * translation(Float3(0f, 1f, 0f))).translation
-                val up = (rotation(Float3(cameraRotation.x, cameraRotation.y, cameraRotation.z)) * translation(Float3(0f, 1f, 0f))).translation
+
                 val view = lookAt(
                     eye,
                     target,
-                    up
+                    UP
                 )
                 val projection = it.get(Camera::class).projection
                 projection * view
@@ -104,7 +102,8 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     abstract override fun update(delta: Seconds, entity: Entity)
 
     companion object {
-        private val FRONT_VECTOR = Float3(0f, 0f, -1f)
+        private val FRONT = Float3(0f, 0f, -1f)
+        private val UP = Float3(0f, 1f, 0f)
     }
 }
 

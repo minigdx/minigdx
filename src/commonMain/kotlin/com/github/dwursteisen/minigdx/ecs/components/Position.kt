@@ -126,6 +126,11 @@ class Position(
         return update()
     }
 
+    fun setGlobalRotation(quaternion: Quaternion): Position {
+        globalTransformation.rotation = quaternion
+        return update()
+    }
+
     fun setGlobalRotation(
         x: Degree = globalRotation.x,
         y: Degree = globalRotation.y,
@@ -197,7 +202,7 @@ class Position(
         addLocalRotation(angles.x, angles.y, angles.z, delta)
 
     fun setLocalRotation(quaternion: Quaternion): Position {
-        this.quaternion = quaternion
+        this.localTransformation.rotation = quaternion
         return update()
     }
 

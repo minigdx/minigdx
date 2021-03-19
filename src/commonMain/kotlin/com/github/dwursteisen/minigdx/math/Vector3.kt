@@ -45,16 +45,25 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
     fun sub(x: Number = 0f, y: Number = 0f, z: Number = 0f) =
         add(x.toFloat() * -1f, y.toFloat() * -1f, z.toFloat() * -1f)
 
-    fun set(x: Number = 0f, y: Number = 0f, z: Number = 0f) {
+    fun set(x: Number = 0f, y: Number = 0f, z: Number = 0f): Vector3 {
         this.x = x.toFloat()
         this.y = y.toFloat()
         this.z = z.toFloat()
+        return this
     }
 
     fun set(other: Vector3) = set(other.x, other.y, other.z)
 
     fun dot(other: Vector3): Float {
         return x * other.x + y * other.y + z * other.z
+    }
+
+    fun cross(other: Vector3): Vector3 {
+        return this.set(
+            y * other.z - z * other.y,
+            z * other.x - x * other.z,
+            x * other.y - y * other.x
+        )
     }
 
     fun normal(): Vector3 {
@@ -98,6 +107,9 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         val Y = Vector3(0, 1, 0)
         val Z = Vector3(0, 0, 1)
         val ZERO = Vector3(0, 0, 0)
+
+        val FORWARD = Z
+        val UP = Y
     }
 }
 

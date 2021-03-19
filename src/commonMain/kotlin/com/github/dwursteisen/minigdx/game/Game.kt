@@ -9,6 +9,7 @@ import com.github.dwursteisen.minigdx.ecs.components.UIComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
+import com.github.dwursteisen.minigdx.ecs.systems.CameraTrackSystem
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
@@ -29,7 +30,8 @@ interface Game {
     fun createSystems(engine: Engine): List<System> = listOf(
         SpriteAnimatedSystem(),
         ArmatureUpdateSystem(),
-        ScriptExecutorSystem()
+        ScriptExecutorSystem(),
+        CameraTrackSystem()
     )
 
     fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> {
