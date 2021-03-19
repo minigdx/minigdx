@@ -108,7 +108,8 @@ enum class Key {
     OPEN_BRACKET,
     BACK_SLASH,
     CLOSE_BRAKET,
-    SINGLE_QUOTE
+    SINGLE_QUOTE,
+    DPAD_CENTER
 }
 
 interface InputManager {

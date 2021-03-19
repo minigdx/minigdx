@@ -110,5 +110,6 @@ val Key.keyCode: Int
             Key.BACK_SLASH -> GLFW.GLFW_KEY_BACKSLASH
             Key.CLOSE_BRAKET -> GLFW.GLFW_KEY_RIGHT_BRACKET
             Key.SINGLE_QUOTE -> GLFW.GLFW_KEY_APOSTROPHE
+            Key.DPAD_CENTER -> UNKNOWN_KEY
         }
     }

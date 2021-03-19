@@ -107,5 +107,6 @@ val Key.keyCode: Int
             Key.BACK_SLASH -> 220
             Key.CLOSE_BRAKET -> 221
             Key.SINGLE_QUOTE -> 222
+            Key.DPAD_CENTER -> UNKNOWN_KEY
         }
     }
