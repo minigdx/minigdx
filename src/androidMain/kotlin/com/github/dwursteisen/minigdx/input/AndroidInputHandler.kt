@@ -9,9 +9,17 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
 
     private val touchManager = TouchManager(KeyEvent.KEYCODE_PROFILE_SWITCH)
 
-    override fun isKeyJustPressed(key: Key): Boolean = touchManager.isKeyJustPressed(key.keyCode)
+    override fun isKeyJustPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyJustPressed
+    } else {
+        touchManager.isKeyJustPressed(key.keyCode)
+    }
 
-    override fun isKeyPressed(key: Key): Boolean = toucchManager.isKeyPressed(key.keyCode)
+    override fun isKeyPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyPressed
+    } else {
+        touchManager.isKeyPressed(key.keyCode)
+    }
 
     override fun isTouched(signal: TouchSignal) = touchManager.isTouched(signal)
 
