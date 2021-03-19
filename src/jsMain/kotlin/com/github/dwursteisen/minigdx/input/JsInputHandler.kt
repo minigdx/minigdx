@@ -109,9 +109,17 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         }
     }
 
-    override fun isKeyJustPressed(key: Key): Boolean = touchManager.isKeyJustPressed(key.keyCode)
+    override fun isKeyJustPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyJustPressed
+    } else {
+        touchManager.isKeyJustPressed(key.keyCode)
+    }
 
-    override fun isKeyPressed(key: Key): Boolean = touchManager.isKeyPressed(key.keyCode)
+    override fun isKeyPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyPressed
+    } else {
+        touchManager.isKeyPressed(key.keyCode)
+    }
 
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 

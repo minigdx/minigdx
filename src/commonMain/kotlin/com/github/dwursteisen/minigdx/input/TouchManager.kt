@@ -19,6 +19,23 @@ class TouchManager(lastKeyCode: KeyCode) {
     private val justKeyPressed = Array(lastKeyCode + 1) { false }
     private val justPressedKeyCode = mutableSetOf<KeyCode>()
 
+    /**
+     * Any key pressed will be computed regarding the number of key pressed.
+     * If more than 0, it means that a least one key is pressed.
+     */
+    private var numberOfKeyPressed = 0
+    /**
+     * Is any key is currently pressed?
+     */
+    val isAnyKeyPressed: Boolean
+        get() = numberOfKeyPressed != 0
+
+    /**
+     * Is any key was just pressed?
+     */
+    var isAnyKeyJustPressed = false
+        private set
+
     private val eventsPool = InternalTouchEventObjectPool()
 
     inner class InternalTouchEventObjectPool : ObjectPool<InternalTouchEvent>(10) {
@@ -149,6 +166,7 @@ class TouchManager(lastKeyCode: KeyCode) {
             justKeyPressed[it] = false
         }
         justPressedKeyCode.clear()
+        isAnyKeyJustPressed = false
 
         queueEvents.forEach { event ->
             if (event.isTouchEvent) {
@@ -168,9 +186,12 @@ class TouchManager(lastKeyCode: KeyCode) {
                 keyPressed[keycode] = true
                 justKeyPressed[keycode] = true
                 justPressedKeyCode.add(keycode)
+                isAnyKeyJustPressed = true
+                numberOfKeyPressed++
             }
             InternalTouchEventWay.UP -> {
                 keyPressed[keycode] = false
+                numberOfKeyPressed--
             }
             InternalTouchEventWay.MOVE -> throw IllegalArgumentException("${event.keycode} is not supposed to move.")
         }

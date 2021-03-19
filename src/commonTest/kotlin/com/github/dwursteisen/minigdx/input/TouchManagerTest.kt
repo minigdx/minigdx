@@ -31,15 +31,25 @@ class TouchManagerTest {
 
     @Test
     fun key_just_presset() {
+        // push key
         val touchManager = TouchManager(10)
         touchManager.onKeyPressed(1)
         touchManager.processReceivedEvent()
         assertTrue(touchManager.isKeyJustPressed(1))
+        assertTrue(touchManager.isAnyKeyJustPressed)
+        assertTrue(touchManager.isAnyKeyPressed)
+
+        // keep it pressed
         touchManager.processReceivedEvent()
         assertFalse(touchManager.isKeyJustPressed(1))
         assertTrue(touchManager.isKeyPressed(1))
+        assertFalse(touchManager.isAnyKeyJustPressed)
+        assertTrue(touchManager.isAnyKeyPressed)
+
+        // release the key
         touchManager.onKeyReleased(1)
         touchManager.processReceivedEvent()
+        assertFalse(touchManager.isAnyKeyPressed)
         assertFalse(touchManager.isKeyPressed(1))
     }
 }
