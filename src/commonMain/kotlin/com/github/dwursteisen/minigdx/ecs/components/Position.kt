@@ -331,14 +331,16 @@ class Position(
         z: Degree = 0,
         delta: Seconds = 1f
     ): Position {
-        val translation = this.globalTranslation.copy().sub(origin)
-        val translationFromOrigin = translation(Float3(translation.x, translation.y, translation.z))
+        val translation = origin.copy().sub(this.globalTranslation)
 
-        val quaternion1 = fromEulerAngles(x.toFloat(), y.toFloat(), z.toFloat(), delta)
-        val pivot = translation(Float3(origin.x, origin.y, origin.z)) * Mat4.from(quaternion1)
+        val translationFromOrigin = translation(translation.toFloat3())
+        val rotation = fromEulerAngles(x.toFloat(), y.toFloat(), z.toFloat(), delta)
 
-        globalTransformation.transalation = pivot * translationFromOrigin
-        globalTransformation.rotation *= quaternion1
+        globalTransformation.transalation *= translationFromOrigin *
+            Mat4.from(rotation) *
+            translation(translation.negate().toFloat3())
+
+        globalTransformation.rotation *= rotation
         return update()
     }
 }
