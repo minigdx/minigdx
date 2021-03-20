@@ -15,5 +15,16 @@ interface CollisionResolver {
         return collide(boxA, positionA, boxB, positionB)
     }
 
+    fun collide(
+        entityA: Entity,
+        positionA: Mat4 = entityA.get(Position::class).transformation,
+        entityB: Entity,
+        positionB: Mat4 = entityB.get(Position::class).transformation
+    ): Boolean {
+        val boxA = entityA.get(BoundingBox::class)
+        val boxB = entityB.get(BoundingBox::class)
+        return collide(boxA, positionA, boxB, positionB)
+    }
+
     fun collide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean
 }
