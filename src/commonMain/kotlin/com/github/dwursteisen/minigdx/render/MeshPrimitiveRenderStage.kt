@@ -44,7 +44,7 @@ class MeshPrimitiveRenderStage(
         cameraPosition = camera
             ?.get(Position::class)
             ?.transformation
-            ?.let { inverse(it).translation }
+            ?.translation
             ?.let { Vector3(it.x, it.y, it.z) }
             ?: Vector3.ZERO
 

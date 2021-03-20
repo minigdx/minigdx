@@ -20,12 +20,7 @@ import java.nio.DoubleBuffer
 
 class LwjglInput(val logger: Logger) : InputHandler, InputManager {
 
-    private val keys: Array<Long> = Array(GLFW_KEY_LAST + 1) { -1L }
-    private val pressed: Array<Long> = Array(GLFW_KEY_LAST + 1) { -1L }
-
-    private var frame = 0L
-
-    private val touchManager = TouchManager()
+    private val touchManager = TouchManager(GLFW_KEY_LAST)
 
     private var window: Long = 0
 
@@ -34,17 +29,12 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
 
     private fun keyDown(event: Int) {
         logger.debug("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
-        if (event in (0..GLFW_KEY_LAST)) {
-            keys[event] = frame + 1
-            pressed[event] = frame + 1
-        }
+        touchManager.onKeyPressed(event)
     }
 
     private fun keyUp(event: Int) {
         logger.debug("INPUT_HANDLER") { "Key release $event" }
-        if (event in (0..GLFW_KEY_LAST)) {
-            keys[event] = -1
-        }
+        touchManager.onKeyReleased(event)
     }
 
     fun attachHandler(windowAddress: Long) {
@@ -83,13 +73,19 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
         touchStatus(GLFW_MOUSE_BUTTON_3, TouchSignal.TOUCH3)
     }
 
-    override fun reset() {
-        frame++
+    override fun reset() = touchManager.processReceivedEvent()
+
+    override fun isKeyJustPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyJustPressed
+    } else {
+        touchManager.isKeyJustPressed(key.keyCode)
     }
 
-    override fun isKeyJustPressed(key: Key): Boolean = this.pressed[key.keyCode] == frame
-
-    override fun isKeyPressed(key: Key): Boolean = keys[key.keyCode] != -1L
+    override fun isKeyPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyPressed
+    } else {
+        touchManager.isKeyPressed(key.keyCode)
+    }
 
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 

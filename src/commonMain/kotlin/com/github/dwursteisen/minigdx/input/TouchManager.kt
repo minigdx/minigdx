@@ -5,7 +5,9 @@ import com.github.dwursteisen.minigdx.input.internal.InternalTouchEventWay
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.utils.ObjectPool
 
-class TouchManager {
+typealias KeyCode = Int
+
+class TouchManager(lastKeyCode: KeyCode) {
 
     private val touchSignalCache = TouchSignal.values()
 
@@ -13,9 +15,31 @@ class TouchManager {
     private val touch = Array<Vector2?>(TouchSignal.values().size) { null }
     private val justTouch = Array<Vector2?>(TouchSignal.values().size) { null }
 
+    private val keyPressed = Array(lastKeyCode + 1) { false }
+    private val justKeyPressed = Array(lastKeyCode + 1) { false }
+    private val justPressedKeyCode = mutableSetOf<KeyCode>()
+
+    /**
+     * Any key pressed will be computed regarding the number of key pressed.
+     * If more than 0, it means that a least one key is pressed.
+     */
+    private var numberOfKeyPressed = 0
+    /**
+     * Is any key is currently pressed?
+     */
+    val isAnyKeyPressed: Boolean
+        get() = numberOfKeyPressed != 0
+
+    /**
+     * Is any key was just pressed?
+     */
+    var isAnyKeyJustPressed = false
+        private set
+
     private val eventsPool = InternalTouchEventObjectPool()
 
     inner class InternalTouchEventObjectPool : ObjectPool<InternalTouchEvent>(10) {
+
         override fun newInstance(): InternalTouchEvent {
             return InternalTouchEvent()
         }
@@ -108,6 +132,24 @@ class TouchManager {
         return justTouch[touchSignal.ordinal]
     }
 
+    fun isKeyPressed(keyCode: KeyCode): Boolean = keyPressed[keyCode]
+
+    fun isKeyJustPressed(keyCode: KeyCode): Boolean = justKeyPressed[keyCode]
+
+    fun onKeyPressed(keyCode: KeyCode) {
+        val event = eventsPool.newInstance()
+        event.way = InternalTouchEventWay.DOWN
+        event.keycode = keyCode
+        queueEvents.add(event)
+    }
+
+    fun onKeyReleased(keyCode: KeyCode) {
+        val event = eventsPool.newInstance()
+        event.way = InternalTouchEventWay.UP
+        event.keycode = keyCode
+        queueEvents.add(event)
+    }
+
     /**
      * Process received touch events
      *
@@ -118,23 +160,58 @@ class TouchManager {
         (justTouch.indices).forEach { i ->
             justTouch[i] = null
         }
+
+        // Reset previous key pressed
+        justPressedKeyCode.forEach {
+            justKeyPressed[it] = false
+        }
+        justPressedKeyCode.clear()
+        isAnyKeyJustPressed = false
+
         queueEvents.forEach { event ->
-            when (event.way) {
-                InternalTouchEventWay.DOWN -> {
-                    justTouch[event.touchSignal.ordinal] = event.position
-                    touch[event.touchSignal.ordinal] = event.position
-                }
-                InternalTouchEventWay.MOVE -> {
-                    touch[event.touchSignal.ordinal]?.run {
-                        x = event.position.x
-                        y = event.position.y
-                    }
-                }
-                InternalTouchEventWay.UP -> {
-                    touch[event.touchSignal.ordinal] = null
-                }
+            if (event.isTouchEvent) {
+                processTouchEvent(event)
+            } else {
+                processKeyEvent(event)
             }
         }
+        eventsPool.free(queueEvents)
         queueEvents.clear()
+    }
+
+    private fun processKeyEvent(event: InternalTouchEvent) {
+        val keycode = event.keycode!!
+        when (event.way) {
+            InternalTouchEventWay.DOWN -> {
+                keyPressed[keycode] = true
+                justKeyPressed[keycode] = true
+                justPressedKeyCode.add(keycode)
+                isAnyKeyJustPressed = true
+                numberOfKeyPressed++
+            }
+            InternalTouchEventWay.UP -> {
+                keyPressed[keycode] = false
+                numberOfKeyPressed--
+            }
+            InternalTouchEventWay.MOVE -> throw IllegalArgumentException("${event.keycode} is not supposed to move.")
+        }
+    }
+
+    private fun processTouchEvent(event: InternalTouchEvent) {
+        when (event.way) {
+            InternalTouchEventWay.DOWN -> {
+                justTouch[event.touchSignal.ordinal] = event.position
+                touch[event.touchSignal.ordinal] = event.position
+            }
+            InternalTouchEventWay.MOVE -> {
+                touch[event.touchSignal.ordinal]?.run {
+                    x = event.position.x
+                    y = event.position.y
+                }
+            }
+            InternalTouchEventWay.UP -> {
+                touch[event.touchSignal.ordinal] = null
+            }
+        }
     }
 }
