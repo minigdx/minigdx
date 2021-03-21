@@ -73,6 +73,19 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         )
     }
 
+    fun project(other: Vector3): Vector3 {
+        val n = this.dot(other) // A . B
+        val d = other.length2(); // |B|^2
+        return set(other).scale(n / d)
+    }
+
+    fun scale(scalar: Float): Vector3 {
+        this.x *= scalar
+        this.y *= scalar
+        this.z *= scalar
+        return this
+    }
+
     fun normal(): Vector3 {
         return Vector3(z, y, -x)
     }

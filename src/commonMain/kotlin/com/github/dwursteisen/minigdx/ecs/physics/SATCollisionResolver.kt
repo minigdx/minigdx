@@ -11,7 +11,7 @@ import kotlin.math.min
 import kotlin.math.sqrt
 
 // FIXME: As the Bounding Box is expressed with line and not triangles,
-//    the algorythme is not working any more.
+//    the algorithm is not working any more.
 // https://github.com/CasuallyCritical/OLC_PGEX_Collision3d/blob/eceaf621f1cfccd8bfe954e0b940a89857c6169f/olcPGEX_Collisions3D.h
 class SATCollisionResolver : CollisionResolver {
 

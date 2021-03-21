@@ -38,21 +38,19 @@ class MeshPrimitiveRenderStage(
     // Distance ; Mesh
     private val transparentPrimitive = mutableListOf<Pair<Position, MeshPrimitive>>()
 
-    private var cameraPosition: Vector3 = Vector3.ZERO
+    private val cameraDirection: Vector3 = Vector3.ZERO.copy()
 
     override fun update(delta: Seconds) {
-        cameraPosition = camera
-            ?.get(Position::class)
-            ?.transformation
-            ?.translation
-            ?.let { Vector3(it.x, it.y, it.z) }
-            ?: Vector3.ZERO
+        camera?.let { cam ->
+            val position = cam.get(Position::class)
+            cameraDirection.set(position.rotation).normalize()
+        }
 
         super.update(delta)
         gl.enable(GL.BLEND)
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
-        transparentPrimitive.sortByDescending { (position, _) -> cameraPosition.dist2(position.translation) }
+        transparentPrimitive.sortByDescending { (position, _) -> cameraDirection.copy().project(position.translation).length2() }
         transparentPrimitive.forEach { (position, primitive) ->
             val model = position.transformation
             drawPrimitive(primitive, model)
