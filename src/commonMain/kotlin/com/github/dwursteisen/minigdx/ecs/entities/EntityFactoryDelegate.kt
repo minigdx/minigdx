@@ -45,7 +45,10 @@ class EntityFactoryDelegate : EntityFactory {
     }
 
     override fun createBox(node: Node, scene: Scene): Entity {
-        return engine.create { }
+        return engine.create {
+            add(BoundingBox.from(node.transformation.toMat4()))
+            add(Position(node.transformation.toMat4()))
+        }
     }
 
     override fun createText(text: String, font: Font): Entity {

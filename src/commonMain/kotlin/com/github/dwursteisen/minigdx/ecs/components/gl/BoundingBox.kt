@@ -164,17 +164,16 @@ data class BoundingBox(
         }
 
         fun from(modelTransformation: Mat4): BoundingBox {
-            val scale = modelTransformation.scale
-            val transformation = scale(Float3(scale.x, scale.y, scale.z))
+            val scale = scale(modelTransformation.scale)
 
-            val a = (translation(Float3(-1f, 1f, 1f)) * transformation).translation
-            val b = (translation(Float3(1f, 1f, 1f)) * transformation).translation
-            val c = (translation(Float3(1f, -1f, 1f)) * transformation).translation
-            val d = (translation(Float3(-1f, -1f, 1f)) * transformation).translation
-            val e = (translation(Float3(1f, 1f, -1f)) * transformation).translation
-            val f = (translation(Float3(1f, -1f, -1f)) * transformation).translation
-            val g = (translation(Float3(-1f, 1f, -1f)) * transformation).translation
-            val h = (translation(Float3(-1f, -1f, -1f)) * transformation).translation
+            val a = (scale * translation(Float3(-0.5f, 0.5f, 0.5f))).translation
+            val b = (scale * translation(Float3(0.5f, 0.5f, 0.5f))).translation
+            val c = (scale * translation(Float3(0.5f, -0.5f, 0.5f))).translation
+            val d = (scale * translation(Float3(-0.5f, -0.5f, 0.5f))).translation
+            val e = (scale * translation(Float3(0.5f, 0.5f, -0.5f))).translation
+            val f = (scale * translation(Float3(0.5f, -0.5f, -0.5f))).translation
+            val g = (scale * translation(Float3(-0.5f, 0.5f, -0.5f))).translation
+            val h = (scale * translation(Float3(-0.5f, -0.5f, -0.5f))).translation
             return BoundingBox(
                 vertices = listOf(
                     Vertex(
