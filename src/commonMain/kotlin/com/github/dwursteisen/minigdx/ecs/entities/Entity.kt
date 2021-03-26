@@ -6,7 +6,8 @@ import kotlin.reflect.KClass
 
 class Entity(
     private val engine: Engine,
-    components: Collection<Component> = emptyList()
+    components: Collection<Component> = emptyList(),
+    var name: String = "_",
 ) {
     var components = components
         private set
@@ -15,8 +16,9 @@ class Entity(
 
     internal var componentsType: Set<KClass<out Component>> = components.map { it::class }.toSet()
 
-    private val _childrens: MutableList<Entity> = mutableListOf()
-    val chidrens: List<Entity> = _childrens
+    private val _children: MutableList<Entity> = mutableListOf()
+    private val _namedChildren: MutableMap<String, Entity> = mutableMapOf()
+    val chidren: List<Entity> = _children
 
     var parent: Entity? = null
 
@@ -66,15 +68,21 @@ class Entity(
     fun attachTo(other: Entity?): Entity {
         detach()
         parent = other
-        other?._childrens?.add(this)
+        other?._children?.add(this)
+        other?._namedChildren?.put(this.name, this)
         return this
     }
 
     fun detach(): Entity {
-        parent?._childrens?.remove(this)
+        parent?._children?.remove(this)
+        parent?._namedChildren?.remove(this.name)
         parent = null
         return this
     }
+
+    fun getChild(name: String): Entity = _namedChildren.get(name)
+        ?: throw IllegalArgumentException("Children with name '$name' not found. " +
+            "Available children: ${_namedChildren.keys.joinToString(",")}")
 
     fun <T> walkOut(initialValue: T, executionBlock: Entity.(accumulator: T) -> T): T {
         return parent?.executionBlock(initialValue) ?: initialValue

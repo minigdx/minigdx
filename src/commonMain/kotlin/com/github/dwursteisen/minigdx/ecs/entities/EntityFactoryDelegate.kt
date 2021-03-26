@@ -47,7 +47,8 @@ class EntityFactoryDelegate : EntityFactory {
     override fun createBox(node: Node, scene: Scene, parent: Entity?): Entity {
         val box = engine.create {
             val globalTranslation = node.transformation.toMat4()
-            add(BoundingBox.from(node))
+            named(node.name)
+            add(BoundingBox.default())
             add(Position(globalTranslation, globalTranslation, globalTranslation))
         }
         return box.attachTo(parent)
@@ -55,6 +56,7 @@ class EntityFactoryDelegate : EntityFactory {
 
     override fun createText(text: String, font: Font): Entity {
         return engine.create {
+            named("text")
             add(Position())
             val meshPrimitive = MeshPrimitive(
                 id = Id(),
@@ -106,6 +108,7 @@ class EntityFactoryDelegate : EntityFactory {
     @ExperimentalStdlibApi
     override fun createModel(node: Node, scene: Scene): Entity {
         val entity = create {
+            it.named(node.name)
             val model = scene.models.getValue(node.reference)
             val position = Position(
                 node.transformation.t,
@@ -143,47 +146,58 @@ class EntityFactoryDelegate : EntityFactory {
     override fun createArmature(
         node: Node,
         scene: Scene
-    ): Entity = create {
-        // Get the model attached to the armature
-        val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
+    ): Entity {
+        val armature = create {
+            it.named(node.name)
+            // Get the model attached to the armature
+            val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
+
+            // Create animations
+            val allAnimations = scene.animations.getOrElse(node.reference) { emptyList() }
+            val animation = allAnimations.lastOrNull()
+            val referencePose = scene.armatures.getValue(node.reference)
+            if (referencePose.joints.size > 100) {
+                throw IllegalArgumentException("Your armature contains more than 100 joints. MiniGDX support only 100 joints")
+            }
+            val animatedModel = AnimatedModel(
+                animation = animation?.frames ?: emptyList(),
+                animations = allAnimations.map { it.name to it }.toMap(),
+                referencePose = referencePose,
+                time = 0f,
+                duration = animation?.frames?.maxByOrNull { it.time }?.time ?: 0f
+            )
+            val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
+                AnimatedMeshPrimitive(
+                    primitive = primitive,
+                    material = scene.materials.getValue(primitive.materialId)
+                )
+            }
+
+            // Create components
+            it.add(
+                Position(
+                    node.transformation.t,
+                    node.transformation.r,
+                    node.transformation.s,
+                )
+            )
+            it.add(animatedModel)
+            it.add(animatedMeshPrimitive)
+        }
 
         // Look for the bounding box or create it from the mesh.
-        val boxes = node.children.filter { it.type == ObjectType.BOX }
-            .map { BoundingBox.from() }
-            .ifEmpty { listOf(BoundingBox.from(model.mesh)) }
+        node.children.filter { it.type == ObjectType.BOX }
+            .onEach { createFromNode(it, scene, armature) }
+            .ifEmpty {
+                val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
+                create {
+                    it.named("bounding-box")
+                    it.add(Position())
+                    it.add(BoundingBox.from(model.mesh))
+                }.attachTo(armature)
+            }
 
-        // Create animations
-        val allAnimations = scene.animations.getOrElse(node.reference) { emptyList() }
-        val animation = allAnimations.lastOrNull()
-        val referencePose = scene.armatures.getValue(node.reference)
-        if (referencePose.joints.size > 100) {
-            throw IllegalArgumentException("Your armature contains more than 100 joints. MiniGDX support only 100 joints")
-        }
-        val animatedModel = AnimatedModel(
-            animation = animation?.frames ?: emptyList(),
-            animations = allAnimations.map { it.name to it }.toMap(),
-            referencePose = referencePose,
-            time = 0f,
-            duration = animation?.frames?.maxByOrNull { it.time }?.time ?: 0f
-        )
-        val animatedMeshPrimitive = model.mesh.primitives.map { primitive ->
-            AnimatedMeshPrimitive(
-                primitive = primitive,
-                material = scene.materials.getValue(primitive.materialId)
-            )
-        }
-
-        // Create components
-        it.add(boxes)
-        it.add(
-            Position(
-                node.transformation.t,
-                node.transformation.r,
-                node.transformation.s,
-            )
-        )
-        it.add(animatedModel)
-        it.add(animatedMeshPrimitive)
+        return armature
     }
 
     fun createCamera(

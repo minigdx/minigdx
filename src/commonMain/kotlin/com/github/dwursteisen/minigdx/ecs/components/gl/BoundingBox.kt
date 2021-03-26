@@ -89,7 +89,6 @@ class TransformedBoundingBox(private val transformation: Mat4, private val origi
 data class BoundingBox(
     override var id: Id = Id(),
     override var isDirty: Boolean = true,
-    var name: String? = null,
     /**
      * Is this box has been touched? It's mainly used to display it using a different color for debugging
      */
@@ -174,7 +173,7 @@ data class BoundingBox(
         }
 
         @ExperimentalStdlibApi
-        fun from(mesh: Mesh, position: GdxPosition = GdxPosition()): BoundingBox {
+        fun from(mesh: Mesh): BoundingBox {
             val vertices = mesh.primitives.flatMap { it.vertices }
             val builder = vertices.fold(BoxBuilder()) { builder, vertex ->
                 builder.minX = min(builder.minX ?: vertex.position.x, vertex.position.x)
@@ -302,13 +301,7 @@ data class BoundingBox(
             }
         }
 
-        fun from(node: Node): BoundingBox {
-            return from().apply {
-                name = node.name
-            }
-        }
-
-        fun from(): BoundingBox {
+        fun default(): BoundingBox {
             val scale = Mat4.identity()
 
             val a = (scale * translation(Float3(-1f, 1f, 1f))).translation

@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-val square = BoundingBox.from()
+val square = BoundingBox.default()
 
 class AABBCollisionResolverTest {
 
