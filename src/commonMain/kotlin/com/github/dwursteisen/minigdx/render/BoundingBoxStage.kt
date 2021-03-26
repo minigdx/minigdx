@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.ColorFragmentShader
@@ -19,12 +20,16 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
 ) {
 
     override fun update(delta: Seconds, entity: Entity) {
-        // TODO: enable this stage on the fly, regarding options ?
         val model = entity.get(Position::class).transformation
 
-        vertex.uModelView.apply(program, combinedMatrix * model)
+        val parents = entity.walkOut(combinedMatrix) { acc -> acc * position.transformation }
+        vertex.uModelView.apply(program, parents * model)
 
         val box = entity.get(BoundingBox::class)
+        render(box)
+    }
+
+    private fun render(box: BoundingBox) {
         if (box.isDirty) {
             compiler.compile(box)
         }

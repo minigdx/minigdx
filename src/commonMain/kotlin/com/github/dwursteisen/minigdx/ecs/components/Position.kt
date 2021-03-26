@@ -13,6 +13,9 @@ import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.position.InternalSimulation
+import com.github.dwursteisen.minigdx.ecs.components.position.Simulation
+import com.github.dwursteisen.minigdx.ecs.components.position.SimulationResult
 import com.github.dwursteisen.minigdx.math.Vector3
 
 class TransformationHolder(
@@ -69,7 +72,7 @@ class TransformationHolder(
     }
 }
 
-class Position(
+open class Position(
     globalTranslation: Mat4 = Mat4.identity(),
     globalRotation: Mat4 = Mat4.identity(),
     globalScale: Mat4 = Mat4.identity()
@@ -348,6 +351,14 @@ class Position(
 
         globalTransformationHolder.rotation *= rotation
         return update()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> simulation(block: Simulation.() -> SimulationResult): T {
+        val simulation = InternalSimulation(this)
+        val result = block(simulation)
+        result.execute(simulation)
+        return result.result as T
     }
 }
 

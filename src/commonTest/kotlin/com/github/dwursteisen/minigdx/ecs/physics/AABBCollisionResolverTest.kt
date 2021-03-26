@@ -2,68 +2,12 @@ package com.github.dwursteisen.minigdx.ecs.physics
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.translation
-import com.dwursteisen.minigdx.scene.api.model.Normal
-import com.dwursteisen.minigdx.scene.api.model.Position
-import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-val square = BoundingBox(
-    vertices = listOf(
-        Vertex(
-            position = Position(0f, 0f, 0f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(1f, 0f, 0f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(1f, 1f, 0f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(0f, 1f, 0f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(0f, 0f, 1f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(1f, 0f, 1f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(1f, 1f, 1f),
-            normal = Normal(0f, 0f, 0f)
-        ),
-        Vertex(
-            position = Position(0f, 1f, 1f),
-            normal = Normal(0f, 0f, 0f)
-        )
-
-    ),
-    order = listOf(
-        // face A
-        0, 1,
-        1, 2,
-        2, 3,
-        3, 0,
-        // face B
-        4, 5,
-        5, 6,
-        6, 7,
-        7, 4,
-        // edges
-        0, 4,
-        1, 5,
-        2, 6,
-        3, 7
-    )
-)
+val square = BoundingBox.from()
 
 class AABBCollisionResolverTest {
 

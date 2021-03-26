@@ -50,7 +50,7 @@ class MeshPrimitiveRenderStage(
         gl.enable(GL.BLEND)
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
-        transparentPrimitive.sortByDescending { (position, _) -> cameraDirection.copy().project(position.translation).length2() }
+        transparentPrimitive.sortBy { (position, _) -> position.translation.copy().project(cameraDirection).length2() }
         transparentPrimitive.forEach { (position, primitive) ->
             val model = position.transformation
             drawPrimitive(primitive, model)

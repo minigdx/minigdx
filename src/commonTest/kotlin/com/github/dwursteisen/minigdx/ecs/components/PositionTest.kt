@@ -149,4 +149,24 @@ class PositionTest {
         assertEquals(0f, position.translation.y)
         assertEquals(0f, position.translation.z)
     }
+
+    @Test
+    fun simulation_rollback() {
+        val position = Position()
+        val result: Any = position.simulation {
+            addLocalScale(1.0f, 1.0f, 1.0f)
+            rollback()
+        }
+        assertEquals(1f, position.scale.x)
+    }
+
+    @Test
+    fun simulation_commit() {
+        val position = Position()
+        val result: Any = position.simulation {
+            addLocalScale(1.0f, 1.0f, 1.0f)
+            commit()
+        }
+        assertEquals(2f, position.scale.x)
+    }
 }

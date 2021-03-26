@@ -22,12 +22,12 @@ interface EntityFactory {
      *
      * The node can be put at a different place using the [transformation].
      */
-    fun createFromNode(node: Node, scene: Scene): Entity
+    fun createFromNode(node: Node, scene: Scene, parent: Entity? = null): Entity
 
     /**
      * Create a (hit)box of the scale of the [node] object at the position of [transformation].
      */
-    fun createBox(node: Node, scene: Scene): Entity
+    fun createBox(node: Node, scene: Scene, parent: Entity? = null): Entity
 
     /**
      * Create a text using the [text], with the characters of the [font] at the
