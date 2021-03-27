@@ -97,8 +97,22 @@ data class BoundingBox(
     private fun updateIfNeeded() {
         if (!needsToBeUpdated) return
         val transformation = owner?.position?.combinedTransformation ?: Mat4.identity()
-        _min.set((transformation * translation(_rawMin.toFloat3())).translation.toVector3())
-        _max.set((transformation * translation(_rawMax.toFloat3())).translation.toVector3())
+        val newMin = (transformation * translation(_rawMin.toFloat3())).translation.toVector3()
+        val newMax = (transformation * translation(_rawMax.toFloat3())).translation.toVector3()
+
+        val vertices = listOf(
+            Vector3(newMin.x, newMin.y, newMin.z),
+            Vector3(newMin.x, newMin.y, newMax.z),
+            Vector3(newMin.x, newMax.y, newMin.z),
+            Vector3(newMin.x, newMax.y, newMax.z),
+            Vector3(newMax.x, newMin.y, newMin.z),
+            Vector3(newMax.x, newMin.y, newMax.z),
+            Vector3(newMax.x, newMax.y, newMin.z),
+            Vector3(newMax.x, newMax.y, newMax.z),
+        )
+        val (min, max) = computeMinMax(vertices)
+        this._min.set(min)
+        this._max.set(max)
 
         this._size.set(
             _max.x - _min.x,
@@ -152,6 +166,36 @@ data class BoundingBox(
 
     companion object {
 
+        private fun minNull(a: Float?, b: Float): Float {
+            return min(a ?: b, b)
+        }
+
+        private fun maxNull(a: Float?, b: Float): Float {
+            return max(a ?: b, b)
+        }
+
+        private fun computeMinMax(points: List<Vector3>): Pair<Vector3, Vector3> {
+            val builder = points.fold(BoxBuilder()) { builder, vertex ->
+                builder.minX = minNull(builder.minX, vertex.x)
+                builder.minY = minNull(builder.minY, vertex.y)
+                builder.minZ = minNull(builder.minZ, vertex.z)
+
+                builder.maxX = maxNull(builder.maxX, vertex.x)
+                builder.maxY = maxNull(builder.maxY, vertex.y)
+                builder.maxZ = maxNull(builder.maxZ, vertex.z)
+                builder
+            }
+            return Vector3(
+                builder.minX!!.toFloat(),
+                builder.minY!!.toFloat(),
+                builder.minZ!!.toFloat()
+            ) to Vector3(
+                builder.maxX!!.toFloat(),
+                builder.maxY!!.toFloat(),
+                builder.maxZ!!.toFloat()
+            )
+        }
+
         private val normal = Normal(0f, 0f, 0f)
         private val white = Color(1f, 1f, 1f)
 
@@ -164,24 +208,16 @@ data class BoundingBox(
         @ExperimentalStdlibApi
         fun from(mesh: Mesh): BoundingBox {
             val vertices = mesh.primitives.flatMap { it.vertices }
-            val builder = vertices.fold(BoxBuilder()) { builder, vertex ->
-                builder.minX = min(builder.minX ?: vertex.position.x, vertex.position.x)
-                builder.maxX = max(builder.maxX ?: vertex.position.x, vertex.position.x)
-                builder.minY = min(builder.minY ?: vertex.position.y, vertex.position.y)
-                builder.maxY = max(builder.maxY ?: vertex.position.y, vertex.position.y)
-                builder.minZ = min(builder.minZ ?: vertex.position.z, vertex.position.z)
-                builder.maxZ = max(builder.maxZ ?: vertex.position.z, vertex.position.z)
-                builder
-            }
-
+                .map { vertex -> Vector3(vertex.position.x, vertex.position.y, vertex.position.z) }
+            val (min, max) = computeMinMax(vertices)
             return BoundingBox(
                 vertices = listOf(
                     // 0
                     Vertex(
                         position = Position(
-                            builder.minX!!,
-                            builder.maxY!!,
-                            builder.minZ!!
+                            min.x,
+                            max.y,
+                            min.z
                         ),
                         normal = normal,
                         color = white
@@ -189,9 +225,9 @@ data class BoundingBox(
                     // 1
                     Vertex(
                         position = Position(
-                            builder.maxX!!,
-                            builder.maxY!!,
-                            builder.minZ!!
+                            max.x,
+                            max.y,
+                            min.z
                         ),
                         normal = normal,
                         color = white
@@ -199,9 +235,9 @@ data class BoundingBox(
                     // 2
                     Vertex(
                         position = Position(
-                            builder.maxX!!,
-                            builder.minY!!,
-                            builder.minZ!!
+                            max.x,
+                            min.y,
+                            min.z
                         ),
                         normal = normal,
                         color = white
@@ -209,9 +245,9 @@ data class BoundingBox(
                     // 3
                     Vertex(
                         position = Position(
-                            builder.minX!!,
-                            builder.minY!!,
-                            builder.minZ!!
+                            min.x,
+                            min.y,
+                            min.z
                         ),
                         normal = normal,
                         color = white
@@ -219,9 +255,9 @@ data class BoundingBox(
                     // 4
                     Vertex(
                         position = Position(
-                            builder.maxX!!,
-                            builder.maxY!!,
-                            builder.maxZ!!
+                            max.x,
+                            max.y,
+                            max.z
                         ),
                         normal = normal,
                         color = white
@@ -229,9 +265,9 @@ data class BoundingBox(
                     // 5
                     Vertex(
                         position = Position(
-                            builder.maxX!!,
-                            builder.minY!!,
-                            builder.maxZ!!
+                            max.x,
+                            min.y,
+                            max.z
                         ),
                         normal = normal,
                         color = white
@@ -239,9 +275,9 @@ data class BoundingBox(
                     // 6
                     Vertex(
                         position = Position(
-                            builder.minX!!,
-                            builder.maxY!!,
-                            builder.maxZ!!
+                            min.x,
+                            max.y,
+                            max.z
                         ),
                         normal = normal,
                         color = white
@@ -249,9 +285,9 @@ data class BoundingBox(
                     // 7
                     Vertex(
                         position = Position(
-                            builder.minX!!,
-                            builder.minY!!,
-                            builder.maxZ!!
+                            min.x,
+                            min.y,
+                            max.z
                         ),
                         normal = normal,
                         color = white
@@ -276,31 +312,22 @@ data class BoundingBox(
                     3, 7
                 )
             ).apply {
-                this._rawMin.set(
-                    builder.minX!!.toFloat(),
-                    builder.minY!!.toFloat(),
-                    builder.minZ!!.toFloat()
-                )
-
-                this._rawMax.set(
-                    builder.maxX!!.toFloat(),
-                    builder.maxY!!.toFloat(),
-                    builder.maxZ!!.toFloat()
-                )
+                this._rawMin.set(min)
+                this._rawMax.set(max)
             }
         }
 
         fun default(): BoundingBox {
             val scale = Mat4.identity()
 
-            val a = (scale * translation(Float3(-1f, 1f, 1f))).translation
-            val b = (scale * translation(Float3(1f, 1f, 1f))).translation
-            val c = (scale * translation(Float3(1f, -1f, 1f))).translation
-            val d = (scale * translation(Float3(-1f, -1f, 1f))).translation
-            val e = (scale * translation(Float3(1f, 1f, -1f))).translation
-            val f = (scale * translation(Float3(1f, -1f, -1f))).translation
-            val g = (scale * translation(Float3(-1f, 1f, -1f))).translation
-            val h = (scale * translation(Float3(-1f, -1f, -1f))).translation
+            val a = (scale * translation(Float3(-1f, 1f, 1f))).translation.toVector3()
+            val b = (scale * translation(Float3(1f, 1f, 1f))).translation.toVector3()
+            val c = (scale * translation(Float3(1f, -1f, 1f))).translation.toVector3()
+            val d = (scale * translation(Float3(-1f, -1f, 1f))).translation.toVector3()
+            val e = (scale * translation(Float3(1f, 1f, -1f))).translation.toVector3()
+            val f = (scale * translation(Float3(1f, -1f, -1f))).translation.toVector3()
+            val g = (scale * translation(Float3(-1f, 1f, -1f))).translation.toVector3()
+            val h = (scale * translation(Float3(-1f, -1f, -1f))).translation.toVector3()
             return BoundingBox(
                 vertices = listOf(
                     Vertex(
@@ -362,28 +389,11 @@ data class BoundingBox(
                     6, 0,
                     3, 7
                 )
-            ).apply {
+            ).also {
                 val pts = listOf(a, b, c, d, e, f, g, h)
-                val builder = pts.fold(BoxBuilder()) { builder, vector ->
-                    builder.minX = min(builder.minX ?: vector.x, vector.x)
-                    builder.maxX = max(builder.maxX ?: vector.x, vector.x)
-                    builder.minY = min(builder.minY ?: vector.y, vector.y)
-                    builder.maxY = max(builder.maxY ?: vector.y, vector.y)
-                    builder.minZ = min(builder.minZ ?: vector.z, vector.z)
-                    builder.maxZ = max(builder.maxZ ?: vector.z, vector.z)
-                    builder
-                }
-                this._rawMin.set(
-                    builder.minX!!.toFloat(),
-                    builder.minY!!.toFloat(),
-                    builder.minZ!!.toFloat()
-                )
-
-                this._rawMax.set(
-                    builder.maxX!!.toFloat(),
-                    builder.maxY!!.toFloat(),
-                    builder.maxZ!!.toFloat()
-                )
+                val (min, max) = computeMinMax(pts)
+                it._rawMin.set(min)
+                it._rawMax.set(max)
             }
         }
     }

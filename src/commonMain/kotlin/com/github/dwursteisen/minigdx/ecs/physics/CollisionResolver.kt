@@ -9,17 +9,17 @@ interface CollisionResolver {
 
     fun collide(entityA: Entity, entityB: Entity): Boolean {
         val boxA = entityA.get(BoundingBox::class)
-        val positionA = entityA.get(Position::class).transformation
+        val positionA = entityA.get(Position::class).combinedTransformation
         val boxB = entityB.get(BoundingBox::class)
-        val positionB = entityB.get(Position::class).transformation
+        val positionB = entityB.get(Position::class).combinedTransformation
         return collide(boxA, positionA, boxB, positionB)
     }
 
     fun collide(
         entityA: Entity,
-        positionA: Mat4 = entityA.get(Position::class).transformation,
+        positionA: Mat4 = entityA.get(Position::class).combinedTransformation,
         entityB: Entity,
-        positionB: Mat4 = entityB.get(Position::class).transformation
+        positionB: Mat4 = entityB.get(Position::class).combinedTransformation
     ): Boolean {
         val boxA = entityA.get(BoundingBox::class)
         val boxB = entityB.get(BoundingBox::class)
