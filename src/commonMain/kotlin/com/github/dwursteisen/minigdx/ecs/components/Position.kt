@@ -104,6 +104,14 @@ open class Position(
         }
     }
 
+    override fun onDetach(parent: Entity) {
+        needsToBeUpdated = true
+    }
+
+    override fun onAttach(parent: Entity) {
+        needsToBeUpdated = true
+    }
+
     fun setLocalTransform(transformation: Mat4): Position {
         localTransformationHolder.transformation = transformation
         return update()

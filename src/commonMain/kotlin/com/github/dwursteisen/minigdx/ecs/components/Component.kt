@@ -10,4 +10,8 @@ interface Component {
     fun onRemoved(entity: Entity) = Unit
 
     fun onComponentUpdated(componentType: KClass<out Component>) = Unit
+
+    fun onDetach(parent: Entity) = Unit
+
+    fun onAttach(parent: Entity) = Unit
 }

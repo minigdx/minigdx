@@ -68,7 +68,10 @@ class Entity(
         removed.forEach { it.onRemoved(this) }
     }
 
-    fun destroy() = engine.destroy(this)
+    fun destroy(): Boolean {
+        _children.forEach { it.destroy() }
+        return engine.destroy(this)
+    }
 
     fun hasComponent(componentClass: KClass<out Component>): Boolean {
         return componentsType.contains(componentClass)
@@ -82,12 +85,14 @@ class Entity(
         parent = other
         other?._children?.add(this)
         other?._namedChildren?.put(this.name, this)
+        parent?.let { p -> this.components.forEach { it.onAttach(p) } }
         return this
     }
 
     fun detach(): Entity {
         parent?._children?.remove(this)
         parent?._namedChildren?.remove(this.name)
+        parent?.let { p -> this.components.forEach { it.onDetach(p) } }
         parent = null
         return this
     }
@@ -101,10 +106,6 @@ class Entity(
     internal fun componentUpdated(componentUpdated: KClass<out Component>) {
         components.forEach { it.onComponentUpdated(componentUpdated) }
         chidren.forEach { it.componentUpdated(componentUpdated) }
-    }
-
-    fun <T> walkOut(initialValue: T, executionBlock: Entity.(accumulator: T) -> T): T {
-        return parent?.executionBlock(initialValue) ?: initialValue
     }
 
     private fun engineUpdate(block: () -> Unit) {

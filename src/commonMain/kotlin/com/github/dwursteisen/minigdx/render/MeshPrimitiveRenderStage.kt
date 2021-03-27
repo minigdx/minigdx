@@ -63,7 +63,7 @@ class MeshPrimitiveRenderStage(
             project.length2()
         }
         transparentPrimitive.forEach { (position, primitive) ->
-            val model = position.transformation
+            val model = position.combinedTransformation
             drawPrimitive(primitive, model)
         }
         transparentPrimitive.clear()

@@ -133,6 +133,14 @@ data class BoundingBox(
         }
     }
 
+    override fun onDetach(parent: Entity) {
+        needsToBeUpdated = true
+    }
+
+    override fun onAttach(parent: Entity) {
+        needsToBeUpdated = true
+    }
+
     private class BoxBuilder(
         var minX: Float? = null,
         var maxX: Float? = null,
