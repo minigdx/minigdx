@@ -9,7 +9,8 @@ class RayResolver {
     // copy from https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/math/Intersector.java#L514
     fun intersectRayBounds(origin: Vector3, direction: Vector3, bounding: Entity): Vector3? {
 
-        val box = bounding.get(BoundingBox::class).transform(bounding)
+        val box = bounding.get(BoundingBox::class)
+        box.touch = false
 
         if (box.contains(origin)) {
             return origin.copy()
@@ -85,6 +86,7 @@ class RayResolver {
             }
         }
         return if (hit) {
+            box.touch = true
             val intersection = direction.copy().scale(lowest).add(origin)
             if (intersection.x < box.min.x) {
                 intersection.x = box.min.x

@@ -8,7 +8,7 @@ import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
-import com.github.dwursteisen.minigdx.ecs.components.Light
+import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
@@ -36,7 +36,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         Camera::class
     ),
     lightsQuery: EntityQuery = EntityQuery(
-        Light::class
+        LightComponent::class
     ),
     val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
 ) : Stage, System(query) {

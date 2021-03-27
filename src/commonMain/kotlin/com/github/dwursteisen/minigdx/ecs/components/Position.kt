@@ -16,67 +16,20 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.position.InternalSimulation
 import com.github.dwursteisen.minigdx.ecs.components.position.Simulation
 import com.github.dwursteisen.minigdx.ecs.components.position.SimulationResult
+import com.github.dwursteisen.minigdx.ecs.components.position.TransformationHolder
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.math.Vector3
-
-class TransformationHolder(
-    translation: Mat4 = Mat4.identity(),
-    rotation: Mat4 = Mat4.identity(),
-    scale: Mat4 = Mat4.identity()
-) {
-
-    private var combined: Mat4 = Mat4.identity()
-
-    var transalation: Mat4 = translation(translation)
-        set(value) {
-            field = translation(value)
-            combined = updateTransformation()
-        }
-
-    var rotation: Quaternion = normalize(Quaternion.from(rotation(rotation)))
-        set(value) {
-            field = value
-            combined = updateTransformation()
-        }
-
-    var scale: Mat4 = scale(scale)
-        set(value) {
-            field = scale(value)
-            combined = updateTransformation()
-        }
-
-    var transformation: Mat4
-        get() = combined
-        set(value) {
-            transalation = translation(value)
-            rotation = normalize(
-                Quaternion.from(
-                    rotation(
-                        Float3(
-                            value.rotation.x,
-                            value.rotation.y,
-                            value.rotation.z
-                        )
-                    )
-                )
-            )
-            scale = scale(value)
-            combined = updateTransformation()
-        }
-
-    init {
-        combined = updateTransformation()
-    }
-
-    private fun updateTransformation(): Mat4 {
-        return transalation * Mat4.from(rotation) * scale
-    }
-}
+import kotlin.reflect.KClass
 
 open class Position(
     globalTranslation: Mat4 = Mat4.identity(),
     globalRotation: Mat4 = Mat4.identity(),
     globalScale: Mat4 = Mat4.identity()
 ) : Component {
+
+    private var owner: Entity? = null
+
+    private var needsToBeUpdated: Boolean = true
 
     /**
      * Store the global transformation.
@@ -121,8 +74,34 @@ open class Position(
     val globalQuaternion: Quaternion
         get() = globalTransformationHolder.rotation
 
+    private var _combinedTransformation: Mat4 = Mat4.identity()
+
+    val combinedTransformation: Mat4
+        get() {
+            if (needsToBeUpdated) {
+                val parentTransformation = owner?.parent?.get(Position::class)?.combinedTransformation ?: Mat4.identity()
+                _combinedTransformation = parentTransformation * transformation
+                needsToBeUpdated = false
+            }
+            return _combinedTransformation
+        }
+
     init {
         update()
+    }
+
+    override fun onAdded(entity: Entity) {
+        owner = entity
+    }
+
+    override fun onRemoved(entity: Entity) {
+        owner = null
+    }
+
+    override fun onComponentUpdated(componentType: KClass<out Component>) {
+        if (componentType == Position::class) {
+            needsToBeUpdated = true
+        }
     }
 
     fun setLocalTransform(transformation: Mat4): Position {
@@ -330,6 +309,8 @@ open class Position(
         val cs = transformation.scale
         scale.set(cs.x, cs.y, cs.z)
 
+        // trigger update
+        owner?.componentUpdated(this::class)
         return this
     }
 

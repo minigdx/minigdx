@@ -22,6 +22,10 @@ class Entity(
 
     var parent: Entity? = null
 
+    init {
+        components.forEach { it.onAdded(this) }
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> get(type: KClass<T>): T {
         return componentsByType.getValue(type).toList().first() as T
@@ -36,24 +40,32 @@ class Entity(
         this.components += components
         componentsType = componentsType + components.map { it::class }.toSet()
         componentsByType = this.components.groupBy { it::class }
+
+        components.forEach { it.onAdded(this) }
     }
 
     fun add(component: Component) = engineUpdate {
         components += component
         componentsType = componentsType + component::class
         componentsByType = components.groupBy { it::class }
+
+        component.onAdded(this)
     }
 
     fun remove(component: Component) = engineUpdate {
         components -= component
         componentsType = componentsType - component::class
         componentsByType = components.groupBy { it::class }
+
+        component.onRemoved(this)
     }
 
     fun remove(componentType: KClass<out Component>) = engineUpdate {
-        components = components.filter { it::class != componentType }
+        val removed = components.filter { it::class == componentType }
+        components -= removed
         componentsType = componentsType - componentType
         componentsByType = components.groupBy { it::class }
+        removed.forEach { it.onRemoved(this) }
     }
 
     fun destroy() = engine.destroy(this)
@@ -81,8 +93,15 @@ class Entity(
     }
 
     fun getChild(name: String): Entity = _namedChildren.get(name)
-        ?: throw IllegalArgumentException("Children with name '$name' not found. " +
-            "Available children: ${_namedChildren.keys.joinToString(",")}")
+        ?: throw IllegalArgumentException(
+            "Children with name '$name' not found. " +
+                "Available children: ${_namedChildren.keys.joinToString(",")}"
+        )
+
+    internal fun componentUpdated(componentUpdated: KClass<out Component>) {
+        components.forEach { it.onComponentUpdated(componentUpdated) }
+        chidren.forEach { it.componentUpdated(componentUpdated) }
+    }
 
     fun <T> walkOut(initialValue: T, executionBlock: Entity.(accumulator: T) -> T): T {
         return parent?.executionBlock(initialValue) ?: initialValue

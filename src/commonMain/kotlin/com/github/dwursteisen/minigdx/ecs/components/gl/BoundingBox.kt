@@ -9,82 +9,17 @@ import com.dwursteisen.minigdx.scene.api.model.Mesh
 import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Position
 import com.dwursteisen.minigdx.scene.api.model.Vertex
-import com.dwursteisen.minigdx.scene.api.relation.Node
+import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.math.ImmutableVector3
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.toVector3
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import com.github.dwursteisen.minigdx.ecs.components.Position as GdxPosition
-
-class TransformedBoundingBox(private val transformation: Mat4, private val origin: BoundingBox) {
-
-    private val _min = Vector3()
-    private val _max = Vector3()
-    private val _center = Vector3()
-    private val _size = Vector3()
-
-    /**
-     * Minus points of the bounding box (ie: lower left)
-     */
-    val min: ImmutableVector3 = ImmutableVector3(_min)
-
-    /**
-     * Maximun points of  the bounding box
-     */
-    val max: ImmutableVector3 = ImmutableVector3(_max)
-
-    /**
-     * Center of the bounding box.
-     */
-    val center: ImmutableVector3 = ImmutableVector3(_center)
-
-    /**
-     * Size of the bounding box
-     */
-    val size: ImmutableVector3 = ImmutableVector3(_size)
-
-    init {
-        computeMin()
-        computeMax()
-        computeSize()
-        computeCenter()
-    }
-
-    fun contains(point: Vector3): Boolean {
-        return min.x <= point.x && max.x >= point.x &&
-            min.y <= point.y && max.y >= point.y &&
-            min.z <= point.z && max.z >= point.z
-    }
-
-    private fun computeMin() {
-        val min = (transformation * translation(Float3(origin.min.x, origin.min.y, origin.min.z))).translation
-        _min.set(min.x, min.y, min.z)
-    }
-
-    private fun computeMax() {
-        val max = (transformation * translation(Float3(origin.max.x, origin.max.y, origin.max.z))).translation
-        _max.set(max.x, max.y, max.z)
-    }
-
-    private fun computeSize() {
-        this._size.set(
-            max.x - min.x,
-            max.y - min.y,
-            max.z - min.z
-        )
-    }
-
-    private fun computeCenter() {
-        this._center.set(
-            size.width * 0.5f + min.x,
-            size.height * 0.5f + min.y,
-            size.deep * 0.5f + +min.z,
-        )
-    }
-}
+import kotlin.reflect.KClass
 
 data class BoundingBox(
     override var id: Id = Id(),
@@ -93,6 +28,7 @@ data class BoundingBox(
      * Is this box has been touched? It's mainly used to display it using a different color for debugging
      */
     var touch: Boolean = false,
+    var owner: Entity? = null,
     // --- OpenGL fields ---
     val vertices: List<Vertex>,
     val order: List<Int>,
@@ -101,8 +37,12 @@ data class BoundingBox(
     var colorBuffer: Buffer? = null,
 ) : GLResourceComponent {
 
+    private val _rawMin = Vector3()
+    private val _rawMax = Vector3()
+
     private val _min = Vector3()
     private val _max = Vector3()
+
     private val _center = Vector3()
     private val _size = Vector3()
 
@@ -110,46 +50,87 @@ data class BoundingBox(
      * Minus points of the bounding box (ie: lower left)
      */
     val min: ImmutableVector3 = ImmutableVector3(_min)
+        get() {
+            updateIfNeeded()
+            return field
+        }
 
     /**
      * Maximun points of  the bounding box
      */
     val max: ImmutableVector3 = ImmutableVector3(_max)
+        get() {
+            updateIfNeeded()
+            return field
+        }
 
     /**
      * Center of the bounding box.
      */
     val center: ImmutableVector3 = ImmutableVector3(_center)
+        get() {
+            updateIfNeeded()
+            return field
+        }
 
     /**
      * Size of the bounding box
      */
     val size: ImmutableVector3 = ImmutableVector3(_size)
+        get() {
+            updateIfNeeded()
+            return field
+        }
 
     /**
      *
      */
+    // FIXME: should be based on min/max instead
     val radius: Float = radius(vertices)
-
-    init {
-        this._size.set(
-            max.x - min.x,
-            max.y - min.y,
-            max.z - min.z
-        )
-        this._center.set(
-            size.width * 0.5f + min.x,
-            size.height * 0.5f + min.y,
-            size.deep * 0.5f + +min.z,
-        )
-    }
-
-    fun transform(base: Entity): TransformedBoundingBox {
-        val transformation = base.walkOut(base.get(GdxPosition::class).transformation) { acc ->
-            this.get(GdxPosition::class).transformation * acc
+        get() {
+            updateIfNeeded()
+            return field
         }
 
-        return TransformedBoundingBox(transformation, this)
+    private var needsToBeUpdated = true
+
+    private fun updateIfNeeded() {
+        if (!needsToBeUpdated) return
+        val transformation = owner?.position?.combinedTransformation ?: Mat4.identity()
+        _min.set((transformation * translation(_rawMin.toFloat3())).translation.toVector3())
+        _max.set((transformation * translation(_rawMax.toFloat3())).translation.toVector3())
+
+        this._size.set(
+            _max.x - _min.x,
+            _max.y - _min.y,
+            _max.z - _min.z
+        )
+        this._center.set(
+            _size.x * 0.5f + _min.x,
+            _size.y * 0.5f + _min.y,
+            _size.z * 0.5f + +_min.z,
+        )
+        needsToBeUpdated = false
+    }
+
+    fun contains(point: Vector3): Boolean {
+        return min.x <= point.x && max.x >= point.x &&
+            min.y <= point.y && max.y >= point.y &&
+            min.z <= point.z && max.z >= point.z
+    }
+
+    override fun onAdded(entity: Entity) {
+        owner = entity
+    }
+
+    override fun onRemoved(entity: Entity) {
+        owner = null
+    }
+
+    override fun onComponentUpdated(componentType: KClass<out Component>) {
+        if (componentType == com.github.dwursteisen.minigdx.ecs.components.Position::class) {
+            needsToBeUpdated = true
+        }
     }
 
     private class BoxBuilder(
@@ -287,13 +268,13 @@ data class BoundingBox(
                     3, 7
                 )
             ).apply {
-                this._min.set(
+                this._rawMin.set(
                     builder.minX!!.toFloat(),
                     builder.minY!!.toFloat(),
                     builder.minZ!!.toFloat()
                 )
 
-                this._max.set(
+                this._rawMax.set(
                     builder.maxX!!.toFloat(),
                     builder.maxY!!.toFloat(),
                     builder.maxZ!!.toFloat()
@@ -384,13 +365,13 @@ data class BoundingBox(
                     builder.maxZ = max(builder.maxZ ?: vector.z, vector.z)
                     builder
                 }
-                this._min.set(
+                this._rawMin.set(
                     builder.minX!!.toFloat(),
                     builder.minY!!.toFloat(),
                     builder.minZ!!.toFloat()
                 )
 
-                this._max.set(
+                this._rawMax.set(
                     builder.maxX!!.toFloat(),
                     builder.maxY!!.toFloat(),
                     builder.maxZ!!.toFloat()

@@ -10,7 +10,7 @@ data class Color(
     var alpha: Percent = 1.0
 )
 
-class Light(
+class LightComponent(
     val color: Color = Color()
 ) : Component {
 

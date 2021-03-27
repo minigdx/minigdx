@@ -1,7 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.components.Script
+import com.github.dwursteisen.minigdx.ecs.components.ScriptComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.script.ScriptContext
 import kotlinx.coroutines.GlobalScope
@@ -11,7 +11,7 @@ import kotlinx.coroutines.sync.Mutex
 /**
  * Execute script in a coroutine context (one context per script)
  */
-class ScriptExecutorSystem : System(EntityQuery(Script::class)), ScriptContext {
+class ScriptExecutorSystem : System(EntityQuery(ScriptComponent::class)), ScriptContext {
 
     private val mutex = Mutex()
     override var delta: Seconds = 0f
@@ -23,7 +23,7 @@ class ScriptExecutorSystem : System(EntityQuery(Script::class)), ScriptContext {
 
     override fun onEntityAdded(entity: Entity) {
         GlobalScope.launch {
-            entity.get(Script::class).execute(this@ScriptExecutorSystem)
+            entity.get(ScriptComponent::class).execute(this@ScriptExecutorSystem)
         }
     }
 
