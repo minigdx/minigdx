@@ -2,6 +2,8 @@ package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.inverse
+import com.curiouscreature.kotlin.math.rotation
+import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
@@ -13,6 +15,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.toVector3
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
 
@@ -38,19 +41,27 @@ class MeshPrimitiveRenderStage(
     // Distance ; Mesh
     private val transparentPrimitive = mutableListOf<Pair<Position, MeshPrimitive>>()
 
-    private val cameraDirection: Vector3 = Vector3.ZERO.copy()
+    private val cameraDirection: Vector3 = Vector3.FORWARD.copy()
+    private val cameraPosition: Vector3 = Vector3.ZERO.copy()
 
     override fun update(delta: Seconds) {
         camera?.let { cam ->
             val position = cam.get(Position::class)
-            cameraDirection.set(position.rotation).normalize()
+            val direction = rotation(position.combinedTransformation) * translation(Vector3.FORWARD.toFloat3())
+            cameraDirection.set(direction.translation.toVector3()).normalize().negate()
+            cameraPosition.set(position.combinedTransformation.translation.toVector3())
         }
 
         super.update(delta)
         gl.enable(GL.BLEND)
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
-        transparentPrimitive.sortBy { (position, _) -> position.translation.copy().project(cameraDirection).length2() }
+        transparentPrimitive.sortByDescending { (position, _) ->
+            val translation = position.combinedTransformation.translation.toVector3()
+            val relativeToCamera = translation.sub(cameraPosition)
+            val project = relativeToCamera.project(cameraDirection)
+            project.length2()
+        }
         transparentPrimitive.forEach { (position, primitive) ->
             val model = position.transformation
             drawPrimitive(primitive, model)
@@ -61,7 +72,7 @@ class MeshPrimitiveRenderStage(
 
     override fun update(delta: Seconds, entity: Entity) {
         val position = entity.get(Position::class)
-        val model = position.transformation
+        val model = position.combinedTransformation
 
         entity.findAll(MeshPrimitive::class).forEach { primitive ->
             if (primitive.hasAlpha) {
@@ -88,7 +99,7 @@ class MeshPrimitiveRenderStage(
             // We configure the current light
             vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color)
             // Set the light in the projection space
-            val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
+            val translation = (inverse(model) * currentLight.get(Position::class).combinedTransformation).translation
             vertex.uLightPosition.apply(
                 program,
                 translation.x,

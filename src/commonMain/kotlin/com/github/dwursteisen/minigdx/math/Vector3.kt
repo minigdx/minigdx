@@ -90,6 +90,11 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         )
     }
 
+    /**
+     * Projects this vector onto another vector
+     *
+     * https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/java/com/jme3/math/Vector3f.java
+     */
     fun project(other: Vector3): Vector3 {
         val n = this.dot(other) // A . B
         val d = other.length2(); // |B|^2
