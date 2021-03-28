@@ -50,4 +50,6 @@ interface EntityFactory {
      * Create an entity for the camera that can be use for the game interface.
      */
     fun createUICamera(): Entity
+
+    fun createLight(node: Node, scene: Scene): Entity
 }

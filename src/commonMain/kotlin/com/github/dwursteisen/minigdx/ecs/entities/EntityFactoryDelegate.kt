@@ -19,6 +19,8 @@ import com.github.dwursteisen.minigdx.api.t
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
+import com.github.dwursteisen.minigdx.ecs.components.Color
+import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
@@ -39,7 +41,7 @@ class EntityFactoryDelegate : EntityFactory {
             ObjectType.ARMATURE -> createArmature(node, scene)
             ObjectType.BOX -> createBox(node, scene, parent)
             ObjectType.CAMERA -> createCamera(node, scene)
-            ObjectType.LIGHT -> TODO()
+            ObjectType.LIGHT -> createLight(node, scene)
             ObjectType.MODEL -> createModel(node, scene)
         }
     }
@@ -102,6 +104,14 @@ class EntityFactoryDelegate : EntityFactory {
             val spritePrimitive = TextComponent(text, font, meshPrimitive)
             add(spritePrimitive)
             add(meshPrimitive)
+        }
+    }
+
+    override fun createLight(node: Node, scene: Scene): Entity {
+        return create {
+            val transformation = node.transformation.toMat4()
+            it.add(Position(transformation, transformation, transformation))
+            it.add(LightComponent(Color(0.6f, 0.6f, 0.6f)))
         }
     }
 
