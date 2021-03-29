@@ -97,18 +97,16 @@ data class BoundingBox(
     private fun updateIfNeeded() {
         if (!needsToBeUpdated) return
         val transformation = owner?.position?.combinedTransformation ?: Mat4.identity()
-        val newMin = (transformation * translation(_rawMin.toFloat3())).translation.toVector3()
-        val newMax = (transformation * translation(_rawMax.toFloat3())).translation.toVector3()
 
         val vertices = listOf(
-            Vector3(newMin.x, newMin.y, newMin.z),
-            Vector3(newMin.x, newMin.y, newMax.z),
-            Vector3(newMin.x, newMax.y, newMin.z),
-            Vector3(newMin.x, newMax.y, newMax.z),
-            Vector3(newMax.x, newMin.y, newMin.z),
-            Vector3(newMax.x, newMin.y, newMax.z),
-            Vector3(newMax.x, newMax.y, newMin.z),
-            Vector3(newMax.x, newMax.y, newMax.z),
+            (transformation * translation(Float3(_rawMin.x, _rawMin.y, _rawMin.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMin.x, _rawMin.y, _rawMax.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMin.x, _rawMax.y, _rawMin.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMin.x, _rawMax.y, _rawMax.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMax.x, _rawMin.y, _rawMin.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMax.x, _rawMin.y, _rawMax.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMax.x, _rawMax.y, _rawMin.z))).translation.toVector3(),
+            (transformation * translation(Float3(_rawMax.x, _rawMax.y, _rawMax.z))).translation.toVector3(),
         )
         val (min, max) = computeMinMax(vertices)
         this._min.set(min)
