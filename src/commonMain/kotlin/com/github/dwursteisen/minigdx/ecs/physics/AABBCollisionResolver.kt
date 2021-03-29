@@ -1,11 +1,10 @@
 package com.github.dwursteisen.minigdx.ecs.physics
 
-import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 
 class AABBCollisionResolver : CollisionResolver {
 
-    override fun collide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean {
+    override fun collide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
         val minXA = entityA.min.x
         val maxXA = entityA.max.x
         val minYA = entityA.min.y

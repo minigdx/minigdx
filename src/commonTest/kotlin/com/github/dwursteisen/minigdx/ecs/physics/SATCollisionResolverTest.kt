@@ -17,9 +17,7 @@ class SATCollisionResolverTest {
     fun collide_it_does_not_collide() {
         val result = collider.collide(
             square,
-            translation(Float3(0f, 0f, 0f)),
-            square,
-            translation(Float3(3f, 0f, 0f))
+            square
         )
         assertFalse(result)
     }
@@ -28,9 +26,7 @@ class SATCollisionResolverTest {
     fun collide_it_collides() {
         val result = collider.collide(
             square,
-            translation(Float3(1f, 0f, 0f)),
-            square,
-            translation(Float3(0.8f, 0f, 0f))
+            square
         )
         assertTrue(result)
     }

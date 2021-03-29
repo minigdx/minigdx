@@ -15,7 +15,10 @@ import kotlin.math.sqrt
 // https://github.com/CasuallyCritical/OLC_PGEX_Collision3d/blob/eceaf621f1cfccd8bfe954e0b940a89857c6169f/olcPGEX_Collisions3D.h
 class SATCollisionResolver : CollisionResolver {
 
-    override fun collide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean {
+    override fun collide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
+        val positionA = Mat4.identity()
+        val positionB = Mat4.identity()
+
         // Stop collision resolving if the entity can't collide at the moment.
         if (!mightCollide(entityA, positionA, entityB, positionB)) {
             return false
