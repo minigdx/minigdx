@@ -25,6 +25,7 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
 
         val box = entity.get(BoundingBox::class)
         render(box)
+        box.touch = false
     }
 
     private fun render(box: BoundingBox) {

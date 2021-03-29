@@ -165,6 +165,7 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
         val X = Vector3(1, 0, 0)
         val Y = Vector3(0, 1, 0)
+        val MINUS_X = Vector3(-1, 0, 0)
         val MINUS_Y = Vector3(0, -1, 0)
         val Z = Vector3(0, 0, 1)
         val ZERO = Vector3(0, 0, 0)
