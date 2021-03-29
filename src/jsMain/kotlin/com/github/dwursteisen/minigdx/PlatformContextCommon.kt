@@ -17,6 +17,7 @@ import com.github.dwursteisen.minigdx.logger.profile
 import kotlinx.browser.window
 import org.khronos.webgl.WebGLRenderingContextBase
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.get
 import kotlin.math.min
 
 actual open class PlatformContextCommon actual constructor(
@@ -31,12 +32,32 @@ actual open class PlatformContextCommon actual constructor(
 
     actual override fun createGL(): GL {
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-        val context = canvas.getContext("webgl2") as WebGLRenderingContextBase
+        val context = canvas.getContext("webgl2") as? WebGLRenderingContextBase // Most browsers
+            ?: oldWebGL() // Safari
         return WebGL(context)
+    }
+
+    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
+    private fun oldWebGL(): WebGLRenderingContextBase {
+        console.warn("WebGL 2 not detected! Falling back to WebGL 1.")
+        console.warn(
+            "MiniGDX might not work as expected as the game is run from a browser" +
+                "that might not support all features required (like Web GL 2, Audio API, ...)"
+        )
+        console.warn(
+            "Please warn your user to update their browser or switch to anoter browser " +
+                "like Firefox, Chrome or Opera."
+        )
+        return canvas.getContext("webgl") as WebGLRenderingContextBase
     }
 
     actual override fun createFileHandler(logger: Logger): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
+
+        // Audio fix for Safara
+        if (window.get("AudioContext") == undefined) {
+            js("window.AudioContext = webkitAudioContext;")
+        }
         return FileHandlerCommon(
             PlatformFileHandler(
                 configuration.rootPath,
