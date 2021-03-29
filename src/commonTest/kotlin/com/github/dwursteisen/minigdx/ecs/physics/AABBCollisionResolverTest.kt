@@ -6,7 +6,6 @@ import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
-import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import createGameConfiguration
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -20,7 +19,8 @@ class AABBCollisionResolverTest {
 
     private val engine = Engine(
         GameContext(
-            MockPlatformContext(createGameConfiguration()), Resolution(100, 100)
+            MockPlatformContext(createGameConfiguration()),
+            Resolution(100, 100)
         )
     )
 

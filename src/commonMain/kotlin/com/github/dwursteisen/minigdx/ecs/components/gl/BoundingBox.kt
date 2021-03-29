@@ -16,12 +16,11 @@ import com.github.dwursteisen.minigdx.math.ImmutableVector3
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.math.toVector3
 import com.github.dwursteisen.minigdx.shaders.Buffer
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
 
-data class BoundingBox(
+class BoundingBox private constructor(
     override var id: Id = Id(),
     override var isDirty: Boolean = true,
     /**
@@ -85,11 +84,9 @@ data class BoundingBox(
     /**
      *
      */
-    // FIXME: should be based on min/max instead
-    val radius: Float = radius(vertices)
+    val radius: Float
         get() {
-            updateIfNeeded()
-            return field
+            return max(max(size.width, size.height), size.deep) * 0.5f
         }
 
     private var needsToBeUpdated = true
@@ -196,12 +193,6 @@ data class BoundingBox(
 
         private val normal = Normal(0f, 0f, 0f)
         private val white = Color(1f, 1f, 1f)
-
-        private fun radius(vertices: List<Vertex>): Float {
-            return vertices.map { it.position }
-                .flatMap { listOf(abs(it.x), abs(it.y), abs(it.z)) }
-                .maxOrNull() ?: 0f
-        }
 
         @ExperimentalStdlibApi
         fun from(mesh: Mesh): BoundingBox {

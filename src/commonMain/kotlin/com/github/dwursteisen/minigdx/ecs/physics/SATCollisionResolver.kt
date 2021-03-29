@@ -20,7 +20,7 @@ class SATCollisionResolver : CollisionResolver {
         val positionB = Mat4.identity()
 
         // Stop collision resolving if the entity can't collide at the moment.
-        if (!mightCollide(entityA, positionA, entityB, positionB)) {
+        if (!mightCollide(entityA, entityB)) {
             return false
         }
 
@@ -110,10 +110,10 @@ class SATCollisionResolver : CollisionResolver {
 
     fun Position.asFloat4(): Float4 = Float4(this.x, this.y, this.z, 1f)
 
-    fun mightCollide(entityA: BoundingBox, positionA: Mat4, entityB: BoundingBox, positionB: Mat4): Boolean {
+    fun mightCollide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
         // compute distance between positionA and positionB
-        val midline = positionB.position.minus(positionA.position)
-        val length = midline.length
+        val midline = entityB.center.mutable().sub(entityA.center)
+        val length = midline.length()
         // compute sum of radius
         val sumRadius = entityA.radius + entityB.radius
         // radius > length means collision

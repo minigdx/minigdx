@@ -42,6 +42,8 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
     fun sub(other: Vector3) = add(-other.x, -other.y, -other.z)
 
+    fun sub(other: ImmutableVector3) = add(-other.x, -other.y, -other.z)
+
     /**
      * Return the negate vector:
      * all values are multiplied by -1
