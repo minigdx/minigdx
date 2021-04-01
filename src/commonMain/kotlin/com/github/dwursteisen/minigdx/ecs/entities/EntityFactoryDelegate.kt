@@ -39,21 +39,21 @@ class EntityFactoryDelegate : EntityFactory {
     override fun createFromNode(node: Node, scene: Scene, parent: Entity?): Entity {
         return when (node.type) {
             ObjectType.ARMATURE -> createArmature(node, scene)
-            ObjectType.BOX -> createBox(node, scene, parent)
+            ObjectType.BOX -> createBox(node, scene)
             ObjectType.CAMERA -> createCamera(node, scene)
             ObjectType.LIGHT -> createLight(node, scene)
             ObjectType.MODEL -> createModel(node, scene)
-        }
+        }.also { entity -> entity.attachTo(parent) }
     }
 
-    override fun createBox(node: Node, scene: Scene, parent: Entity?): Entity {
+    override fun createBox(node: Node, scene: Scene): Entity {
         val box = engine.create {
             val globalTranslation = node.transformation.toMat4()
             named(node.name)
             add(BoundingBox.default())
             add(Position(globalTranslation, globalTranslation, globalTranslation))
         }
-        return box.attachTo(parent)
+        return box
     }
 
     override fun createText(text: String, font: Font): Entity {
@@ -141,6 +141,7 @@ class EntityFactoryDelegate : EntityFactory {
                 )
             }
             it.add(primitives)
+            it.add(BoundingBox.from(model.mesh))
         }
         node.children.forEach {
             createFromNode(it, scene, entity)

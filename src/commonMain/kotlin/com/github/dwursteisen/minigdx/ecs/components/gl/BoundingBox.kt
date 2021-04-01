@@ -86,16 +86,29 @@ class BoundingBox private constructor(
      */
     val radius: Float
         get() {
-            return max(max(size.width, size.height), size.deep) * 0.5f
+            updateIfNeeded()
+            return _max.copy().sub(_center).length()
         }
+
+    val combinedTransformation: Mat4
+        get() {
+            return owner?.position?.combinedTransformation ?: Mat4.identity()
+        }
+
+    var edges: List<Vector3> = emptyList()
+        get() {
+            updateIfNeeded()
+            return field
+        }
+        private set
 
     private var needsToBeUpdated = true
 
     private fun updateIfNeeded() {
         if (!needsToBeUpdated) return
-        val transformation = owner?.position?.combinedTransformation ?: Mat4.identity()
+        val transformation = combinedTransformation
 
-        val vertices = listOf(
+        val edges = listOf(
             (transformation * translation(Float3(_rawMin.x, _rawMin.y, _rawMin.z))).translation.toVector3(),
             (transformation * translation(Float3(_rawMin.x, _rawMin.y, _rawMax.z))).translation.toVector3(),
             (transformation * translation(Float3(_rawMin.x, _rawMax.y, _rawMin.z))).translation.toVector3(),
@@ -105,7 +118,8 @@ class BoundingBox private constructor(
             (transformation * translation(Float3(_rawMax.x, _rawMax.y, _rawMin.z))).translation.toVector3(),
             (transformation * translation(Float3(_rawMax.x, _rawMax.y, _rawMax.z))).translation.toVector3(),
         )
-        val (min, max) = computeMinMax(vertices)
+
+        val (min, max) = computeMinMax(edges)
         this._min.set(min)
         this._max.set(max)
 
@@ -117,8 +131,9 @@ class BoundingBox private constructor(
         this._center.set(
             _size.x * 0.5f + _min.x,
             _size.y * 0.5f + _min.y,
-            _size.z * 0.5f + +_min.z,
+            _size.z * 0.5f + _min.z,
         )
+        this.edges = edges
         needsToBeUpdated = false
     }
 

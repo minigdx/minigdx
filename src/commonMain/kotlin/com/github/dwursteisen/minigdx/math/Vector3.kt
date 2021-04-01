@@ -1,7 +1,12 @@
 package com.github.dwursteisen.minigdx.math
 
+import com.curiouscreature.kotlin.math.Degrees
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Quaternion
+import com.curiouscreature.kotlin.math.rotation
+import com.curiouscreature.kotlin.math.translation
+import com.github.dwursteisen.minigdx.Percent
+import com.github.dwursteisen.minigdx.toPercent
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.asin
@@ -81,6 +86,10 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         return x * other.x + y * other.y + z * other.z
     }
 
+    fun dot(other: ImmutableVector3): Float {
+        return x * other.x + y * other.y + z * other.z
+    }
+
     /**
      * Set the vector as the perpendicular vectors
      */
@@ -110,6 +119,15 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         this.x *= scalar
         this.y *= scalar
         this.z *= scalar
+        return this
+    }
+
+    /**
+     * Rotate the vector
+     */
+    fun rotate(x: Percent, y: Percent, z: Percent, angle: Degrees): Vector3 {
+        val result = rotation(Float3(x.toPercent(), y.toPercent(), z.toPercent()), angle) * translation(this.toFloat3())
+        set(result.translation.x, result.translation.y, result.translation.z)
         return this
     }
 

@@ -1,127 +1,86 @@
 package com.github.dwursteisen.minigdx.ecs.physics
 
-import com.curiouscreature.kotlin.math.Float3
-import com.curiouscreature.kotlin.math.Float4
-import com.curiouscreature.kotlin.math.Mat4
-import com.dwursteisen.minigdx.scene.api.model.Position
+import com.curiouscreature.kotlin.math.rotation
+import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.math.Vector3
+import com.github.dwursteisen.minigdx.math.toVector3
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.sqrt
 
-// FIXME: As the Bounding Box is expressed with line and not triangles,
-//    the algorithm is not working any more.
 // https://github.com/CasuallyCritical/OLC_PGEX_Collision3d/blob/eceaf621f1cfccd8bfe954e0b940a89857c6169f/olcPGEX_Collisions3D.h
 class SATCollisionResolver : CollisionResolver {
 
-    override fun collide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
-        val positionA = Mat4.identity()
-        val positionB = Mat4.identity()
-
+    override fun collide(boxA: BoundingBox, boxB: BoundingBox): Boolean {
         // Stop collision resolving if the entity can't collide at the moment.
-        if (!mightCollide(entityA, entityB)) {
+        if (!mightCollide(boxA, boxB)) {
             return false
         }
 
-        val trianglesA = triangles(entityA, positionA)
-        val trianglesB = triangles(entityB, positionB)
+        // Create all axes for the two boxes
+        val axes = createAxes(boxA) + createAxes(boxB)
 
-        // Get all axis
-        val axis = trianglesA.flatMap { it.axis } + trianglesB.flatMap { it.axis }
-
-        return trianglesA.any { a ->
-            trianglesB.any { b ->
-                axis.all { ax ->
-
-                    val projA = project(ax, a)
-                    val projB = project(ax, b)
-
-                    projA.overlap(projB)
-                }
-            }
+        // Look for a projections on the same axe that doesn't overlapping
+        val allOverlaps = axes.all { axe ->
+            val projectionA = project(axe, boxA)
+            val projectionB = project(axe, boxB)
+            projectionA.overlap(projectionB)
         }
+
+        // If a projection doesn't overlap another projection,
+        // it means that a gap exist between the two shapes.
+        // If there is no gap, the two boxes are colliding.
+        // If there is a gap, the two boxes are not colliding.
+        return allOverlaps
     }
 
-    private fun project(
-        axis: Axis,
-        triangle: Triangle
-    ): Projection {
+    private fun project(axe: Vector3, boxA: BoundingBox): Projection {
         var min = Float.POSITIVE_INFINITY
         var max = Float.NEGATIVE_INFINITY
-
-        triangle.points.forEach { vertex ->
-            val vertexPosition = Vector3(
-                vertex.x,
-                vertex.y,
-                vertex.z
-            )
-            val proj = Vector3(axis.x, axis.y, axis.z).dot(vertexPosition)
-
-            min = min(min, proj)
-            max = max(max, proj)
+        boxA.edges.forEach {
+            val minA = axe.dot(it)
+            val maxA = axe.dot(it)
+            min = min(min, minA)
+            max = max(max, maxA)
         }
-
         return Projection(min, max)
     }
 
-    private fun triangles(boundingBox: BoundingBox, transformation: Mat4): List<Triangle> {
-        return boundingBox.order.map { boundingBox.vertices[it] }
-            .chunked(3)
-            .map {
-                Triangle(
-                    a = (transformation * it[0].position.asFloat4()).xyz,
-                    b = (transformation * it[1].position.asFloat4()).xyz,
-                    c = (transformation * it[2].position.asFloat4()).xyz
-                )
-            }
+    /**
+     * Create default axes and move then regarding the current box transformation.
+     */
+    private fun createAxes(boundingBox: BoundingBox): List<Vector3> {
+        val axeX = Vector3(1f, 0f, 0f)
+        val axeY = Vector3(0f, 1f, 0f)
+        val axeZ = Vector3(0f, 0f, 1f)
+
+        val x = rotation(boundingBox.combinedTransformation) * translation(axeX.toFloat3())
+        val y = rotation(boundingBox.combinedTransformation) * translation(axeY.toFloat3())
+        val z = rotation(boundingBox.combinedTransformation) * translation(axeZ.toFloat3())
+
+        return listOf(x.translation.toVector3(), y.translation.toVector3(), z.translation.toVector3())
     }
 
-    data class Triangle(val a: Float3, val b: Float3, val c: Float3) {
-
-        val points by lazy { listOf(a, b, c) }
-
-        val axis by lazy {
-            points.mapIndexed { index, point1 ->
-                val next = (index + 1) % points.size
-                val point2 = points[next]
-                Vector3(
-                    point1.x - point2.x,
-                    point1.y - point2.y,
-                    point1.z - point2.z
-                )
-                    .normal()
-                    .normalize()
-            }.map {
-                Axis(it.x, it.y, it.z)
-            }
-        }
+    /**
+     * Check if the two box are close enough it might worth to check that a collision can occur.
+     *
+     * If not, the two boxes are too far from each other: they can not collide.
+     */
+    private fun mightCollide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
+        // compute distance between positionA and positionB
+        val midline = entityB.center.mutable().sub(entityA.center)
+        val length = midline.length()
+        // compute sum of radius
+        val sumRadius = entityA.radius + entityB.radius
+        // radius > length means the two entities are close enought so a collision can occur.
+        return sumRadius >= length
     }
 
-    data class Axis(val x: Float, val y: Float, val z: Float)
-
-    data class Projection(val min: Float, val max: Float) {
+    private data class Projection(val min: Float, val max: Float) {
 
         fun overlap(p2: Projection): Boolean {
             // Check if this projection overlaps with the passed one
             return !(p2.max < min || max < p2.min)
         }
     }
-
-    fun Position.asFloat4(): Float4 = Float4(this.x, this.y, this.z, 1f)
-
-    fun mightCollide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
-        // compute distance between positionA and positionB
-        val midline = entityB.center.mutable().sub(entityA.center)
-        val length = midline.length()
-        // compute sum of radius
-        val sumRadius = entityA.radius + entityB.radius
-        // radius > length means collision
-        return sumRadius >= length
-    }
-
-    private val Float3.length: Float
-        get() {
-            return sqrt(x * x + y * y + z * z)
-        }
 }

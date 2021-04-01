@@ -11,5 +11,5 @@ interface CollisionResolver {
         return collide(boxA, boxB)
     }
 
-    fun collide(entityA: BoundingBox, entityB: BoundingBox): Boolean
+    fun collide(boxA: BoundingBox, boxB: BoundingBox): Boolean
 }

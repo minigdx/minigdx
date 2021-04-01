@@ -10,6 +10,7 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
     private val engine = Engine(gameContext)
 
     fun create() {
+        game.createDefaultSystems(engine).forEach { engine.addSystem(it) }
         game.createSystems(engine).forEach { engine.addSystem(it) }
         val renderStage = game.createRenderStage(
             gameContext.gl,

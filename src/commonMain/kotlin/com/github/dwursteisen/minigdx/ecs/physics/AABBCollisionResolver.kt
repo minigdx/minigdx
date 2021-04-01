@@ -4,20 +4,20 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 
 class AABBCollisionResolver : CollisionResolver {
 
-    override fun collide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
-        val minXA = entityA.min.x
-        val maxXA = entityA.max.x
-        val minYA = entityA.min.y
-        val maxYA = entityA.max.y
-        val minZA = entityA.min.z
-        val maxZA = entityA.max.z
+    override fun collide(boxA: BoundingBox, boxB: BoundingBox): Boolean {
+        val minXA = boxA.min.x
+        val maxXA = boxA.max.x
+        val minYA = boxA.min.y
+        val maxYA = boxA.max.y
+        val minZA = boxA.min.z
+        val maxZA = boxA.max.z
 
-        val minXB = entityB.min.x
-        val maxXB = entityB.max.x
-        val minYB = entityB.min.y
-        val maxYB = entityB.max.y
-        val minZB = entityB.min.z
-        val maxZB = entityB.max.z
+        val minXB = boxB.min.x
+        val maxXB = boxB.max.x
+        val minYB = boxB.min.y
+        val maxYB = boxB.max.y
+        val minZB = boxB.min.z
+        val maxZB = boxB.max.z
 
         val xCollide = minXA < maxXB && maxXA > minXB
         val yCollide = minYA < maxYB && maxYA > minYB

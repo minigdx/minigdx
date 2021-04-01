@@ -7,6 +7,7 @@ import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.math.abs
 import kotlin.test.Test
+import kotlin.test.assertSame
 import kotlin.test.fail
 
 fun assertEquals(
@@ -157,6 +158,7 @@ class PositionTest {
             addLocalScale(1.0f, 1.0f, 1.0f)
             rollback()
         }
+        assertSame(Unit, result)
         assertEquals(1f, position.scale.x)
     }
 
@@ -167,6 +169,7 @@ class PositionTest {
             addLocalScale(1.0f, 1.0f, 1.0f)
             commit()
         }
+        assertSame(Unit, result)
         assertEquals(2f, position.scale.x)
     }
 }
