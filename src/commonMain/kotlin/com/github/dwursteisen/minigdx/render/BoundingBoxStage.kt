@@ -19,12 +19,16 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
 ) {
 
     override fun update(delta: Seconds, entity: Entity) {
-        // TODO: enable this stage on the fly, regarding options ?
-        val model = entity.get(Position::class).transformation
+        val model = entity.get(Position::class).combinedTransformation
 
         vertex.uModelView.apply(program, combinedMatrix * model)
 
         val box = entity.get(BoundingBox::class)
+        render(box)
+        box.touch = false
+    }
+
+    private fun render(box: BoundingBox) {
         if (box.isDirty) {
             compiler.compile(box)
         }

@@ -22,7 +22,7 @@ interface EntityFactory {
      *
      * The node can be put at a different place using the [transformation].
      */
-    fun createFromNode(node: Node, scene: Scene): Entity
+    fun createFromNode(node: Node, scene: Scene, parent: Entity? = null): Entity
 
     /**
      * Create a (hit)box of the scale of the [node] object at the position of [transformation].
@@ -50,4 +50,6 @@ interface EntityFactory {
      * Create an entity for the camera that can be use for the game interface.
      */
     fun createUICamera(): Entity
+
+    fun createLight(node: Node, scene: Scene): Entity
 }

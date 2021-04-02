@@ -13,84 +13,46 @@ import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.position.InternalSimulation
+import com.github.dwursteisen.minigdx.ecs.components.position.Simulation
+import com.github.dwursteisen.minigdx.ecs.components.position.SimulationResult
+import com.github.dwursteisen.minigdx.ecs.components.position.TransformationHolder
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.math.Vector3
+import kotlin.reflect.KClass
 
-class TransformationHolder(
-    translation: Mat4 = Mat4.identity(),
-    rotation: Mat4 = Mat4.identity(),
-    scale: Mat4 = Mat4.identity()
-) {
-
-    private var combined: Mat4 = Mat4.identity()
-
-    var transalation: Mat4 = translation(translation)
-        set(value) {
-            field = translation(value)
-            combined = updateTransformation()
-        }
-
-    var rotation: Quaternion = normalize(Quaternion.from(rotation(rotation)))
-        set(value) {
-            field = value
-            combined = updateTransformation()
-        }
-
-    var scale: Mat4 = scale(scale)
-        set(value) {
-            field = scale(value)
-            combined = updateTransformation()
-        }
-
-    var transformation: Mat4
-        get() = combined
-        set(value) {
-            transalation = translation(value)
-            rotation = normalize(
-                Quaternion.from(
-                    rotation(
-                        Float3(
-                            value.rotation.x,
-                            value.rotation.y,
-                            value.rotation.z
-                        )
-                    )
-                )
-            )
-            scale = scale(value)
-            combined = updateTransformation()
-        }
-
-    init {
-        combined = updateTransformation()
-    }
-
-    private fun updateTransformation(): Mat4 {
-        return transalation * Mat4.from(rotation) * scale
-    }
-}
-
-class Position(
+open class Position(
     globalTranslation: Mat4 = Mat4.identity(),
     globalRotation: Mat4 = Mat4.identity(),
     globalScale: Mat4 = Mat4.identity()
 ) : Component {
 
+    private var owner: Entity? = null
+
+    private var needsToBeUpdated: Boolean = true
+
     /**
      * Store the global transformation.
      *
      */
-    private val globalTransformation = TransformationHolder(globalTranslation, globalRotation, globalScale)
+    private val globalTransformationHolder = TransformationHolder(globalTranslation, globalRotation, globalScale)
 
     /**
      * Store the local transformation.
      */
-    private val localTransformation = TransformationHolder()
+    private val localTransformationHolder = TransformationHolder()
 
     /**
      * Transformation given by the global transformation and then the local transformation.
      */
-    var transformation: Mat4 = this.globalTransformation.transformation * localTransformation.transformation
+    var transformation: Mat4 = this.globalTransformationHolder.transformation * localTransformationHolder.transformation
         private set
+
+    val globalTransformation: Mat4
+        get() = this.globalTransformationHolder.transformation
+
+    val localTransformation: Mat4
+        get() = this.localTransformationHolder.transformation
 
     var quaternion = normalize(Quaternion.from(transformation))
         private set
@@ -108,26 +70,60 @@ class Position(
     val scale: Vector3 = Vector3()
 
     val localQuaternion: Quaternion
-        get() = localTransformation.rotation
+        get() = localTransformationHolder.rotation
     val globalQuaternion: Quaternion
-        get() = globalTransformation.rotation
+        get() = globalTransformationHolder.rotation
+
+    private var _combinedTransformation: Mat4 = Mat4.identity()
+
+    val combinedTransformation: Mat4
+        get() {
+            if (needsToBeUpdated) {
+                val parentTransformation = owner?.parent?.get(Position::class)?.combinedTransformation ?: Mat4.identity()
+                _combinedTransformation = parentTransformation * transformation
+                needsToBeUpdated = false
+            }
+            return _combinedTransformation
+        }
 
     init {
         update()
     }
 
+    override fun onAdded(entity: Entity) {
+        owner = entity
+    }
+
+    override fun onRemoved(entity: Entity) {
+        owner = null
+    }
+
+    override fun onComponentUpdated(componentType: KClass<out Component>) {
+        if (componentType == Position::class) {
+            needsToBeUpdated = true
+        }
+    }
+
+    override fun onDetach(parent: Entity) {
+        needsToBeUpdated = true
+    }
+
+    override fun onAttach(parent: Entity) {
+        needsToBeUpdated = true
+    }
+
     fun setLocalTransform(transformation: Mat4): Position {
-        localTransformation.transformation = transformation
+        localTransformationHolder.transformation = transformation
         return update()
     }
 
     fun setGlobalTransform(transformation: Mat4): Position {
-        globalTransformation.transformation = transformation
+        globalTransformationHolder.transformation = transformation
         return update()
     }
 
     fun setGlobalRotation(quaternion: Quaternion): Position {
-        globalTransformation.rotation = quaternion
+        globalTransformationHolder.rotation = quaternion
         return update()
     }
 
@@ -136,7 +132,7 @@ class Position(
         y: Degree = globalRotation.y,
         z: Degree = globalRotation.z
     ): Position {
-        globalTransformation.rotation = normalize(
+        globalTransformationHolder.rotation = normalize(
             Quaternion.from(
                 rotation(
                     Float3(
@@ -156,7 +152,7 @@ class Position(
         z: Degree = 0f,
         delta: Seconds = 1f
     ): Position {
-        globalTransformation.rotation *= fromEulers(1f, 0f, 0f, x.toFloat() * delta) *
+        globalTransformationHolder.rotation *= fromEulers(1f, 0f, 0f, x.toFloat() * delta) *
             fromEulers(0f, 1f, 0f, y.toFloat() * delta) *
             fromEulers(0f, 0f, 1f, z.toFloat() * delta)
         return update()
@@ -179,7 +175,7 @@ class Position(
     }
 
     fun addLocalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
-        localTransformation.rotation *= fromEulers(
+        localTransformationHolder.rotation *= fromEulers(
             1f,
             0f,
             0f,
@@ -202,14 +198,14 @@ class Position(
         addLocalRotation(angles.x, angles.y, angles.z, delta)
 
     fun setLocalRotation(quaternion: Quaternion): Position {
-        this.localTransformation.rotation = quaternion
+        this.localTransformationHolder.rotation = quaternion
         return update()
     }
 
     fun setLocalRotation(angles: Vector3): Position = setLocalRotation(angles.x, angles.y, angles.z)
 
     fun setLocalRotation(x: Degree = rotation.x, y: Degree = rotation.y, z: Degree = rotation.z): Position {
-        localTransformation.rotation = Quaternion.from(rotation(Float3(x.toFloat(), y.toFloat(), z.toFloat())))
+        localTransformationHolder.rotation = Quaternion.from(rotation(Float3(x.toFloat(), y.toFloat(), z.toFloat())))
         return update()
     }
 
@@ -224,7 +220,7 @@ class Position(
     fun addLocalScale(scale: Vector3, delta: Seconds): Position = addLocalScale(scale.x, scale.y, scale.z, delta)
 
     fun setLocalScale(x: Percent = localScale.x, y: Percent = localScale.y, z: Percent = localScale.z): Position {
-        localTransformation.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        localTransformationHolder.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         return update()
     }
 
@@ -237,7 +233,7 @@ class Position(
     }
 
     fun setGlobalScale(x: Percent = globalScale.x, y: Percent = globalScale.y, z: Percent = globalScale.z): Position {
-        globalTransformation.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        globalTransformationHolder.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         return update()
     }
 
@@ -250,7 +246,7 @@ class Position(
         y: Coordinate = globalTranslation.y,
         z: Coordinate = globalTranslation.z
     ): Position {
-        globalTransformation.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        globalTransformationHolder.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         return update()
     }
 
@@ -260,7 +256,7 @@ class Position(
         z: Coordinate = 0,
         delta: Seconds = 1f
     ): Position {
-        globalTransformation.transalation *= translation(
+        globalTransformationHolder.transalation *= translation(
             Float3(
                 x.toFloat() * delta,
                 y.toFloat() * delta,
@@ -275,12 +271,12 @@ class Position(
         y: Coordinate = localTranslation.y,
         z: Coordinate = localTranslation.z
     ): Position {
-        localTransformation.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        localTransformationHolder.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         return update()
     }
 
     fun addLocalTranslation(x: Coordinate = 0, y: Coordinate = 0, z: Coordinate = 0, delta: Seconds = 1f): Position {
-        localTransformation.transalation *= translation(
+        localTransformationHolder.transalation *= translation(
             Float3(
                 x.toFloat() * delta,
                 y.toFloat() * delta,
@@ -294,19 +290,19 @@ class Position(
         addLocalTranslation(x, y, z, 1f)
 
     private fun update(): Position {
-        transformation = globalTransformation.transformation * localTransformation.transformation
+        transformation = globalTransformationHolder.transformation * localTransformationHolder.transformation
         // Translation
-        val lt = localTransformation.transalation.translation
+        val lt = localTransformationHolder.transalation.translation
         localTranslation.set(lt.x, lt.y, lt.z)
-        val gt = globalTransformation.transalation.translation
+        val gt = globalTransformationHolder.transalation.translation
         globalTranslation.set(gt.x, gt.y, gt.z)
         val ct = transformation.translation
         translation.set(ct.x, ct.y, ct.z)
 
         // Rotation
-        val lr = Mat4.from(localTransformation.rotation).rotation
+        val lr = Mat4.from(localTransformationHolder.rotation).rotation
         localRotation.set(lr.x, lr.y, lr.z)
-        val gr = Mat4.from(globalTransformation.rotation).rotation
+        val gr = Mat4.from(globalTransformationHolder.rotation).rotation
         globalRotation.set(gr.x, gr.y, gr.z)
         val cr = transformation.rotation
         rotation.set(cr.x, cr.y, cr.z)
@@ -314,13 +310,15 @@ class Position(
         quaternion = Quaternion.from(transformation)
 
         // Scale
-        val ls = localTransformation.scale.scale
+        val ls = localTransformationHolder.scale.scale
         localScale.set(ls.x, ls.y, ls.z)
-        val gs = globalTransformation.scale.scale
+        val gs = globalTransformationHolder.scale.scale
         globalScale.set(gs.x, gs.y, gs.z)
         val cs = transformation.scale
         scale.set(cs.x, cs.y, cs.z)
 
+        // trigger update
+        owner?.componentUpdated(this::class)
         return this
     }
 
@@ -336,12 +334,20 @@ class Position(
         val translationFromOrigin = translation(translation.toFloat3())
         val rotation = fromEulerAngles(x.toFloat(), y.toFloat(), z.toFloat(), delta)
 
-        globalTransformation.transalation *= translationFromOrigin *
+        globalTransformationHolder.transalation *= translationFromOrigin *
             Mat4.from(rotation) *
             translation(translation.negate().toFloat3())
 
-        globalTransformation.rotation *= rotation
+        globalTransformationHolder.rotation *= rotation
         return update()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> simulation(block: Simulation.() -> SimulationResult): T {
+        val simulation = InternalSimulation(this)
+        val result = block(simulation)
+        result.execute(simulation)
+        return result.result as T
     }
 }
 

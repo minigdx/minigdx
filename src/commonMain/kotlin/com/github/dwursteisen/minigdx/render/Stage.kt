@@ -8,7 +8,7 @@ import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
-import com.github.dwursteisen.minigdx.ecs.components.Light
+import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
@@ -36,7 +36,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         Camera::class
     ),
     lightsQuery: EntityQuery = EntityQuery(
-        Light::class
+        LightComponent::class
     ),
     val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
 ) : Stage, System(query) {
@@ -60,8 +60,8 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     open val combinedMatrix: Mat4
         get() {
             return camera?.let {
-                val eye = it.position.translation.toFloat3()
-                val cameraRotation = rotation(it.position.transformation)
+                val eye = it.position.combinedTransformation.translation
+                val cameraRotation = rotation(it.position.combinedTransformation)
                 val direction = (cameraRotation * translation(FRONT)).translation
                 val target = eye + direction
 

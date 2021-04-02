@@ -25,15 +25,36 @@ interface Game {
 
     val gameContext: GameContext
 
+    /**
+     * Create entities used to bootstrap the game
+     * (ie: all entities required for the first level of a game)
+     */
     fun createEntities(entityFactory: EntityFactory)
 
-    fun createSystems(engine: Engine): List<System> = listOf(
+    /**
+     * Create default system. There are mostly technicals.
+     * It can be override (to get ride of a useless system for example)
+     * but in such case, the engine will run without the feature associated to
+     * the system.
+     */
+    fun createDefaultSystems(engine: Engine): List<System> = listOf(
         SpriteAnimatedSystem(),
         ArmatureUpdateSystem(),
         ScriptExecutorSystem(),
         CameraTrackSystem()
     )
 
+    /**
+     * Create the game systems. Most systems will be "game" systems component.
+     * Technical systems can be added, like a custom camera tracking system.
+     */
+    fun createSystems(engine: Engine): List<System>
+
+    /**
+     * Create render stages.
+     *
+     * Can be override but need extra care when doing it.
+     */
     fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
         stages.add(ClearBufferRenderStage(gl, compiler))
