@@ -59,4 +59,8 @@ class TransformationHolder(
     private fun updateTransformation(): Mat4 {
         return transalation * Mat4.from(rotation) * scale
     }
+
+    companion object {
+        val identity = TransformationHolder()
+    }
 }

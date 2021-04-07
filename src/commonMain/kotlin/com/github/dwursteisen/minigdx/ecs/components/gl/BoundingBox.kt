@@ -92,7 +92,7 @@ class BoundingBox private constructor(
 
     val combinedTransformation: Mat4
         get() {
-            return owner?.position?.combinedTransformation ?: Mat4.identity()
+            return owner?.position?.transformation ?: Mat4.identity()
         }
 
     var edges: List<Vector3> = emptyList()

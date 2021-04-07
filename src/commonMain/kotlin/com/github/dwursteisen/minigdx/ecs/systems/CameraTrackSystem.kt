@@ -16,7 +16,7 @@ class CameraTrackSystem : System(EntityQuery(Camera::class)) {
             val cameraPosition = entity.get(Position::class).translation
 
             val rotation = lookAt(cameraPosition.toFloat3(), targetPosition.toFloat3(), UP)
-            entity.get(Position::class).setGlobalRotation(Quaternion.from(rotation))
+            entity.get(Position::class).setWorldRotation(Quaternion.from(rotation))
         }
     }
 
