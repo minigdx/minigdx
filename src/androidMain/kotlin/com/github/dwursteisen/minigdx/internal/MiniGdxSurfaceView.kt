@@ -20,43 +20,46 @@ class MiniGdxSurfaceView(
     init {
         setEGLContextClientVersion(2)
 
-        setRenderer(object : Renderer {
+        setRenderer(
+            object : Renderer {
 
-            private var time = 0f
+                private var time = 0f
 
-            lateinit var gameWrapper: GameWrapper
-            lateinit var inputManager: InputManager
+                lateinit var gameWrapper: GameWrapper
+                lateinit var inputManager: InputManager
 
-            override fun onDrawFrame(gl: GL10?) {
-                val now = System.nanoTime().toFloat()
-                val delta = (now - time) / 1000000000.0f
+                override fun onDrawFrame(gl: GL10?) {
+                    val now = System.nanoTime().toFloat()
+                    val delta = (now - time) / 1000000000.0f
 
-                inputManager.record()
-                gameWrapper.render(min(1 / 60f, delta))
-                inputManager.reset()
-                time = now
-            }
+                    inputManager.record()
+                    gameWrapper.render(min(1 / 60f, delta))
+                    inputManager.reset()
+                    time = now
+                }
 
-            override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-                gameContext.deviceScreen.height = height
-                gameContext.deviceScreen.width = width
-                gameContext.viewport.update(gameContext.gl,
+                override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+                    gameContext.deviceScreen.height = height
+                    gameContext.deviceScreen.width = width
+                    gameContext.viewport.update(
+                        gameContext.gl,
                         gameContext.deviceScreen.width,
                         gameContext.deviceScreen.height,
                         gameContext.gameScreen.width,
                         gameContext.gameScreen.height
-                )
-            }
+                    )
+                }
 
-            @ExperimentalStdlibApi
-            override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-                gameContext.logPlatform()
-                inputManager = gameContext.input as InputManager
-                val game = gameFactory(gameContext)
-                gameWrapper = GameWrapper(gameContext, game)
-                gameWrapper.create()
+                @ExperimentalStdlibApi
+                override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+                    gameContext.logPlatform()
+                    inputManager = gameContext.input as InputManager
+                    val game = gameFactory(gameContext)
+                    gameWrapper = GameWrapper(gameContext, game)
+                    gameWrapper.create()
+                }
             }
-        })
+        )
         // Render the view only when there is a change in the drawing data
         renderMode = RENDERMODE_CONTINUOUSLY
         setOnTouchListener(gameContext.input as OnTouchListener)

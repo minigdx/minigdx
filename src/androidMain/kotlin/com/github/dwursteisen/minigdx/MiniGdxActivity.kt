@@ -17,16 +17,18 @@ abstract class MiniGdxActivity(
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         GameApplicationBuilder(
-                gameConfigurationFactory = {
-                    GameConfiguration(gameName,
-                            gameScreenConfiguration,
-                            debug,
-                            this)
-                },
-                gameFactory = { gameContext ->
-                    inputHandler = gameContext.input as AndroidInputHandler
-                    createGame(gameContext)
-                }
+            gameConfigurationFactory = {
+                GameConfiguration(
+                    gameName,
+                    gameScreenConfiguration,
+                    debug,
+                    this
+                )
+            },
+            gameFactory = { gameContext ->
+                inputHandler = gameContext.input as AndroidInputHandler
+                createGame(gameContext)
+            }
         ).start()
         super.onCreate(savedInstanceState)
     }

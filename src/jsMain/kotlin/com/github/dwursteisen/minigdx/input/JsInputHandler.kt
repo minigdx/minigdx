@@ -4,14 +4,14 @@ import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH1
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH2
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH3
 import com.github.dwursteisen.minigdx.math.Vector2
-import kotlin.browser.document
-import kotlin.experimental.and
+import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.TouchEvent
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.get
+import kotlin.experimental.and
 
 class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
 
@@ -26,10 +26,6 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         canvas.addEventListener("mousemove", ::mouseMove, false)
     }
 
-    private val justPressed: Array<Boolean> = Array(256 + 1) { false }
-    private val justRelease: Array<Boolean> = Array(256 + 1) { true }
-    private val pressed: Array<Boolean> = Array(256 + 1) { false }
-
     private val flagMouse1: Short = 0x1
     private val flagMouse2: Short = 0x10
     private val flagMouse3: Short = 0x100
@@ -39,7 +35,7 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         TOUCH2,
         TOUCH3
     )
-    private val touchManager = TouchManager()
+    private val touchManager = TouchManager(UNKNOWN_KEY)
 
     private fun mouseDown(event: Event) {
         event as MouseEvent
@@ -100,11 +96,7 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     private fun keyDown(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
-            if (justRelease[event.keyCode]) {
-                justPressed[event.keyCode] = true
-                justRelease[event.keyCode] = false
-            }
-            pressed[event.keyCode] = true
+            touchManager.onKeyPressed(event.keyCode)
             event.preventDefault()
         }
     }
@@ -112,15 +104,22 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     private fun keyUp(event: Event) {
         event as KeyboardEvent
         if (event.keyCode in (0..256)) {
-            justRelease[event.keyCode] = true
-            pressed[event.keyCode] = false
+            touchManager.onKeyReleased(event.keyCode)
             event.preventDefault()
         }
     }
 
-    override fun isKeyJustPressed(key: Key): Boolean = justPressed[key.keyCode]
+    override fun isKeyJustPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyJustPressed
+    } else {
+        touchManager.isKeyJustPressed(key.keyCode)
+    }
 
-    override fun isKeyPressed(key: Key): Boolean = pressed[key.keyCode]
+    override fun isKeyPressed(key: Key): Boolean = if (key == Key.ANY_KEY) {
+        touchManager.isAnyKeyPressed
+    } else {
+        touchManager.isKeyPressed(key.keyCode)
+    }
 
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 
@@ -129,9 +128,6 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     override fun record() = Unit
 
     override fun reset() {
-        (justPressed.indices).forEach {
-            justPressed[it] = false
-        }
         touchManager.processReceivedEvent()
     }
 }

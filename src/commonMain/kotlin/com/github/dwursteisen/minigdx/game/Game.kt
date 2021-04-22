@@ -9,7 +9,9 @@ import com.github.dwursteisen.minigdx.ecs.components.UIComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
+import com.github.dwursteisen.minigdx.ecs.systems.CameraTrackSystem
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
@@ -23,13 +25,36 @@ interface Game {
 
     val gameContext: GameContext
 
+    /**
+     * Create entities used to bootstrap the game
+     * (ie: all entities required for the first level of a game)
+     */
     fun createEntities(entityFactory: EntityFactory)
 
-    fun createSystems(engine: Engine): List<System> = listOf(
+    /**
+     * Create default system. There are mostly technicals.
+     * It can be override (to get ride of a useless system for example)
+     * but in such case, the engine will run without the feature associated to
+     * the system.
+     */
+    fun createDefaultSystems(engine: Engine): List<System> = listOf(
         SpriteAnimatedSystem(),
-        ArmatureUpdateSystem()
+        ArmatureUpdateSystem(),
+        ScriptExecutorSystem(),
+        CameraTrackSystem()
     )
 
+    /**
+     * Create the game systems. Most systems will be "game" systems component.
+     * Technical systems can be added, like a custom camera tracking system.
+     */
+    fun createSystems(engine: Engine): List<System>
+
+    /**
+     * Create render stages.
+     *
+     * Can be override but need extra care when doing it.
+     */
     fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
         stages.add(ClearBufferRenderStage(gl, compiler))
@@ -42,9 +67,12 @@ interface Game {
         // display UI component only trough the UI Camera
         stages.add(
             MeshPrimitiveRenderStage(
-                gl, compiler, query = EntityQuery(
+                gl,
+                compiler,
+                query = EntityQuery(
                     listOf(MeshPrimitive::class, UIComponent::class)
-                ), cameraQuery = EntityQuery(UICamera::class)
+                ),
+                cameraQuery = EntityQuery(UICamera::class)
             )
         )
         return stages

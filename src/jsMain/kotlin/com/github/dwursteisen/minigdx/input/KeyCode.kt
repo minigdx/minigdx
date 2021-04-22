@@ -9,24 +9,24 @@ val Key.keyCode: Int
             Key.BACKSPACE -> 8
             Key.TAB -> 9
             Key.ENTER -> 13
-            Key.SHIFT -> TODO()
-            Key.CTRL -> TODO()
-            Key.ALT -> TODO()
-            Key.PAUSE_BREAK -> TODO()
-            Key.CAPS_LOCK -> TODO()
+            Key.SHIFT -> 16
+            Key.CTRL -> 17
+            Key.ALT -> 18
+            Key.PAUSE_BREAK -> 19
+            Key.CAPS_LOCK -> 20
             Key.ESCAPE -> 27
-            Key.PAGE_UP -> TODO()
+            Key.PAGE_UP -> 33
             Key.SPACE -> 32
-            Key.PAGE_DOWN -> TODO()
-            Key.END -> TODO()
-            Key.HOME -> TODO()
+            Key.PAGE_DOWN -> 34
+            Key.END -> 35
+            Key.HOME -> 36
             Key.ARROW_LEFT -> 37
             Key.ARROW_UP -> 38
             Key.ARROW_RIGHT -> 39
             Key.ARROW_DOWN -> 40
-            Key.PRINT_SCREEN -> TODO()
-            Key.INSERT -> TODO()
-            Key.DELETE -> TODO()
+            Key.PRINT_SCREEN -> 44
+            Key.INSERT -> 45
+            Key.DELETE -> 46
             Key.NUM0 -> 48 + 0
             Key.NUM1 -> 48 + 1
             Key.NUM2 -> 48 + 2
@@ -63,49 +63,50 @@ val Key.keyCode: Int
             Key.X -> 65 + 23
             Key.Y -> 65 + 24
             Key.Z -> 65 + 25
-            Key.LEFT_WINDOW_KEY -> TODO()
-            Key.RIGHT_WINDOW_KEY -> TODO()
-            Key.SELECT_KEY -> TODO()
-            Key.NUMPAD0 -> TODO()
-            Key.NUMPAD1 -> TODO()
-            Key.NUMPAD2 -> TODO()
-            Key.NUMPAD3 -> TODO()
-            Key.NUMPAD4 -> TODO()
-            Key.NUMPAD5 -> TODO()
-            Key.NUMPAD6 -> TODO()
-            Key.NUMPAD7 -> TODO()
-            Key.NUMPAD8 -> TODO()
-            Key.NUMPAD9 -> TODO()
-            Key.MULTIPLY -> TODO()
-            Key.ADD -> TODO()
-            Key.SUBTRACT -> TODO()
-            Key.DECIMAL_POINT -> TODO()
-            Key.DIVIDE -> TODO()
-            Key.F1 -> TODO()
-            Key.F2 -> TODO()
-            Key.F3 -> TODO()
-            Key.F4 -> TODO()
-            Key.F5 -> TODO()
-            Key.F6 -> TODO()
-            Key.F7 -> TODO()
-            Key.F8 -> TODO()
-            Key.F9 -> TODO()
-            Key.F10 -> TODO()
-            Key.F11 -> TODO()
-            Key.F12 -> TODO()
-            Key.NUM_LOCK -> TODO()
-            Key.SCROLL_LOCK -> TODO()
-            Key.MY_COMPUTER -> TODO()
-            Key.MY_CALCULATOR -> TODO()
-            Key.SEMI_COLON -> TODO()
-            Key.EQUAL_SIGN -> TODO()
-            Key.COMMA -> TODO()
-            Key.DASH -> TODO()
-            Key.PERIOD -> TODO()
-            Key.FORWARD_SLASH -> TODO()
-            Key.OPEN_BRACKET -> TODO()
-            Key.BACK_SLASH -> TODO()
-            Key.CLOSE_BRAKET -> TODO()
-            Key.SINGLE_QUOTE -> TODO()
+            Key.LEFT_WINDOW_KEY -> 91
+            Key.RIGHT_WINDOW_KEY -> 92
+            Key.SELECT_KEY -> 93
+            Key.NUMPAD0 -> 96 + 0
+            Key.NUMPAD1 -> 96 + 1
+            Key.NUMPAD2 -> 96 + 2
+            Key.NUMPAD3 -> 96 + 3
+            Key.NUMPAD4 -> 96 + 4
+            Key.NUMPAD5 -> 96 + 5
+            Key.NUMPAD6 -> 96 + 6
+            Key.NUMPAD7 -> 96 + 7
+            Key.NUMPAD8 -> 96 + 8
+            Key.NUMPAD9 -> 96 + 9
+            Key.MULTIPLY -> 106
+            Key.ADD -> 107
+            Key.SUBTRACT -> 109
+            Key.DECIMAL_POINT -> 110
+            Key.DIVIDE -> 111
+            Key.F1 -> 112 + 0
+            Key.F2 -> 112 + 1
+            Key.F3 -> 112 + 2
+            Key.F4 -> 112 + 3
+            Key.F5 -> 112 + 4
+            Key.F6 -> 112 + 5
+            Key.F7 -> 112 + 6
+            Key.F8 -> 112 + 7
+            Key.F9 -> 112 + 8
+            Key.F10 -> 112 + 9
+            Key.F11 -> 112 + 10
+            Key.F12 -> 112 + 11
+            Key.NUM_LOCK -> 144
+            Key.SCROLL_LOCK -> 145
+            Key.MY_COMPUTER -> UNKNOWN_KEY
+            Key.MY_CALCULATOR -> UNKNOWN_KEY
+            Key.SEMI_COLON -> 186
+            Key.EQUAL_SIGN -> 187
+            Key.COMMA -> 188
+            Key.DASH -> 189
+            Key.PERIOD -> 190
+            Key.FORWARD_SLASH -> 191
+            Key.OPEN_BRACKET -> 219
+            Key.BACK_SLASH -> 220
+            Key.CLOSE_BRAKET -> 221
+            Key.SINGLE_QUOTE -> 222
+            Key.DPAD_CENTER -> UNKNOWN_KEY
         }
     }

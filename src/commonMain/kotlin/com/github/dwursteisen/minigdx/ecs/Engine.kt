@@ -14,6 +14,7 @@ class Engine(val gameContext: GameContext) {
     private var systems: List<System> = listOf(eventQueue)
 
     interface EntityBuilder {
+        fun named(name: String)
         fun add(component: Component)
         fun add(components: Iterable<Component>)
     }
@@ -22,20 +23,25 @@ class Engine(val gameContext: GameContext) {
 
         private var components = emptyList<Component>()
 
+        private var name: String = "_"
         fun build(): Entity {
-            return Entity(engine, components)
+            return Entity(engine, components, name)
+        }
+
+        override fun named(name: String) {
+            this.name = name
         }
 
         override fun add(component: Component) {
             components = components + component
         }
 
-        override fun add(components: Iterable<Component>) = components.forEach(::add)
+        override fun add(components: Iterable<Component>) = components.forEach { add(it) }
     }
 
     internal fun onGameStart() {
         systems.forEach {
-            it.onGameStart(this)
+            it.onGameStarted(this)
         }
     }
 
@@ -59,8 +65,8 @@ class Engine(val gameContext: GameContext) {
         systems = systems.dropLast(1) + system + entityQuery
 
         // Register the game context and the engine on the system
-        system.engine = this
-        system.gameContext = gameContext
+        system.entityFactory.engine = this
+        system.entityFactory.gameContext = gameContext
 
         eventQueue.register(system)
     }

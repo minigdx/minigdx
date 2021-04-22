@@ -18,7 +18,7 @@ class SpriteComponent(
     fun switchToAnimation(name: String) {
         val newAnimation = animations[name] ?: return
         currentAnimation = newAnimation
-        currentFrame = 0
-        frameDuration = currentAnimation?.frames?.firstOrNull()?.duration ?: 0f
+        currentFrame = -1
+        frameDuration = -1f
     }
 }

@@ -9,7 +9,7 @@ class AnimatedModel(
     var animation: List<Frame>,
     val animations: Map<String, Animation> = emptyMap(),
     val referencePose: Armature,
-    val currentPose: Array<Mat4> = Array(40) { Mat4.identity() },
+    val currentPose: Array<Mat4> = Array(100) { Mat4.identity() },
     var time: Float,
     var duration: Float,
     var loop: Long = 0
@@ -20,7 +20,7 @@ class AnimatedModel(
         this.animation = animation.frames
         time = 0f
         loop = 0
-        duration = animation.frames.maxBy { it.time }?.time ?: 0f
+        duration = animation.frames.maxByOrNull { it.time }?.time ?: 0f
     }
 
     fun currentAnimationFinished() = loop > 0

@@ -16,7 +16,7 @@ class TextComponent(
     text: String,
     var font: Font,
     var meshPrimitive: MeshPrimitive,
-    var charactersPerLine: Int = text.split("\n").maxBy { it.length }?.length ?: text.length
+    var charactersPerLine: Int = text.split("\n").maxByOrNull { it.length }?.length ?: text.length
 ) : Component {
 
     var currentCharactersPerLine: Int = charactersPerLine
@@ -33,7 +33,7 @@ class TextComponent(
             meshPrimitive.isDirty = true
 
             val longestLine = value.split("\n")
-                .maxBy { it.length }
+                .maxByOrNull { it.length }
                 ?: ""
 
             currentCharactersPerLine = min(longestLine.length, charactersPerLine)

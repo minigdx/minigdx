@@ -31,7 +31,8 @@ abstract class State {
     }
 
     fun onCreate(transition: Transition) = onEvent(
-        OnCreate::class, transition
+        OnCreate::class,
+        transition
     )
 
     fun onEvent(eventClazz: KClass<out Event>, transition: Transition) {

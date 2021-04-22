@@ -15,10 +15,17 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         // Push the model
         component.verticesBuffer = component.verticesBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.verticesBuffer!!)
-
         gl.bufferData(
             target = GL.ARRAY_BUFFER,
             data = component.primitive.vertices.map { it.position }.positionsDatasource(),
+            usage = GL.STATIC_DRAW
+        )
+
+        component.normalsBuffer = component.normalsBuffer ?: gl.createBuffer()
+        gl.bindBuffer(GL.ARRAY_BUFFER, component.normalsBuffer!!)
+        gl.bufferData(
+            target = GL.ARRAY_BUFFER,
+            data = component.primitive.vertices.map { it.normal }.normalsDatasource(),
             usage = GL.STATIC_DRAW
         )
 
@@ -26,8 +33,10 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, component.verticesOrderBuffer!!)
         gl.bufferData(
             target = GL.ELEMENT_ARRAY_BUFFER,
-            data = DataSource.ShortDataSource(component.primitive.verticesOrder.map { it.toShort() }
-                .toShortArray()),
+            data = DataSource.ShortDataSource(
+                component.primitive.verticesOrder.map { it.toShort() }
+                    .toShortArray()
+            ),
             usage = GL.STATIC_DRAW
         )
 
@@ -62,15 +71,15 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
                         component.material.data
                     )
                 } else if (component.texture != null) (
-                        gl.texImage2D(
-                            GL.TEXTURE_2D,
-                            0,
-                            GL.RGBA,
-                            GL.RGBA,
-                            GL.UNSIGNED_BYTE,
-                            component.texture.source
-                        )
-                        )
+                    gl.texImage2D(
+                        GL.TEXTURE_2D,
+                        0,
+                        GL.RGBA,
+                        GL.RGBA,
+                        GL.UNSIGNED_BYTE,
+                        component.texture.source
+                    )
+                    )
             }
         }
 

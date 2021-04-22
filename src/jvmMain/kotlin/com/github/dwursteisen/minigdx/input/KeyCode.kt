@@ -66,24 +66,24 @@ val Key.keyCode: Int
             Key.X -> GLFW.GLFW_KEY_X
             Key.Y -> GLFW.GLFW_KEY_Y
             Key.Z -> GLFW.GLFW_KEY_Z
-            Key.LEFT_WINDOW_KEY -> TODO()
-            Key.RIGHT_WINDOW_KEY -> TODO()
-            Key.SELECT_KEY -> TODO()
-            Key.NUMPAD0 -> TODO()
-            Key.NUMPAD1 -> TODO()
-            Key.NUMPAD2 -> TODO()
-            Key.NUMPAD3 -> TODO()
-            Key.NUMPAD4 -> TODO()
-            Key.NUMPAD5 -> TODO()
-            Key.NUMPAD6 -> TODO()
-            Key.NUMPAD7 -> TODO()
-            Key.NUMPAD8 -> TODO()
-            Key.NUMPAD9 -> TODO()
-            Key.MULTIPLY -> TODO()
-            Key.ADD -> TODO()
-            Key.SUBTRACT -> TODO()
-            Key.DECIMAL_POINT -> TODO()
-            Key.DIVIDE -> TODO()
+            Key.LEFT_WINDOW_KEY -> GLFW.GLFW_KEY_WORLD_1
+            Key.RIGHT_WINDOW_KEY -> GLFW.GLFW_KEY_WORLD_2
+            Key.SELECT_KEY -> UNKNOWN_KEY
+            Key.NUMPAD0 -> GLFW.GLFW_KEY_KP_0
+            Key.NUMPAD1 -> GLFW.GLFW_KEY_KP_1
+            Key.NUMPAD2 -> GLFW.GLFW_KEY_KP_2
+            Key.NUMPAD3 -> GLFW.GLFW_KEY_KP_3
+            Key.NUMPAD4 -> GLFW.GLFW_KEY_KP_4
+            Key.NUMPAD5 -> GLFW.GLFW_KEY_KP_5
+            Key.NUMPAD6 -> GLFW.GLFW_KEY_KP_6
+            Key.NUMPAD7 -> GLFW.GLFW_KEY_KP_7
+            Key.NUMPAD8 -> GLFW.GLFW_KEY_KP_8
+            Key.NUMPAD9 -> GLFW.GLFW_KEY_KP_9
+            Key.MULTIPLY -> GLFW.GLFW_KEY_KP_MULTIPLY
+            Key.ADD -> GLFW.GLFW_KEY_KP_ADD
+            Key.SUBTRACT -> GLFW.GLFW_KEY_KP_SUBTRACT
+            Key.DECIMAL_POINT -> GLFW.GLFW_KEY_KP_DECIMAL
+            Key.DIVIDE -> GLFW.GLFW_KEY_KP_DIVIDE
             Key.F1 -> GLFW.GLFW_KEY_F1
             Key.F2 -> GLFW.GLFW_KEY_F2
             Key.F3 -> GLFW.GLFW_KEY_F3
@@ -98,17 +98,18 @@ val Key.keyCode: Int
             Key.F12 -> GLFW.GLFW_KEY_F12
             Key.NUM_LOCK -> GLFW.GLFW_KEY_NUM_LOCK
             Key.SCROLL_LOCK -> GLFW.GLFW_KEY_SCROLL_LOCK
-            Key.MY_COMPUTER -> TODO()
-            Key.MY_CALCULATOR -> TODO()
-            Key.SEMI_COLON -> TODO()
-            Key.EQUAL_SIGN -> TODO()
+            Key.MY_COMPUTER -> UNKNOWN_KEY
+            Key.MY_CALCULATOR -> UNKNOWN_KEY
+            Key.SEMI_COLON -> GLFW.GLFW_KEY_SEMICOLON
+            Key.EQUAL_SIGN -> GLFW.GLFW_KEY_EQUAL
             Key.COMMA -> GLFW.GLFW_KEY_COMMA
-            Key.DASH -> TODO()
+            Key.DASH -> GLFW.GLFW_KEY_MINUS
             Key.PERIOD -> GLFW.GLFW_KEY_PERIOD
-            Key.FORWARD_SLASH -> TODO()
-            Key.OPEN_BRACKET -> TODO()
-            Key.BACK_SLASH -> TODO()
-            Key.CLOSE_BRAKET -> TODO()
-            Key.SINGLE_QUOTE -> TODO()
+            Key.FORWARD_SLASH -> GLFW.GLFW_KEY_BACKSLASH
+            Key.OPEN_BRACKET -> GLFW.GLFW_KEY_LEFT_BRACKET
+            Key.BACK_SLASH -> GLFW.GLFW_KEY_BACKSLASH
+            Key.CLOSE_BRAKET -> GLFW.GLFW_KEY_RIGHT_BRACKET
+            Key.SINGLE_QUOTE -> GLFW.GLFW_KEY_APOSTROPHE
+            Key.DPAD_CENTER -> UNKNOWN_KEY
         }
     }

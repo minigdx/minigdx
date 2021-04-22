@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.file
 
 import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.logger.Logger
-import kotlin.browser.window
+import kotlinx.browser.window
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Int8Array
 import org.w3c.dom.Image
@@ -34,17 +34,20 @@ actual class PlatformFileHandler(
 
         val content = Content<TextureImage>(filename, logger)
 
-        img.addEventListener("load", object : EventListener {
-            override fun handleEvent(event: Event) {
-                content.load(
-                    TextureImage(
-                        source = img,
-                        width = img.width,
-                        height = img.height
+        img.addEventListener(
+            "load",
+            object : EventListener {
+                override fun handleEvent(event: Event) {
+                    content.load(
+                        TextureImage(
+                            source = img,
+                            width = img.width,
+                            height = img.height
+                        )
                     )
-                )
+                }
             }
-        })
+        )
         return content
     }
 

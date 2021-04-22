@@ -1,51 +1,14 @@
-import java.util.Date
-import java.util.Properties
+
 
 plugins {
     id("com.android.library")
-    kotlin("multiplatform") version "1.3.70"
-    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("maven-publish")
-    id("com.jfrog.bintray") version "1.8.5"
+    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.0.0-alpha4"
 }
 
-group = "com.github.dwursteisen.minigdx"
-version = project.properties["version"] ?: "1.2-SNAPSHOT"
-
-if (version == "unspecified") {
-    version = "1.2-SNAPSHOT"
-}
-
-val kotlinMathVersion = "1.0.0-alpha18"
-val gltfApiVersion = "1.0.0-alpha11"
-
-val properties = Properties()
-if (project.file("local.properties").exists()) {
-    properties.load(project.file("local.properties").inputStream())
-}
-
-val bintrayUser = if (project.hasProperty("bintray_user")) {
-    project.property("bintray_user") as? String
-} else {
-    System.getProperty("BINTRAY_USER")
-}
-
-val bintrayKey = if (project.hasProperty("bintray_key")) {
-    project.property("bintray_key") as? String
-} else {
-    System.getProperty("BINTRAY_KEY")
-}
-
-repositories {
-    maven(
-        url = uri("https://dl.bintray.com/dwursteisen/minigdx")
-    )
-    maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
-    google()
-    mavenCentral()
-    jcenter()
-    mavenLocal()
-}
+val kotlinMathVersion = "LATEST-SNAPSHOT"
+val gltfApiVersion = "LATEST-SNAPSHOT"
+val lwjglVersion = "3.2.3"
+val imguiVersion = "1.77-0.16"
 
 android {
     compileSdkVersion(29)
@@ -79,211 +42,60 @@ android {
     }
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
-    }
+dependencies {
+    this.commonMainApi("com.github.minigdx:gltf-api:$gltfApiVersion")
+    this.commonMainApi("com.github.minigdx:kotlin-math:$kotlinMathVersion")
+    this.commonMainApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    this.commonMainRuntimeOnly("org.jetbrains.kotlin:kotlin-reflect")
+
+    this.jsMainApi("com.github.minigdx:kotlin-math-js:$kotlinMathVersion")
+
+    this.jvmMainApi("com.github.minigdx:kotlin-math-jvm:$kotlinMathVersion")
+    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion")
+    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion:natives-windows")
+    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion:natives-linux")
+    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion:natives-macos")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-windows")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-linux")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-macos")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm32")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm64")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows")
+    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86")
+
+    // https://github.com/SpaiR/imgui-java
+    this.jvmMainImplementation("io.imgui.java:binding:$imguiVersion")
+    this.jvmMainImplementation("io.imgui.java:lwjgl3:$imguiVersion")
+    this.jvmMainRuntimeOnly("io.imgui.java:natives-linux:$imguiVersion")
+    this.jvmMainRuntimeOnly("io.imgui.java:natives-macos:$imguiVersion")
+    this.jvmMainRuntimeOnly("io.imgui.java:natives-windows:$imguiVersion")
+
+    this.jvmMainImplementation("fr.delthas:javamp3:1.0.1")
+    this.jvmMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
+
+    this.androidMainApi("com.github.minigdx:kotlin-math-jvm:$kotlinMathVersion")
+    this.androidMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
 }
 
-kotlin {
-    /* Targets configuration omitted. 
-    *  To find out how to configure the targets, please follow the link:
-    *  https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-targets */
-
-    js {
-        this.useCommonJs()
-        this.browser {
-            this.webpackTask {
-                this.compilation.kotlinOptions {
-                    this.sourceMap = true
-                    this.sourceMapEmbedSources = "always"
-                    this.freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
-                }
-            }
-        }
-        this.nodejs
+minigdxDeveloper {
+    this.name.set("miniGDX")
+    this.description.set("Multiplatform 3D Game Engine using Kotlin Multiplatform")
+    this.projectUrl.set("https://github.com/minigdx/minigdx")
+    this.licence {
+        name.set("MIT Licence")
+        url.set("https://github.com/minigdx/minigdx/blob/master/LICENSE")
     }
-
-    android("android") {
-        publishLibraryVariants("release", "debug")
-    }
-
-    jvm {
-        this.compilations.getByName("main").kotlinOptions.jvmTarget = "1.8"
-        this.compilations.getByName("test").kotlinOptions.jvmTarget = "1.8"
-    }
-
-    metadata {
-        this.compilations.all {
-            this.kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.ExperimentalStdlibApi")
-        }
-    }
-
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(kotlin("stdlib-common"))
-                api("com.github.dwursteisen.kotlin-math:kotlin-math:$kotlinMathVersion")
-                api("com.github.dwursteisen.gltf:gltf-api:$gltfApiVersion")
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-
-        val jsMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib-js"))
-                api("com.github.dwursteisen.kotlin-math:kotlin-math-js:$kotlinMathVersion")
-            }
-        }
-
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-
-        val jvmMain by getting {
-            dependencies {
-                api(kotlin("stdlib-jdk8"))
-                api("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
-
-                val lwjglVersion = "3.2.3"
-                val imguiVersion = "1.77-0.16"
-
-                implementation("org.lwjgl:lwjgl:$lwjglVersion")
-                implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-windows")
-                implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-linux")
-                implementation("org.lwjgl:lwjgl:$lwjglVersion:natives-macos")
-                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
-                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-windows")
-                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-linux")
-                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-macos")
-                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")
-                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
-                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
-                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm32")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm64")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows")
-                implementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86")
-
-                // https://github.com/SpaiR/imgui-java
-                implementation("io.imgui.java:binding:$imguiVersion")
-                implementation("io.imgui.java:lwjgl3:$imguiVersion")
-                runtimeOnly("io.imgui.java:natives-linux:$imguiVersion")
-                runtimeOnly("io.imgui.java:natives-macos:$imguiVersion")
-                runtimeOnly("io.imgui.java:natives-windows:$imguiVersion")
-
-                implementation("fr.delthas:javamp3:1.0.1")
-
-                implementation("org.l33tlabs.twl:pngdecoder:1.0")
-            }
-        }
-
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
-
-        val androidMain by getting {
-            dependencies {
-                implementation("org.l33tlabs.twl:pngdecoder:1.0")
-                api("com.github.dwursteisen.kotlin-math:kotlin-math-jvm:$kotlinMathVersion")
-            }
-        }
-
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin("stdlib-jdk7"))
-                implementation(kotlin("test-junit"))
-            }
-        }
-    }
-}
-
-// -- convenient task to create the documentation.
-project.tasks.create<Copy>("docs").apply {
-    group = "minigdx"
-    // package the application
-    dependsOn("jsBrowserProductionWebpack")
-    from("build/distributions/") {
-        include("*.js", "*.protobuf", "*.png", "*.fnt")
-    }
-    into("docs")
-}
-
-// -- convenient tasks to test the game engine.
-project.tasks.create("runJvm").apply {
-    group = "minigdx"
-    dependsOn(":demo:run")
-}
-
-configure<com.jfrog.bintray.gradle.BintrayExtension> {
-    user = properties.getProperty("bintray.user") ?: bintrayUser
-    key = properties.getProperty("bintray.key") ?: bintrayKey
-    publish = true
-    if (findProperty("currentOs") == "macOS") {
-        setPublications("jvm", "js", "macosX64", "iosArm64", "iosX64", "metadata")
-    } else if (findProperty("currentOs") == "Windows") {
-        setPublications("mingwX64")
-    } else if (findProperty("currentOs") == "Linux") {
-        setPublications("kotlinMultiplatform", "linuxX64", "androidDebug", "androidRelease")
-    }
-    pkg(delegateClosureOf<com.jfrog.bintray.gradle.BintrayExtension.PackageConfig> {
-        repo = "minigdx"
-        name = project.name
-        githubRepo = "dwursteisen/mini-gdx.git"
-        vcsUrl = "https://github.com/dwursteisen/mini-gdx.git"
-        description = project.description
-        setLabels("java")
-        setLicenses("Apache-2.0")
-        desc = description
-        version(closureOf<com.jfrog.bintray.gradle.BintrayExtension.VersionConfig> {
-            this.name = project.version.toString()
-            released = Date().toString()
-        })
-    })
-}
-
-tasks.named("bintrayUpload") {
-    dependsOn(":publishToMavenLocal")
-}
-
-tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
-    doFirst {
-        project.publishing.publications
-            .filterIsInstance<MavenPublication>()
-            .forEach { publication ->
-                val moduleFile = buildDir.resolve("publications/${publication.name}/module.json")
-                if (moduleFile.exists()) {
-                    publication.artifact(object :
-                        org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact(moduleFile) {
-                        override fun getDefaultExtension() = "module"
-                    })
-                }
-            }
-    }
-}
-
-project.afterEvaluate {
-    project.publishing.publications.forEach {
-        println("Available publication: ${it.name}")
-    }
-}
-
-tasks.withType<Test> {
-    this.testLogging {
-        this.showStandardStreams = true
-        this.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    developer {
+        name.set("David Wursteisen")
+        email.set("david.wursteisen+minigdx@gmail.com")
+        url.set("https://github.com/dwursteisen")
     }
 }

@@ -11,12 +11,12 @@ import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.input.LwjglInput
 import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
-import kotlin.math.min
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
 import org.lwjgl.opengl.GL11.GL_LINE
 import org.lwjgl.system.MemoryUtil
+import kotlin.math.min
 
 actual open class PlatformContextCommon actual constructor(actual override val configuration: GameConfiguration) :
     PlatformContext {
@@ -27,11 +27,6 @@ actual open class PlatformContextCommon actual constructor(actual override val c
     }
 
     actual override fun createGL(): GL {
-        if (isMacOs()) {
-            System.err.println(
-                """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
-            )
-        }
         return LwjglGL()
     }
 
@@ -74,6 +69,12 @@ actual open class PlatformContextCommon actual constructor(actual override val c
     private var lastFrame: Long = getTime()
 
     actual override fun start(gameFactory: (GameContext) -> Game) {
+        if (isMacOs()) {
+            System.err.println(
+                """WARNING : You're runing a game on Mac OS. If the game crash at start, add -XstartOnFirstThread as JVM arguments to your program."""".trimMargin()
+            )
+        }
+
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize GLFW")
         }
