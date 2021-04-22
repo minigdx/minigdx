@@ -26,9 +26,26 @@ class Entity(
         components.forEach { it.onAdded(this) }
     }
 
+    /**
+     * Get a component having the class [type].
+     *
+     * @return the component
+     * @throws NullPointerException if the component doesn't exist on this entity.
+     * @see find
+     */
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> get(type: KClass<T>): T {
-        return componentsByType.getValue(type).toList().first() as T
+        return find(type)!!
+    }
+
+    /**
+     * Get the first component having the class [type].
+     * @return the component or [null] if no component has the class [type].
+     * @see get
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Component> find(type: KClass<T>): T? {
+        return componentsByType.getValue(type).toList().firstOrNull() as T?
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -113,4 +130,6 @@ class Entity(
         block()
         engine.add(this)
     }
+
+    override fun toString(): String = name
 }

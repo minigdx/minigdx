@@ -1,7 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.components
 
 import MockPlatformContext
-import com.curiouscreature.kotlin.math.scale
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -54,11 +53,11 @@ class PositionTest {
         val (parent, child) = createEntities()
         parent.position
             .addWorldScale(x = 2f)
-            .addWorldTranslation(x = 5)
+            .addGlobalTranslation(x = 5)
         assertEquals(5f, parent.position.translation.x)
         assertEquals(5f, child.position.translation.x)
         assertEquals(0f, child.position.localTranslation.x)
-        child.position.addWorldTranslation(x = 5)
+        child.position.addGlobalTranslation(x = 5)
         assertEquals(5f, parent.position.translation.x)
         assertEquals(10f, child.position.translation.x)
         assertEquals(1.6666f, child.position.localTranslation.x)
@@ -82,11 +81,11 @@ class PositionTest {
     @Test
     fun translation_set_world_translation() {
         val (parent, child) = createEntities()
-        parent.position.setWorldTranslation(x = 5)
+        parent.position.setGlobalTranslation(x = 5)
         assertEquals(5f, parent.position.translation.x)
         assertEquals(5f, child.position.translation.x)
         assertEquals(0f, child.position.localTranslation.x)
-        child.position.setWorldTranslation(x = 15)
+        child.position.setGlobalTranslation(x = 15)
         assertEquals(5f, parent.position.translation.x)
         assertEquals(15f, child.position.translation.x)
         assertEquals(10f, child.position.localTranslation.x)
@@ -212,7 +211,7 @@ class PositionTest {
     @Test
     fun rotation_around() {
         val position = Position()
-        position.setWorldTranslation(x = 20)
+        position.setGlobalTranslation(x = 20)
         position.addRotationAround(Vector3(x = 10f), z = 90f)
         assertEquals(10f, position.translation.x)
         assertEquals(10f, position.translation.y)

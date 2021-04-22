@@ -41,4 +41,10 @@ class ImmutableVector3(private val delegate: Vector3) {
 
     fun dist2(other: Vector3) = delegate.dist2(other)
     fun dist2(other: ImmutableVector3) = delegate.dist2(other.delegate)
+
+    operator fun component1(): Float = x
+    operator fun component2(): Float = y
+    operator fun component3(): Float = z
+
+    override fun toString(): String = delegate.toString()
 }

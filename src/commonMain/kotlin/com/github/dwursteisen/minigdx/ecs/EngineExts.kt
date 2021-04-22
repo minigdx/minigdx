@@ -33,7 +33,7 @@ fun Engine.createUICamera(gameContext: GameContext): Entity {
             )
         )
         // put the camera in the center of the screen
-        add(Position().setWorldTranslation(x = -width * 0.5f, y = -height * 0.5f))
+        add(Position().setGlobalTranslation(x = -width * 0.5f, y = -height * 0.5f))
     }
 }
 

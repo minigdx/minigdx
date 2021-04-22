@@ -15,6 +15,7 @@ import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.CoordinateConverter.Local
 import com.github.dwursteisen.minigdx.ecs.components.position.InternalSimulation
 import com.github.dwursteisen.minigdx.ecs.components.position.Simulation
 import com.github.dwursteisen.minigdx.ecs.components.position.SimulationResult
@@ -27,10 +28,26 @@ import kotlin.reflect.KClass
 
 typealias LocalCoordinate = Coordinate
 typealias WorldCoordinate = Coordinate
-typealias LocalDegree = Degree
-typealias WorldDegree = Degree
+
 typealias LocalScale = Percent
 typealias WorldScale = Percent
+
+sealed class CoordinateConverter {
+
+    abstract fun convert(coordinate: Coordinate, scale: Float): Float
+
+    object Local : CoordinateConverter() {
+
+        override fun convert(coordinate: Coordinate, scale: Float): Float = coordinate.toFloat()
+    }
+
+    object World : CoordinateConverter() {
+
+        override fun convert(coordinate: Coordinate, scale: Float): Float {
+            return coordinate.toFloat() / scale
+        }
+    }
+}
 
 open class Position(
     translation: Mat4 = Mat4.identity(),
@@ -109,7 +126,7 @@ open class Position(
             return field
         }
 
-    val _scale: Vector3 = Vector3()
+    val _scale: Vector3 = Vector3(1f, 1f, 1f)
     val scale: ImmutableVector3 = ImmutableVector3(_scale)
         get() {
             if (needsToBeUpdated) update()
@@ -119,8 +136,8 @@ open class Position(
     val localQuaternion: Quaternion
         get() = localTransformationHolder.rotation
 
-    private val parentTransformationHolder: TransformationHolder
-        get() = owner?.parent?.position?.localTransformationHolder ?: TransformationHolder.identity
+    private val parentPosition: Position
+        get() = owner?.parent?.position ?: identity
 
     init {
         requireUpdate()
@@ -148,75 +165,94 @@ open class Position(
         needsToBeUpdated = true
     }
 
-    fun addWorldTranslation(
+    /**
+     * Add Global translation using World Coordinates
+     */
+    fun addGlobalTranslation(
         x: WorldCoordinate = 0,
         y: WorldCoordinate = 0,
         z: WorldCoordinate = 0,
         delta: Seconds = 1f
     ): Position {
-        val scale = parentTransformationHolder.scale.scale
+        val scale = parentPosition.scale
         // Cancel the rotation and scale of the transform
-        localTransformationHolder.transalation *= translation(
+        localTransformationHolder.translation *= translation(
             Float3(
-                x.toFloat() * delta / scale.x,
-                y.toFloat() * delta / scale.y,
-                z.toFloat() * delta / scale.z
+                CoordinateConverter.World.convert(x, scale.x) * delta,
+                CoordinateConverter.World.convert(y, scale.y) * delta,
+                CoordinateConverter.World.convert(z, scale.z) * delta
             )
         )
         return requireUpdate()
     }
 
-    fun addWorldTranslation(translation: Vector3, delta: Seconds = 1f) = addWorldTranslation(
+    fun addGlobalTranslation(translation: Vector3, delta: Seconds = 1f) = addGlobalTranslation(
         translation.x,
         translation.y,
         translation.z,
         delta
     )
 
-    fun addWorldTranslation(translation: ImmutableVector3, delta: Seconds = 1f) = addWorldTranslation(
+    fun addGlobalTranslation(translation: ImmutableVector3, delta: Seconds = 1f) = addGlobalTranslation(
         translation.x,
         translation.y,
         translation.z,
         delta
     )
 
+    /**
+     * Add local transaction using the local or world scale,
+     * regarding the value of [using].
+     *
+     */
     fun addLocalTranslation(
         x: LocalCoordinate = 0f,
         y: LocalCoordinate = 0f,
         z: LocalCoordinate = 0f,
+        using: CoordinateConverter = Local,
         delta: Seconds = 1f
     ): Position {
-        localTransformationHolder.transalation *= translation(
-            Float3(
-                x.toFloat() * delta,
-                y.toFloat() * delta,
-                z.toFloat() * delta
-            )
+        val scale = parentPosition.scale
+        val translation = Float3(
+            using.convert(x.toFloat(), scale.x) * delta,
+            using.convert(y.toFloat(), scale.y) * delta,
+            using.convert(z.toFloat(), scale.z) * delta
         )
+        localTransformationHolder.translation *= translation(translation)
         return requireUpdate()
     }
 
-    fun addLocalTranslation(translation: ImmutableVector3, delta: Seconds = 1f) = addLocalTranslation(
+    fun addLocalTranslation(
+        translation: ImmutableVector3,
+        using: CoordinateConverter = Local,
+        delta: Seconds = 1f
+    ) = addLocalTranslation(
         translation.x,
         translation.y,
         translation.z,
+        using,
         delta
     )
 
-    fun addLocalTranslation(translation: Vector3, delta: Seconds = 1f) = addLocalTranslation(
+    fun addLocalTranslation(
+        translation: Vector3,
+        using: CoordinateConverter = Local,
+        delta: Seconds = 1f
+    ) = addLocalTranslation(
         translation.x,
         translation.y,
         translation.z,
+        using,
         delta
     )
 
-    fun setWorldTranslation(
+    fun setGlobalTranslation(
         x: WorldCoordinate = translation.x,
         y: WorldCoordinate = translation.y,
         z: WorldCoordinate = translation.z,
     ): Position {
         val translationInLocalSpace =
-            inverse(parentTransformationHolder.transformation) *
+            inverse(parentPosition.transformation) *
                 translation(
                     Float3(
                         x.toFloat(),
@@ -224,16 +260,26 @@ open class Position(
                         z.toFloat()
                     )
                 )
-        localTransformationHolder.transformation = translationInLocalSpace
+        localTransformationHolder.translation = translationInLocalSpace
         return requireUpdate()
     }
 
     fun setLocalTranslation(
-        x: Coordinate = localTranslation.x,
-        y: Coordinate = localTranslation.y,
-        z: Coordinate = localTranslation.z
+        x: Coordinate? = null,
+        y: Coordinate? = null,
+        z: Coordinate? = null,
+        using: CoordinateConverter = Local
     ): Position {
-        localTransformationHolder.transalation = translation(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
+        val scale = parentPosition.scale
+        val xScaled = x?.let { using.convert(x, scale.x) } ?: localTranslation.x
+        val yScaled = y?.let { using.convert(y, scale.y) } ?: localTranslation.y
+        val zScaled = z?.let { using.convert(z, scale.z) } ?: localTranslation.z
+        val translation = Float3(
+            xScaled,
+            yScaled,
+            zScaled
+        )
+        localTransformationHolder.translation = translation(translation)
         return requireUpdate()
     }
 
@@ -312,7 +358,7 @@ open class Position(
     }
 
     fun addWorldScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
-        val parentScale = parentTransformationHolder.scale.scale
+        val parentScale = parentPosition.scale
         localTransformationHolder.scale = scale(
             Float3(
                 (parentScale.x + x.toFloat() * delta) / parentScale.x,
@@ -324,7 +370,7 @@ open class Position(
     }
 
     fun setWorldScale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position {
-        val parent = scale(parentTransformationHolder.transformation)
+        val parent = scale(parentPosition.transformation)
         val scale = scale(
             Float3(
                 x.toFloat() / parent.scale.x,
@@ -341,7 +387,7 @@ open class Position(
     }
 
     fun setWorldRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
-        val parent = rotation(parentTransformationHolder.transformation)
+        val parent = rotation(parentPosition.transformation)
         val rotation = rotation(
             Float3(
                 x.toFloat() - parent.rotation.x,
@@ -359,8 +405,8 @@ open class Position(
     }
 
     private fun update() {
-        val globalTransformation = parentTransformationHolder.transformation * localTransformationHolder.transformation
-        val localTranslation = localTransformationHolder.transalation.translation
+        val globalTransformation = parentPosition.transformation * localTransformationHolder.transformation
+        val localTranslation = localTransformationHolder.translation.translation
 
         _localTranslation.set(localTranslation.x, localTranslation.y, localTranslation.z)
         _translation.set(
@@ -400,7 +446,7 @@ open class Position(
         val translationFromOrigin = translation(translation.toFloat3())
         val rotation = fromEulerAngles(x.toFloat(), y.toFloat(), z.toFloat(), delta)
 
-        localTransformationHolder.transalation *= translationFromOrigin *
+        localTransformationHolder.translation *= translationFromOrigin *
             Mat4.from(rotation) *
             translation(translation.negate().toFloat3())
 
@@ -414,6 +460,10 @@ open class Position(
         val result = block(simulation)
         result.execute(simulation)
         return result.result as T
+    }
+
+    companion object {
+        val identity = Position().also { it.needsToBeUpdated = false }
     }
 }
 

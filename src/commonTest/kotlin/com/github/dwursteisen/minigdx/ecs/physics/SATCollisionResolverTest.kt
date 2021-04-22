@@ -39,7 +39,7 @@ class SATCollisionResolverTest {
     @Test
     fun collide_it_does_not_collide() {
         val (a, b) = createEntities()
-        b.position.addWorldTranslation(x = 5f)
+        b.position.addGlobalTranslation(x = 5f)
         val result = collider.collide(a, b)
         assertFalse(result)
     }
@@ -47,7 +47,7 @@ class SATCollisionResolverTest {
     @Test
     fun collide_it_collides() {
         val (a, b) = createEntities()
-        b.position.addWorldTranslation(x = 0.5f)
+        b.position.addGlobalTranslation(x = 0.5f)
         val result = collider.collide(a, b)
         assertTrue(result)
     }
@@ -55,7 +55,7 @@ class SATCollisionResolverTest {
     @Test
     fun collide_it_collides_with_rotation() {
         val (a, b) = createEntities()
-        b.position.addWorldTranslation(x = 0.5f).addWorldRotation(z = 45f)
+        b.position.addGlobalTranslation(x = 0.5f).addWorldRotation(z = 45f)
         val result = collider.collide(a, b)
         assertTrue(result)
     }
@@ -63,8 +63,8 @@ class SATCollisionResolverTest {
     @Test
     fun mightCollide_it_mights_collide() {
         val (a, b) = createEntities()
-        a.position.addWorldTranslation(x = 1f)
-        b.position.addWorldTranslation(x = 1.5f)
+        a.position.addGlobalTranslation(x = 1f)
+        b.position.addGlobalTranslation(x = 1.5f)
         val result = collider.collide(a, b)
         assertTrue(result)
     }
@@ -72,7 +72,7 @@ class SATCollisionResolverTest {
     @Test
     fun mightCollide_it_does_not_mights_collide() {
         val (a, b) = createEntities()
-        b.position.addWorldTranslation(x = 4f)
+        b.position.addGlobalTranslation(x = 4f)
         val result = collider.collide(a, b)
 
         assertFalse(result)

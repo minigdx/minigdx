@@ -32,7 +32,7 @@ class AABBCollisionResolverTest {
         }
         val b = engine.create {
             add(BoundingBox.default())
-            add(Position().addWorldTranslation(x = 100))
+            add(Position().addGlobalTranslation(x = 100))
         }
         val result = collider.collide(
             a,
@@ -49,7 +49,7 @@ class AABBCollisionResolverTest {
         }
         val b = engine.create {
             add(BoundingBox.default())
-            add(Position().addWorldTranslation(x = 0.5f))
+            add(Position().addGlobalTranslation(x = 0.5f))
         }
         val result = collider.collide(
             a,
