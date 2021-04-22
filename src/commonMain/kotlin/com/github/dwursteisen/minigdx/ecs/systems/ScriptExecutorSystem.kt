@@ -47,7 +47,6 @@ class ScriptExecutorSystem : System(EntityQuery(ScriptComponent::class)) {
     private val events: MutableList<Pair<Event, EntityQuery?>> = mutableListOf()
     private val mainThread: MutableList<() -> Unit> = mutableListOf()
 
-
     override fun onEntityAdded(entity: Entity) {
         entity.findAll(ScriptComponent::class).forEach { component ->
             val scriptContext = MutexScriptContext()
