@@ -6,6 +6,7 @@ import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Degree
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.math.ImmutableVector3
 import com.github.dwursteisen.minigdx.math.Vector3
 
 interface Simulation {
@@ -24,9 +25,8 @@ interface Simulation {
     val localRotation: Vector3
     val rotation: Vector3
 
-    val globalScale: Vector3
-    val localScale: Vector3
-    val scale: Vector3
+    val localScale: ImmutableVector3
+    val scale: ImmutableVector3
 
     val localQuaternion: Quaternion
     val globalQuaternion: Quaternion
@@ -68,8 +68,6 @@ interface Simulation {
     fun setLocalScale(x: Percent = localScale.x, y: Percent = localScale.y, z: Percent = localScale.z): Simulation
 
     fun addGlobalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Simulation
-
-    fun setGlobalScale(x: Percent = globalScale.x, y: Percent = globalScale.y, z: Percent = globalScale.z): Simulation
 
     fun setGlobalTranslation(position: Vector3): Simulation
 

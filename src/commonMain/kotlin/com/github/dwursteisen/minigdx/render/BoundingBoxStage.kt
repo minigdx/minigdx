@@ -19,7 +19,7 @@ class BoundingBoxStage(gl: GL, compiler: GLResourceClient) : RenderStage<Boundin
 ) {
 
     override fun update(delta: Seconds, entity: Entity) {
-        val model = entity.get(Position::class).combinedTransformation
+        val model = entity.get(Position::class).transformation
 
         vertex.uModelView.apply(program, combinedMatrix * model)
 

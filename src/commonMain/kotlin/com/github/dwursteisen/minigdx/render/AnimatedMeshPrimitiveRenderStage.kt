@@ -23,7 +23,7 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) :
     ) {
 
     override fun update(delta: Seconds, entity: Entity) {
-        val model = entity.get(Position::class).combinedTransformation
+        val model = entity.get(Position::class).transformation
         val animatedModel = entity.get(AnimatedModel::class)
 
         vertex.uModelView.apply(program, combinedMatrix * model)
@@ -39,7 +39,7 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) :
             // We configure the current light
             vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color)
             // Set the light in the projection space
-            val translation = (inverse(model) * currentLight.get(Position::class).combinedTransformation).translation
+            val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
             vertex.uLightPosition.apply(
                 program,
                 translation.x,

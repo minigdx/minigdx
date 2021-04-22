@@ -4,6 +4,8 @@ import com.github.dwursteisen.minigdx.Coordinate
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.events.Event
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -19,6 +21,10 @@ interface ScriptContext {
      * at the next render loop.
      */
     suspend fun yield()
+
+    suspend fun emit(event: Event, entityQuery: EntityQuery? = null)
+
+    suspend fun executeInGameLoop(block: () -> Unit)
 }
 
 /**
@@ -49,6 +55,7 @@ suspend fun ScriptContext.moveOf(
             value
         }
     }
+
     val speedX = secureDiv(duration / x.toFloat())
     val speedY = secureDiv(duration / y.toFloat())
     val speedZ = secureDiv(duration / z.toFloat())

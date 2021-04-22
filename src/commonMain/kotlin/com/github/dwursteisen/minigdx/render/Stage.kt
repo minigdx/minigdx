@@ -60,8 +60,8 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     open val combinedMatrix: Mat4
         get() {
             return camera?.let {
-                val eye = it.position.combinedTransformation.translation
-                val cameraRotation = rotation(it.position.combinedTransformation)
+                val eye = it.position.transformation.translation
+                val cameraRotation = rotation(it.position.transformation)
                 val direction = (cameraRotation * translation(FRONT)).translation
                 val target = eye + direction
 

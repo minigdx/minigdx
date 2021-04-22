@@ -47,9 +47,9 @@ class MeshPrimitiveRenderStage(
     override fun update(delta: Seconds) {
         camera?.let { cam ->
             val position = cam.get(Position::class)
-            val direction = rotation(position.combinedTransformation) * translation(Vector3.FORWARD.toFloat3())
+            val direction = rotation(position.transformation) * translation(Vector3.FORWARD.toFloat3())
             cameraDirection.set(direction.translation.toVector3()).normalize().negate()
-            cameraPosition.set(position.combinedTransformation.translation.toVector3())
+            cameraPosition.set(position.transformation.translation.toVector3())
         }
 
         super.update(delta)
@@ -57,13 +57,13 @@ class MeshPrimitiveRenderStage(
         gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
         transparentPrimitive.sortByDescending { (position, _) ->
-            val translation = position.combinedTransformation.translation.toVector3()
+            val translation = position.transformation.translation.toVector3()
             val relativeToCamera = translation.sub(cameraPosition)
             val project = relativeToCamera.project(cameraDirection)
             project.length2()
         }
         transparentPrimitive.forEach { (position, primitive) ->
-            val model = position.combinedTransformation
+            val model = position.transformation
             drawPrimitive(primitive, model)
         }
         transparentPrimitive.clear()
@@ -72,7 +72,7 @@ class MeshPrimitiveRenderStage(
 
     override fun update(delta: Seconds, entity: Entity) {
         val position = entity.get(Position::class)
-        val model = position.combinedTransformation
+        val model = position.transformation
 
         entity.findAll(MeshPrimitive::class).forEach { primitive ->
             if (primitive.hasAlpha) {
@@ -99,7 +99,7 @@ class MeshPrimitiveRenderStage(
             // We configure the current light
             vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color)
             // Set the light in the projection space
-            val translation = (inverse(model) * currentLight.get(Position::class).combinedTransformation).translation
+            val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
             vertex.uLightPosition.apply(
                 program,
                 translation.x,
