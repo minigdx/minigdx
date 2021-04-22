@@ -22,15 +22,15 @@ Platform expected:
 
 Try some example of what can be build using MiniGDX on the [MiniGDX Showcase site](https://minigdx.github.io/minigdx-showcase/)
 
-![2D platformer game](docs/2dgame.mp4)
+https://user-images.githubusercontent.com/373097/115747729-d1c90980-a395-11eb-9b94-b19f4ccb6c9e.mp4
 
 [Try it!](https://minigdx.github.io/minigdx-showcase/2021/03/20/2D-platformer.html)
 
-![3D platformer game](docs/3dgame.mp4)
+https://user-images.githubusercontent.com/373097/115747808-e3aaac80-a395-11eb-9c0d-75c3a0e7723d.mp4
 
 [Try it!](https://minigdx.github.io/minigdx-showcase/2021/03/28/3D-example.html)
 
-![Danse using Skeleton animation](docs/danse.mp4)
+https://user-images.githubusercontent.com/373097/115747845-eb6a5100-a395-11eb-8d76-639886c14322.mp4
 
 [Try it!](https://minigdx.github.io/minigdx-showcase/2021/03/28/Dance.html)
 
