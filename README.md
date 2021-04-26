@@ -18,6 +18,7 @@ Platform expected:
 - iOS 
 - Native (Windows/Linux/MacOS)
 
+🎮  Try it now by creating a game using [this game template](https://github.com/minigdx/minigdx-game-template) 🎮
 ## Showcases
 
 Try some example of what can be build using MiniGDX on the [MiniGDX Showcase site](https://minigdx.github.io/minigdx-showcase/)
