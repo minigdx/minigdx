@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
 import java.io.File
+import java.nio.Buffer
 import java.nio.ByteBuffer
 import fr.delthas.javamp3.Sound as Mp3Sound
 
@@ -43,7 +44,7 @@ actual class PlatformFileHandler(actual val logger: Logger) {
         decoder.decode(buffer, decoder.width * 4, PNGDecoder.Format.RGBA)
 
         // flip the buffer so its ready to read
-        buffer.flip()
+        (buffer as Buffer).flip()
 
         content.load(
             TextureImage(
@@ -72,7 +73,7 @@ actual class PlatformFileHandler(actual val logger: Logger) {
         }
         val buffer = ByteBuffer.allocateDirect(source.size)
         buffer.put(source)
-        buffer.position(0)
+        (buffer as Buffer).position(0)
         val content = Content<Sound>(filename, logger)
         content.load(Sound(buffer.asShortBuffer(), channels, frequency))
         return content

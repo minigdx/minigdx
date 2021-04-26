@@ -264,7 +264,7 @@ class LwjglGL : GL {
         // glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
         val buffer = ByteBuffer.allocateDirect(source.size)
         buffer.put(source)
-        buffer.position(0)
+        (buffer as java.nio.Buffer).position(0)
 
         glTexImage2D(
             target,

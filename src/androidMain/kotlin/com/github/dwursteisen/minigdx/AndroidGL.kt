@@ -298,7 +298,7 @@ class AndroidGL : GL {
     ) {
         val buffer = ByteBuffer.allocateDirect(source.size)
         buffer.put(source)
-        buffer.position(0)
+        (buffer as Buffer).position(0)
         glTexImage2D(target, level, internalformat, width, height, 0, format, type, buffer)
     }
 

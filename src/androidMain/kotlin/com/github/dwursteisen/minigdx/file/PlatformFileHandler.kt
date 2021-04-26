@@ -4,6 +4,7 @@ import android.content.Context
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
+import java.nio.Buffer
 import java.nio.ByteBuffer
 
 actual class PlatformFileHandler(private val context: Context, actual val logger: Logger) {
@@ -39,7 +40,7 @@ actual class PlatformFileHandler(private val context: Context, actual val logger
         decoder.decode(buffer, decoder.width * 4, PNGDecoder.Format.RGBA)
 
         // flip the buffer so its ready to read
-        buffer.flip()
+        (buffer as Buffer).flip()
 
         content.load(
             TextureImage(
