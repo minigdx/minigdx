@@ -11,7 +11,8 @@ data class Color(
 )
 
 class LightComponent(
-    val color: Color = Color()
+    val color: Color = Color(),
+    var intensity: Int
 ) : Component {
 
     companion object {

@@ -86,6 +86,14 @@ sealed class ShaderParameter(val name: String) {
             color.alpha.toFloat()
         )
 
+        fun apply(program: ShaderProgram, color: Color, intensity: Float) = apply(
+            program,
+            color.red.toFloat() * intensity,
+            color.green.toFloat() * intensity,
+            color.blue.toFloat() * intensity,
+            color.alpha.toFloat() * intensity
+        )
+
         fun apply(program: ShaderProgram, vararg vec4: Float) {
             when (vec4.size) {
                 4 -> program.uniform4f(program.getUniform(name), vec4[0], vec4[1], vec4[2], vec4[3])
