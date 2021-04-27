@@ -1,7 +1,5 @@
 package com.github.dwursteisen.minigdx.ecs.entities
 
-import com.curiouscreature.kotlin.math.ortho
-import com.curiouscreature.kotlin.math.perspective
 import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
@@ -19,6 +17,7 @@ import com.github.dwursteisen.minigdx.api.t
 import com.github.dwursteisen.minigdx.api.toMat4
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
+import com.github.dwursteisen.minigdx.ecs.components.Camera
 import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
@@ -217,31 +216,20 @@ class EntityFactoryDelegate : EntityFactory {
     ): Entity = create {
         val camera = scene.perspectiveCameras[node.reference] ?: scene.orthographicCameras.getValue(node.reference)
         val cameraComponent = when (camera) {
-            is PerspectiveCamera -> com.github.dwursteisen.minigdx.ecs.components.Camera(
-                projection = perspective(
-                    fov = camera.fov,
-                    aspect = gameContext.gameScreen.ratio,
-                    near = camera.near,
-                    far = camera.far
-                )
+            is PerspectiveCamera -> Camera(
+                type = Camera.Type.PERSPECTIVE,
+                gameScreen = gameContext.gameScreen,
+                fov = camera.fov,
+                near = camera.near,
+                far = camera.far
             )
             is OrthographicCamera -> {
-                val (w, h) = if (gameContext.gameScreen.width >= gameContext.gameScreen.height) {
-                    // 1 / GameScreen.ratio
-                    1f to (gameContext.gameScreen.height / gameContext.gameScreen.width.toFloat())
-                } else {
-                    // GameScreen.ratio
-                    gameContext.gameScreen.width / gameContext.gameScreen.height.toFloat() to 1f
-                }
-                com.github.dwursteisen.minigdx.ecs.components.Camera(
-                    projection = ortho(
-                        l = -camera.scale * 0.5f * w,
-                        r = camera.scale * 0.5f * w,
-                        b = -camera.scale * 0.5f * h,
-                        t = camera.scale * 0.5f * h,
-                        n = camera.near,
-                        f = camera.far
-                    )
+                Camera(
+                    type = Camera.Type.ORTHOGRAPHIC,
+                    gameScreen = gameContext.gameScreen,
+                    near = camera.near,
+                    far = camera.far,
+                    scale = camera.scale
                 )
             }
             else -> throw IllegalArgumentException("${camera::class} is not supported")

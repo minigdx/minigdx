@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.render
 
 import MockLogger
 import ModelFactory.gameContext
-import com.curiouscreature.kotlin.math.Mat4
+import com.github.dwursteisen.minigdx.GameScreen
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Camera
@@ -39,7 +39,14 @@ class RenderStageTest {
 
         engine.addSystem(stage)
         engine.create {
-            add(Camera(projection = Mat4.identity()))
+            add(
+                Camera(
+                    gameScreen = GameScreen(1024, 1024),
+                    type = Camera.Type.PERSPECTIVE,
+                    far = 0f,
+                    near = 0f
+                )
+            )
         }
         assertTrue(stage.entities.count() == 0)
         assertTrue(stage.camera != null)
