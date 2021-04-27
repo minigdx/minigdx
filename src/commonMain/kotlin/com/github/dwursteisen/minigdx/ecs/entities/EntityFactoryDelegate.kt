@@ -108,9 +108,20 @@ class EntityFactoryDelegate : EntityFactory {
 
     override fun createLight(node: Node, scene: Scene): Entity {
         return create {
+            val pointLight = scene.pointLights.getValue(node.reference)
             val transformation = node.transformation.toMat4()
             it.add(Position(transformation, transformation, transformation))
-            it.add(LightComponent(Color(0.6f, 0.6f, 0.6f)))
+            it.add(
+                LightComponent(
+                    Color(
+                        pointLight.color.r,
+                        pointLight.color.g,
+                        pointLight.color.b,
+                        pointLight.color.alpha
+                    ),
+                    pointLight.intensity
+                )
+            )
         }
     }
 

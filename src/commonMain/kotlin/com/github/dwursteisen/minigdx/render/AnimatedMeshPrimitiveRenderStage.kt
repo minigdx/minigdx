@@ -36,8 +36,11 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) :
             vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
             vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
         } else {
+            // empiric value
+            val intensity = (currentLight.get(LightComponent::class).intensity * 777f / 1000f) / 1000f
+
             // We configure the current light
-            vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color)
+            vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color, intensity)
             // Set the light in the projection space
             val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
             vertex.uLightPosition.apply(
