@@ -87,7 +87,11 @@ class Entity(
 
     fun destroy(): Boolean {
         _children.forEach { it.destroy() }
-        return engine.destroy(this)
+        val removed = engine.destroy(this)
+        components = emptyList()
+        componentsByType = emptyMap()
+        componentsType = emptySet()
+        return removed
     }
 
     fun hasComponent(componentClass: KClass<out Component>): Boolean {
