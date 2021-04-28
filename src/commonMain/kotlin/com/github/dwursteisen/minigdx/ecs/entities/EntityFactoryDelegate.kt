@@ -42,7 +42,12 @@ class EntityFactoryDelegate : EntityFactory {
             ObjectType.CAMERA -> createCamera(node, scene)
             ObjectType.LIGHT -> createLight(node, scene)
             ObjectType.MODEL -> createModel(node, scene)
-        }.also { entity -> entity.attachTo(parent) }
+        }.also { entity ->
+            node.children.forEach {
+                createFromNode(it, scene, entity)
+            }
+            entity.attachTo(parent)
+        }
     }
 
     override fun createBox(node: Node, scene: Scene): Entity {
@@ -153,9 +158,6 @@ class EntityFactoryDelegate : EntityFactory {
             it.add(primitives)
             it.add(BoundingBox.from(model.mesh))
         }
-        node.children.forEach {
-            createFromNode(it, scene, entity)
-        }
         return entity
     }
 
@@ -208,7 +210,6 @@ class EntityFactoryDelegate : EntityFactory {
 
         // Look for the bounding box or create it from the mesh.
         node.children.filter { it.type == ObjectType.BOX }
-            .onEach { createFromNode(it, scene, armature) }
             .ifEmpty {
                 val model = scene.models.getValue(node.children.first { it.type == ObjectType.MODEL }.reference)
                 create {

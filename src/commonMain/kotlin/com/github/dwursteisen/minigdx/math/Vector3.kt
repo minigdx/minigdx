@@ -63,7 +63,7 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
     fun sub(x: Number = 0f, y: Number = 0f, z: Number = 0f) =
         add(x.toFloat() * -1f, y.toFloat() * -1f, z.toFloat() * -1f)
 
-    fun set(x: Number = 0f, y: Number = 0f, z: Number = 0f): Vector3 {
+    fun set(x: Number = this.x, y: Number = this.y, z: Number = this.z): Vector3 {
         this.x = x.toFloat()
         this.y = y.toFloat()
         this.z = z.toFloat()
