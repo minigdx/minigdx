@@ -22,6 +22,8 @@ import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
+import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
+import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.file.Font
 
 class EntityFactoryDelegate : EntityFactory {
@@ -58,6 +60,10 @@ class EntityFactoryDelegate : EntityFactory {
     }
 
     override fun createText(text: String, font: Font, node: Node): Entity {
+        return createText(WriteText(text), font, node)
+    }
+
+    override fun createText(textEffect: TextEffect, font: Font, node: Node): Entity {
         val box = createBox(node)
         val meshPrimitive = MeshPrimitive(
             id = Id(),
@@ -72,7 +78,7 @@ class EntityFactoryDelegate : EntityFactory {
                 verticesOrder = intArrayOf()
             )
         )
-        val textComponent = TextComponent(text, font)
+        val textComponent = TextComponent(textEffect, font)
 
         box.add(meshPrimitive)
         box.add(textComponent)

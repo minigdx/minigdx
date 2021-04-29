@@ -14,6 +14,7 @@ import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxStage
@@ -41,6 +42,7 @@ interface Game {
         SpriteAnimatedSystem(),
         ArmatureUpdateSystem(),
         ScriptExecutorSystem(),
+        TextEffectSystem(),
         CameraTrackSystem()
     )
 

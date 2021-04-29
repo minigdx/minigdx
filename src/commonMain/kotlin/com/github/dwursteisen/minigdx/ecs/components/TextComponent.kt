@@ -4,6 +4,7 @@ import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.UV
 import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.Pixel
+import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
@@ -141,7 +142,16 @@ class TextComponent(
         }
     }
 
-    fun update() {
+    fun update(delta: Seconds) {
+        if (needsToBeUpdated) update()
+
+        _text.update(delta)
+        if (_text.wasUpdated) {
+            update()
+        }
+    }
+
+    private fun update() {
         val longestLine = findLongestLine(_text.content)
         val scale = computeCharacterScale(longestLine)
         val textMeshData = generateVertices(scale)

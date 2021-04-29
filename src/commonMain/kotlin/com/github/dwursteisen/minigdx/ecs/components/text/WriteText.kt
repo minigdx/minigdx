@@ -1,6 +1,14 @@
 package com.github.dwursteisen.minigdx.ecs.components.text
 
-class WriteText(content: String) : TextEffect {
+import com.github.dwursteisen.minigdx.Seconds
 
-    override val content: String = content
+class WriteText(override var content: String) : TextEffect {
+
+    override var wasUpdated: Boolean = false
+
+    override val parent: TextEffect? = null
+
+    override fun update(delta: Seconds) = Unit
+
+    override fun getAlteration(characterIndex: Int, delta: Seconds): Alteration = Alteration.none
 }
