@@ -27,13 +27,13 @@ interface EntityFactory {
     /**
      * Create a (hit)box of the scale of the [node] object at the position of [transformation].
      */
-    fun createBox(node: Node, scene: Scene): Entity
+    fun createBox(node: Node): Entity
 
     /**
      * Create a text using the [text], with the characters of the [font] at the
      * position of [transformation].
      */
-    fun createText(text: String, font: Font): Entity
+    fun createText(text: String, font: Font, node: Node): Entity
 
     /**
      * Create a 3D model using the [node] from the [scene] and applying the
