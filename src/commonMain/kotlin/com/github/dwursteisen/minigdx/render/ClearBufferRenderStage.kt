@@ -22,7 +22,7 @@ class ClearBufferRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<E
     override fun compileShaders() = Unit
 
     override fun update(delta: Seconds) {
-        gl.clearColor(1f, 1f, 1f, 1f)
+        gl.clearColor(1f, 0f, 0f, 1f)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)

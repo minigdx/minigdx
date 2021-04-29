@@ -6,31 +6,44 @@ import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.github.dwursteisen.minigdx.Pixel
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
+import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
+import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.file.Font
 import kotlin.reflect.KClass
 
-enum class HorizontalAlignment {
-    LEFT, CENTER, RIGHT
+sealed class HorizontalAlignment {
+
+    abstract fun getHorizontalOffset(lineWith: Pixel, scale: Float, min: Float, max: Float): Float
+    object Left : HorizontalAlignment() {
+
+        override fun getHorizontalOffset(lineWith: Pixel, scale: Float, min: Float, max: Float): Float = min
+    }
+
+    object Right : HorizontalAlignment() {
+
+        override fun getHorizontalOffset(lineWith: Pixel, scale: Float, min: Float, max: Float): Float {
+            return max - lineWith * scale
+        }
+    }
+
+    object Center : HorizontalAlignment() {
+
+        override fun getHorizontalOffset(lineWith: Pixel, scale: Float, min: Float, max: Float): Float {
+            return (max - min) * 0.5f + min - lineWith * scale * 0.5f
+        }
+    }
 }
 
-enum class VerticalAlignment {
-    TOP, CENTER, BOTTOM
-}
-
-interface TextEffect {
-
-    val content: String
-}
-
-class WriteText(content: String) : TextEffect {
-
-    override val content: String = content
+sealed class VerticalAlignment {
+    object Top : VerticalAlignment()
+    object Center : VerticalAlignment()
+    object Bottom : VerticalAlignment()
 }
 
 typealias NumberOfCharacter = Int
 
-class TextMeshData(
+internal class TextMeshData(
     val vertices: MutableList<Vertex> = mutableListOf(),
     val verticesOrder: MutableList<Int> = mutableListOf()
 )
@@ -39,8 +52,8 @@ class TextComponent(
     text: TextEffect,
     font: Font,
     lineWith: NumberOfCharacter? = null,
-    horizontalAlign: HorizontalAlignment = HorizontalAlignment.LEFT,
-    verticalAlign: VerticalAlignment = VerticalAlignment.TOP,
+    horizontalAlign: HorizontalAlignment = HorizontalAlignment.Left,
+    verticalAlign: VerticalAlignment = VerticalAlignment.Top,
 ) : Component {
 
     private var needsToBeUpdated: Boolean = true
@@ -107,8 +120,8 @@ class TextComponent(
         text: String,
         font: Font,
         lineWith: NumberOfCharacter? = null,
-        horizontalAlign: HorizontalAlignment = HorizontalAlignment.LEFT,
-        verticalAlign: VerticalAlignment = VerticalAlignment.TOP
+        horizontalAlign: HorizontalAlignment = HorizontalAlignment.Left,
+        verticalAlign: VerticalAlignment = VerticalAlignment.Top
     ) : this(WriteText(text), font, lineWith, horizontalAlign, verticalAlign)
 
     private val textMeshData = TextMeshData()
@@ -156,9 +169,17 @@ class TextComponent(
         val angelCode = _font.angelCode
         var characterIndex = 0
 
-        // VALIGN: From left to right
+        val lines = _text.content.split("\n")
+        var lineIndex = 0
+        // Compute the start x for the horizontal aligment
+        var startX = _horizontalAlign.getHorizontalOffset(
+            getTextSize(lines[lineIndex], _font),
+            scale,
+            boundingBox.min.x,
+            boundingBox.max.x
+        )
+
         // HALIGN: From top
-        val startX = boundingBox.localMin.x
         val startY = boundingBox.localMax.y
 
         var currentX = 0f
@@ -166,6 +187,17 @@ class TextComponent(
         _text.content.forEach { char ->
             // Advance cursor
             if (char == '\n') {
+                // next line
+                lineIndex++
+
+                // Recompute the start x as regarding the vertical alignment, it can be something else.
+                startX = _horizontalAlign.getHorizontalOffset(
+                    getTextSize(lines[lineIndex], _font),
+                    scale,
+                    boundingBox.min.x,
+                    boundingBox.max.x
+                )
+
                 currentX = 0f
                 currentY -= angelCode.info.lineHeight
             } else if (char == ' ') {

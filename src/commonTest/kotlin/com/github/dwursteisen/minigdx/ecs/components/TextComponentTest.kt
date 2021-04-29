@@ -48,12 +48,4 @@ class TextComponentTest {
         assertEquals(4, textMeshData.vertices.size)
         assertEquals(-1f, textMeshData.vertices.first().position.x)
     }
-
-    @Test
-    fun textComponent_it_create_text_top_center_aligned() {
-    }
-
-    @Test
-    fun textComponent_it_create_text_right_center_aligned() {
-    }
 }
