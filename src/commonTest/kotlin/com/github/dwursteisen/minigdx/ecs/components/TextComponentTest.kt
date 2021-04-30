@@ -1,8 +1,11 @@
 package com.github.dwursteisen.minigdx.ecs.components
 
 import ModelFactory.gameContext
+import com.dwursteisen.minigdx.scene.api.common.Id
+import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.file.AngelCharacter
 import com.github.dwursteisen.minigdx.file.AngelCode
@@ -41,6 +44,14 @@ class TextComponentTest {
 
         entity.add(Position())
         entity.add(BoundingBox.default())
+        entity.add(
+            MeshPrimitive(
+                Id(),
+                "",
+                Primitive(),
+                null
+            )
+        )
         entity.add(component)
 
         val textMeshData = component.generateVertices(1f)
