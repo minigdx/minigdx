@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.file.Font
 
 interface EntityFactory {
+
     var engine: Engine
     var gameContext: GameContext
 
@@ -34,8 +35,9 @@ interface EntityFactory {
      * Create a text using the [text], with the characters of the [font] at the
      * position of [transformation].
      */
-    fun createText(text: String, font: Font, node: Node): Entity
-    fun createText(textEffect: TextEffect, font: Font, node: Node): Entity
+    fun createText(text: String, font: Font, node: Node, scene: Scene): Entity
+
+    fun createText(textEffect: TextEffect, font: Font, node: Node, scene: Scene): Entity
 
     /**
      * Create a 3D model using the [node] from the [scene] and applying the

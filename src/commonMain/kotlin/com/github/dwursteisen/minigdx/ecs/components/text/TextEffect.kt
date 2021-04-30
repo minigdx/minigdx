@@ -14,6 +14,15 @@ class Alteration(
     var height: Pixel
 ) {
 
+    fun apply(alteration: Alteration): Alteration {
+        x += alteration.x
+        y += alteration.y
+        z += alteration.z
+        with += alteration.with
+        height += alteration.height
+        return this
+    }
+
     companion object {
 
         val none = Alteration(0, 0, 0, 0, 0)
@@ -22,16 +31,13 @@ class Alteration(
 
 interface TextEffect {
 
-    var wasUpdated: Boolean
+    var isFinished: Boolean
 
-    val parent: TextEffect?
+    var wasUpdated: Boolean
 
     var content: String
 
     fun update(delta: Seconds)
 
-    fun getAlteration(
-        characterIndex: Int,
-        delta: Seconds
-    ): Alteration
+    fun getAlteration(characterIndex: Int): Alteration
 }

@@ -59,11 +59,11 @@ class EntityFactoryDelegate : EntityFactory {
         return box
     }
 
-    override fun createText(text: String, font: Font, node: Node): Entity {
-        return createText(WriteText(text), font, node)
+    override fun createText(text: String, font: Font, node: Node, scene: Scene): Entity {
+        return createText(WriteText(text), font, node, scene)
     }
 
-    override fun createText(textEffect: TextEffect, font: Font, node: Node): Entity {
+    override fun createText(textEffect: TextEffect, font: Font, node: Node, scene: Scene): Entity {
         val box = createBox(node)
         val meshPrimitive = MeshPrimitive(
             id = Id(),
@@ -82,6 +82,11 @@ class EntityFactoryDelegate : EntityFactory {
 
         box.add(meshPrimitive)
         box.add(textComponent)
+
+        node.children.forEach {
+            createFromNode(it, scene, box)
+        }
+
         return box
     }
 

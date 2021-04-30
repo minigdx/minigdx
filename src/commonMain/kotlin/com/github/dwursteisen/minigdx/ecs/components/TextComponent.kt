@@ -129,7 +129,7 @@ class TextComponent(
 
     override fun onAdded(entity: Entity) {
         owner = entity
-        update()
+        needsToBeUpdated = true
     }
 
     override fun onRemoved(entity: Entity) {
@@ -194,7 +194,7 @@ class TextComponent(
 
         var currentX = 0f
         var currentY = 0f
-        _text.content.forEach { char ->
+        _text.content.forEachIndexed { index, char ->
             // Advance cursor
             if (char == '\n') {
                 // next line
@@ -214,18 +214,20 @@ class TextComponent(
                 currentX += angelCode.characters[char]?.width ?: angelCode.characters['a']?.width ?: 0
             }
 
-            val code = angelCode.characters[char] ?: return@forEach
-            val yTop = currentY - code.yoffset
-            val xLeft = currentX + code.xoffset
-            val xRight = xLeft + code.width
-            val yBottom = yTop - code.height
+            val alteration = _text.getAlteration(index)
+
+            val code = angelCode.characters[char] ?: return@forEachIndexed
+            val yTop = currentY - code.yoffset + alteration.y
+            val xLeft = currentX + code.xoffset + alteration.x
+            val xRight = xLeft + code.width + alteration.with
+            val yBottom = yTop - code.height + alteration.height
 
             // up left
             val a = Vertex(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xLeft,
                     startY + scale * yTop,
-                    0f
+                    alteration.z * scale
                 ),
                 DEFAULT_NORMAL,
                 uv = UV(
@@ -237,7 +239,7 @@ class TextComponent(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xLeft,
                     startY + scale * yBottom,
-                    0f
+                    alteration.z * scale
                 ),
                 DEFAULT_NORMAL,
                 uv = UV(
@@ -250,7 +252,7 @@ class TextComponent(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xRight,
                     startY + scale * yBottom,
-                    0f
+                    alteration.z * scale
                 ),
                 DEFAULT_NORMAL,
                 uv = UV(
@@ -263,7 +265,7 @@ class TextComponent(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xRight,
                     startY + scale * yTop,
-                    0f
+                    alteration.z * scale
                 ),
                 Normal(0f, 0f, 0f),
                 uv = UV(
