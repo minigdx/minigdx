@@ -5,7 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 class TypeWriterEffect(
     val parent: TextEffect,
     // duration per letters
-    var speed: Seconds,
+    var speed: Seconds = 0.05f,
     var loop: Boolean = false
 ) : TextEffect {
 

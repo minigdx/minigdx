@@ -7,10 +7,10 @@ import kotlin.math.cos
 class WaveEffect(
     val parent: TextEffect,
     // time per letter
-    val frequency: Seconds,
+    val frequency: Seconds = 0.05f,
     // amplitude of the letter for the effect.
     // The unit is pixel unit regarding the letter size.
-    val amplitude: Pixel
+    val amplitude: Pixel = 10
 ) : TextEffect {
 
     private var time = 0f
