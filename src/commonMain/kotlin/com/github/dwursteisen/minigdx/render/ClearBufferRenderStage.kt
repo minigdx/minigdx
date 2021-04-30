@@ -16,7 +16,7 @@ class ClearBufferRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<E
     compiler = compiler,
     vertex = EmptyVertexShader,
     fragment = EmptyFragmentShader,
-    query = EntityQuery()
+    query = EntityQuery.none()
 ) {
 
     override fun compileShaders() = Unit

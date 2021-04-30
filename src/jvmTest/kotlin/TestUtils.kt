@@ -1,6 +1,8 @@
 import com.github.dwursteisen.minigdx.GameConfiguration
 import com.github.dwursteisen.minigdx.GameScreenConfiguration
 import com.github.dwursteisen.minigdx.Window
+import com.github.dwursteisen.minigdx.file.TextureImage
+import java.nio.ByteBuffer
 
 actual fun createGameConfiguration(): GameConfiguration {
     return GameConfiguration(
@@ -13,4 +15,8 @@ actual fun createGameConfiguration(): GameConfiguration {
             name = "window name"
         )
     )
+}
+
+actual fun createTextureImage(): TextureImage {
+    return TextureImage(10, 10, 0, 0, ByteBuffer.allocate(1))
 }

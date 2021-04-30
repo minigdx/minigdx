@@ -45,6 +45,9 @@ class BoundingBox private constructor(
     private val _center = Vector3()
     private val _size = Vector3()
 
+    val localMin: ImmutableVector3 = ImmutableVector3(_rawMin)
+    val localMax: ImmutableVector3 = ImmutableVector3(_rawMax)
+
     /**
      * Minus points of the bounding box (ie: lower left)
      */

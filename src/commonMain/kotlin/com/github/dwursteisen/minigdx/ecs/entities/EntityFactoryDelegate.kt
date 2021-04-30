@@ -4,10 +4,7 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.dwursteisen.minigdx.scene.api.camera.OrthographicCamera
 import com.dwursteisen.minigdx.scene.api.camera.PerspectiveCamera
 import com.dwursteisen.minigdx.scene.api.common.Id
-import com.dwursteisen.minigdx.scene.api.model.Normal
 import com.dwursteisen.minigdx.scene.api.model.Primitive
-import com.dwursteisen.minigdx.scene.api.model.UV
-import com.dwursteisen.minigdx.scene.api.model.Vertex
 import com.dwursteisen.minigdx.scene.api.relation.Node
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
 import com.github.dwursteisen.minigdx.GameContext
@@ -25,6 +22,8 @@ import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
+import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
+import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.file.Font
 
 class EntityFactoryDelegate : EntityFactory {
@@ -38,7 +37,7 @@ class EntityFactoryDelegate : EntityFactory {
     override fun createFromNode(node: Node, scene: Scene, parent: Entity?): Entity {
         return when (node.type) {
             ObjectType.ARMATURE -> createArmature(node, scene)
-            ObjectType.BOX -> createBox(node, scene)
+            ObjectType.BOX -> createBox(node)
             ObjectType.CAMERA -> createCamera(node, scene)
             ObjectType.LIGHT -> createLight(node, scene)
             ObjectType.MODEL -> createModel(node, scene)
@@ -50,7 +49,7 @@ class EntityFactoryDelegate : EntityFactory {
         }
     }
 
-    override fun createBox(node: Node, scene: Scene): Entity {
+    override fun createBox(node: Node): Entity {
         val box = engine.create {
             val globalTranslation = node.transformation.toMat4()
             named(node.name)
@@ -60,55 +59,35 @@ class EntityFactoryDelegate : EntityFactory {
         return box
     }
 
-    override fun createText(text: String, font: Font): Entity {
-        return engine.create {
-            named("text")
-            add(Position())
-            val meshPrimitive = MeshPrimitive(
+    override fun createText(text: String, font: Font, node: Node, scene: Scene): Entity {
+        return createText(WriteText(text), font, node, scene)
+    }
+
+    override fun createText(textEffect: TextEffect, font: Font, node: Node, scene: Scene): Entity {
+        val box = createBox(node)
+        val meshPrimitive = MeshPrimitive(
+            id = Id(),
+            name = "undefined",
+            material = null,
+            texture = font.fontSprite,
+            hasAlpha = true,
+            primitive = Primitive(
                 id = Id(),
-                name = "undefined",
-                material = null,
-                texture = font.fontSprite,
-                hasAlpha = true,
-                primitive = Primitive(
-                    id = Id(),
-                    materialId = Id.None,
-                    vertices = listOf(
-                        Vertex(
-                            com.dwursteisen.minigdx.scene.api.model.Position(0f, 0f, 0f),
-                            Normal(0f, 0f, 0f),
-                            uv = UV(0f, 0f)
-                        ),
-                        Vertex(
-                            com.dwursteisen.minigdx.scene.api.model.Position(1f, 0f, 0f),
-                            Normal(0f, 0f, 0f),
-                            uv = UV(1f, 0f)
-                        ),
-                        Vertex(
-                            com.dwursteisen.minigdx.scene.api.model.Position(0f, 1f, 0f),
-                            Normal(0f, 0f, 0f),
-                            uv = UV(1f, 1f)
-                        ),
-                        Vertex(
-                            com.dwursteisen.minigdx.scene.api.model.Position(1f, 1f, 0f),
-                            Normal(0f, 0f, 0f),
-                            uv = UV(0f, 1f)
-                        )
-                    ),
-                    verticesOrder = intArrayOf(
-                        0,
-                        1,
-                        2,
-                        2,
-                        1,
-                        3
-                    )
-                )
+                materialId = Id.None,
+                vertices = emptyList(),
+                verticesOrder = intArrayOf()
             )
-            val spritePrimitive = TextComponent(text, font, meshPrimitive)
-            add(spritePrimitive)
-            add(meshPrimitive)
+        )
+        val textComponent = TextComponent(textEffect, font)
+
+        box.add(meshPrimitive)
+        box.add(textComponent)
+
+        node.children.forEach {
+            createFromNode(it, scene, box)
         }
+
+        return box
     }
 
     override fun createLight(node: Node, scene: Scene): Entity {
