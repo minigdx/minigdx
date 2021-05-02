@@ -51,10 +51,9 @@ class EntityFactoryDelegate : EntityFactory {
 
     override fun createBox(node: Node): Entity {
         val box = engine.create {
-            val globalTranslation = node.transformation.toMat4()
             named(node.name)
             add(BoundingBox.default())
-            add(Position(globalTranslation, globalTranslation, globalTranslation))
+            add(Position(node.transformation.t, node.transformation.r, node.transformation.s))
         }
         return box
     }
