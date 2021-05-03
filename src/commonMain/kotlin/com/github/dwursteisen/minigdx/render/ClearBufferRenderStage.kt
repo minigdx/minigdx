@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.render
 
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
@@ -11,18 +12,23 @@ import com.github.dwursteisen.minigdx.shaders.vertex.VertexShader
 object EmptyVertexShader : VertexShader("")
 object EmptyFragmentShader : FragmentShader("")
 
-class ClearBufferRenderStage(gl: GL, compiler: GLResourceClient) : RenderStage<EmptyVertexShader, EmptyFragmentShader>(
-    gl = gl,
-    compiler = compiler,
-    vertex = EmptyVertexShader,
-    fragment = EmptyFragmentShader,
-    query = EntityQuery.none()
-) {
+class ClearBufferRenderStage(
+    gl: GL,
+    compiler: GLResourceClient,
+    private val clearColor: Color
+) :
+    RenderStage<EmptyVertexShader, EmptyFragmentShader>(
+        gl = gl,
+        compiler = compiler,
+        vertex = EmptyVertexShader,
+        fragment = EmptyFragmentShader,
+        query = EntityQuery.none()
+    ) {
 
     override fun compileShaders() = Unit
 
     override fun update(delta: Seconds) {
-        gl.clearColor(1f, 1f, 1f, 1f)
+        gl.clearColor(clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha)
         gl.clearDepth(1.0)
         gl.enable(GL.DEPTH_TEST)
         gl.depthFunc(GL.LEQUAL)
