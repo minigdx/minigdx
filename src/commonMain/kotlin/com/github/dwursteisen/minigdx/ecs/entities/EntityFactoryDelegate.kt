@@ -89,6 +89,33 @@ class EntityFactoryDelegate : EntityFactory {
         return box
     }
 
+    override fun createText(textEffect: TextEffect, font: Font): Entity {
+        val box = engine.create {
+            named("text-box")
+            add(BoundingBox.default())
+            add(Position())
+        }
+        val meshPrimitive = MeshPrimitive(
+            id = Id(),
+            name = "undefined",
+            material = null,
+            texture = font.fontSprite,
+            hasAlpha = true,
+            primitive = Primitive(
+                id = Id(),
+                materialId = Id.None,
+                vertices = emptyList(),
+                verticesOrder = intArrayOf()
+            )
+        )
+        val textComponent = TextComponent(textEffect, font)
+
+        box.add(meshPrimitive)
+        box.add(textComponent)
+
+        return box
+    }
+
     override fun createLight(node: Node, scene: Scene): Entity {
         return create {
             val pointLight = scene.pointLights.getValue(node.reference)

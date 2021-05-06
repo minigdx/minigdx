@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.components.UIComponent
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
@@ -25,6 +26,14 @@ import com.github.dwursteisen.minigdx.render.RenderStage
 interface Game {
 
     val gameContext: GameContext
+
+    /**
+     * Configure the clear color of the game (ie: which color the default background will be)
+     *
+     * [null] value means that the background will NOT be cleared.
+     */
+    val clearColor: Color?
+        get() = Color(1f, 1f, 1f, 1f)
 
     /**
      * Create entities used to bootstrap the game
@@ -59,7 +68,9 @@ interface Game {
      */
     fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
-        stages.add(ClearBufferRenderStage(gl, compiler))
+        clearColor?.run {
+            stages.add(ClearBufferRenderStage(gl, compiler, this))
+        }
         stages.add(MeshPrimitiveRenderStage(gl, compiler))
         stages.add(AnimatedMeshPrimitiveRenderStage(gl, compiler))
         if (gameContext.options.debug) {

@@ -37,7 +37,17 @@ interface EntityFactory {
      */
     fun createText(text: String, font: Font, node: Node, scene: Scene): Entity
 
+    /**
+     * Create a text using the [textEffect] and the [font].
+     *
+     * @see createText
+     */
     fun createText(textEffect: TextEffect, font: Font, node: Node, scene: Scene): Entity
+
+    /**
+     * Create a text using the [textEffect] and the [font] but without any position information.
+     */
+    fun createText(textEffect: TextEffect, font: Font): Entity
 
     /**
      * Create a 3D model using the [node] from the [scene] and applying the
@@ -55,5 +65,8 @@ interface EntityFactory {
      */
     fun createUICamera(): Entity
 
+    /**
+     * Create a light
+     */
     fun createLight(node: Node, scene: Scene): Entity
 }
