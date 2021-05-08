@@ -49,7 +49,7 @@ class PositionTest {
     }
 
     @Test
-    fun translation_add_world_translation() {
+    fun translation_add_global_translation() {
         val (parent, child) = createEntities()
         parent.position
             .addWorldScale(x = 2f)
@@ -79,7 +79,7 @@ class PositionTest {
     }
 
     @Test
-    fun translation_set_world_translation() {
+    fun translation_set_global_translation() {
         val (parent, child) = createEntities()
         parent.position.setGlobalTranslation(x = 5)
         assertEquals(5f, parent.position.translation.x)
@@ -131,26 +131,26 @@ class PositionTest {
     }
 
     @Test
-    fun rotation_add_world_rotation() {
+    fun rotation_add_global_rotation() {
         val (parent, child) = createEntities()
-        parent.position.addWorldRotation(x = 90f)
+        parent.position.addGlobalRotation(x = 90f)
         assertEquals(90f, parent.position.rotation.x)
         assertEquals(90f, child.position.rotation.x)
         assertEquals(0f, child.position.localRotation.x)
-        child.position.addWorldRotation(x = 45f)
+        child.position.addGlobalRotation(x = 45f)
         assertEquals(90f, parent.position.rotation.x)
         assertEquals(135f, child.position.rotation.x)
         assertEquals(45f, child.position.localRotation.x)
     }
 
     @Test
-    fun rotation_set_world_rotation() {
+    fun rotation_set_global_rotation() {
         val (parent, child) = createEntities()
-        parent.position.setWorldRotation(x = 90)
+        parent.position.setGlobalRotation(x = 90)
         assertEquals(90f, parent.position.rotation.x)
         assertEquals(90f, child.position.rotation.x)
         assertEquals(0f, child.position.localRotation.x)
-        child.position.setWorldRotation(x = 45)
+        child.position.setGlobalRotation(x = 45)
         assertEquals(90f, parent.position.rotation.x)
         assertEquals(45f, child.position.rotation.x)
         assertEquals(-45f, child.position.localRotation.x)
