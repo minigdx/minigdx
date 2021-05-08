@@ -27,6 +27,3 @@ jobs:
           java-version: 11
       - name: Publish snpashot artifact
         run: ./gradlew publishAllPublicationsToSonatypeSnapshotsRepository -Pversion="LATEST-SNAPSHOT" -Psigning.base64.secretKey="${{secrets.SIGNING_BASE_64_SECRET_KEY}}" -Psigning.password="${{secrets.SIGNING_PASSWORD}}" -Psonatype.username="${{secrets.SONATYPE_USERNAME}}" -Psonatype.password="${{secrets.SONATYPE_PASSWORD}}"
-
-env:
-  GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

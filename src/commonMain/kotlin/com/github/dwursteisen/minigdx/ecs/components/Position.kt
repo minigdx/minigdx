@@ -165,6 +165,7 @@ open class Position(
         needsToBeUpdated = true
     }
 
+    // region translation
     /**
      * Add Global translation using World Coordinates
      */
@@ -283,11 +284,14 @@ open class Position(
         return requireUpdate()
     }
 
+    // endregion translation
+
     fun setLocalTransform(transformation: Mat4): Position {
         localTransformationHolder.transformation = transformation
         return requireUpdate()
     }
 
+    // region rotation
     fun addLocalRotation(rotation: Quaternion, delta: Seconds = 1f): Position {
         localTransformationHolder.rotation = interpolate(
             localTransformationHolder.rotation,
@@ -339,6 +343,30 @@ open class Position(
         return requireUpdate()
     }
 
+    fun addGlobalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
+        return addLocalRotation(x, y, z, delta)
+    }
+
+    fun setGlobalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
+        val parent = rotation(parentPosition.transformation)
+        val rotation = rotation(
+            Float3(
+                x.toFloat() - parent.rotation.x,
+                y.toFloat() - parent.rotation.y,
+                z.toFloat() - parent.rotation.z
+            )
+        )
+        localTransformationHolder.rotation = Quaternion.from(rotation)
+        return requireUpdate()
+    }
+
+    fun setGlobalRotation(quaternion: Quaternion): Position {
+        val rotation = Mat4.from(quaternion).rotation
+        return setGlobalRotation(rotation.x, rotation.y, rotation.z)
+    }
+    // endregion rotation
+
+    // region scale
     fun addLocalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
         localTransformationHolder.scale = scale(
             Float3(
@@ -381,28 +409,7 @@ open class Position(
         localTransformationHolder.scale = scale
         return requireUpdate()
     }
-
-    fun addWorldRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
-        return addLocalRotation(x, y, z, delta)
-    }
-
-    fun setWorldRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
-        val parent = rotation(parentPosition.transformation)
-        val rotation = rotation(
-            Float3(
-                x.toFloat() - parent.rotation.x,
-                y.toFloat() - parent.rotation.y,
-                z.toFloat() - parent.rotation.z
-            )
-        )
-        localTransformationHolder.rotation = Quaternion.from(rotation)
-        return requireUpdate()
-    }
-
-    fun setWorldRotation(quaternion: Quaternion): Position {
-        val rotation = Mat4.from(quaternion).rotation
-        return setWorldRotation(rotation.x, rotation.y, rotation.z)
-    }
+    // endregion scale
 
     private fun update() {
         val globalTransformation = parentPosition.transformation * localTransformationHolder.transformation
@@ -463,6 +470,7 @@ open class Position(
     }
 
     companion object {
+
         val identity = Position().also { it.needsToBeUpdated = false }
     }
 }

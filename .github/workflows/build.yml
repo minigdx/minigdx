@@ -23,7 +23,7 @@ jobs:
         with:
           java-version: 11
       - name: build
-        run: ./gradlew build
+        run: ./gradlew ktlintCheck build
 
 env:
   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
