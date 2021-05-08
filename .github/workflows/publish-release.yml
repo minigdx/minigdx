@@ -23,8 +23,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Publish artifact
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        run: ./gradlew -Pversion="${{github.event.release.tag_name}}" -PcurrentOs=${{ runner.os }} -Pbintray_user=${{secrets.BINTRAY_USER}} -Pbintray_key=${{secrets.BINTRAY_KEY}} bintrayUpload
+      - name: Publish artifact
+        run: ./gradlew publishAllPublicationsToSonatypeStagingRepository -Pversion="${{github.event.release.tag_name}}" -Psigning.base64.secretKey="${{secrets.SIGNING_BASE_64_SECRET_KEY}}" -Psigning.password="${{secrets.SIGNING_PASSWORD}}" -Psonatype.username="${{secrets.SONATYPE_USERNAME}}" -Psonatype.password="${{secrets.SONATYPE_PASSWORD}}"
