@@ -2,11 +2,11 @@
 
 plugins {
     id("com.android.library")
-    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.0.0"
+    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.1.0-alpha0"
 }
 
-val kotlinMathVersion = "1.0.0"
-val gltfApiVersion = "1.0.0"
+val kotlinMathVersion = "LATEST-SNAPSHOT"
+val gltfApiVersion = "LATEST-SNAPSHOT"
 val lwjglVersion = "3.2.3"
 val imguiVersion = "1.77-0.16"
 
