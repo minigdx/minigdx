@@ -2,7 +2,7 @@
 
 plugins {
     id("com.android.library")
-    id("com.github.minigdx.gradle.plugin.developer.mpp") version "LATEST-SNAPSHOT"
+    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.1.0-alpha0"
 }
 
 val kotlinMathVersion = "LATEST-SNAPSHOT"
