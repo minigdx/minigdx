@@ -13,7 +13,7 @@ import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.get
 import kotlin.experimental.and
 
-class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
+class JsInputHandler(private val canvas: HTMLCanvasElement) : InputHandler, InputManager {
 
     init {
         document.addEventListener("keydown", ::keyDown, false)
@@ -24,6 +24,8 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         canvas.addEventListener("mousedown", ::mouseDown, false)
         canvas.addEventListener("mouseup", ::mouseUp, false)
         canvas.addEventListener("mousemove", ::mouseMove, false)
+        canvas.addEventListener("mouseleave", ::mouseLeave, false)
+        canvas.addEventListener("mouseenter", ::mouseEnter, false)
     }
 
     private val flagMouse1: Short = 0x1
@@ -36,6 +38,9 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
         TOUCH3
     )
     private val touchManager = TouchManager(UNKNOWN_KEY)
+
+    private var isMouseInsideCanvas: Boolean = false
+    private var mousePosition: Vector2 = Vector2(0, 0)
 
     private fun mouseDown(event: Event) {
         event as MouseEvent
@@ -64,6 +69,22 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
                 touchManager.onTouchMove(touch, event.clientX.toFloat(), event.clientY.toFloat())
             }
         }
+
+        if (isMouseInsideCanvas) {
+            val rect = canvas.getBoundingClientRect()
+            mousePosition.x = event.clientX.toFloat() - rect.left.toFloat()
+            mousePosition.y = event.clientY.toFloat() - rect.top.toFloat()
+        }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun mouseLeave(event: Event) {
+        isMouseInsideCanvas = false
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun mouseEnter(event: Event) {
+        isMouseInsideCanvas = true
     }
 
     private fun touchStart(event: Event) {
@@ -124,6 +145,14 @@ class JsInputHandler(canvas: HTMLCanvasElement) : InputHandler, InputManager {
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 
     override fun isJustTouched(signal: TouchSignal): Vector2? = touchManager.isJustTouched(signal)
+
+    override fun touchIdlePosition(): Vector2? {
+        return if (isMouseInsideCanvas) {
+            mousePosition
+        } else {
+            null
+        }
+    }
 
     override fun record() = Unit
 

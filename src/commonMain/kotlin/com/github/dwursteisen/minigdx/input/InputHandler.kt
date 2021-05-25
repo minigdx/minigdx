@@ -174,4 +174,25 @@ interface InputHandler {
      * Useful to capture text from the user.
      */
     fun textJustTyped(): String? = null
+
+    /**
+     * Position of the touch when there is no signal.
+     *
+     * It will be the mouse position on the web platform or the mouse
+     * position on the desktop platform.
+     *
+     * The position can be keep by the consumer as the position vector will be updated.
+     * If the cursor is outside of the game area, the position vector will not be updated,
+     * it will keep the last position value of the touch position.
+     *
+     * On mobile devise, as this information is not available, it returns null.
+     *
+     * The position of the upper left corner is (0, 0) while the
+     * bottom right corner will depends of the size of your game area.
+     *
+     * @return: position of the touch when idle.
+     *          or null if not available on the current platform
+     *          or null if outside of the game area.
+     */
+    fun touchIdlePosition(): Vector2? = null
 }
