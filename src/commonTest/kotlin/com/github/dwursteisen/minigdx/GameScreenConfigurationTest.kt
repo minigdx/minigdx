@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import com.github.dwursteisen.minigdx.ecs.components.assertEquals as assertEqualsF
 
 class GameScreenConfigurationTest {
 
@@ -17,7 +18,7 @@ class GameScreenConfigurationTest {
     fun gameScreenWithResolutionReturnRatio() {
         val gameScreen = GameScreenConfiguration.WithResolution(16, 9)
         val ratio = gameScreen.screen(1200, 900)
-        assertEquals(16 / 9f, ratio.ratio)
+        assertEqualsF(16 / 9f, ratio.ratio, delta = 0.01f)
     }
 
     @Test
@@ -40,7 +41,7 @@ class GameScreenConfigurationTest {
     fun gameScreenWithRatioReturnRatio() {
         val gameScreen = GameScreenConfiguration.WithRatio(1f)
         val ratio = gameScreen.screen(1200, 900)
-        assertEquals(1f, ratio.ratio)
+        assertEqualsF(1f, ratio.ratio, delta = 0.01f)
     }
 
     @Test
@@ -55,6 +56,6 @@ class GameScreenConfigurationTest {
     fun gameScreenWithCurrentScreenResolutionReturnRatio() {
         val gameScreen = GameScreenConfiguration.WithCurrentScreenResolution()
         val ratio = gameScreen.screen(16, 9)
-        assertEquals(16 / 9f, ratio.ratio)
+        assertEqualsF(16 / 9f, ratio.ratio, delta = 0.01f)
     }
 }

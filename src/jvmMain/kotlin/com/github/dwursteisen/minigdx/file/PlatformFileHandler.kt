@@ -30,11 +30,13 @@ actual class PlatformFileHandler(actual val logger: Logger) {
     }
 
     actual fun readTextureImage(filename: String): Content<TextureImage> {
-
         val content = Content<TextureImage>(filename, logger)
-        val file = File(filename)
 
-        val decoder = PNGDecoder(file.inputStream())
+        // lock first in the jar before checking on the filesystem.
+        val stream = PlatformFileHandler::class.java.getResource("/$filename")?.openStream()
+            ?: File(filename).inputStream()
+
+        val decoder = PNGDecoder(stream)
 
         // create a byte buffer big enough to store RGBA values
         val buffer =

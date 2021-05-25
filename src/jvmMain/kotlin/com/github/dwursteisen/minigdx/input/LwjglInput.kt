@@ -13,8 +13,10 @@ import org.lwjgl.glfw.GLFW.GLFW_STICKY_KEYS
 import org.lwjgl.glfw.GLFW.GLFW_TRUE
 import org.lwjgl.glfw.GLFW.glfwGetCursorPos
 import org.lwjgl.glfw.GLFW.glfwGetMouseButton
+import org.lwjgl.glfw.GLFW.glfwSetCursorEnterCallback
 import org.lwjgl.glfw.GLFW.glfwSetInputMode
 import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
+import org.lwjgl.glfw.GLFWCursorEnterCallback
 import org.lwjgl.glfw.GLFWKeyCallback
 import java.nio.DoubleBuffer
 
@@ -26,6 +28,9 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
 
     private val b1: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
     private val b2: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
+
+    private var mousePosition: Vector2 = Vector2(0f, 0f)
+    private var isMouseInsideWindow: Boolean = false
 
     private fun keyDown(event: Int) {
         logger.debug("INPUT_HANDLER") { "${Thread.currentThread().name} Key pushed $event" }
@@ -52,6 +57,14 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
                 }
             }
         )
+        glfwSetCursorEnterCallback(
+            windowAddress,
+            object : GLFWCursorEnterCallback() {
+                override fun invoke(window: Long, entered: Boolean) {
+                    isMouseInsideWindow = entered
+                }
+            }
+        )
     }
 
     override fun record() {
@@ -68,6 +81,15 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
                 touchManager.onTouchUp(touchSignal)
             }
         }
+        // Update mouse position
+        // https://www.glfw.org/docs/3.3/input_guide.html#cursor_pos
+        if (isMouseInsideWindow) {
+            glfwGetCursorPos(window, b1, b2)
+            mousePosition.x = b1[0].toFloat()
+            mousePosition.y = b2[0].toFloat()
+        }
+
+        // Update touch status
         touchStatus(GLFW_MOUSE_BUTTON_1, TouchSignal.TOUCH1)
         touchStatus(GLFW_MOUSE_BUTTON_2, TouchSignal.TOUCH2)
         touchStatus(GLFW_MOUSE_BUTTON_3, TouchSignal.TOUCH3)
@@ -90,4 +112,12 @@ class LwjglInput(val logger: Logger) : InputHandler, InputManager {
     override fun isTouched(signal: TouchSignal): Vector2? = touchManager.isTouched(signal)
 
     override fun isJustTouched(signal: TouchSignal): Vector2? = touchManager.isJustTouched(signal)
+
+    override fun touchIdlePosition(): Vector2? {
+        return if (isMouseInsideWindow) {
+            mousePosition
+        } else {
+            null
+        }
+    }
 }
