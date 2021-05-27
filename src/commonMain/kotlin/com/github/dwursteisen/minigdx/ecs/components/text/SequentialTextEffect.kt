@@ -8,17 +8,17 @@ class SequentialTextEffect(private val sequence: List<TextEffect>) : TextEffect 
 
     override var isFinished: Boolean
         get() = sequence.last().isFinished
-        set(value) = Unit
+        set(_) = Unit
 
     override var wasUpdated: Boolean
         get() = sequence[currentEffect].wasUpdated
-        set(value) = Unit
+        set(_) = Unit
 
     override var content: String
         get() {
             return sequence.map { it.content }.joinToString("")
         }
-        set(value) = Unit
+        set(_) = Unit
 
     override fun update(delta: Seconds) {
         sequence[currentEffect].update(delta)

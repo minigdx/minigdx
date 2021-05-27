@@ -7,6 +7,7 @@ import com.github.dwursteisen.minigdx.Pixel
 import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 interface ViewportStrategy {
 
@@ -73,11 +74,11 @@ class FillViewportStrategy(private val logger: Logger) : ViewportStrategy {
     ): Pair<GamePosition, GamePosition> {
         return apply(width, height, gameWidth, gameHeight) { x, y, w, h ->
 
-            val xOrigin = deviceX - x
-            val yOrigin = deviceY - y
+            val xOrigin = deviceX - x.toFloat()
+            val yOrigin = deviceY - y.toFloat()
 
-            val gameX = xOrigin * gameWidth / w
-            val gameY = yOrigin * gameHeight / h
+            val gameX = xOrigin * gameWidth.toFloat() / w.toFloat()
+            val gameY = (yOrigin * gameHeight.toFloat()) / h.toFloat()
 
             gameX to gameY
         }
@@ -103,10 +104,10 @@ class FillViewportStrategy(private val logger: Logger) : ViewportStrategy {
         val gx = (sw - pw) * 0.5f
         val gy = (sh - ph) * 0.5f
 
-        val x = gx.toInt()
-        val y = gy.toInt()
-        val w = pw.toInt()
-        val h = ph.toInt()
+        val x = gx.roundToInt()
+        val y = gy.roundToInt()
+        val w = pw.roundToInt()
+        val h = ph.roundToInt()
 
         return block(x, y, w, h)
     }

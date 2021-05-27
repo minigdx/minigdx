@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx.graphics
 import MockLogger
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import com.github.dwursteisen.minigdx.ecs.components.assertEquals as assertEqualsF
 
 class FillViewportStrategyTest {
 
@@ -57,8 +58,8 @@ class FillViewportStrategyTest {
             100
         )
 
-        assertEquals(0f, x)
-        assertEquals(0f, y)
+        assertEqualsF(0f, x)
+        assertEqualsF(0f, y)
     }
 
     @Test
@@ -72,8 +73,8 @@ class FillViewportStrategyTest {
             100
         )
 
-        assertEquals(-50f, x)
-        assertEquals(0f, y)
+        assertEqualsF(-50f, x)
+        assertEqualsF(0f, y)
     }
 
     @Test
@@ -87,8 +88,8 @@ class FillViewportStrategyTest {
             100
         )
 
-        assertEquals(0f, x)
-        assertEquals(0f, y)
+        assertEqualsF(0f, x)
+        assertEqualsF(0f, y)
     }
 
     @Test
@@ -102,8 +103,8 @@ class FillViewportStrategyTest {
             100
         )
 
-        assertEquals(100f, x)
-        assertEquals(0f, y)
+        assertEqualsF(100f, x)
+        assertEqualsF(0f, y)
     }
 
     @Test
@@ -117,7 +118,7 @@ class FillViewportStrategyTest {
             1000
         )
 
-        assertEquals(-250f, x)
-        assertEquals(0f, y)
+        assertEqualsF(-250f, x)
+        assertEqualsF(0f, y)
     }
 }
