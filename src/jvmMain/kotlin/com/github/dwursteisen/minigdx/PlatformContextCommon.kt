@@ -22,8 +22,9 @@ actual open class PlatformContextCommon actual constructor(actual override val c
     PlatformContext {
 
     private fun isMacOs(): Boolean {
-        val osName = System.getProperty("os.name").toLowerCase()
-        return osName.indexOf("mac") >= 0
+        val osName = System.getProperty("os.name")?.toLowerCase()
+        val index = osName?.indexOf("mac") ?: -1
+        return index >= 0
     }
 
     actual override fun createGL(): GL {
@@ -34,8 +35,8 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         return FileHandlerCommon(platformFileHandler = PlatformFileHandler(logger), logger = logger)
     }
 
-    actual override fun createInputHandler(logger: Logger): InputHandler {
-        return LwjglInput(logger)
+    actual override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler {
+        return LwjglInput(logger, gameContext)
     }
 
     actual override fun createViewportStrategy(logger: Logger): ViewportStrategy {
@@ -123,10 +124,10 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         // Make the window visible
         GLFW.glfwShowWindow(window)
 
-        // Get the size of the framebuffer
+        // Get the size of the device window
         val tmpWidth = MemoryUtil.memAllocInt(1)
         val tmpHeight = MemoryUtil.memAllocInt(1)
-        GLFW.glfwGetFramebufferSize(window, tmpWidth, tmpHeight)
+        GLFW.glfwGetWindowSize(window, tmpWidth, tmpHeight)
 
         // Compute the Game Resolution regarding the configuration
         val gameResolution = configuration.gameScreenConfiguration.screen(
@@ -140,7 +141,7 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         gameContext.deviceScreen.width = tmpWidth.get(0)
         gameContext.deviceScreen.height = tmpHeight.get(0)
 
-        GLFW.glfwSetFramebufferSizeCallback(window) { _, width, height ->
+        GLFW.glfwSetWindowSizeCallback(window) { _, width, height ->
             gameContext.deviceScreen.width = width
             gameContext.deviceScreen.height = height
             gameContext.viewport.update(

@@ -68,8 +68,8 @@ actual open class PlatformContextCommon actual constructor(
         )
     }
 
-    actual override fun createInputHandler(logger: Logger): InputHandler {
-        return JsInputHandler(canvas)
+    actual override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler {
+        return JsInputHandler(canvas, gameContext)
     }
 
     actual override fun createViewportStrategy(logger: Logger): ViewportStrategy {

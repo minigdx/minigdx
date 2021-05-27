@@ -24,7 +24,7 @@ interface PlatformContext {
     /**
      * Create the Input Handler: it's the entry point to manage game inputs (keyboard, touch, mouse)
      */
-    fun createInputHandler(logger: Logger): InputHandler
+    fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler
 
     /**
      * Create the viewport Strategy  responsible to get the displayed grahical area.

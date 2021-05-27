@@ -29,8 +29,8 @@ actual open class PlatformContextCommon actual constructor(
         return FillViewportStrategy(logger)
     }
 
-    actual override fun createInputHandler(logger: Logger): InputHandler {
-        return AndroidInputHandler()
+    actual override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler {
+        return AndroidInputHandler(gameContext)
     }
 
     actual override fun createLogger(): Logger {

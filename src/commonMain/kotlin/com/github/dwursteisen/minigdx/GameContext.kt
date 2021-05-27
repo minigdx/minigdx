@@ -20,16 +20,29 @@ class GameContext(
     val logger: Logger = platformContext.createLogger()
 
     val fileHandler: FileHandler = platformContext.createFileHandler(logger)
-    val input: InputHandler = platformContext.createInputHandler(logger)
+    val input: InputHandler = platformContext.createInputHandler(logger, this)
     val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
     val glResourceClient = GLResourceClient(gl, logger)
 
+    /**
+     * Size of the game screen.
+     * This screen has a fixed size and a fixed ratio.
+     *
+     * Elements out of this game screen will not be displayed
+     * (for example if the device screen is resized)
+     */
     val gameScreen: GameScreen = GameScreen(
         gameResolution.width,
         gameResolution.height,
         gameResolution.ratio
     )
 
+    /**
+     * Device screen resolution.
+     *
+     * This screen can be resized and so with and height can changed
+     * through the time.
+     */
     val deviceScreen: DeviceScreen = DeviceScreen(
         gameResolution.width,
         gameResolution.height

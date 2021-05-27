@@ -10,7 +10,7 @@ expect class PlatformContextCommon(configuration: GameConfiguration) : PlatformC
     override val configuration: GameConfiguration
     override fun createGL(): GL
     override fun createFileHandler(logger: Logger): FileHandler
-    override fun createInputHandler(logger: Logger): InputHandler
+    override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler
     override fun createViewportStrategy(logger: Logger): ViewportStrategy
     override fun createLogger(): Logger
     override fun createOptions(): Options

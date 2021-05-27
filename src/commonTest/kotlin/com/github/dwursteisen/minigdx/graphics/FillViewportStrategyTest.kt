@@ -45,4 +45,79 @@ class FillViewportStrategyTest {
         fillViewportStrategy.update(gl, 400, 800, 200, 100)
         assertEquals(gl.viewportCall, ViewportCall(0, 300, 400, 200))
     }
+
+    @Test
+    fun convertSquareDeviceScreenSquareGameScreen() {
+        val (x, y) = fillViewportStrategy.convert(
+            0f,
+            0f,
+            100,
+            100,
+            100,
+            100
+        )
+
+        assertEquals(0f, x)
+        assertEquals(0f, y)
+    }
+
+    @Test
+    fun convertHorizontalDeviceScreenSquareGameScreenTopLeftDeviseScreen() {
+        val (x, y) = fillViewportStrategy.convert(
+            0f,
+            0f,
+            100,
+            50,
+            100,
+            100
+        )
+
+        assertEquals(-50f, x)
+        assertEquals(0f, y)
+    }
+
+    @Test
+    fun convertHorizontalDeviceScreenSquareGameScreenTopLeftGameScreen() {
+        val (x, y) = fillViewportStrategy.convert(
+            25f,
+            0f,
+            100,
+            50,
+            100,
+            100
+        )
+
+        assertEquals(0f, x)
+        assertEquals(0f, y)
+    }
+
+    @Test
+    fun convertHorizontalDeviceScreenSquareGameScreenTopRightGameScreen() {
+        val (x, y) = fillViewportStrategy.convert(
+            75f,
+            0f,
+            100,
+            50,
+            100,
+            100
+        )
+
+        assertEquals(100f, x)
+        assertEquals(0f, y)
+    }
+
+    @Test
+    fun convertSquareDeviceScreenVerticalGameScreenTopLeftDeviseScreen() {
+        val (x, y) = fillViewportStrategy.convert(
+            0f,
+            0f,
+            100,
+            100,
+            500,
+            1000
+        )
+
+        assertEquals(-250f, x)
+        assertEquals(0f, y)
+    }
 }
