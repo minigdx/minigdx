@@ -42,8 +42,26 @@ class GameContext(
      *
      * This screen can be resized and so with and height can changed
      * through the time.
+     *
+     * This is the size of the window.
      */
     val deviceScreen: DeviceScreen = DeviceScreen(
+        gameResolution.width,
+        gameResolution.height
+    )
+
+    /**
+     * Framebuffer resolution
+     *
+     * This framebuffer, liike the device screen, can changed
+     * through the time
+     *
+     * This is the size of the framebuffer contained in the window.
+     * The resolution can be different of the device screen, for example
+     * on a Retina display screen in which the frame buffer screen
+     * is different.
+     */
+    val frameBufferScreen: DeviceScreen = DeviceScreen(
         gameResolution.width,
         gameResolution.height
     )

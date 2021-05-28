@@ -41,10 +41,12 @@ class MiniGdxSurfaceView(
                 override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
                     gameContext.deviceScreen.height = height
                     gameContext.deviceScreen.width = width
+                    gameContext.frameBufferScreen.height = height
+                    gameContext.frameBufferScreen.width = width
                     gameContext.viewport.update(
                         gameContext.gl,
-                        gameContext.deviceScreen.width,
-                        gameContext.deviceScreen.height,
+                        gameContext.frameBufferScreen.width,
+                        gameContext.frameBufferScreen.height,
                         gameContext.gameScreen.width,
                         gameContext.gameScreen.height
                     )

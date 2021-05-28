@@ -14,17 +14,19 @@ interface ViewportStrategy {
     /**
      * Update the viewport (rendered area) for the actual screen
      * having a resolutions oy [width] pixels per [height] pixels.
+     *
+     * The [width] and [height] has to be the size of the framebuffer.
      */
     fun update(gl: GL, width: Pixel, height: Pixel, gameWidth: Pixel, gameHeight: Pixel)
 
     fun update(
         gl: GL,
-        deviceScreen: Resolution,
+        frameBufferScreen: Resolution,
         gameScreen: Resolution
     ) = update(
         gl,
-        deviceScreen.width,
-        deviceScreen.height,
+        frameBufferScreen.width,
+        frameBufferScreen.height,
         gameScreen.width,
         gameScreen.height
     )

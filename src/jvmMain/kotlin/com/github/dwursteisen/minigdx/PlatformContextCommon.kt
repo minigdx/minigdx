@@ -141,13 +141,23 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         gameContext.deviceScreen.width = tmpWidth.get(0)
         gameContext.deviceScreen.height = tmpHeight.get(0)
 
+        // Update the framebuffer screen with the actual size of the framebuffer
+        GLFW.glfwGetFramebufferSize(window, tmpWidth, tmpHeight)
+        gameContext.frameBufferScreen.width = tmpWidth.get(0)
+        gameContext.frameBufferScreen.height = tmpHeight.get(0)
+
         GLFW.glfwSetWindowSizeCallback(window) { _, width, height ->
             gameContext.deviceScreen.width = width
             gameContext.deviceScreen.height = height
+        }
+
+        GLFW.glfwSetFramebufferSizeCallback(window) { _, width, height ->
+            gameContext.frameBufferScreen.width = width
+            gameContext.frameBufferScreen.height = height
             gameContext.viewport.update(
                 gameContext.gl,
-                gameContext.deviceScreen.width,
-                gameContext.deviceScreen.height,
+                gameContext.frameBufferScreen.width,
+                gameContext.frameBufferScreen.height,
                 gameContext.gameScreen.width,
                 gameContext.gameScreen.height
             )
@@ -157,8 +167,8 @@ actual open class PlatformContextCommon actual constructor(actual override val c
             // The window moved. The viewport needs to be refreshed in this situation too.
             gameContext.viewport.update(
                 gameContext.gl,
-                gameContext.deviceScreen.width,
-                gameContext.deviceScreen.height,
+                gameContext.frameBufferScreen.width,
+                gameContext.frameBufferScreen.height,
                 gameContext.gameScreen.width,
                 gameContext.gameScreen.height
             )
@@ -179,8 +189,8 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         }
         gameContext.viewport.update(
             gameContext.gl,
-            gameContext.deviceScreen.width,
-            gameContext.deviceScreen.height,
+            gameContext.frameBufferScreen.width,
+            gameContext.frameBufferScreen.height,
             gameContext.gameScreen.width,
             gameContext.gameScreen.height
         )
