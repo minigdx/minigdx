@@ -1,9 +1,11 @@
 package com.github.dwursteisen.minigdx.input
 
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH1
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH2
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH3
 import com.github.dwursteisen.minigdx.math.Vector2
+import com.github.dwursteisen.minigdx.utils.convert
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.TouchEvent
@@ -13,7 +15,10 @@ import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.get
 import kotlin.experimental.and
 
-class JsInputHandler(private val canvas: HTMLCanvasElement) : InputHandler, InputManager {
+class JsInputHandler(
+    private val canvas: HTMLCanvasElement,
+    private val gameContext: GameContext,
+) : InputHandler, InputManager {
 
     init {
         document.addEventListener("keydown", ::keyDown, false)
@@ -48,7 +53,15 @@ class JsInputHandler(private val canvas: HTMLCanvasElement) : InputHandler, Inpu
         flags.forEachIndexed { index, flag ->
             if (jsTouch.and(flag) == flag) {
                 val touch = touchSignals[index]
-                touchManager.onTouchDown(touch, event.clientX.toFloat(), event.clientY.toFloat())
+
+                val rect = canvas.getBoundingClientRect()
+                val x = event.clientX.toFloat() - rect.left.toFloat()
+                val y = event.clientY.toFloat() - rect.top.toFloat()
+
+                val gamePosition = gameContext.convert(x, y)
+                gamePosition?.let { (gameX, gameY) ->
+                    touchManager.onTouchDown(touch, gameX, gameY)
+                }
             }
         }
     }
@@ -66,14 +79,32 @@ class JsInputHandler(private val canvas: HTMLCanvasElement) : InputHandler, Inpu
         flags.forEachIndexed { index, flag ->
             if (jsTouch.and(flag) == flag) {
                 val touch = touchSignals[index]
-                touchManager.onTouchMove(touch, event.clientX.toFloat(), event.clientY.toFloat())
+
+                val rect = canvas.getBoundingClientRect()
+                val x = event.clientX.toFloat() - rect.left.toFloat()
+                val y = event.clientY.toFloat() - rect.top.toFloat()
+
+                val gamePosition = gameContext.convert(x, y)
+                gamePosition?.let { (gameX, gameY) ->
+                    touchManager.onTouchMove(touch, gameX, gameY)
+                }
             }
         }
 
         if (isMouseInsideCanvas) {
             val rect = canvas.getBoundingClientRect()
-            mousePosition.x = event.clientX.toFloat() - rect.left.toFloat()
-            mousePosition.y = event.clientY.toFloat() - rect.top.toFloat()
+            val x = event.clientX.toFloat() - rect.left.toFloat()
+            val y = event.clientY.toFloat() - rect.top.toFloat()
+
+            val gamePosition = gameContext.convert(x, y)
+            if (gamePosition == null) {
+                // the mouse is in the canvas but NOT in the game screen.
+                isMouseInsideCanvas = false
+            } else {
+                val (gameX, gameY) = gamePosition
+                mousePosition.x = gameX
+                mousePosition.y = gameY
+            }
         }
     }
 
@@ -92,7 +123,15 @@ class JsInputHandler(private val canvas: HTMLCanvasElement) : InputHandler, Inpu
         (0 until event.targetTouches.length).forEach {
             val jsTouch = event.targetTouches[it]!!
             val touch = touchManager.getTouchSignal(jsTouch.identifier)
-            touchManager.onTouchDown(touch, jsTouch.pageX.toFloat(), jsTouch.pageY.toFloat())
+
+            val rect = canvas.getBoundingClientRect()
+            val x = jsTouch.clientX.toFloat() - rect.left.toFloat()
+            val y = jsTouch.clientY.toFloat() - rect.top.toFloat()
+
+            val gamePosition = gameContext.convert(x, y)
+            gamePosition?.let { (gameX, gameY) ->
+                touchManager.onTouchDown(touch, gameX, gameY)
+            }
         }
     }
 
@@ -110,7 +149,14 @@ class JsInputHandler(private val canvas: HTMLCanvasElement) : InputHandler, Inpu
         (0 until event.targetTouches.length).forEach {
             val jsTouch = event.targetTouches[it]!!
             val touch = touchManager.getTouchSignal(jsTouch.identifier)
-            touchManager.onTouchMove(touch, jsTouch.pageX.toFloat(), jsTouch.pageY.toFloat())
+
+            val rect = canvas.getBoundingClientRect()
+            val x = jsTouch.clientX.toFloat() - rect.left.toFloat()
+            val y = jsTouch.clientY.toFloat() - rect.top.toFloat()
+            val gamePosition = gameContext.convert(x, y)
+            gamePosition?.let { (gameX, gameY) ->
+                touchManager.onTouchMove(touch, gameX, gameY)
+            }
         }
     }
 

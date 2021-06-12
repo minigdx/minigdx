@@ -3,9 +3,11 @@ package com.github.dwursteisen.minigdx.input
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.math.Vector2
+import com.github.dwursteisen.minigdx.utils.convert
 
-class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
+class AndroidInputHandler(private val gameContext: GameContext) : InputHandler, InputManager, View.OnTouchListener {
 
     private val touchManager = TouchManager(KeyEvent.KEYCODE_PROFILE_SWITCH)
 
@@ -40,7 +42,12 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 // down
-                touchManager.onTouchDown(touchSignal, event.getX(pointerId), event.getY(pointerId))
+                val x = event.getX(pointerId)
+                val y = event.getY(pointerId)
+                val gamePosition = gameContext.convert(x, y)
+                gamePosition?.let { (gameX, gameY) ->
+                    touchManager.onTouchDown(touchSignal, gameX, gameY)
+                }
             }
             MotionEvent.ACTION_UP -> {
                 // up
@@ -48,7 +55,12 @@ class AndroidInputHandler : InputHandler, InputManager, View.OnTouchListener {
             }
             MotionEvent.ACTION_MOVE -> {
                 // update
-                touchManager.onTouchMove(touchSignal, event.getX(pointerId), event.getY(pointerId))
+                val x = event.getX(pointerId)
+                val y = event.getY(pointerId)
+                val gamePosition = gameContext.convert(x, y)
+                gamePosition?.let { (gameX, gameY) ->
+                    touchManager.onTouchMove(touchSignal, gameX, gameY)
+                }
             }
         }
     }

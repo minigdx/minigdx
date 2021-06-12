@@ -16,7 +16,7 @@ class MockPlatformContext(override val configuration: GameConfiguration) : Platf
 
     override fun createFileHandler(logger: Logger): FileHandler = MockFileFandler()
 
-    override fun createInputHandler(logger: Logger): InputHandler = MockInputHandler()
+    override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler = MockInputHandler()
 
     override fun createViewportStrategy(logger: Logger): ViewportStrategy = FillViewportStrategy(logger)
 

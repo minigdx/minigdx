@@ -165,7 +165,7 @@ interface InputHandler {
     /**
      * Is [signal] just touched on the screen?
      *
-     * @return null if not touched, coordinates otherwise.
+     * @return null if not touched, coordinates of the touch in game screen coordinate.
      */
     fun isJustTouched(signal: TouchSignal): Vector2?
 
@@ -188,7 +188,11 @@ interface InputHandler {
      * On mobile devise, as this information is not available, it returns null.
      *
      * The position of the upper left corner is (0, 0) while the
-     * bottom right corner will depends of the size of your game area.
+     * bottom right corner will depends of the size of your game screen.
+     *
+     * Please note that the position will be regarding the game screen and not the device screen.
+     * Which mean that even if the window of your game is resized, the coordinate of the bottom right
+     * corner will NOT change.
      *
      * @return: position of the touch when idle.
      *          or null if not available on the current platform

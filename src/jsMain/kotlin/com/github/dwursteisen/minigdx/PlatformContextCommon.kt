@@ -68,8 +68,8 @@ actual open class PlatformContextCommon actual constructor(
         )
     }
 
-    actual override fun createInputHandler(logger: Logger): InputHandler {
-        return JsInputHandler(canvas)
+    actual override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler {
+        return JsInputHandler(canvas, gameContext)
     }
 
     actual override fun createViewportStrategy(logger: Logger): ViewportStrategy {
@@ -96,6 +96,8 @@ actual open class PlatformContextCommon actual constructor(
         this.gameContext.logPlatform()
         this.gameContext.deviceScreen.width = canvas.clientWidth
         this.gameContext.deviceScreen.height = canvas.clientHeight
+        this.gameContext.frameBufferScreen.width = canvas.clientWidth
+        this.gameContext.frameBufferScreen.height = canvas.clientHeight
 
         inputManager = gameContext.input as InputManager
 
@@ -112,8 +114,8 @@ actual open class PlatformContextCommon actual constructor(
             configuration.loadingListener(gameContext.fileHandler.loadingProgress())
             gameContext.viewport.update(
                 gameContext.gl,
-                gameContext.deviceScreen.width,
-                gameContext.deviceScreen.height,
+                gameContext.frameBufferScreen.width,
+                gameContext.frameBufferScreen.height,
                 gameContext.gameScreen.width,
                 gameContext.gameScreen.height
             )
@@ -131,13 +133,15 @@ actual open class PlatformContextCommon actual constructor(
         ) {
             gameContext.deviceScreen.width = canvas.clientWidth
             gameContext.deviceScreen.height = canvas.clientHeight
+            gameContext.frameBufferScreen.width = canvas.clientWidth
+            gameContext.frameBufferScreen.height = canvas.clientHeight
             canvas.width = canvas.clientWidth
             canvas.height = canvas.clientHeight
 
             gameContext.viewport.update(
                 gameContext.gl,
-                gameContext.deviceScreen.width,
-                gameContext.deviceScreen.height,
+                gameContext.frameBufferScreen.width,
+                gameContext.frameBufferScreen.height,
                 gameContext.gameScreen.width,
                 gameContext.gameScreen.height
             )

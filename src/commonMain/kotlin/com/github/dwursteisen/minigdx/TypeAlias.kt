@@ -40,3 +40,13 @@ fun Number.toPercent(): Float {
     require(v in 0.0..1.0)
     return v
 }
+
+/**
+ * Position in the screen device
+ */
+typealias DevicePosition = Float
+
+/**
+ * Position in the game device (ie: in the game viewport)
+ */
+typealias GamePosition = Float

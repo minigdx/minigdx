@@ -1,22 +1,18 @@
 package com.github.dwursteisen.minigdx.game
 
-import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Color
-import com.github.dwursteisen.minigdx.ecs.components.UICamera
-import com.github.dwursteisen.minigdx.ecs.components.UIComponent
-import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.CameraTrackSystem
-import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
+import com.github.dwursteisen.minigdx.file.Texture
+import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
@@ -65,29 +61,22 @@ interface Game {
      * Create render stages.
      *
      * Can be override but need extra care when doing it.
+     *
+     * @param [widgetTexture]: this parameter will be removed later when the assets management will be better.
+     * It's the texture used to display component for the imGUI.
      */
-    fun createRenderStage(gl: GL, compiler: GLResourceClient): List<RenderStage<*, *>> {
+    fun createRenderStage(widgetTexture: Texture): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
         clearColor?.run {
-            stages.add(ClearBufferRenderStage(gl, compiler, this))
+            stages.add(ClearBufferRenderStage(gameContext.gl, gameContext.glResourceClient, this))
         }
-        stages.add(MeshPrimitiveRenderStage(gl, compiler))
-        stages.add(AnimatedMeshPrimitiveRenderStage(gl, compiler))
+        stages.add(MeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
+        stages.add(AnimatedMeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
         if (gameContext.options.debug) {
-            stages.add(BoundingBoxStage(gl, compiler))
+            stages.add(BoundingBoxStage(gameContext.gl, gameContext.glResourceClient))
         }
 
-        // display UI component only trough the UI Camera
-        stages.add(
-            MeshPrimitiveRenderStage(
-                gl,
-                compiler,
-                query = EntityQuery(
-                    listOf(MeshPrimitive::class, UIComponent::class)
-                ),
-                cameraQuery = EntityQuery(UICamera::class)
-            )
-        )
+        stages.add(ImGUIRenderStage(gameContext.gl, gameContext.glResourceClient, widgetTexture, gameContext))
         return stages
     }
 
