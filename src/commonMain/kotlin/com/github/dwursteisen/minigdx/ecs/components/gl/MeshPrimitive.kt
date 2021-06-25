@@ -14,17 +14,11 @@ open class MeshPrimitive(
      * Model primitive which contains the model data (vertices, ...)
      */
     var primitive: Primitive,
-
-    /**
-     * Material used by the primitive.
-     * Can be null if a texture is used instead
-     */
-    val material: Material?,
     /**
      * Texture used by the primitive.
      * Can be null if a material is used instead
      */
-    val texture: Texture? = null,
+    val texture: Texture,
 
     /**
      * Is texture/material has alpha?
@@ -33,13 +27,12 @@ open class MeshPrimitive(
      * the rendering needs to be delayed to render
      * it correctly.
      */
-    var hasAlpha: Boolean = material?.hasAlpha ?: false,
+    var hasAlpha: Boolean = texture.hasAlpha ?: false,
     var isUVDirty: Boolean = true,
     override var isDirty: Boolean = true,
     // --- Open GL Specific fields --- //
     var verticesBuffer: Buffer? = null,
     var normalsBuffer: Buffer? = null,
     var uvBuffer: Buffer? = null,
-    var verticesOrderBuffer: Buffer? = null,
-    var textureReference: TextureReference? = null
+    var verticesOrderBuffer: Buffer? = null
 ) : GLResourceComponent

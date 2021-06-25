@@ -31,8 +31,8 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         return LwjglGL()
     }
 
-    actual override fun createFileHandler(logger: Logger): FileHandler {
-        return FileHandlerCommon(platformFileHandler = PlatformFileHandler(logger), logger = logger)
+    actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
+        return FileHandlerCommon(gameContext, platformFileHandler = PlatformFileHandler(logger), logger = logger)
     }
 
     actual override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler {

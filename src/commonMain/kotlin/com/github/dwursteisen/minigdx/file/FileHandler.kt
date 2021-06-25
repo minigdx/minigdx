@@ -5,6 +5,8 @@ import kotlin.reflect.KClass
 
 interface FileHandler {
 
+    fun <T> create(filename: String, value: T): Content<T>
+
     fun <T, R : Any> get(filename: String, rClazz: KClass<R>, map: (R) -> Content<T>): Content<T>
 
     fun <T : Any> get(filename: String, clazz: KClass<T>): Content<T>

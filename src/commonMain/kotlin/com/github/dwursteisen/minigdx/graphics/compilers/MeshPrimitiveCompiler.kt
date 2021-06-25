@@ -40,51 +40,6 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
             usage = GL.STATIC_DRAW
         )
 
-        // Push the texture
-        val textureReference = materials.getOrPut(component.material?.id ?: component.texture?.id!!) {
-            gl.createTexture().apply {
-                gl.bindTexture(GL.TEXTURE_2D, this)
-
-                gl.texParameteri(
-                    GL.TEXTURE_2D,
-                    GL.TEXTURE_MAG_FILTER,
-                    // TODO: this parameter should be configurable at the game level.
-                    //  Maybe add a config object in the GameContext with fields and an extra as Map
-                    //  for custom parameters
-                    GL.NEAREST
-                )
-                gl.texParameteri(
-                    GL.TEXTURE_2D,
-                    GL.TEXTURE_MIN_FILTER,
-                    GL.NEAREST
-                )
-
-                if (component.material != null) {
-                    gl.texImage2D(
-                        GL.TEXTURE_2D,
-                        0,
-                        GL.RGBA,
-                        GL.RGBA,
-                        component.material.width,
-                        component.material.height,
-                        GL.UNSIGNED_BYTE,
-                        component.material.data
-                    )
-                } else if (component.texture != null) (
-                    gl.texImage2D(
-                        GL.TEXTURE_2D,
-                        0,
-                        GL.RGBA,
-                        GL.RGBA,
-                        GL.UNSIGNED_BYTE,
-                        component.texture.source
-                    )
-                    )
-            }
-        }
-
-        component.textureReference = textureReference
-
         // Push UV coordinates
         component.uvBuffer = component.uvBuffer ?: gl.createBuffer()
         gl.bindBuffer(GL.ARRAY_BUFFER, component.uvBuffer!!)
@@ -100,7 +55,6 @@ class MeshPrimitiveCompiler : GLResourceCompiler {
         source as MeshPrimitive
         target as MeshPrimitive
 
-        target.textureReference = source.textureReference
         target.uvBuffer = source.uvBuffer
         target.verticesBuffer = source.verticesBuffer
         target.verticesOrderBuffer = source.verticesOrderBuffer

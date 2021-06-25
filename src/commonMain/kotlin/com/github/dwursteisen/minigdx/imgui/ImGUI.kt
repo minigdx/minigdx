@@ -2,8 +2,10 @@ package com.github.dwursteisen.minigdx.imgui
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.file.Texture
+import com.github.dwursteisen.minigdx.file.get
 import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
@@ -11,18 +13,20 @@ import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
 import com.github.minigdx.imgui.ImGUIRenderer
 
 class ImGUI(
-    private val gl: GL,
+    gameContext: GameContext,
     private val programFactory: () -> ShaderProgram,
     private val vertex: MeshVertexShader,
-    private val fragmentShader: UVFragmentShader,
-    private val texture: Texture
+    private val fragmentShader: UVFragmentShader
 ) : ImGUIRenderer {
 
+    private val gl = gameContext.gl
     private val verticesBuffer = gl.createBuffer()
     private val verticesOrderBuffer = gl.createBuffer()
     private val verticesUVsBuffer = gl.createBuffer()
     private val textureBuffer = gl.createTexture()
     private val normalsBuffer = gl.createBuffer()
+
+    private val texture: Texture by gameContext.fileHandler.get("internal/widgets.png")
 
     override fun render(vertices: FloatArray, uv: FloatArray, verticesOrder: IntArray) {
 

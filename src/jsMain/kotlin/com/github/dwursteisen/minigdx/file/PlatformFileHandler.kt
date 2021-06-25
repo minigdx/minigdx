@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.file
 
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.audio.AudioContext
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlinx.browser.window
@@ -15,7 +16,8 @@ import org.w3c.xhr.XMLHttpRequestResponseType
 actual class PlatformFileHandler(
     val rootPath: String = window.location.protocol + "//" + window.location.host + window.location.pathname,
     val audioContext: AudioContext,
-    actual val logger: Logger
+    actual val logger: Logger,
+    actual val gameContext: GameContext
 ) {
 
     @ExperimentalStdlibApi

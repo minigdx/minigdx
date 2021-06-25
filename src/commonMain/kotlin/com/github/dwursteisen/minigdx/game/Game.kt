@@ -62,10 +62,8 @@ interface Game {
      *
      * Can be override but need extra care when doing it.
      *
-     * @param [widgetTexture]: this parameter will be removed later when the assets management will be better.
-     * It's the texture used to display component for the imGUI.
      */
-    fun createRenderStage(widgetTexture: Texture): List<RenderStage<*, *>> {
+    fun createRenderStage(): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
         clearColor?.run {
             stages.add(ClearBufferRenderStage(gameContext.gl, gameContext.glResourceClient, this))
@@ -76,7 +74,7 @@ interface Game {
             stages.add(BoundingBoxStage(gameContext.gl, gameContext.glResourceClient))
         }
 
-        stages.add(ImGUIRenderStage(gameContext.gl, gameContext.glResourceClient, widgetTexture, gameContext))
+        stages.add(ImGUIRenderStage(gameContext))
         return stages
     }
 

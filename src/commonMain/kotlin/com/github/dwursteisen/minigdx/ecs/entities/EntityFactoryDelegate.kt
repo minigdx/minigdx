@@ -25,6 +25,7 @@ import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.file.Font
+import com.github.dwursteisen.minigdx.file.Texture
 
 class EntityFactoryDelegate : EntityFactory {
 
@@ -67,7 +68,6 @@ class EntityFactoryDelegate : EntityFactory {
         val meshPrimitive = MeshPrimitive(
             id = Id(),
             name = "undefined",
-            material = null,
             texture = font.fontSprite,
             hasAlpha = true,
             primitive = Primitive(
@@ -98,7 +98,6 @@ class EntityFactoryDelegate : EntityFactory {
         val meshPrimitive = MeshPrimitive(
             id = Id(),
             name = "undefined",
-            material = null,
             texture = font.fontSprite,
             hasAlpha = true,
             primitive = Primitive(
@@ -156,7 +155,13 @@ class EntityFactoryDelegate : EntityFactory {
                 MeshPrimitive(
                     id = primitive.id,
                     primitive = primitive,
-                    material = material,
+                    texture = Texture(
+                        id = material.id,
+                        textureData = material.data,
+                        width = material.width,
+                        height = material.height,
+                        hasAlpha = material.hasAlpha
+                    ),
                     name = node.name
                 )
             }

@@ -51,7 +51,7 @@ actual open class PlatformContextCommon actual constructor(
         return canvas.getContext("webgl") as WebGLRenderingContextBase
     }
 
-    actual override fun createFileHandler(logger: Logger): FileHandler {
+    actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
         logger.info("GL_CONTEXT") { "Creating FileHandler with path root '${configuration.rootPath}'" }
 
         // Audio fix for Safara
@@ -59,6 +59,7 @@ actual open class PlatformContextCommon actual constructor(
             js("window.AudioContext = webkitAudioContext;")
         }
         return FileHandlerCommon(
+            gameContext,
             PlatformFileHandler(
                 configuration.rootPath,
                 AudioContext(),
