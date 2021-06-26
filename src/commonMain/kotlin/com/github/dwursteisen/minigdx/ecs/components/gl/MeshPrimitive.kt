@@ -25,7 +25,7 @@ open class MeshPrimitive(
      * the rendering needs to be delayed to render
      * it correctly.
      */
-    var hasAlpha: Boolean = texture.hasAlpha ?: false,
+    var hasAlpha: Boolean = texture.hasAlpha,
     var isUVDirty: Boolean = true,
     override var isDirty: Boolean = true,
     // --- Open GL Specific fields --- //

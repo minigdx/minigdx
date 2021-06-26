@@ -35,9 +35,12 @@ class RenderStageTest {
             compiler = GLResourceClient(MockGL(), MockLogger())
         ) {
             override fun update(delta: Seconds, entity: Entity) = Unit
+
+            override fun update(delta: Seconds) = Unit
         }
 
         engine.addSystem(stage)
+
         engine.create {
             add(
                 Camera(
@@ -48,6 +51,8 @@ class RenderStageTest {
                 )
             )
         }
+        engine.update(0f)
+
         assertTrue(stage.entities.count() == 0)
         assertTrue(stage.camera != null)
     }

@@ -16,6 +16,7 @@ import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
 import com.github.dwursteisen.minigdx.render.MeshPrimitiveRenderStage
+import com.github.dwursteisen.minigdx.render.ModelComponentRenderStage
 import com.github.dwursteisen.minigdx.render.RenderStage
 
 interface Game {
@@ -68,6 +69,7 @@ interface Game {
             stages.add(ClearBufferRenderStage(gameContext.gl, gameContext.glResourceClient, this))
         }
         stages.add(MeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
+        stages.add(ModelComponentRenderStage(gameContext.gl, gameContext.glResourceClient))
         stages.add(AnimatedMeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
         if (gameContext.options.debug) {
             stages.add(BoundingBoxStage(gameContext.gl, gameContext.glResourceClient))

@@ -31,6 +31,8 @@ class EngineTest {
             add(Name("hello"))
         }
 
+        engine.update(0f)
+
         assertNotNull(system.entities.firstOrNull())
     }
 
@@ -44,6 +46,8 @@ class EngineTest {
         val entity = engine.create {
             add(Name("hello"))
         }
+
+        engine.update(0f)
 
         val result = engine.destroy(entity)
 
@@ -61,6 +65,8 @@ class EngineTest {
         val entity = engine.create {
         }
 
+        engine.update(0f)
+
         entity.add(Name("hello"))
         assertNotNull(system.entities.firstOrNull())
     }
@@ -75,6 +81,8 @@ class EngineTest {
         val entity = engine.create {
             add(Name("hello"))
         }
+
+        engine.update(0f)
 
         entity.remove(Name::class)
         assertNull(system.entities.firstOrNull())
@@ -119,7 +127,10 @@ class EngineTest {
             add(Name("hello"))
         }
 
+        engine.update(0f)
+        isCalled = false
         engine.destroy()
+        engine.update(0f)
 
         assertFalse(isCalled)
     }

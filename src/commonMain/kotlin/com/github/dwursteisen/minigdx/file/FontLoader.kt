@@ -8,6 +8,8 @@ class FontLoader : FileLoader<Font> {
         val textureContent: Content<Texture> = handler.get("$filename.png")
 
         return textureContent.flatMap { texture ->
+            // TODO: it's a good bet that font has alpha
+            texture.hasAlpha = true
             angelCode.map {
                 Font(
                     angelCode = it,

@@ -20,16 +20,18 @@ class TextureLoader : FileLoader<Texture> {
             hasAlpha = false
         )
 
-        // asset the texture into the assets Manager ?
+        // Load the default texture
+        handler.gameContext.assetsManager.add(result)
 
         val content = handler.create(filename, result)
 
         textureImageLoader.load(filename, handler).onLoaded { textureImage ->
+            // The final texture is loaded.
+            // Load this texture instead of the default one.
             result.textureImage = textureImage
             result.height = textureImage.height
             result.width = textureImage.width
-
-            // FIXME: add result into the assetsManager
+            handler.gameContext.assetsManager.add(result)
         }
         return content
     }

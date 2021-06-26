@@ -25,7 +25,6 @@ class SpriteAnimatedSystem : System(EntityQuery(SpriteComponent::class)) {
             spritePrimitive.isDirty = true
             spritePrimitive.isUVDirty = true
 
-            // FIXME: prendre en compte l' annimation courante
             // TODO: quick fix to get UVs in the same order than the model.
             val a = sprite.uvs[frame.uvIndex]
             val b = sprite.uvs[frame.uvIndex + 1]

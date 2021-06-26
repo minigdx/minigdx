@@ -45,7 +45,7 @@ class Entity(
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> find(type: KClass<T>): T? {
-        return componentsByType.getValue(type).toList().firstOrNull() as T?
+        return componentsByType.get(type)?.toList()?.firstOrNull() as T?
     }
 
     @Suppress("UNCHECKED_CAST")

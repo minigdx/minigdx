@@ -24,7 +24,8 @@ actual open class PlatformContextCommon actual constructor(
     actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
         return FileHandlerCommon(
             platformFileHandler = PlatformFileHandler(configuration.activity!!, logger),
-            logger = logger
+            logger = logger,
+            gameContext = gameContext
         )
     }
 

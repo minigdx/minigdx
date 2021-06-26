@@ -1,7 +1,9 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Percent
+import com.github.dwursteisen.minigdx.graph.GraphScene
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.reflect.KClass
 
@@ -11,10 +13,12 @@ private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     AngelCode::class to AngelCodeLoader(),
     Font::class to FontLoader(),
     Scene::class to SceneLoader(),
-    Sound::class to SoundLoader()
+    Sound::class to SoundLoader(),
+    GraphScene::class to GraphSceneLoader()
 )
 
 class FileHandlerCommon(
+    override val gameContext: GameContext,
     private val platformFileHandler: PlatformFileHandler,
     private val logger: Logger,
     private val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()

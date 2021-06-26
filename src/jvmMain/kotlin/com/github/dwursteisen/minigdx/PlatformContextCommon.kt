@@ -31,8 +31,12 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         return LwjglGL()
     }
 
-    actual override fun createFileHandler(logger: Logger): FileHandler {
-        return FileHandlerCommon(platformFileHandler = PlatformFileHandler(logger), logger = logger)
+    actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
+        return FileHandlerCommon(
+            platformFileHandler = PlatformFileHandler(logger),
+            logger = logger,
+            gameContext = gameContext
+        )
     }
 
     actual override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler {
@@ -194,10 +198,14 @@ actual open class PlatformContextCommon actual constructor(actual override val c
             gameContext.gameScreen.width,
             gameContext.gameScreen.height
         )
+        // Render loop
         while (!GLFW.glfwWindowShouldClose(window)) {
             val delta = getDelta()
+            // Get the last input
             inputManager.record()
-            game.gameContext.assetsManager.update(delta)
+            // Load assets to be loaded
+            game.gameContext.assetsManager.update()
+            // Advance the game
             game.render(delta)
             GLFW.glfwSwapBuffers(window) // swap the color buffers
             GLFW.glfwPollEvents()

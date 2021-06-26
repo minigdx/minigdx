@@ -20,7 +20,7 @@ class GameContext(
     val gl: GL = platformContext.createGL()
     val logger: Logger = platformContext.createLogger()
 
-    val fileHandler: FileHandler = platformContext.createFileHandler(logger)
+    val fileHandler: FileHandler = platformContext.createFileHandler(logger, this)
     val input: InputHandler = platformContext.createInputHandler(logger, this)
     val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
     @Deprecated("Will be removed to use AssetsManager instead")
