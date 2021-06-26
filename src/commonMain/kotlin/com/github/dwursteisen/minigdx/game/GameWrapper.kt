@@ -16,7 +16,7 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
     fun create() {
         game.createDefaultSystems(engine).forEach { engine.addSystem(it) }
         game.createSystems(engine).forEach { engine.addSystem(it) }
-        val renderStage = game.createRenderStage(widget)
+        val renderStage = game.createRenderStage()
         renderStage.forEach { engine.addSystem(it) }
 
         val entityFactoryDelegate = EntityFactoryDelegate()

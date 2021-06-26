@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx
 
+import com.github.dwursteisen.minigdx.file.AssetsManager
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
@@ -22,7 +23,10 @@ class GameContext(
     val fileHandler: FileHandler = platformContext.createFileHandler(logger)
     val input: InputHandler = platformContext.createInputHandler(logger, this)
     val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
+    @Deprecated("Will be removed to use AssetsManager instead")
     val glResourceClient = GLResourceClient(gl, logger)
+
+    val assetsManager = AssetsManager(this)
 
     /**
      * Size of the game screen.

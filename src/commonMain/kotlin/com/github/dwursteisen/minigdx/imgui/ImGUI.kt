@@ -85,7 +85,7 @@ class ImGUI(
             GL.RGBA,
             GL.RGBA,
             GL.UNSIGNED_BYTE,
-            texture.source
+            texture.textureImage!!
         )
 
         // ---- shader configuration ---- //

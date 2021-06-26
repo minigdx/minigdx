@@ -19,7 +19,7 @@ interface PlatformContext {
     /**
      * Create the File Handler: the entry point to access file on disk, ...
      */
-    fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler
+    fun createFileHandler(logger: Logger): FileHandler
 
     /**
      * Create the Input Handler: it's the entry point to manage game inputs (keyboard, touch, mouse)

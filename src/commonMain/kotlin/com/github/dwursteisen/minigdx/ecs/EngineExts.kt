@@ -13,6 +13,7 @@ import com.github.dwursteisen.minigdx.ecs.components.SpriteComponent
 import com.github.dwursteisen.minigdx.ecs.components.UICamera
 import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.file.Texture
 import com.dwursteisen.minigdx.scene.api.model.Position as PositionDTO
 import com.dwursteisen.minigdx.scene.api.sprite.Sprite as SpriteDTO
 
@@ -45,11 +46,18 @@ fun Engine.createSprite(sprite: SpriteDTO, scene: Scene): Entity = create {
             uvs = sprite.uvs
         )
     )
+    val material = scene.materials.getValue(sprite.materialReference)
     add(
         MeshPrimitive(
             id = Id(),
             name = "undefined",
-            material = scene.materials.getValue(sprite.materialReference),
+            texture = Texture(
+                id = material.id,
+                textureData = material.data,
+                width = material.width,
+                height = material.height,
+                hasAlpha = material.hasAlpha
+            ),
             primitive = Primitive(
                 id = Id(),
                 materialId = sprite.materialReference,

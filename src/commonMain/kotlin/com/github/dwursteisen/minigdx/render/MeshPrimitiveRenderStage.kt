@@ -115,7 +115,7 @@ class MeshPrimitiveRenderStage(
         vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
         vertex.aVertexNormal.apply(program, primitive.normalsBuffer!!)
         vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
-        fragment.uUV.apply(program, primitive.textureReference!!, unit = 0)
+        fragment.uUV.apply(program, primitive.texture.textureReference!!, unit = 0)
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, primitive.verticesOrderBuffer!!)
         gl.drawElements(

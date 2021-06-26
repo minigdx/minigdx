@@ -7,21 +7,29 @@ class TextureLoader : FileLoader<Texture> {
     private val textureImageLoader = TextureImageLoader()
 
     override fun load(filename: String, handler: FileHandler): Content<Texture> {
-        val result  = Texture(
+        val result = Texture(
             Id(),
             byteArrayOf(
-            0xFF.toByte(), 0x00.toByte(), 0x00.toByte(), 0xFF.toByte(),
-            0x00.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte(),
-            0x00.toByte(), 0x00.toByte(), 0xFF.toByte(), 0xFF.toByte(),
-            0xFF.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte()
-        ), 2, 2, hasAlpha = false)
+                0xFF.toByte(), 0x00.toByte(), 0x00.toByte(), 0xFF.toByte(),
+                0x00.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte(),
+                0x00.toByte(), 0x00.toByte(), 0xFF.toByte(), 0xFF.toByte(),
+                0xFF.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte()
+            ),
+            2,
+            2,
+            hasAlpha = false
+        )
+
+        // asset the texture into the assets Manager ?
 
         val content = handler.create(filename, result)
 
-        textureImageLoader.load(filename, handler).onLoaded { textureImage  ->
+        textureImageLoader.load(filename, handler).onLoaded { textureImage ->
             result.textureImage = textureImage
             result.height = textureImage.height
             result.width = textureImage.width
+
+            // FIXME: add result into the assetsManager
         }
         return content
     }

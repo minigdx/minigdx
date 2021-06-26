@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.common.Id
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 
 class Texture private constructor(
@@ -11,7 +12,7 @@ class Texture private constructor(
     var width: Int,
     var height: Int,
     var hasAlpha: Boolean = false
-) {
+) : Asset {
     var textureReference: TextureReference? = null
 
     constructor(id: Id, source: TextureImage, hasAlpha: Boolean) : this(
@@ -32,7 +33,8 @@ class Texture private constructor(
         hasAlpha = hasAlpha
     )
 
-    fun buffer(gl: GL) {
+    override fun load(gameContext: GameContext) {
+        val gl = gameContext.gl
         val texture = textureReference ?: gl.createTexture()
         gl.bindTexture(GL.TEXTURE_2D, texture)
 
@@ -48,7 +50,7 @@ class Texture private constructor(
         )
 
         val tx = textureImage
-        if(tx != null) {
+        if (tx != null) {
             gl.texImage2D(
                 GL.TEXTURE_2D,
                 0,

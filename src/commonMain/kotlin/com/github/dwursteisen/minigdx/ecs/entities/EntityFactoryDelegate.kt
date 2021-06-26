@@ -152,16 +152,18 @@ class EntityFactoryDelegate : EntityFactory {
                     scene.materials[primitive.materialId] ?: throw IllegalStateException(
                         "Model ${model.name} doesn't have any material assigned."
                     )
+                val texture = Texture(
+                    id = material.id,
+                    textureData = material.data,
+                    width = material.width,
+                    height = material.height,
+                    hasAlpha = material.hasAlpha
+                ).also { gameContext.assetsManager.add(it) }
+
                 MeshPrimitive(
                     id = primitive.id,
                     primitive = primitive,
-                    texture = Texture(
-                        id = material.id,
-                        textureData = material.data,
-                        width = material.width,
-                        height = material.height,
-                        hasAlpha = material.hasAlpha
-                    ),
+                    texture = texture,
                     name = node.name
                 )
             }

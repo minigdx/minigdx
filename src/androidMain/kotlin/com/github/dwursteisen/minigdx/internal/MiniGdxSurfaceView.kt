@@ -31,9 +31,11 @@ class MiniGdxSurfaceView(
                 override fun onDrawFrame(gl: GL10?) {
                     val now = System.nanoTime().toFloat()
                     val delta = (now - time) / 1000000000.0f
+                    val deltaCapped = min(1 / 60f, delta)
 
+                    gameContext.assetsManager.update(deltaCapped)
                     inputManager.record()
-                    gameWrapper.render(min(1 / 60f, delta))
+                    gameWrapper.render(deltaCapped)
                     inputManager.reset()
                     time = now
                 }
