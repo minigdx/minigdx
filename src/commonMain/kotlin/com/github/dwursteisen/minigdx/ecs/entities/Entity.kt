@@ -53,6 +53,9 @@ class Entity(
         return componentsByType.getValue(type).toList() as List<T>
     }
 
+    /**
+     * Add all components to the entity
+     */
     fun addAll(components: Collection<Component>) = engineUpdate {
         this.components += components
         componentsType = componentsType + components.map { it::class }.toSet()
@@ -61,6 +64,9 @@ class Entity(
         components.forEach { it.onAdded(this) }
     }
 
+    /**
+     * All the component to this entity
+     */
     fun add(component: Component) = engineUpdate {
         components += component
         componentsType = componentsType + component::class
@@ -69,6 +75,9 @@ class Entity(
         component.onAdded(this)
     }
 
+    /**
+     * Remove the component to the entity.
+     */
     fun remove(component: Component) = engineUpdate {
         components -= component
         componentsType = componentsType - component::class
@@ -77,6 +86,9 @@ class Entity(
         component.onRemoved(this)
     }
 
+    /**
+     * Remove components of this type of the entity.
+     */
     fun remove(componentType: KClass<out Component>) = engineUpdate {
         val removed = components.filter { it::class == componentType }
         components -= removed
@@ -85,6 +97,9 @@ class Entity(
         removed.forEach { it.onRemoved(this) }
     }
 
+    /**
+     * Destroy the entity.
+     */
     fun destroy(): Boolean {
         _children.forEach { it.destroy() }
         val removed = engine.destroy(this)
@@ -130,9 +145,12 @@ class Entity(
     }
 
     private fun engineUpdate(block: () -> Unit) {
-        engine.destroy(this)
-        block()
-        engine.add(this)
+        // Queue the action so it will be executed during the next render loop.
+        engine.queueEntityUpdate {
+            engine.destroy(this)
+            block()
+            engine.add(this)
+        }
     }
 
     override fun toString(): String = name

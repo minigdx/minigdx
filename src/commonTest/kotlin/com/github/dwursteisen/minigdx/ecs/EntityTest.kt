@@ -13,18 +13,24 @@ class EntityTest {
 
     @Test
     fun findAll_it_gets_components() {
-        val entity = Entity(Engine(gameContext()))
+        val engine = Engine(gameContext())
+
+        val entity = Entity(engine)
         entity.add(Example())
 
+        engine.update(0f)
         assertTrue(entity.findAll(Example::class).isNotEmpty())
     }
 
     @Test
     fun get_it_gets_components() {
-        val entity = Entity(Engine(gameContext()))
+        val engine = Engine(gameContext())
+
+        val entity = Entity(engine)
         val expected = Example()
         entity.add(expected)
 
+        engine.update(0f)
         assertSame(expected, entity.get(Example::class))
     }
 }

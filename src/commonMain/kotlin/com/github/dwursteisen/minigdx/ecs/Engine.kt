@@ -13,7 +13,7 @@ class Engine(val gameContext: GameContext) {
 
     private var systems: List<System> = listOf(eventQueue)
 
-    private val waitingForCreation = mutableListOf<Entity>()
+    private val waitingForUpdate = mutableListOf<() -> Unit>()
 
     interface EntityBuilder {
         fun named(name: String)
@@ -26,6 +26,7 @@ class Engine(val gameContext: GameContext) {
         private var components = emptyList<Component>()
 
         private var name: String = "_"
+
         fun build(): Entity {
             return Entity(engine, components, name)
         }
@@ -50,7 +51,7 @@ class Engine(val gameContext: GameContext) {
     fun create(configuration: EntityBuilder.() -> Unit): Entity {
         val builder = InternalEntityBuilder(this)
         builder.configuration()
-        return builder.build().also { waitingForCreation.add(it) }
+        return builder.build().also { add(it) }
     }
 
     fun destroy(entity: Entity): Boolean {
@@ -82,11 +83,13 @@ class Engine(val gameContext: GameContext) {
             .any { (added, _) -> added }
     }
 
+    internal fun queueEntityUpdate(action: () -> Unit) {
+        waitingForUpdate.add(action)
+    }
+
     fun update(delta: Seconds) {
-        // Entities where created.
-        // It's added in all system before all systems are updated.
-        waitingForCreation.forEach { add(it) }
-        waitingForCreation.clear()
+        waitingForUpdate.forEach { action -> action() }
+        waitingForUpdate.clear()
         systems.forEach {
             it.update(delta)
             it.consumeEvents()?.run { eventQueue.emit(this) }

@@ -38,7 +38,8 @@ class TextComponentTest {
 
     @Test
     fun textComponent_it_create_text_top_left_aligned() {
-        val entity = Entity(Engine(gameContext()))
+        val engine = Engine(gameContext())
+        val entity = Entity(engine)
         val component = TextComponent("a", font, gameContext(), lineWith = 2)
 
         entity.add(Position())
@@ -55,6 +56,8 @@ class TextComponentTest {
             )
         )
         entity.add(component)
+
+        engine.update(0f)
 
         val textMeshData = component.generateVertices(1f)
         // 4 vertices for the letter 'a'
