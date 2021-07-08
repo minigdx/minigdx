@@ -6,7 +6,7 @@ import com.github.dwursteisen.minigdx.graph.AnimatedModel
 
 class AnimatedComponent(
     val animatedModel: AnimatedModel,
-    var currentAnimation: List<Frame> = emptyList(),
+    var currentAnimation: List<Frame> = animatedModel.animations.values.firstOrNull()?.frames ?: emptyList(),
     /**
      * Current pose computed regarding the current animation and the time elapsed in this animation.
      */
@@ -18,7 +18,7 @@ class AnimatedComponent(
     /**
      * Duration of the current animation
      */
-    var duration: Float = 0f,
+    var duration: Float = currentAnimation.lastOrNull()?.time ?: 0f,
     /**
      * Number of time the current animation has been played
      */

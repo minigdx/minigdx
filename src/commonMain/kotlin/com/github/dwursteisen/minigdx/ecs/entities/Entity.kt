@@ -35,7 +35,11 @@ class Entity(
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> get(type: KClass<T>): T {
-        return find(type)!!
+        return find(type) ?: throw IllegalStateException(
+            "No components of type '${type.simpleName}' " +
+                "found in the entity '${this.name}'. The entity contains those components: " +
+                componentsType.map { it.simpleName }.joinToString()
+        )
     }
 
     /**
@@ -50,7 +54,8 @@ class Entity(
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> findAll(type: KClass<T>): List<T> {
-        return componentsByType.getValue(type).toList() as List<T>
+        val components = componentsByType[type]?.toList() ?: emptyList()
+        return components as List<T>
     }
 
     /**

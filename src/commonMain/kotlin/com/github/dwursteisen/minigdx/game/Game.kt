@@ -13,6 +13,7 @@ import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
 import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
+import com.github.dwursteisen.minigdx.render.AnimatedModelRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
 import com.github.dwursteisen.minigdx.render.MeshPrimitiveRenderStage
@@ -71,6 +72,7 @@ interface Game {
         stages.add(MeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
         stages.add(ModelComponentRenderStage(gameContext.gl, gameContext.glResourceClient))
         stages.add(AnimatedMeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
+        stages.add(AnimatedModelRenderStage(gameContext.gl, gameContext.glResourceClient))
         if (gameContext.options.debug) {
             stages.add(BoundingBoxStage(gameContext.gl, gameContext.glResourceClient))
         }

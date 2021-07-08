@@ -13,17 +13,17 @@ import com.github.minigdx.imgui.gui
 import com.github.minigdx.imgui.internal.Resolution
 
 class ImGUIRenderStage(
-    private val gameContext: GameContext
+    private val othergameContext: GameContext
 ) : RenderStage<MeshVertexShader, UVFragmentShader>(
-    gameContext.gl,
-    gameContext.glResourceClient,
+    othergameContext.gl,
+    othergameContext.glResourceClient,
     MeshVertexShader(),
     UVFragmentShader(),
     EntityQuery.none(),
     EntityQuery.none()
 ) {
 
-    private val guiRenderer = ImGUI(gameContext, { program }, vertex, fragment)
+    private val guiRenderer = ImGUI(othergameContext, { program }, vertex, fragment)
 
     private val inputCapture: InputCapture = ImgCapture { input }
 
@@ -41,7 +41,7 @@ class ImGUIRenderStage(
             gui(
                 renderer = guiRenderer,
                 inputCapture = inputCapture,
-                gameResolution = Resolution(gameContext.gameScreen.width, gameContext.gameScreen.height),
+                gameResolution = Resolution(othergameContext.gameScreen.width, othergameContext.gameScreen.height),
                 builder = { it.gui(this) }
             )
         }

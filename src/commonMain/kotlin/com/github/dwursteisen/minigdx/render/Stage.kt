@@ -34,7 +34,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     val fragment: F,
     query: EntityQuery,
     val cameraQuery: EntityQuery = EntityQuery(
-        Camera::class
+        CameraComponent::class
     ),
     lightsQuery: EntityQuery = EntityQuery(
         LightComponent::class
