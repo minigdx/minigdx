@@ -20,6 +20,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
 
+@Deprecated("use BoundingBoxComponent instead")
 class BoundingBox private constructor(
     override var id: Id = Id(),
     override var isDirty: Boolean = true,

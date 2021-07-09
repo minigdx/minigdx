@@ -6,6 +6,7 @@ import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 
+@Deprecated("Use AnimatedComponent instead")
 class AnimatedMeshPrimitive(
     val primitive: Primitive,
     val material: Material,

@@ -5,6 +5,7 @@ import com.dwursteisen.minigdx.scene.api.model.Primitive
 import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.shaders.Buffer
 
+@Deprecated("Use ModelComponent instead")
 open class MeshPrimitive(
     override var id: Id,
     val name: String,

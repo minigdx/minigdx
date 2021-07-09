@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.ecs.components.gl.GLResourceComponent
 import com.github.dwursteisen.minigdx.shaders.TextureReference
 
+@Deprecated("Use AssetsManager instead")
 interface GLResourceCompiler {
 
     fun compile(gl: GL, component: GLResourceComponent, materials: MutableMap<Id, TextureReference>)

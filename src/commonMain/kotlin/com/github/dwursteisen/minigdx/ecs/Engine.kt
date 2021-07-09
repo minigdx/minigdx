@@ -43,6 +43,8 @@ class Engine(val gameContext: GameContext) {
     }
 
     internal fun onGameStart() {
+        waitingForUpdate.forEach { action -> action() }
+        waitingForUpdate.clear()
         systems.forEach {
             it.onGameStarted(this)
         }
