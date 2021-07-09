@@ -31,5 +31,6 @@ class AssetsManager(private val gameContext: GameContext) {
         assets.forEach { asset ->
             asset.load(gameContext)
         }
+        assets.clear()
     }
 }
