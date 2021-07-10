@@ -4,6 +4,7 @@ import com.dwursteisen.minigdx.scene.api.Scene
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.graph.GraphScene
+import com.github.dwursteisen.minigdx.graph.Sprite
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.reflect.KClass
 
@@ -14,7 +15,8 @@ private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     Font::class to FontLoader(),
     Scene::class to SceneLoader(),
     Sound::class to SoundLoader(),
-    GraphScene::class to GraphSceneLoader()
+    GraphScene::class to GraphSceneLoader(),
+    Sprite::class to SpriteLoader()
 )
 
 class FileHandlerCommon(
@@ -49,7 +51,8 @@ class FileHandlerCommon(
 
     override fun readData(filename: String): Content<ByteArray> = platformFileHandler.readData(filename)
 
-    override fun readTextureImage(filename: String): Content<TextureImage> = platformFileHandler.readTextureImage(filename)
+    override fun readTextureImage(filename: String): Content<TextureImage> =
+        platformFileHandler.readTextureImage(filename)
 
     override fun readSound(filename: String): Content<Sound> = platformFileHandler.readSound(filename)
 

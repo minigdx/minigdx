@@ -12,7 +12,6 @@ import com.github.dwursteisen.minigdx.input.LwjglInput
 import com.github.dwursteisen.minigdx.logger.JavaLoggingLogger
 import com.github.dwursteisen.minigdx.logger.Logger
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.GLFW_TRUE
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK
 import org.lwjgl.opengl.GL11.GL_LINE
@@ -192,6 +191,7 @@ actual open class PlatformContextCommon actual constructor(actual override val c
         if (configuration.wireframe) {
             GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         }
+
         gameContext.viewport.update(
             gameContext.gl,
             gameContext.frameBufferScreen.width,
