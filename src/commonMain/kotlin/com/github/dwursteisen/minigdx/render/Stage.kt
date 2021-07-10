@@ -5,7 +5,7 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.lookAt
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
-import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
 import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
@@ -14,7 +14,6 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
@@ -28,8 +27,7 @@ data class RenderOptions(
 interface Stage
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
-    protected val gl: GL,
-    val compiler: GLResourceClient,
+    gameContext: GameContext,
     val vertex: V,
     val fragment: F,
     query: EntityQuery,
@@ -40,7 +38,9 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         LightComponent::class
     ),
     val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
-) : Stage, System(query) {
+) : Stage, System(query, gameContext) {
+
+    val gl = gameContext.gl
 
     private val lights by interested(lightsQuery)
 

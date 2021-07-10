@@ -2,20 +2,19 @@ package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedComponent
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 
-class AnimatedModelRenderStage(gl: GL, compiler: GLResourceClient) :
+class AnimatedModelRenderStage(gameContext: GameContext) :
     RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
-        gl = gl,
-        compiler = compiler,
+        gameContext = gameContext,
         vertex = AnimatedMeshVertexShader(),
         fragment = UVFragmentShader(),
         query = EntityQuery(AnimatedComponent::class)

@@ -14,7 +14,6 @@ import com.github.minigdx.imgui.ImGUIRenderer
 
 class ImGUI(
     gameContext: GameContext,
-    private val programFactory: () -> ShaderProgram,
     private val vertex: MeshVertexShader,
     private val fragmentShader: UVFragmentShader
 ) : ImGUIRenderer {
@@ -27,6 +26,8 @@ class ImGUI(
     private val normalsBuffer = gl.createBuffer()
 
     private val texture: Texture by gameContext.fileHandler.get("internal/widgets.png")
+
+    lateinit var program: ShaderProgram
 
     override fun render(vertices: FloatArray, uv: FloatArray, verticesOrder: IntArray) {
 
@@ -92,7 +93,6 @@ class ImGUI(
 
         // Configure the light.
 
-        val program = programFactory()
         vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
         vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
 

@@ -5,6 +5,7 @@ import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
@@ -13,20 +14,17 @@ import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.graph.Primitive
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.math.toVector3
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
 
 class ModelComponentRenderStage(
-    gl: GL,
-    compiler: GLResourceClient,
+    gameContext: GameContext,
     query: EntityQuery = EntityQuery.of(ModelComponent::class),
     cameraQuery: EntityQuery = EntityQuery(CameraComponent::class)
 ) : RenderStage<MeshVertexShader, UVFragmentShader>(
-    gl = gl,
-    compiler = compiler,
+    gameContext,
     vertex = MeshVertexShader(),
     fragment = UVFragmentShader(),
     query = query,
