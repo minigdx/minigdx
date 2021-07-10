@@ -1,6 +1,9 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.systems.System
 
 /**
  * Asset that can be updated through the time.
@@ -33,4 +36,13 @@ class AssetsManager(private val gameContext: GameContext) {
         }
         assets.clear()
     }
+}
+
+class AssetsManagerSystem(private val assetsManager: AssetsManager) : System() {
+
+    override fun update(delta: Seconds) {
+        assetsManager.update()
+    }
+
+    override fun update(delta: Seconds, entity: Entity) = Unit
 }

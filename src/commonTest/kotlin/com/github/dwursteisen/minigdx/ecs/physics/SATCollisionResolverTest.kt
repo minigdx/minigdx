@@ -4,8 +4,8 @@ import MockPlatformContext
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.BoundingBoxComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import createGameConfiguration
@@ -26,11 +26,11 @@ class SATCollisionResolverTest {
 
     private fun createEntities(): Pair<Entity, Entity> {
         val a = engine.create {
-            add(BoundingBox.default())
+            add(BoundingBoxComponent.default())
             add(Position())
         }
         val b = engine.create {
-            add(BoundingBox.default())
+            add(BoundingBoxComponent.default())
             add(Position())
         }
         return a to b

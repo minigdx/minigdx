@@ -189,7 +189,14 @@ class WebGL(private val gl: WebGLRenderingContextBase) : GL {
         gl.bindTexture(target, textureReference.reference)
     }
 
-    override fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, source: TextureImage) {
+    override fun texImage2D(
+        target: Int,
+        level: Int,
+        internalformat: Int,
+        format: Int,
+        type: Int,
+        source: TextureImage
+    ) {
         gl.texImage2D(target, level, internalformat, format, type, source.source)
     }
 

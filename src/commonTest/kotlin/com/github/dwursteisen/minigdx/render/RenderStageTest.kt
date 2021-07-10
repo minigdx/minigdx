@@ -5,7 +5,7 @@ import ModelFactory.gameContext
 import com.github.dwursteisen.minigdx.GameScreen
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
-import com.github.dwursteisen.minigdx.ecs.components.Camera
+import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
@@ -43,9 +43,9 @@ class RenderStageTest {
 
         engine.create {
             add(
-                Camera(
+                CameraComponent(
                     gameScreen = GameScreen(1024, 1024),
-                    type = Camera.Type.PERSPECTIVE,
+                    type = CameraComponent.Type.PERSPECTIVE,
                     far = 0f,
                     near = 0f
                 )

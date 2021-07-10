@@ -11,6 +11,7 @@ import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
+import com.github.dwursteisen.minigdx.file.AssetsManagerSystem
 import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedModelRenderStage
@@ -57,6 +58,10 @@ interface Game {
      * Technical systems can be added, like a custom camera tracking system.
      */
     fun createSystems(engine: Engine): List<System>
+
+    fun createPostRenderSystem(engine: Engine): List<System> {
+        return listOf(AssetsManagerSystem(gameContext.assetsManager))
+    }
 
     /**
      * Create render stages.

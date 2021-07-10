@@ -153,8 +153,6 @@ actual open class PlatformContextCommon actual constructor(
         val deltaCapped = min(1 / 60f, delta.toFloat())
         // Capture the last input
         inputManager.record()
-        // Load assets that need to be loaded
-        gameContext.assetsManager.update()
         // Advance the game
         profile("render") {
             gameWrapper.render(deltaCapped)

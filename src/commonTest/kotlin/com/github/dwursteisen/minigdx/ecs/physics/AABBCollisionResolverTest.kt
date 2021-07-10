@@ -4,6 +4,7 @@ import MockPlatformContext
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.BoundingBoxComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
 import createGameConfiguration
@@ -27,11 +28,11 @@ class AABBCollisionResolverTest {
     @Test
     fun collide_it_does_not_collide() {
         val a = engine.create {
-            add(BoundingBox.default())
+            add(BoundingBoxComponent.default())
             add(Position())
         }
         val b = engine.create {
-            add(BoundingBox.default())
+            add(BoundingBoxComponent.default())
             add(Position().addGlobalTranslation(x = 100))
         }
         val result = collider.collide(
@@ -44,11 +45,11 @@ class AABBCollisionResolverTest {
     @Test
     fun collide_it_collides() {
         val a = engine.create {
-            add(BoundingBox.default())
+            add(BoundingBoxComponent.default())
             add(Position())
         }
         val b = engine.create {
-            add(BoundingBox.default())
+            add(BoundingBoxComponent.default())
             add(Position().addGlobalTranslation(x = 0.5f))
         }
         val result = collider.collide(
