@@ -55,7 +55,7 @@ class SATCollisionResolverTest {
     @Test
     fun collide_it_collides_with_rotation() {
         val (a, b) = createEntities()
-        b.position.addGlobalTranslation(x = 0.5f).addGlobalRotation(z = 45f)
+        b.position.addLocalRotation(z = 45f).addGlobalTranslation(x = 0.5f)
         val result = collider.collide(a, b)
         assertTrue(result)
     }

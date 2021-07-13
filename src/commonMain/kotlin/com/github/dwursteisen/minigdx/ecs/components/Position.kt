@@ -25,6 +25,8 @@ import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.math.ImmutableVector3
 import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty0
 
 typealias LocalCoordinate = Coordinate
 typealias WorldCoordinate = Coordinate
@@ -59,6 +61,15 @@ open class Position(
 
     private var needsToBeUpdated: Boolean = true
 
+    inner class UpdateOnRead<T>(val field: KProperty0<T>) {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            if (needsToBeUpdated) update()
+            return field.get()
+        }
+    }
+
+    private inline fun <reified T> updateOnRead(field: KProperty0<T>): UpdateOnRead<T> = UpdateOnRead(field)
+
     /**
      * Store the local transformation.
      */
@@ -68,15 +79,24 @@ open class Position(
         scale
     )
 
-    /**
-     * Transformation given by the parent transformation and the local transformation.
-     */
-    var transformation: Mat4 = Mat4.identity()
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-        private set
+    private var _transformation: Mat4 = Mat4.identity()
+    private var _quaternion: Quaternion = identity()
+
+    private val _translation: Vector3 = Vector3()
+    private val _rotation: Vector3 = Vector3()
+    private val _scale: Vector3 = Vector3(1f, 1f, 1f)
+
+    private val _localTranslation: Vector3 = Vector3()
+    private val _localRotation: Vector3 = Vector3()
+    private val _localScale: Vector3 = Vector3()
+
+    private val immutableLocalTranslation = ImmutableVector3(_localTranslation)
+    private val immutableLocalRotation = ImmutableVector3(_localRotation)
+    private val immutableLocalScale = ImmutableVector3(_localScale)
+
+    private val immutableTranslation = ImmutableVector3(_translation)
+    private val immutableRotation = ImmutableVector3(_rotation)
+    private val immutableScale = ImmutableVector3(_scale)
 
     /**
      * Local transformation. It's relative to the parent transformation
@@ -84,57 +104,50 @@ open class Position(
     val localTransformation: Mat4
         get() = this.localTransformationHolder.transformation
 
-    var quaternion: Quaternion = identity()
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-        private set
-
-    private val _translation: Vector3 = Vector3()
-    val translation: ImmutableVector3 = ImmutableVector3(_translation)
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-
-    private val _localTranslation: Vector3 = Vector3()
-    val localTranslation: ImmutableVector3 = ImmutableVector3(_localTranslation)
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-
-    private val _localRotation: Vector3 = Vector3()
-    val localRotation: ImmutableVector3 = ImmutableVector3(_localRotation)
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-
-    private val _rotation: Vector3 = Vector3()
-    val rotation: ImmutableVector3 = ImmutableVector3(_rotation)
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-
-    val _localScale: Vector3 = Vector3()
-    val localScale: ImmutableVector3 = ImmutableVector3(_localScale)
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-
-    val _scale: Vector3 = Vector3(1f, 1f, 1f)
-    val scale: ImmutableVector3 = ImmutableVector3(_scale)
-        get() {
-            if (needsToBeUpdated) update()
-            return field
-        }
-
+    /**
+     * Local rotation as quaternion
+     */
     val localQuaternion: Quaternion
         get() = localTransformationHolder.rotation
+    /**
+     * Local rotation as degrees.
+     */
+    val localRotation: ImmutableVector3 by updateOnRead(::immutableLocalRotation)
+
+    /**
+     * Local translation.
+     */
+    val localTranslation: ImmutableVector3 by updateOnRead(::immutableLocalTranslation)
+
+    /**
+     * Local scale.
+     */
+    val localScale: ImmutableVector3 by updateOnRead(::immutableLocalScale)
+
+    /**
+     * Transformation given by the parent transformation and the local transformation.
+     */
+    val transformation: Mat4 by updateOnRead(::_transformation)
+
+    /**
+     * Combined rotation as quaternion. ie: parent and local quaternion combined.
+     */
+    val quaternion: Quaternion by updateOnRead(::_quaternion)
+
+    /**
+     * Combined translation.
+     */
+    val translation: ImmutableVector3 by updateOnRead(::immutableTranslation)
+
+    /**
+     * Combined rotation, in degrees
+     */
+    val rotation: ImmutableVector3 by updateOnRead(::immutableRotation)
+
+    /**
+     * Combined scale.
+     */
+    val scale: ImmutableVector3 by updateOnRead(::immutableScale)
 
     private val parentPosition: Position
         get() = owner?.parent?.position ?: identity
@@ -187,6 +200,9 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Add Global translation using world coordinate.
+     */
     fun addGlobalTranslation(translation: Vector3, delta: Seconds = 1f) = addGlobalTranslation(
         translation.x,
         translation.y,
@@ -194,6 +210,9 @@ open class Position(
         delta
     )
 
+    /**
+     * Add Global translation using world coordinate.
+     */
     fun addGlobalTranslation(translation: ImmutableVector3, delta: Seconds = 1f) = addGlobalTranslation(
         translation.x,
         translation.y,
@@ -223,6 +242,10 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Add local transaction using the local or world scale,
+     * regarding the value of [using].
+     */
     fun addLocalTranslation(
         translation: ImmutableVector3,
         using: CoordinateConverter = Local,
@@ -235,6 +258,10 @@ open class Position(
         delta
     )
 
+    /**
+     * Add local transaction using the local or world scale,
+     * regarding the value of [using].
+     */
     fun addLocalTranslation(
         translation: Vector3,
         using: CoordinateConverter = Local,
@@ -247,6 +274,9 @@ open class Position(
         delta
     )
 
+    /**
+     * Set the global translation, in world coordinate.
+     */
     fun setGlobalTranslation(
         x: WorldCoordinate = translation.x,
         y: WorldCoordinate = translation.y,
@@ -265,6 +295,10 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Set the local translation using the local or world scale,
+     * regarding the value of [using].
+     */
     fun setLocalTranslation(
         x: Coordinate? = null,
         y: Coordinate? = null,
@@ -283,15 +317,20 @@ open class Position(
         localTransformationHolder.translation = translation(translation)
         return requireUpdate()
     }
-
     // endregion translation
 
+    /**
+     * Set the local transformation.
+     */
     fun setLocalTransform(transformation: Mat4): Position {
         localTransformationHolder.transformation = transformation
         return requireUpdate()
     }
 
     // region rotation
+    /**
+     * Add local rotation using quaternion.
+     */
     fun addLocalRotation(rotation: Quaternion, delta: Seconds = 1f): Position {
         localTransformationHolder.rotation = interpolate(
             localTransformationHolder.rotation,
@@ -308,6 +347,9 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Add local rotation using degrees.
+     */
     fun addLocalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
         localTransformationHolder.rotation *= fromEulers(
             1f,
@@ -328,48 +370,38 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Add Local rotation using degrees.
+     */
     fun addLocalRotation(angles: Vector3, delta: Seconds = 1f): Position =
         addLocalRotation(angles.x, angles.y, angles.z, delta)
 
+    /**
+     * Set local rotation using quaternion.
+     */
     fun setLocalRotation(quaternion: Quaternion): Position {
         this.localTransformationHolder.rotation = quaternion
         return requireUpdate()
     }
 
+    /**
+     * Set local rotation using degrees.
+     */
     fun setLocalRotation(angles: Vector3): Position = setLocalRotation(angles.x, angles.y, angles.z)
 
+    /**
+     * Set local rotation using degrees.
+     */
     fun setLocalRotation(x: Degree = rotation.x, y: Degree = rotation.y, z: Degree = rotation.z): Position {
         localTransformationHolder.rotation = Quaternion.from(rotation(Float3(x.toFloat(), y.toFloat(), z.toFloat())))
         return requireUpdate()
     }
-
-    @Deprecated("to be removed")
-    fun addGlobalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
-        return addLocalRotation(x, y, z, delta)
-    }
-
-    @Deprecated("to be removed")
-    fun setGlobalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
-        val parent = rotation(parentPosition.transformation)
-        val rotation = rotation(
-            Float3(
-                x.toFloat() - parent.rotation.x,
-                y.toFloat() - parent.rotation.y,
-                z.toFloat() - parent.rotation.z
-            )
-        )
-        localTransformationHolder.rotation = Quaternion.from(rotation)
-        return requireUpdate()
-    }
-
-    @Deprecated("to be removed")
-    fun setGlobalRotation(quaternion: Quaternion): Position {
-        val rotation = Mat4.from(quaternion).rotation
-        return setGlobalRotation(rotation.x, rotation.y, rotation.z)
-    }
     // endregion rotation
 
     // region scale
+    /**
+     * Add local scale.
+     */
     fun addLocalScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
         localTransformationHolder.scale = scale(
             Float3(
@@ -381,39 +413,20 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Add local scale.
+     */
     fun addLocalScale(scale: Vector3, delta: Seconds): Position = addLocalScale(scale.x, scale.y, scale.z, delta)
 
+    /**
+     * Set local scale
+     */
     fun setLocalScale(x: Percent = localScale.x, y: Percent = localScale.y, z: Percent = localScale.z): Position {
         localTransformationHolder.scale = scale(Float3(x.toFloat(), y.toFloat(), z.toFloat()))
         return requireUpdate()
     }
 
-    @Deprecated("to be removed")
-    fun addWorldScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
-        val parentScale = parentPosition.scale
-        localTransformationHolder.scale = scale(
-            Float3(
-                (parentScale.x + x.toFloat() * delta) / parentScale.x,
-                (parentScale.y + y.toFloat() * delta) / parentScale.y,
-                (parentScale.z + z.toFloat() * delta) / parentScale.z
-            )
-        )
-        return requireUpdate()
-    }
-
-    @Deprecated("to be removed")
-    fun setWorldScale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position {
-        val parent = scale(parentPosition.transformation)
-        val scale = scale(
-            Float3(
-                x.toFloat() / parent.scale.x,
-                y.toFloat() / parent.scale.y,
-                z.toFloat() / parent.scale.z
-            )
-        )
-        localTransformationHolder.scale = scale
-        return requireUpdate()
-    }
+    fun setLocalScale(scale: Vector3): Position = setLocalScale(scale.x, scale.y, scale.z)
     // endregion scale
 
     private fun update() {
@@ -435,7 +448,7 @@ open class Position(
         _localScale.set(localScale.x, localScale.y, localScale.z)
         _scale.set(globalTransformation.scale.x, globalTransformation.scale.y, globalTransformation.scale.z)
 
-        transformation = globalTransformation
+        _transformation = globalTransformation
         needsToBeUpdated = false
     }
 
@@ -446,6 +459,9 @@ open class Position(
         return this
     }
 
+    /**
+     * Add local rotation to the position turn around [origin]
+     */
     fun addRotationAround(
         origin: Vector3,
         x: Degree = 0,
@@ -466,6 +482,11 @@ open class Position(
         return requireUpdate()
     }
 
+    /**
+     * Simulate a move.
+     * At the end of the simulation, the simulation can be rollback (moves are cancelled)
+     * or committed (moves are confirmed)
+     */
     @Suppress("UNCHECKED_CAST")
     fun <T> simulation(block: Simulation.() -> SimulationResult): T {
         val simulation = InternalSimulation(this)

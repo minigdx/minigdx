@@ -52,7 +52,7 @@ class PositionTest {
     fun translation_add_global_translation() {
         val (parent, child) = createEntities()
         parent.position
-            .addWorldScale(x = 2f)
+            .addLocalScale(x = 2f)
             .addGlobalTranslation(x = 5)
         assertEquals(5f, parent.position.translation.x)
         assertEquals(5f, child.position.translation.x)
@@ -67,7 +67,7 @@ class PositionTest {
     fun translation_add_local_translation() {
         val (parent, child) = createEntities()
         parent.position
-            .addWorldScale(x = 2f)
+            .addLocalScale(x = 2f)
             .addLocalTranslation(x = 5)
         assertEquals(5f, parent.position.translation.x)
         assertEquals(5f, child.position.translation.x)
@@ -131,32 +131,6 @@ class PositionTest {
     }
 
     @Test
-    fun rotation_add_global_rotation() {
-        val (parent, child) = createEntities()
-        parent.position.addGlobalRotation(x = 90f)
-        assertEquals(90f, parent.position.rotation.x)
-        assertEquals(90f, child.position.rotation.x)
-        assertEquals(0f, child.position.localRotation.x)
-        child.position.addGlobalRotation(x = 45f)
-        assertEquals(90f, parent.position.rotation.x)
-        assertEquals(135f, child.position.rotation.x)
-        assertEquals(45f, child.position.localRotation.x)
-    }
-
-    @Test
-    fun rotation_set_global_rotation() {
-        val (parent, child) = createEntities()
-        parent.position.setGlobalRotation(x = 90)
-        assertEquals(90f, parent.position.rotation.x)
-        assertEquals(90f, child.position.rotation.x)
-        assertEquals(0f, child.position.localRotation.x)
-        child.position.setGlobalRotation(x = 45)
-        assertEquals(90f, parent.position.rotation.x)
-        assertEquals(45f, child.position.rotation.x)
-        assertEquals(-45f, child.position.localRotation.x)
-    }
-
-    @Test
     fun scale_add_local_scale() {
         val (parent, child) = createEntities()
         parent.position.addLocalScale(x = 1)
@@ -164,19 +138,6 @@ class PositionTest {
         assertEquals(2f, child.position.scale.x)
         assertEquals(1f, child.position.localScale.x)
         child.position.addLocalScale(x = 1)
-        assertEquals(2f, parent.position.scale.x)
-        assertEquals(4f, child.position.scale.x)
-        assertEquals(2f, child.position.localScale.x)
-    }
-
-    @Test
-    fun scale_add_world_scale() {
-        val (parent, child) = createEntities()
-        parent.position.addWorldScale(x = 1f)
-        assertEquals(2f, parent.position.scale.x)
-        assertEquals(2f, child.position.scale.x)
-        assertEquals(1f, child.position.localScale.x)
-        child.position.addWorldScale(x = 2f)
         assertEquals(2f, parent.position.scale.x)
         assertEquals(4f, child.position.scale.x)
         assertEquals(2f, child.position.localScale.x)
@@ -193,19 +154,6 @@ class PositionTest {
         assertEquals(2f, parent.position.scale.x)
         assertEquals(8f, child.position.scale.x)
         assertEquals(4f, child.position.localScale.x)
-    }
-
-    @Test
-    fun scale_set_world_scale() {
-        val (parent, child) = createEntities()
-        parent.position.setWorldScale(x = 2f)
-        assertEquals(2f, parent.position.scale.x)
-        assertEquals(2f, child.position.scale.x)
-        assertEquals(1f, child.position.localScale.x)
-        child.position.setWorldScale(x = 1f)
-        assertEquals(2f, parent.position.scale.x)
-        assertEquals(1f, child.position.scale.x)
-        assertEquals(0.5f, child.position.localScale.x)
     }
 
     @Test
