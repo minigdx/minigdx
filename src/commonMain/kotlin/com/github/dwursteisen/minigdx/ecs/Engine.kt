@@ -13,6 +13,8 @@ class Engine(val gameContext: GameContext) {
 
     private var systems: List<System> = listOf(eventQueue)
 
+    private val waitingForUpdate = mutableListOf<() -> Unit>()
+
     interface EntityBuilder {
         fun named(name: String)
         fun add(component: Component)
@@ -24,6 +26,7 @@ class Engine(val gameContext: GameContext) {
         private var components = emptyList<Component>()
 
         private var name: String = "_"
+
         fun build(): Entity {
             return Entity(engine, components, name)
         }
@@ -40,6 +43,8 @@ class Engine(val gameContext: GameContext) {
     }
 
     internal fun onGameStart() {
+        waitingForUpdate.forEach { action -> action() }
+        waitingForUpdate.clear()
         systems.forEach {
             it.onGameStarted(this)
         }
@@ -80,7 +85,13 @@ class Engine(val gameContext: GameContext) {
             .any { (added, _) -> added }
     }
 
+    internal fun queueEntityUpdate(action: () -> Unit) {
+        waitingForUpdate.add(action)
+    }
+
     fun update(delta: Seconds) {
+        waitingForUpdate.forEach { action -> action() }
+        waitingForUpdate.clear()
         systems.forEach {
             it.update(delta)
             it.consumeEvents()?.run { eventQueue.emit(this) }

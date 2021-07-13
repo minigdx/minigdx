@@ -14,7 +14,7 @@ import com.github.dwursteisen.minigdx.logger.Logger
 class MockPlatformContext(override val configuration: GameConfiguration) : PlatformContext {
     override fun createGL(): GL = MockGL()
 
-    override fun createFileHandler(logger: Logger): FileHandler = MockFileFandler()
+    override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler = MockFileFandler(gameContext)
 
     override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler = MockInputHandler()
 

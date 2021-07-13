@@ -1,7 +1,10 @@
 package com.github.dwursteisen.minigdx.file
 
 import com.dwursteisen.minigdx.scene.api.Scene
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Percent
+import com.github.dwursteisen.minigdx.graph.GraphScene
+import com.github.dwursteisen.minigdx.graph.Sprite
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.reflect.KClass
 
@@ -11,16 +14,26 @@ private fun createLoaders(): Map<KClass<*>, FileLoader<*>> = mapOf(
     AngelCode::class to AngelCodeLoader(),
     Font::class to FontLoader(),
     Scene::class to SceneLoader(),
-    Sound::class to SoundLoader()
+    Sound::class to SoundLoader(),
+    GraphScene::class to GraphSceneLoader(),
+    Sprite::class to SpriteLoader()
 )
 
 class FileHandlerCommon(
-    val platformFileHandler: PlatformFileHandler,
-    val logger: Logger,
-    val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()
+    override val gameContext: GameContext,
+    private val platformFileHandler: PlatformFileHandler,
+    private val logger: Logger,
+    private val loaders: Map<KClass<*>, FileLoader<*>> = createLoaders()
 ) : FileHandler {
 
     private val assets = mutableMapOf<String, Content<*>>()
+
+    override fun <T> create(filename: String, value: T): Content<T> {
+        val content = Content<T>(filename, logger)
+        assets.put(filename, content)
+        content.load(value)
+        return content
+    }
 
     @Suppress("UNCHECKED_CAST")
     @ExperimentalStdlibApi
@@ -38,7 +51,8 @@ class FileHandlerCommon(
 
     override fun readData(filename: String): Content<ByteArray> = platformFileHandler.readData(filename)
 
-    override fun readTextureImage(filename: String): Content<TextureImage> = platformFileHandler.readTextureImage(filename)
+    override fun readTextureImage(filename: String): Content<TextureImage> =
+        platformFileHandler.readTextureImage(filename)
 
     override fun readSound(filename: String): Content<Sound> = platformFileHandler.readSound(filename)
 

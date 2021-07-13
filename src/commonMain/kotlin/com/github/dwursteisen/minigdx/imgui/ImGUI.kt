@@ -2,8 +2,10 @@ package com.github.dwursteisen.minigdx.imgui
 
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.file.Texture
+import com.github.dwursteisen.minigdx.file.get
 import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
@@ -11,18 +13,21 @@ import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
 import com.github.minigdx.imgui.ImGUIRenderer
 
 class ImGUI(
-    private val gl: GL,
-    private val programFactory: () -> ShaderProgram,
+    gameContext: GameContext,
     private val vertex: MeshVertexShader,
-    private val fragmentShader: UVFragmentShader,
-    private val texture: Texture
+    private val fragmentShader: UVFragmentShader
 ) : ImGUIRenderer {
 
+    private val gl = gameContext.gl
     private val verticesBuffer = gl.createBuffer()
     private val verticesOrderBuffer = gl.createBuffer()
     private val verticesUVsBuffer = gl.createBuffer()
     private val textureBuffer = gl.createTexture()
     private val normalsBuffer = gl.createBuffer()
+
+    private val texture: Texture by gameContext.fileHandler.get("internal/widgets.png")
+
+    lateinit var program: ShaderProgram
 
     override fun render(vertices: FloatArray, uv: FloatArray, verticesOrder: IntArray) {
 
@@ -81,14 +86,13 @@ class ImGUI(
             GL.RGBA,
             GL.RGBA,
             GL.UNSIGNED_BYTE,
-            texture.source
+            texture.textureImage!!
         )
 
         // ---- shader configuration ---- //
 
         // Configure the light.
 
-        val program = programFactory()
         vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
         vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
 

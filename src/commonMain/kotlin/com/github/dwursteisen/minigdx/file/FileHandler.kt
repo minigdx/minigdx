@@ -1,9 +1,14 @@
 package com.github.dwursteisen.minigdx.file
 
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Percent
 import kotlin.reflect.KClass
 
 interface FileHandler {
+
+    val gameContext: GameContext
+
+    fun <T> create(filename: String, value: T): Content<T>
 
     fun <T, R : Any> get(filename: String, rClazz: KClass<R>, map: (R) -> Content<T>): Content<T>
 

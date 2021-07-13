@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.components.text
 
 import com.github.dwursteisen.minigdx.Seconds
+import kotlin.math.roundToInt
 
 class TypeWriterEffect(
     val parent: TextEffect,
@@ -46,7 +47,7 @@ class TypeWriterEffect(
         time += delta
 
         val parentContent = parent.content
-        val numberOfLetter = (time / speed).toInt()
+        val numberOfLetter = (time / speed).roundToInt()
         val previousContentSize = content.length
         displayedContent = parentContent.take(numberOfLetter)
 

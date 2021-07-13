@@ -25,6 +25,10 @@ open class Content<R>(val filename: String, val logger: Logger) {
         onLoaded.forEach { it(content) }
     }
 
+    fun onLoaded(block: (R) -> Unit) {
+        this.map(block)
+    }
+
     fun <T> map(block: (R) -> T): Content<T> {
         val result = Content<T>(filename, logger)
         this.onLoaded += {

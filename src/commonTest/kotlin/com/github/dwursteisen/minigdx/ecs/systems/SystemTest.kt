@@ -36,6 +36,8 @@ class SystemTest {
             add(ListeningComponent())
         }
 
+        engine.update(0f)
+
         assertSame(expected, system.interestedBy.firstOrNull())
     }
 }

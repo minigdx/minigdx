@@ -7,6 +7,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -31,7 +32,10 @@ class EngineTest {
             add(Name("hello"))
         }
 
+        engine.update(0f)
+
         assertNotNull(system.entities.firstOrNull())
+        assertEquals(1, system.entities.size)
     }
 
     @Test
@@ -44,6 +48,8 @@ class EngineTest {
         val entity = engine.create {
             add(Name("hello"))
         }
+
+        engine.update(0f)
 
         val result = engine.destroy(entity)
 
@@ -62,7 +68,11 @@ class EngineTest {
         }
 
         entity.add(Name("hello"))
+
+        engine.update(0f)
+
         assertNotNull(system.entities.firstOrNull())
+        assertEquals(1, system.entities.size)
     }
 
     @Test
@@ -77,6 +87,8 @@ class EngineTest {
         }
 
         entity.remove(Name::class)
+
+        engine.update(0f)
         assertNull(system.entities.firstOrNull())
     }
 
@@ -105,7 +117,7 @@ class EngineTest {
     fun destroy__it_destroy_all_entities() {
         val engine = Engine(gameContext())
 
-        var isCalled = false
+        var isCalled: Boolean
         val system = object : System(EntityQuery(Name::class)) {
 
             override fun update(delta: Seconds, entity: Entity) {
@@ -119,7 +131,10 @@ class EngineTest {
             add(Name("hello"))
         }
 
+        engine.update(0f)
+        isCalled = false
         engine.destroy()
+        engine.update(0f)
 
         assertFalse(isCalled)
     }

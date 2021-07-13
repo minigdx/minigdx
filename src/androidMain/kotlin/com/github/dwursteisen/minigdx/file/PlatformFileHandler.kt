@@ -7,7 +7,10 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import java.nio.Buffer
 import java.nio.ByteBuffer
 
-actual class PlatformFileHandler(private val context: Context, actual val logger: Logger) {
+actual class PlatformFileHandler(
+    private val context: Context,
+    actual val logger: Logger
+) {
 
     @ExperimentalStdlibApi
     actual fun read(filename: String): Content<String> {

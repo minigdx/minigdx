@@ -35,7 +35,11 @@ class Entity(
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> get(type: KClass<T>): T {
-        return find(type)!!
+        return find(type) ?: throw IllegalStateException(
+            "No components of type '${type.simpleName}' " +
+                "found in the entity '${this.name}'. The entity contains those components: " +
+                componentsType.map { it.simpleName }.joinToString()
+        )
     }
 
     /**
@@ -45,14 +49,18 @@ class Entity(
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> find(type: KClass<T>): T? {
-        return componentsByType.getValue(type).toList().firstOrNull() as T?
+        return componentsByType.get(type)?.toList()?.firstOrNull() as T?
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> findAll(type: KClass<T>): List<T> {
-        return componentsByType.getValue(type).toList() as List<T>
+        val components = componentsByType[type]?.toList() ?: emptyList()
+        return components as List<T>
     }
 
+    /**
+     * Add all components to the entity
+     */
     fun addAll(components: Collection<Component>) = engineUpdate {
         this.components += components
         componentsType = componentsType + components.map { it::class }.toSet()
@@ -61,6 +69,9 @@ class Entity(
         components.forEach { it.onAdded(this) }
     }
 
+    /**
+     * All the component to this entity
+     */
     fun add(component: Component) = engineUpdate {
         components += component
         componentsType = componentsType + component::class
@@ -69,6 +80,9 @@ class Entity(
         component.onAdded(this)
     }
 
+    /**
+     * Remove the component to the entity.
+     */
     fun remove(component: Component) = engineUpdate {
         components -= component
         componentsType = componentsType - component::class
@@ -77,6 +91,9 @@ class Entity(
         component.onRemoved(this)
     }
 
+    /**
+     * Remove components of this type of the entity.
+     */
     fun remove(componentType: KClass<out Component>) = engineUpdate {
         val removed = components.filter { it::class == componentType }
         components -= removed
@@ -85,6 +102,9 @@ class Entity(
         removed.forEach { it.onRemoved(this) }
     }
 
+    /**
+     * Destroy the entity.
+     */
     fun destroy(): Boolean {
         _children.forEach { it.destroy() }
         val removed = engine.destroy(this)
@@ -130,9 +150,12 @@ class Entity(
     }
 
     private fun engineUpdate(block: () -> Unit) {
-        engine.destroy(this)
-        block()
-        engine.add(this)
+        // Queue the action so it will be executed during the next render loop.
+        engine.queueEntityUpdate {
+            engine.destroy(this)
+            block()
+            engine.add(this)
+        }
     }
 
     override fun toString(): String = name

@@ -1,3 +1,4 @@
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.file.Content
 import com.github.dwursteisen.minigdx.file.FileHandler
@@ -5,7 +6,12 @@ import com.github.dwursteisen.minigdx.file.Sound
 import com.github.dwursteisen.minigdx.file.TextureImage
 import kotlin.reflect.KClass
 
-class MockFileFandler : FileHandler {
+class MockFileFandler(override val gameContext: GameContext) : FileHandler {
+
+    override fun <T> create(filename: String, value: T): Content<T> {
+        TODO("Not yet implemented")
+    }
+
     override fun <T, R : Any> get(filename: String, rClazz: KClass<R>, map: (R) -> Content<T>): Content<T> {
         TODO("Not yet implemented")
     }
