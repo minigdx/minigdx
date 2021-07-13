@@ -343,10 +343,12 @@ open class Position(
         return requireUpdate()
     }
 
+    @Deprecated("to be removed")
     fun addGlobalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0, delta: Seconds = 1f): Position {
         return addLocalRotation(x, y, z, delta)
     }
 
+    @Deprecated("to be removed")
     fun setGlobalRotation(x: Degree = 0, y: Degree = 0, z: Degree = 0): Position {
         val parent = rotation(parentPosition.transformation)
         val rotation = rotation(
@@ -360,6 +362,7 @@ open class Position(
         return requireUpdate()
     }
 
+    @Deprecated("to be removed")
     fun setGlobalRotation(quaternion: Quaternion): Position {
         val rotation = Mat4.from(quaternion).rotation
         return setGlobalRotation(rotation.x, rotation.y, rotation.z)
@@ -385,6 +388,7 @@ open class Position(
         return requireUpdate()
     }
 
+    @Deprecated("to be removed")
     fun addWorldScale(x: Percent = 0f, y: Percent = 0f, z: Percent = 0f, delta: Seconds = 1f): Position {
         val parentScale = parentPosition.scale
         localTransformationHolder.scale = scale(
@@ -397,6 +401,7 @@ open class Position(
         return requireUpdate()
     }
 
+    @Deprecated("to be removed")
     fun setWorldScale(x: Percent = scale.x, y: Percent = scale.y, z: Percent = scale.z): Position {
         val parent = scale(parentPosition.transformation)
         val scale = scale(
