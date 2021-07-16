@@ -1,7 +1,10 @@
 package com.github.dwursteisen.minigdx.ecs.entities
 
 import com.curiouscreature.kotlin.math.Mat4
+import com.dwursteisen.minigdx.scene.api.model.UV
 import com.dwursteisen.minigdx.scene.api.relation.ObjectType
+import com.dwursteisen.minigdx.scene.api.sprite.Frame
+import com.dwursteisen.minigdx.scene.api.sprite.SpriteAnimation
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.AnimatedComponent
@@ -15,6 +18,7 @@ import com.github.dwursteisen.minigdx.ecs.components.TextComponent
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.file.Font
+import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.graph.GraphNode
 import com.github.dwursteisen.minigdx.graph.Model
 import com.github.dwursteisen.minigdx.graph.Primitive
@@ -207,6 +211,125 @@ class EntityFactoryDelegate : EntityFactory {
             primitives = listOf(
                 Primitive(
                     texture = sprite.spriteSheet,
+                    vertices = floatArrayOf(
+                        -1f, -1f, 0f,
+                        1f, -1f, 0f,
+                        -1f, 1f, 0f,
+                        1f, 1f, 0f
+                    ),
+                    normals = floatArrayOf(
+                        0f, 0f, 0f,
+                        0f, 0f, 0f,
+                        0f, 0f, 0f,
+                        0f, 0f, 0f
+                    ),
+                    uvs = floatArrayOf(
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        0f
+                    ),
+                    verticesOrder = shortArrayOf(
+                        0,
+                        1,
+                        2,
+                        2,
+                        1,
+                        3
+                    )
+                )
+            )
+        )
+        add(
+            ModelComponent(
+                model = quad
+            )
+        )
+
+        gameContext.assetsManager.add(quad)
+    }
+
+    override fun createSprite(
+        texture: Texture,
+        spriteWidth: Int,
+        spriteHeight: Int,
+        position: Mat4,
+        animations: AnimationBuilder.() -> Unit
+    ): Entity = engine.create {
+
+        fun getFrame(frameIndex: Int): Pair<Int, Int> {
+            val framePerLine = (texture.width / spriteWidth)
+            val frameX = frameIndex % framePerLine
+            val frameY = frameIndex / framePerLine
+            return (frameX * spriteWidth) to (frameY * spriteHeight)
+        }
+
+        val animationBuilder = AnimationBuilder()
+        animationBuilder.animations()
+        val animationsMap = animationBuilder.animations.map { (name, framesDuration) ->
+            SpriteAnimation(
+                name = name,
+                // Convert milliseconds to seconds
+                duration = framesDuration.values.sum() / 1000f,
+                frames = framesDuration.entries
+                    .toList()
+                    .sortedBy { (index, _) -> index }
+                    .map { (frame, duration) ->
+                        Frame(
+                            duration = duration / 1000f,
+                            uvIndex = frame * 4
+                        )
+                    }
+            )
+        }.map { animation ->
+            animation.name to animation
+        }.toMap()
+
+        val framePerLine = (texture.width / spriteWidth)
+        val framePerColumn = (texture.height / spriteHeight)
+        val nbFrame = framePerLine * framePerColumn
+        val uvs = (0..nbFrame).flatMap { frame ->
+            val (startX, startY) = getFrame(frame)
+            val endX = startX + spriteWidth
+            val endY = startY + spriteHeight
+            val startUVX = (startX / texture.width.toFloat())
+            val startUVY = (startY / texture.height.toFloat())
+            val endUVX = (endX / texture.width.toFloat())
+            val endUVY = (endY / texture.height.toFloat())
+            val a = UV(
+                x = startUVX,
+                y = endUVY
+            )
+            val b = UV(
+                x = startUVX,
+                y = startUVY
+            )
+            val c = UV(
+                x = endUVX,
+                y = startUVY
+            )
+            val d = UV(
+                x = endUVX,
+                y = endUVY
+            )
+            listOf(a, b, c, d)
+        }
+        add(Position(position, position, position))
+        add(
+            SpriteComponent(
+                animations = animationsMap,
+                uvs = uvs
+            )
+        )
+        add(BoundingBoxComponent.default())
+        val quad = Model(
+            primitives = listOf(
+                Primitive(
+                    texture = texture,
                     vertices = floatArrayOf(
                         -1f, -1f, 0f,
                         1f, -1f, 0f,

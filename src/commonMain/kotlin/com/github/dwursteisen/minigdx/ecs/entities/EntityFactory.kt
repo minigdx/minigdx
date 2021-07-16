@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.file.Font
+import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.graph.GraphNode
 import com.github.dwursteisen.minigdx.graph.Sprite
 
@@ -73,4 +74,15 @@ interface EntityFactory {
      * Create an entity using a [Sprite]
      */
     fun createSprite(sprite: Sprite, position: Mat4 = Mat4.identity()): Entity
+
+    /**
+     * Create an sprite
+     */
+    fun createSprite(
+        texture: Texture,
+        spriteWidth: Int,
+        spriteHeight: Int,
+        position: Mat4 = Mat4.identity(),
+        animations: AnimationBuilder.() -> Unit
+    ): Entity
 }
