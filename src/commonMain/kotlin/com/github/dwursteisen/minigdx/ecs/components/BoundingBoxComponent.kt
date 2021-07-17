@@ -34,6 +34,13 @@ class BoundingBoxComponent private constructor(
     val localMax: ImmutableVector3 = ImmutableVector3(_rawMax)
 
     /**
+     * Transformation from the default Cube (Bounding Box) to the actual
+     * Bounding Box that may depends of the model.
+     */
+    var fromDefaultTransformation: Mat4 = Mat4.identity()
+        private set
+
+    /**
      * Minus points of the bounding box (ie: lower left)
      */
     val min: ImmutableVector3 = ImmutableVector3(_min)
@@ -184,6 +191,8 @@ class BoundingBoxComponent private constructor(
             val component = BoundingBoxComponent()
             component._rawMin.set(min)
             component._rawMax.set(max)
+
+            // TODO: set fromDefaultTransformation correctly
             return component
         }
 

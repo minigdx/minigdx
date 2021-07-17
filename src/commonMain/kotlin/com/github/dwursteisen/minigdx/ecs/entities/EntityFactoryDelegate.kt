@@ -206,7 +206,6 @@ class EntityFactoryDelegate : EntityFactory {
                 uvs = sprite.uvs
             )
         )
-        add(BoundingBoxComponent.default())
         val quad = Model(
             primitives = listOf(
                 Primitive(
@@ -244,6 +243,7 @@ class EntityFactoryDelegate : EntityFactory {
                 )
             )
         )
+        add(BoundingBoxComponent.from(quad))
         add(
             ModelComponent(
                 model = quad
@@ -325,7 +325,6 @@ class EntityFactoryDelegate : EntityFactory {
                 uvs = uvs
             )
         )
-        add(BoundingBoxComponent.default())
         val quad = Model(
             primitives = listOf(
                 Primitive(
@@ -363,6 +362,8 @@ class EntityFactoryDelegate : EntityFactory {
                 )
             )
         )
+        add(BoundingBoxComponent.from(quad))
+
         add(
             ModelComponent(
                 model = quad

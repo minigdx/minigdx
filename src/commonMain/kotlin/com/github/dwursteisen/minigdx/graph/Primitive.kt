@@ -7,6 +7,10 @@ import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
 
+enum class DrawingType {
+    TRIANGLE,
+    LINE
+}
 class Primitive constructor(
     var texture: Texture,
     vertices: C3f = floatArrayOf(),
@@ -14,7 +18,8 @@ class Primitive constructor(
     uvs: C2f = floatArrayOf(),
     weights: C4f = floatArrayOf(),
     joints: C4f = floatArrayOf(),
-    verticesOrder: ShortArray = shortArrayOf()
+    verticesOrder: ShortArray = shortArrayOf(),
+    var drawingType: DrawingType = DrawingType.TRIANGLE
 ) : Asset {
 
     var verticesBuffer: Buffer? = null
