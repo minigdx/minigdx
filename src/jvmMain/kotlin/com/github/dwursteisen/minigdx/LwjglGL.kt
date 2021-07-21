@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx
 import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
+import com.github.dwursteisen.minigdx.shaders.FrameBufferReference
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
@@ -18,6 +19,7 @@ import org.lwjgl.opengl.GL20.glUniform3i
 import org.lwjgl.opengl.GL20.glUniform4f
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
+import org.lwjgl.opengl.GL30.glBindFramebuffer
 import org.lwjgl.opengl.GL30.glBindTexture
 import org.lwjgl.opengl.GL30.glBlendFunc
 import org.lwjgl.opengl.GL30.glBufferData
@@ -33,7 +35,9 @@ import org.lwjgl.opengl.GL30.glDrawArrays
 import org.lwjgl.opengl.GL30.glDrawElements
 import org.lwjgl.opengl.GL30.glEnable
 import org.lwjgl.opengl.GL30.glEnableVertexAttribArray
+import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 import org.lwjgl.opengl.GL30.glGenBuffers
+import org.lwjgl.opengl.GL30.glGenFramebuffers
 import org.lwjgl.opengl.GL30.glGenTextures
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import org.lwjgl.opengl.GL30.glGetAttribLocation
@@ -146,6 +150,22 @@ class LwjglGL : GL {
 
     override fun createBuffer(): Buffer {
         return Buffer(glGenBuffers())
+    }
+
+    override fun createFrameBuffer(): FrameBufferReference {
+        return FrameBufferReference(glGenFramebuffers())
+    }
+
+    override fun bindFrameBuffer(frameBufferReference: FrameBufferReference) {
+        glBindFramebuffer(GL.FRAMEBUFFER, frameBufferReference.reference)
+    }
+
+    override fun bindDefaultFrameBuffer() {
+        glBindFramebuffer(GL.FRAMEBUFFER, 0)
+    }
+
+    override fun frameBufferTexture2D(attachmentPoint: Int, textureReference: TextureReference, level: Int) {
+        glFramebufferTexture2D(GL.FRAMEBUFFER, attachmentPoint, GL.TEXTURE_2D, textureReference.pointer, level)
     }
 
     override fun bindBuffer(target: ByteMask, buffer: Buffer) {

@@ -24,7 +24,10 @@ data class RenderOptions(
     var renderOnDisk: Boolean
 )
 
-interface Stage
+interface Stage {
+    fun compileShaders()
+    fun update(delta: Seconds)
+}
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     gameContext: GameContext,
@@ -36,8 +39,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     ),
     lightsQuery: EntityQuery = EntityQuery(
         LightComponent::class
-    ),
-    val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
+    )
 ) : Stage, System(query, gameContext) {
 
     val gl = gameContext.gl
@@ -76,7 +78,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             } ?: Mat4.identity()
         }
 
-    open fun compileShaders() {
+    override fun compileShaders() {
         program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)
@@ -94,7 +96,6 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     open fun attributes(entity: Entity) = Unit
 
     override fun update(delta: Seconds) {
-        // TODO: if renderInMemory -> FBO
         gl.useProgram(program)
         uniforms()
         super.update(delta)

@@ -14,6 +14,12 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
         game.createDefaultSystems(engine).forEach { engine.addSystem(it) }
         game.createSystems(engine).forEach { engine.addSystem(it) }
         game.createPostRenderSystem(engine).forEach { engine.addSystem(it) }
+
+        val frameBuffers = game.createFrameBuffers(gameContext)
+        frameBuffers.forEach { engine.addSystem(it) }
+        // Keep the frame buffers into the context
+        gameContext.frameBuffers = frameBuffers.associateBy { buffer -> buffer.name }
+
         val renderStage = game.createRenderStage()
         renderStage.forEach { engine.addSystem(it) }
 
@@ -24,8 +30,9 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
         game.createEntities(entityFactoryDelegate)
         // Load assets that can be loaded
         gameContext.assetsManager.update()
-        engine.onGameStart()
         renderStage.forEach { it.compileShaders() }
+        frameBuffers.forEach { it.compileShaders() }
+        engine.onGameStart()
     }
 
     fun resume() = Unit

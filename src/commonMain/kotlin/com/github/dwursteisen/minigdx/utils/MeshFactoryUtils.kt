@@ -15,17 +15,17 @@ object MeshFactoryUtils {
             materialId = Id.None,
             vertices = listOf(
                 Vertex(
-                    Position(0f, 0f, 0f),
+                    Position(-1f, -1f, 0f),
                     Normal(0f, 0f, 0f),
                     uv = UV(0f, 0f)
                 ),
                 Vertex(
-                    Position(1f, 0f, 0f),
+                    Position(1f, -1f, 0f),
                     Normal(0f, 0f, 0f),
                     uv = UV(1f, 0f)
                 ),
                 Vertex(
-                    Position(0f, 1f, 0f),
+                    Position(-1f, 1f, 0f),
                     Normal(0f, 0f, 0f),
                     uv = UV(1f, 1f)
                 ),

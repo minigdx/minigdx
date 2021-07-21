@@ -12,6 +12,7 @@ import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
 import com.github.dwursteisen.minigdx.file.AssetsManagerSystem
+import com.github.dwursteisen.minigdx.graphics.FrameBuffer
 import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedModelRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxRenderStage
@@ -57,8 +58,19 @@ interface Game {
      */
     fun createSystems(engine: Engine): List<System>
 
+    /**
+     * Create system that are executed before the rendering systems.
+     * Will be use to prepare data before the rendering phase
+     */
     fun createPostRenderSystem(engine: Engine): List<System> {
         return listOf(AssetsManagerSystem(gameContext.assetsManager))
+    }
+
+    /**
+     * Create frame buffers, to create a shader pipeline.
+     */
+    fun createFrameBuffers(gameContext: GameContext): List<FrameBuffer> {
+        return emptyList()
     }
 
     /**
