@@ -26,8 +26,9 @@ data class RenderOptions(
 
 interface Stage {
     fun compileShaders()
-    fun update(delta: Seconds)
 }
+
+abstract class StageWithSystem(query: EntityQuery, gameContext: GameContext) : Stage, System(query, gameContext)
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     gameContext: GameContext,
@@ -40,7 +41,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     lightsQuery: EntityQuery = EntityQuery(
         LightComponent::class
     )
-) : Stage, System(query, gameContext) {
+) : StageWithSystem(query, gameContext) {
 
     val gl = gameContext.gl
 
@@ -58,7 +59,11 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             return lights.firstOrNull()
         }
 
-    lateinit var program: ShaderProgram
+    // FIXME: rollback change
+    val program: ShaderProgram
+        get() = _program
+
+    lateinit var _program: ShaderProgram
 
     open val combinedMatrix: Mat4
         get() {
@@ -79,7 +84,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         }
 
     override fun compileShaders() {
-        program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
+        _program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)
             }
@@ -89,15 +94,11 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         }
     }
 
-    open fun uniforms() = Unit
-
-    open fun uniforms(entity: Entity) = Unit
-
-    open fun attributes(entity: Entity) = Unit
+    open fun uniforms(delta: Seconds) = Unit
 
     override fun update(delta: Seconds) {
         gl.useProgram(program)
-        uniforms()
+        uniforms(delta)
         super.update(delta)
     }
 

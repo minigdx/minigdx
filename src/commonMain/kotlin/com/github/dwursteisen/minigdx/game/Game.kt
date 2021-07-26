@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.game
 
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Options
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Color
@@ -86,10 +87,14 @@ interface Game {
         }
         stages.add(ModelComponentRenderStage(gameContext))
         stages.add(AnimatedModelRenderStage(gameContext))
-        if (gameContext.options.debug) {
+        return stages
+    }
+
+    fun createDebugRenderStage(options: Options): List<RenderStage<*, *>> {
+        val stages = mutableListOf<RenderStage<*, *>>()
+        if (options.debug) {
             stages.add(BoundingBoxRenderStage(gameContext))
         }
-
         stages.add(ImGUIRenderStage(gameContext))
         return stages
     }

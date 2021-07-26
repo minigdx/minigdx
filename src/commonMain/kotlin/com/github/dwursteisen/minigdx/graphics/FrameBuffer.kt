@@ -3,17 +3,24 @@ package com.github.dwursteisen.minigdx.graphics
 import com.dwursteisen.minigdx.scene.api.common.Id
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.events.Event
+import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.render.Stage
+import com.github.dwursteisen.minigdx.render.StageWithSystem
 
-class FrameBuffer(
+open class FrameBuffer(
     val name: String,
     gameContext: GameContext,
-    val stages: List<Stage>,
-    val dependencies: List<FrameBuffer> = emptyList()
+    val resolution: Resolution,
+    val stages: List<StageWithSystem>,
+    val dependencies: List<FrameBuffer> = emptyList(),
+    val renderOnScreen: Boolean = false
 ) : System(gameContext = gameContext), Stage {
 
     val gl = gameContext.gl
@@ -22,9 +29,22 @@ class FrameBuffer(
 
     private var shaderCompiled: Boolean = false
 
-    // FIXME: la faille de la texture ne devrait pas être fixe.
-    val texture: Texture = Texture(Id(), ByteArray(16 * 16 * 4) { 1 }, 16, 16, false).also {
-        gameContext.assetsManager.add(it)
+    private val _dependencies = dependencies.map { it.name to it }.toMap()
+
+    val texture: Texture = createFrameBufferTexture(gameContext)
+
+    private fun createFrameBufferTexture(gameContext: GameContext): Texture {
+        // Create default white non transparent texture
+        val textureData = ByteArray(resolution.width * resolution.height * 4) { 1 }
+        return Texture(
+            Id(),
+            textureData,
+            resolution.width,
+            resolution.height,
+            false
+        ).also {
+            gameContext.assetsManager.add(it)
+        }
     }
 
     /**
@@ -43,6 +63,48 @@ class FrameBuffer(
         shaderCompiled = true
     }
 
+    override fun onGameStarted(engine: Engine) {
+        dependencies.forEach { child ->
+            child.onGameStarted(engine)
+        }
+
+        stages.forEach { stage ->
+            stage.onGameStarted(engine)
+        }
+    }
+
+    override fun add(entity: Entity): Boolean {
+        dependencies.forEach { child ->
+            child.add(entity)
+        }
+
+        stages.forEach { stage ->
+            stage.add(entity)
+        }
+        return super.add(entity)
+    }
+
+    override fun remove(entity: Entity): Boolean {
+        dependencies.forEach { child ->
+            child.remove(entity)
+        }
+
+        stages.forEach { stage ->
+            stage.remove(entity)
+        }
+        return super.remove(entity)
+    }
+
+    override fun onEvent(event: Event, entityQuery: EntityQuery?) {
+        dependencies.forEach { child ->
+            child.onEvent(event, entityQuery)
+        }
+
+        stages.forEach { stage ->
+            stage.onEvent(event, entityQuery)
+        }
+    }
+
     /**
      * Render all dependencies of this frameBuffer so it can be directly use.
      */
@@ -53,12 +115,16 @@ class FrameBuffer(
         }
     }
 
+    fun getDependency(name: String): FrameBuffer {
+        return _dependencies.getValue(name)
+    }
+
     /**
      * Render into the FrameBuffer by using stages.
      *
      * Only a FrameBuffer should call this method as the viewport might be miss configured after usage.
      */
-    fun render(delta: Seconds) {
+    private fun render(delta: Seconds) {
         gl.bindFrameBuffer(frameBuffer)
         gl.frameBufferTexture2D(GL.COLOR_ATTACHMENT0, texture.textureReference!!, 0)
 
@@ -75,17 +141,32 @@ class FrameBuffer(
      */
     override fun update(delta: Seconds) {
         prepareDependencies(delta)
-        render(delta)
-        // render to the canvas
-        gl.bindDefaultFrameBuffer()
-        // Set the viewport back
-        gameContext.viewport.update(
-            gl,
-            gameContext.frameBufferScreen.width,
-            gameContext.frameBufferScreen.height,
-            gameContext.gameScreen.width,
-            gameContext.gameScreen.height
-        )
+        if (renderOnScreen) {
+            // render to the canvas
+            gl.bindDefaultFrameBuffer()
+            gameContext.viewport.update(
+                gl,
+                texture.width,
+                texture.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
+            )
+            stages.forEach { stage ->
+                stage.update(delta)
+            }
+        } else {
+            render(delta)
+            // render to the canvas
+            gl.bindDefaultFrameBuffer()
+            // Set the viewport back
+            gameContext.viewport.update(
+                gl,
+                gameContext.frameBufferScreen.width,
+                gameContext.frameBufferScreen.height,
+                gameContext.gameScreen.width,
+                gameContext.gameScreen.height
+            )
+        }
     }
 
     override fun update(delta: Seconds, entity: Entity) = Unit
