@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.FrameBufferReference
+import com.github.dwursteisen.minigdx.shaders.RenderBufferReference
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
@@ -42,6 +43,12 @@ interface GL {
     fun createFrameBuffer(): FrameBufferReference
     fun bindFrameBuffer(frameBufferReference: FrameBufferReference)
     fun bindDefaultFrameBuffer()
+
+    fun createRenderBuffer(): RenderBufferReference
+    fun bindRenderBuffer(renderBufferReference: RenderBufferReference)
+    fun renderBufferStorage(internalformat: Int, width: Int, height: Int)
+    fun framebufferRenderbuffer(attachementType: Int, renderBufferReference: RenderBufferReference)
+
     fun frameBufferTexture2D(attachmentPoint: Int, textureReference: TextureReference, level: Int)
     fun bindBuffer(target: ByteMask, buffer: Buffer)
     fun bufferData(target: ByteMask, data: DataSource, usage: Int)

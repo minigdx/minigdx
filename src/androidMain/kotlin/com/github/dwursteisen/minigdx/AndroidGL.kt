@@ -49,6 +49,7 @@ import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.FrameBufferReference
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
+import com.github.dwursteisen.minigdx.shaders.RenderBufferReference
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
@@ -226,6 +227,22 @@ class AndroidGL : GL {
     }
 
     override fun bindDefaultFrameBuffer() {
+        TODO("Not yet implemented")
+    }
+
+    override fun createRenderBuffer(): RenderBufferReference {
+        TODO("Not yet implemented")
+    }
+
+    override fun bindRenderBuffer(renderBufferReference: RenderBufferReference) {
+        TODO("Not yet implemented")
+    }
+
+    override fun renderBufferStorage(internalformat: Int, width: Int, height: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun framebufferRenderbuffer(attachementType: Int, renderBufferReference: RenderBufferReference) {
         TODO("Not yet implemented")
     }
 

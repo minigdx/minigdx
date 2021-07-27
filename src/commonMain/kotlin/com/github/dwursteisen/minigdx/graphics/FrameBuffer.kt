@@ -10,28 +10,66 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.file.Asset
 import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.render.Stage
 import com.github.dwursteisen.minigdx.render.StageWithSystem
 
+/**
+ * A FrameBuffer is a buffer in which things
+ * can be rendered in memory to be re used later on
+ * for another rendering.
+ */
 open class FrameBuffer(
+    /**
+     * Name of the framebuffer.
+     * The name can be use to find this
+     * framebuffer later on.
+     */
     val name: String,
     gameContext: GameContext,
+    /**
+     * Resolution of this frame buffer
+     */
     val resolution: Resolution,
+    /**
+     * Stage used to render things on this framebuffer
+     */
     val stages: List<StageWithSystem>,
+    /**
+     * Frame Buffer used by this frame buffer.
+     */
     val dependencies: List<FrameBuffer> = emptyList(),
-    val renderOnScreen: Boolean = false
-) : System(gameContext = gameContext), Stage {
+    /**
+     * Is the frame buffer is rendered in memory or
+     * should it be renderer on screen?
+     */
+    val renderOnScreen: Boolean = false,
+    /**
+     * Is a depth buffer attached to this frame buffer?
+     */
+    withDepthBuffer: Boolean = true
+) : System(gameContext = gameContext), Stage, Asset {
 
-    val gl = gameContext.gl
+    private val gl = gameContext.gl
 
     private val frameBuffer = gl.createFrameBuffer()
+
+    private val depthBuffer = if (withDepthBuffer) {
+        gl.createRenderBuffer()
+    } else {
+        null
+    }
 
     private var shaderCompiled: Boolean = false
 
     private val _dependencies = dependencies.map { it.name to it }.toMap()
 
     val texture: Texture = createFrameBufferTexture(gameContext)
+
+    init {
+        gameContext.assetsManager.add(this)
+    }
 
     private fun createFrameBufferTexture(gameContext: GameContext): Texture {
         // Create default white non transparent texture
@@ -44,6 +82,17 @@ open class FrameBuffer(
             false
         ).also {
             gameContext.assetsManager.add(it)
+        }
+    }
+
+    override fun load(gameContext: GameContext) {
+        gl.bindFrameBuffer(frameBuffer)
+        gl.frameBufferTexture2D(GL.COLOR_ATTACHMENT0, texture.textureReference!!, 0)
+
+        depthBuffer?.run {
+            gl.bindRenderBuffer(this)
+            gl.renderBufferStorage(GL.DEPTH_COMPONENT16, texture.width, texture.height)
+            gl.framebufferRenderbuffer(GL.DEPTH_ATTACHMENT, depthBuffer)
         }
     }
 
@@ -126,7 +175,6 @@ open class FrameBuffer(
      */
     private fun render(delta: Seconds) {
         gl.bindFrameBuffer(frameBuffer)
-        gl.frameBufferTexture2D(GL.COLOR_ATTACHMENT0, texture.textureReference!!, 0)
 
         gameContext.viewport.update(gl, texture.width, texture.height, texture.width, texture.height)
 
@@ -142,12 +190,15 @@ open class FrameBuffer(
     override fun update(delta: Seconds) {
         prepareDependencies(delta)
         if (renderOnScreen) {
+            // This FrameBuffer will be render directly on the screen.
+            // The default frame buffer will be bind before
+            // rendering the actual frame buffer.
             // render to the canvas
             gl.bindDefaultFrameBuffer()
             gameContext.viewport.update(
                 gl,
-                texture.width,
-                texture.height,
+                gameContext.frameBufferScreen.width,
+                gameContext.frameBufferScreen.height,
                 gameContext.gameScreen.width,
                 gameContext.gameScreen.height
             )
@@ -155,6 +206,8 @@ open class FrameBuffer(
                 stage.update(delta)
             }
         } else {
+            // The Frame Buffer will be render into a texture.
+            // then the default frame buffer will be configured back.
             render(delta)
             // render to the canvas
             gl.bindDefaultFrameBuffer()
