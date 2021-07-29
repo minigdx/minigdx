@@ -9,7 +9,7 @@ import com.github.dwursteisen.minigdx.logger.Logger
 expect class PlatformContextCommon(configuration: GameConfiguration) : PlatformContext {
     override val configuration: GameConfiguration
     override fun createGL(): GL
-    override fun createFileHandler(logger: Logger): FileHandler
+    override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler
     override fun createInputHandler(logger: Logger, gameContext: GameContext): InputHandler
     override fun createViewportStrategy(logger: Logger): ViewportStrategy
     override fun createLogger(): Logger

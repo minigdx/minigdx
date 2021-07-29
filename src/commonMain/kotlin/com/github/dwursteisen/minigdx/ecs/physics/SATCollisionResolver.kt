@@ -2,7 +2,7 @@ package com.github.dwursteisen.minigdx.ecs.physics
 
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
-import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.components.BoundingBoxComponent
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.math.toVector3
 import kotlin.math.max
@@ -11,7 +11,7 @@ import kotlin.math.min
 // https://github.com/CasuallyCritical/OLC_PGEX_Collision3d/blob/eceaf621f1cfccd8bfe954e0b940a89857c6169f/olcPGEX_Collisions3D.h
 class SATCollisionResolver : CollisionResolver {
 
-    override fun collide(boxA: BoundingBox, boxB: BoundingBox): Boolean {
+    override fun collide(boxA: BoundingBoxComponent, boxB: BoundingBoxComponent): Boolean {
         // Stop collision resolving if the entity can't collide at the moment.
         if (!mightCollide(boxA, boxB)) {
             return false
@@ -34,7 +34,7 @@ class SATCollisionResolver : CollisionResolver {
         return allOverlaps
     }
 
-    private fun project(axe: Vector3, boxA: BoundingBox): Projection {
+    private fun project(axe: Vector3, boxA: BoundingBoxComponent): Projection {
         var min = Float.POSITIVE_INFINITY
         var max = Float.NEGATIVE_INFINITY
         boxA.edges.forEach {
@@ -49,7 +49,7 @@ class SATCollisionResolver : CollisionResolver {
     /**
      * Create default axes and move then regarding the current box transformation.
      */
-    private fun createAxes(boundingBox: BoundingBox): List<Vector3> {
+    private fun createAxes(boundingBox: BoundingBoxComponent): List<Vector3> {
         val axeX = Vector3(1f, 0f, 0f)
         val axeY = Vector3(0f, 1f, 0f)
         val axeZ = Vector3(0f, 0f, 1f)
@@ -66,7 +66,7 @@ class SATCollisionResolver : CollisionResolver {
      *
      * If not, the two boxes are too far from each other: they can not collide.
      */
-    private fun mightCollide(entityA: BoundingBox, entityB: BoundingBox): Boolean {
+    private fun mightCollide(entityA: BoundingBoxComponent, entityB: BoundingBoxComponent): Boolean {
         // compute distance between positionA and positionB
         val midline = entityB.center.mutable().sub(entityA.center)
         val length = midline.length()

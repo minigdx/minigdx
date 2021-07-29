@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
@@ -13,7 +14,7 @@ import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
-abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none()) : EventListener {
+abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(), gameContext: GameContext? = null) : EventListener {
 
     var entities: List<Entity> = emptyList()
 
@@ -23,9 +24,11 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
 
     val entityFactory: EntityFactory = EntityFactoryDelegate()
 
-    val logger: Logger by lazy(LazyThreadSafetyMode.NONE) { entityFactory.gameContext.logger }
+    val logger: Logger by lazy(LazyThreadSafetyMode.NONE) { gameContext?.logger ?: entityFactory.gameContext.logger }
 
-    val input: InputHandler by lazy(LazyThreadSafetyMode.NONE) { entityFactory.gameContext.input }
+    val input: InputHandler by lazy(LazyThreadSafetyMode.NONE) { gameContext?.input ?: entityFactory.gameContext.input }
+
+    val gameContext: GameContext by lazy(LazyThreadSafetyMode.NONE) { gameContext ?: entityFactory.gameContext }
 
     class InterestedDelegate(private val query: EntityQuery) {
 
@@ -73,7 +76,7 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
         entities.forEach { update(delta, it) }
     }
 
-    internal fun add(entity: Entity): Boolean {
+    internal open fun add(entity: Entity): Boolean {
         listeners.forEach { it.add(entity) }
         return if (entityQuery.accept(entity)) {
             entities = entities + entity
@@ -84,7 +87,7 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
         }
     }
 
-    internal fun remove(entity: Entity): Boolean {
+    internal open fun remove(entity: Entity): Boolean {
         listeners.forEach { it.remove(entity) }
         return if (entityQuery.accept(entity)) {
             val count = entities.count()

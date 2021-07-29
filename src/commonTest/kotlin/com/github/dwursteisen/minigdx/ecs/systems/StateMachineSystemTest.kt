@@ -57,7 +57,7 @@ class StateMachineSystemTest {
             add(OnOffStateComponent())
         }
 
-        system.update(0f) // state initialization.
+        engine.update(0f) // state initialization.
 
         system.onEvent(OffEvent())
         // Move to OffState

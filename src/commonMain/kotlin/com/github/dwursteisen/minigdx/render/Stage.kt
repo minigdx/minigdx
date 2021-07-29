@@ -5,15 +5,15 @@ import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.lookAt
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
-import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Camera
+import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.System
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.ShaderUtils
 import com.github.dwursteisen.minigdx.shaders.fragment.FragmentShader
@@ -24,22 +24,26 @@ data class RenderOptions(
     var renderOnDisk: Boolean
 )
 
-interface Stage
+interface Stage {
+    fun compileShaders()
+}
+
+abstract class StageWithSystem(query: EntityQuery, gameContext: GameContext) : Stage, System(query, gameContext)
 
 abstract class RenderStage<V : VertexShader, F : FragmentShader>(
-    protected val gl: GL,
-    val compiler: GLResourceClient,
+    gameContext: GameContext,
     val vertex: V,
     val fragment: F,
     query: EntityQuery,
     val cameraQuery: EntityQuery = EntityQuery(
-        Camera::class
+        CameraComponent::class
     ),
     lightsQuery: EntityQuery = EntityQuery(
         LightComponent::class
-    ),
-    val renderOption: RenderOptions = RenderOptions("undefined", renderOnDisk = false)
-) : Stage, System(query) {
+    )
+) : StageWithSystem(query, gameContext) {
+
+    val gl = gameContext.gl
 
     private val lights by interested(lightsQuery)
 
@@ -55,7 +59,11 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             return lights.firstOrNull()
         }
 
-    lateinit var program: ShaderProgram
+    // FIXME: rollback change
+    val program: ShaderProgram
+        get() = _program
+
+    lateinit var _program: ShaderProgram
 
     open val combinedMatrix: Mat4
         get() {
@@ -70,13 +78,13 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
                     target,
                     UP
                 )
-                val projection = it.get(Camera::class).projection
+                val projection = it.find(Camera::class)?.projection ?: it.get(CameraComponent::class).projection
                 projection * view
             } ?: Mat4.identity()
         }
 
-    open fun compileShaders() {
-        program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
+    override fun compileShaders() {
+        _program = ShaderUtils.createShaderProgram(gl, vertex.toString(), fragment.toString()).apply {
             vertex.parameters.forEach {
                 it.create(this)
             }
@@ -86,16 +94,11 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
         }
     }
 
-    open fun uniforms() = Unit
-
-    open fun uniforms(entity: Entity) = Unit
-
-    open fun attributes(entity: Entity) = Unit
+    open fun uniforms(delta: Seconds) = Unit
 
     override fun update(delta: Seconds) {
-        // TODO: if renderInMemory -> FBO
         gl.useProgram(program)
-        uniforms()
+        uniforms(delta)
         super.update(delta)
     }
 

@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx.ecs.physics
 
-import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.components.BoundingBoxComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.math.Vector3
 
@@ -8,7 +8,7 @@ class RayResolver {
 
     // copy from https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/math/Intersector.java#L514
     fun intersectRayBounds(origin: Vector3, direction: Vector3, bounding: Entity): Vector3? {
-        val box = bounding.get(BoundingBox::class)
+        val box = bounding.get(BoundingBoxComponent::class)
 
         if (box.contains(origin)) {
             return origin.copy()

@@ -21,8 +21,12 @@ actual open class PlatformContextCommon actual constructor(
         return AndroidGL()
     }
 
-    actual override fun createFileHandler(logger: Logger): FileHandler {
-        return FileHandlerCommon(platformFileHandler = PlatformFileHandler(configuration.activity!!, logger), logger = logger)
+    actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
+        return FileHandlerCommon(
+            platformFileHandler = PlatformFileHandler(configuration.activity!!, logger),
+            logger = logger,
+            gameContext = gameContext
+        )
     }
 
     actual override fun createViewportStrategy(logger: Logger): ViewportStrategy {

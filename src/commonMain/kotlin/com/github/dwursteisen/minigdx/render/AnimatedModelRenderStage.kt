@@ -2,29 +2,27 @@ package com.github.dwursteisen.minigdx.render
 
 import com.curiouscreature.kotlin.math.inverse
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.components.AnimatedModel
+import com.github.dwursteisen.minigdx.ecs.components.AnimatedComponent
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.gl.AnimatedMeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 
-class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) :
+class AnimatedModelRenderStage(gameContext: GameContext) :
     RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
-        gl = gl,
-        compiler = compiler,
+        gameContext = gameContext,
         vertex = AnimatedMeshVertexShader(),
         fragment = UVFragmentShader(),
-        query = EntityQuery(AnimatedMeshPrimitive::class)
+        query = EntityQuery(AnimatedComponent::class)
     ) {
 
     override fun update(delta: Seconds, entity: Entity) {
         val model = entity.get(Position::class).transformation
-        val animatedModel = entity.get(AnimatedModel::class)
+        val animatedModel = entity.get(AnimatedComponent::class)
 
         vertex.uModelView.apply(program, combinedMatrix * model)
         vertex.uJointTransformationMatrix.apply(program, animatedModel.currentPose)
@@ -51,21 +49,18 @@ class AnimatedMeshPrimitiveRenderStage(gl: GL, compiler: GLResourceClient) :
             )
         }
 
-        entity.findAll(AnimatedMeshPrimitive::class).forEach { primitive ->
-            if (primitive.isDirty) {
-                compiler.compile(primitive)
-            }
+        animatedModel.animatedModel.models.flatMap { m -> m.primitives }.forEach { primitive ->
             vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
             vertex.aVertexNormal.apply(program, primitive.normalsBuffer!!)
-            vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
-            vertex.aWeights.apply(program, primitive.weightBuffer!!)
-            vertex.aJoints.apply(program, primitive.jointBuffer!!)
-            fragment.uUV.apply(program, primitive.textureReference!!, unit = 0)
+            vertex.aUVPosition.apply(program, primitive.uvsBuffer!!)
+            vertex.aWeights.apply(program, primitive.weightsBuffer!!)
+            vertex.aJoints.apply(program, primitive.jointsBuffer!!)
+            fragment.uUV.apply(program, primitive.texture.textureReference!!, unit = 0)
 
             gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, primitive.verticesOrderBuffer!!)
             gl.drawElements(
                 GL.TRIANGLES,
-                primitive.primitive.verticesOrder.size,
+                primitive.verticesOrder.size,
                 GL.UNSIGNED_SHORT,
                 0
             )

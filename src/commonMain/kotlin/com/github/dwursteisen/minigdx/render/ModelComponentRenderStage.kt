@@ -5,33 +5,26 @@ import com.curiouscreature.kotlin.math.inverse
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GL
+import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.components.Camera
+import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
+import com.github.dwursteisen.minigdx.ecs.components.ModelComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
-import com.github.dwursteisen.minigdx.ecs.components.UIComponent
-import com.github.dwursteisen.minigdx.ecs.components.gl.MeshPrimitive
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
-import com.github.dwursteisen.minigdx.graphics.GLResourceClient
+import com.github.dwursteisen.minigdx.graph.Primitive
 import com.github.dwursteisen.minigdx.math.Vector3
 import com.github.dwursteisen.minigdx.math.toVector3
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
 
-class MeshPrimitiveRenderStage(
-    gl: GL,
-    compiler: GLResourceClient,
-    query: EntityQuery = EntityQuery(
-        listOf(MeshPrimitive::class),
-        listOf(UIComponent::class)
-    ),
-    cameraQuery: EntityQuery = EntityQuery(
-        Camera::class
-    )
+class ModelComponentRenderStage(
+    gameContext: GameContext,
+    query: EntityQuery = EntityQuery.of(ModelComponent::class),
+    cameraQuery: EntityQuery = EntityQuery(CameraComponent::class)
 ) : RenderStage<MeshVertexShader, UVFragmentShader>(
-    gl = gl,
-    compiler = compiler,
+    gameContext,
     vertex = MeshVertexShader(),
     fragment = UVFragmentShader(),
     query = query,
@@ -39,7 +32,7 @@ class MeshPrimitiveRenderStage(
 ) {
 
     // Distance ; Mesh
-    private val transparentPrimitive = mutableListOf<Pair<Position, MeshPrimitive>>()
+    private val transparentPrimitive = mutableListOf<Pair<Position, Primitive>>()
 
     private val cameraDirection: Vector3 = Vector3.FORWARD.copy()
     private val cameraPosition: Vector3 = Vector3.ZERO.copy()
@@ -74,21 +67,26 @@ class MeshPrimitiveRenderStage(
         val position = entity.get(Position::class)
         val model = position.transformation
 
-        entity.findAll(MeshPrimitive::class).forEach { primitive ->
-            if (primitive.hasAlpha) {
-                // defer rendering
-                transparentPrimitive.add(position to primitive)
-            } else {
-                drawPrimitive(primitive, model)
+        entity.findAll(ModelComponent::class)
+            .asSequence()
+            // Keep only components with openGL buffers ready
+            .filter { component -> component.displayable }
+            .flatMap { component ->
+                component.model.primitives
             }
-        }
+            // Keep primitives with vertices.
+            .filter { primitive -> primitive.verticesOrder.isNotEmpty() }
+            .forEach { primitive ->
+                if (primitive.texture.hasAlpha) {
+                    // defer rendering
+                    transparentPrimitive.add(position to primitive)
+                } else {
+                    drawPrimitive(primitive, model)
+                }
+            }
     }
 
-    private fun drawPrimitive(primitive: MeshPrimitive, model: Mat4) {
-        if (primitive.isDirty) {
-            compiler.compile(primitive)
-        }
-
+    private fun drawPrimitive(primitive: Primitive, model: Mat4) {
         // Configure the light.
         val currentLight = light
         if (currentLight == null) {
@@ -114,13 +112,14 @@ class MeshPrimitiveRenderStage(
         vertex.uModelView.apply(program, combinedMatrix * model)
         vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)
         vertex.aVertexNormal.apply(program, primitive.normalsBuffer!!)
-        vertex.aUVPosition.apply(program, primitive.uvBuffer!!)
-        fragment.uUV.apply(program, primitive.textureReference!!, unit = 0)
+        vertex.aUVPosition.apply(program, primitive.uvsBuffer!!)
+        fragment.uUV.apply(program, primitive.texture.textureReference!!, unit = 0)
 
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, primitive.verticesOrderBuffer!!)
+
         gl.drawElements(
             GL.TRIANGLES,
-            primitive.primitive.verticesOrder.size,
+            primitive.verticesOrder.size,
             GL.UNSIGNED_SHORT,
             0
         )

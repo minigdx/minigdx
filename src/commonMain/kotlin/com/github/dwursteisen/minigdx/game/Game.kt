@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.game
 
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Options
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Color
@@ -11,12 +12,13 @@ import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
-import com.github.dwursteisen.minigdx.file.Texture
+import com.github.dwursteisen.minigdx.file.AssetsManagerSystem
+import com.github.dwursteisen.minigdx.graphics.FrameBuffer
 import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
-import com.github.dwursteisen.minigdx.render.AnimatedMeshPrimitiveRenderStage
-import com.github.dwursteisen.minigdx.render.BoundingBoxStage
+import com.github.dwursteisen.minigdx.render.AnimatedModelRenderStage
+import com.github.dwursteisen.minigdx.render.BoundingBoxRenderStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
-import com.github.dwursteisen.minigdx.render.MeshPrimitiveRenderStage
+import com.github.dwursteisen.minigdx.render.ModelComponentRenderStage
 import com.github.dwursteisen.minigdx.render.RenderStage
 
 interface Game {
@@ -58,25 +60,42 @@ interface Game {
     fun createSystems(engine: Engine): List<System>
 
     /**
+     * Create system that are executed before the rendering systems.
+     * Will be use to prepare data before the rendering phase
+     */
+    fun createPostRenderSystem(engine: Engine): List<System> {
+        return listOf(AssetsManagerSystem(gameContext.assetsManager))
+    }
+
+    /**
+     * Create frame buffers, to create a shader pipeline.
+     */
+    fun createFrameBuffers(gameContext: GameContext): List<FrameBuffer> {
+        return emptyList()
+    }
+
+    /**
      * Create render stages.
      *
      * Can be override but need extra care when doing it.
      *
-     * @param [widgetTexture]: this parameter will be removed later when the assets management will be better.
-     * It's the texture used to display component for the imGUI.
      */
-    fun createRenderStage(widgetTexture: Texture): List<RenderStage<*, *>> {
+    fun createRenderStage(): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
         clearColor?.run {
-            stages.add(ClearBufferRenderStage(gameContext.gl, gameContext.glResourceClient, this))
+            stages.add(ClearBufferRenderStage(gameContext, this))
         }
-        stages.add(MeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
-        stages.add(AnimatedMeshPrimitiveRenderStage(gameContext.gl, gameContext.glResourceClient))
-        if (gameContext.options.debug) {
-            stages.add(BoundingBoxStage(gameContext.gl, gameContext.glResourceClient))
-        }
+        stages.add(ModelComponentRenderStage(gameContext))
+        stages.add(AnimatedModelRenderStage(gameContext))
+        return stages
+    }
 
-        stages.add(ImGUIRenderStage(gameContext.gl, gameContext.glResourceClient, widgetTexture, gameContext))
+    fun createDebugRenderStage(options: Options): List<RenderStage<*, *>> {
+        val stages = mutableListOf<RenderStage<*, *>>()
+        if (options.debug) {
+            stages.add(BoundingBoxRenderStage(gameContext))
+        }
+        stages.add(ImGUIRenderStage(gameContext))
         return stages
     }
 

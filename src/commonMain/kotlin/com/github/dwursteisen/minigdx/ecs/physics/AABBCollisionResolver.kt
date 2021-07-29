@@ -1,10 +1,10 @@
 package com.github.dwursteisen.minigdx.ecs.physics
 
-import com.github.dwursteisen.minigdx.ecs.components.gl.BoundingBox
+import com.github.dwursteisen.minigdx.ecs.components.BoundingBoxComponent
 
 class AABBCollisionResolver : CollisionResolver {
 
-    override fun collide(boxA: BoundingBox, boxB: BoundingBox): Boolean {
+    override fun collide(boxA: BoundingBoxComponent, boxB: BoundingBoxComponent): Boolean {
         val minXA = boxA.min.x
         val maxXA = boxA.max.x
         val minYA = boxA.min.y

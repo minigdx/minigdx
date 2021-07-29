@@ -13,17 +13,12 @@ private val simpleVertexShader =
         uniform vec4 uColor;
         
         attribute vec3 aVertexPosition;
-        attribute vec4 aColor;
         
         varying vec4 vColor;
         
         void main() {
             gl_Position = uModelView * vec4(aVertexPosition, 1.0);
-            if(uColor.r >= 0.0) {
-                vColor = uColor;
-            } else {
-                vColor = aColor;
-            }
+            vColor = uColor;
         }
     """.trimIndent()
 
@@ -35,12 +30,10 @@ class BoundingBoxVertexShader : VertexShader(simpleVertexShader) {
 
     val aVertexPosition =
         ShaderParameter.AttributeVec3("aVertexPosition")
-    val aColor = ShaderParameter.AttributeVec4("aColor")
 
     override val parameters: List<ShaderParameter> = listOf(
         uModelView,
         uColor,
-        aVertexPosition,
-        aColor
+        aVertexPosition
     )
 }
