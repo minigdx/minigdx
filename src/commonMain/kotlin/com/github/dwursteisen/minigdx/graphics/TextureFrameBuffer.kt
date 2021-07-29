@@ -30,6 +30,7 @@ abstract class TextureFrameBuffer<T : FragmentShader>(
 
     init {
         // Add the Texture Fragment Buffer into the stage
+        @Suppress("UNCHECKED_CAST")
         val mutableDependencies = stages as MutableList<RenderStage<*, *>>
         mutableDependencies.add(stage)
     }

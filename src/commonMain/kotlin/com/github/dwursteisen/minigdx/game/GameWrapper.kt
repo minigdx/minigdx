@@ -5,6 +5,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.graphics.FrameBuffer
+import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
 
 class GameWrapper(val gameContext: GameContext, var game: Game) {
 
@@ -21,7 +22,6 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
         }
 
         val frameBuffers = game.createFrameBuffers(gameContext)
-        frameBuffers.forEach { engine.addSystem(it) }
         // Keep the frame buffers into the context
         gameContext.frameBuffers = frameBuffers
             .flatMap { traverse(it) }
@@ -34,10 +34,22 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
         val renderStage = when (rootFrameBuffers.size) {
             0 -> game.createRenderStage()
             1 -> emptyList()
-            else -> {
-                TODO("PAS NORMAL.")
-            }
+            else -> throw IllegalStateException(
+                "Only one frame buffer can be render directly on screen." +
+                    "Please configure Frame buffers so only one will render on screen by setting" +
+                    " to false the property of one of those frame buffer: " +
+                    "${rootFrameBuffers.joinToString { it.name }} "
+            )
         }
+
+        // When there is one frame buffer to be render on the screen, we add a clear stage before it
+        // So the screen is clean.
+        // It can be disable be removing the clear color of the game.
+        if (rootFrameBuffers.size == 1) {
+            game.clearColor?.run { engine.addSystem(ClearBufferRenderStage(gameContext, this)) }
+        }
+
+        frameBuffers.forEach { engine.addSystem(it) }
 
         val debugRenderStage = game.createDebugRenderStage(gameContext.options)
 

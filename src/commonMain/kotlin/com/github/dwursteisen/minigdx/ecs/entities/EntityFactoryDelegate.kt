@@ -260,14 +260,6 @@ class EntityFactoryDelegate : EntityFactory {
         position: Mat4,
         animations: AnimationBuilder.() -> Unit
     ): Entity = engine.create {
-
-        fun getFrame(frameIndex: Int): Pair<Int, Int> {
-            val framePerLine = (texture.width / spriteWidth)
-            val frameX = frameIndex % framePerLine
-            val frameY = frameIndex / framePerLine
-            return (frameX * spriteWidth) to (frameY * spriteHeight)
-        }
-
         val animationBuilder = AnimationBuilder()
         animationBuilder.animations()
         val animationsMap = animationBuilder.animations.map { (name, framesDuration) ->
@@ -289,42 +281,55 @@ class EntityFactoryDelegate : EntityFactory {
             animation.name to animation
         }.toMap()
 
-        val framePerLine = (texture.width / spriteWidth)
-        val framePerColumn = (texture.height / spriteHeight)
-        val nbFrame = framePerLine * framePerColumn
-        val uvs = (0..nbFrame).flatMap { frame ->
-            val (startX, startY) = getFrame(frame)
-            val endX = startX + spriteWidth
-            val endY = startY + spriteHeight
-            val startUVX = (startX / texture.width.toFloat())
-            val startUVY = (startY / texture.height.toFloat())
-            val endUVX = (endX / texture.width.toFloat())
-            val endUVY = (endY / texture.height.toFloat())
-            val a = UV(
-                x = startUVX,
-                y = endUVY
-            )
-            val b = UV(
-                x = startUVX,
-                y = startUVY
-            )
-            val c = UV(
-                x = endUVX,
-                y = startUVY
-            )
-            val d = UV(
-                x = endUVX,
-                y = endUVY
-            )
-            listOf(a, b, c, d)
-        }
-        add(Position(position, position, position))
-        add(
-            SpriteComponent(
-                animations = animationsMap,
-                uvs = uvs
-            )
+        val spriteComponent = SpriteComponent(
+            animations = animationsMap,
+            uvs = emptyList()
         )
+
+        texture.onLoad {
+            fun getFrame(frameIndex: Int): Pair<Int, Int> {
+                val framePerLine = (texture.width / spriteWidth)
+                val frameX = frameIndex % framePerLine
+                val frameY = frameIndex / framePerLine
+                return (frameX * spriteWidth) to (frameY * spriteHeight)
+            }
+
+            val framePerLine = (texture.width / spriteWidth)
+            val framePerColumn = (texture.height / spriteHeight)
+            val nbFrame = framePerLine * framePerColumn
+            val uvs = (0..nbFrame).flatMap { frame ->
+                val (startX, startY) = getFrame(frame)
+                val endX = startX + spriteWidth
+                val endY = startY + spriteHeight
+                val startUVX = (startX / texture.width.toFloat())
+                val startUVY = (startY / texture.height.toFloat())
+                val endUVX = (endX / texture.width.toFloat())
+                val endUVY = (endY / texture.height.toFloat())
+                val a = UV(
+                    x = startUVX,
+                    y = endUVY
+                )
+                val b = UV(
+                    x = startUVX,
+                    y = startUVY
+                )
+                val c = UV(
+                    x = endUVX,
+                    y = startUVY
+                )
+                val d = UV(
+                    x = endUVX,
+                    y = endUVY
+                )
+                listOf(a, b, c, d)
+            }
+
+            spriteComponent.uvs = uvs
+        }
+
+        add(spriteComponent)
+        add(Position(position, position, position))
+
         val quad = Model(
             primitives = listOf(
                 Primitive(
