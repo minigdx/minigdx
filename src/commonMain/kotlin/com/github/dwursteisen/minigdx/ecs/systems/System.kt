@@ -76,7 +76,7 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
         entities.forEach { update(delta, it) }
     }
 
-    internal fun add(entity: Entity): Boolean {
+    internal open fun add(entity: Entity): Boolean {
         listeners.forEach { it.add(entity) }
         return if (entityQuery.accept(entity)) {
             entities = entities + entity
@@ -87,7 +87,7 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
         }
     }
 
-    internal fun remove(entity: Entity): Boolean {
+    internal open fun remove(entity: Entity): Boolean {
         listeners.forEach { it.remove(entity) }
         return if (entityQuery.accept(entity)) {
             val count = entities.count()

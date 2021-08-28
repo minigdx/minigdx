@@ -15,6 +15,8 @@ class Texture private constructor(
 ) : Asset {
     var textureReference: TextureReference? = null
 
+    private val onLoad = mutableListOf<(Asset) -> Unit>()
+
     constructor(id: Id, source: TextureImage, hasAlpha: Boolean) : this(
         id = id,
         textureImage = source,
@@ -72,5 +74,12 @@ class Texture private constructor(
             )
         }
         textureReference = texture
+
+        // Invoke all callbacks
+        onLoad.forEach { it.invoke(this) }
+    }
+
+    override fun onLoad(callback: (Asset) -> Unit) {
+        onLoad.add(callback)
     }
 }

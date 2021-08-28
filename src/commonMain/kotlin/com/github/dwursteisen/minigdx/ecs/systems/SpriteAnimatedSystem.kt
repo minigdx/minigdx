@@ -23,6 +23,11 @@ class SpriteAnimatedSystem : System(EntityQuery(SpriteComponent::class)) {
             val frame = currentAnimation.frames[sprite.currentFrame]
             sprite.frameDuration = frame.duration
 
+            // The component is not fully loaded.
+            // So it's useless to update UVs as it might be totally wrong.
+            if (sprite.uvs.size < frame.uvIndex + 3) {
+                return
+            }
             // TODO: quick fix to get UVs in the same order than the model.
             val a = sprite.uvs[frame.uvIndex]
             val b = sprite.uvs[frame.uvIndex + 1]
@@ -39,7 +44,6 @@ class SpriteAnimatedSystem : System(EntityQuery(SpriteComponent::class)) {
                 c.x,
                 c.y,
             )
-
             this.gameContext.assetsManager.add(spritePrimitive.model)
         }
     }

@@ -1,6 +1,11 @@
 package com.github.dwursteisen.minigdx
 
 /**
+ * Temporal Unit used for animation descriptions
+ */
+typealias Milliseconds = Long
+
+/**
  * Temporal unit
  */
 typealias Seconds = Float

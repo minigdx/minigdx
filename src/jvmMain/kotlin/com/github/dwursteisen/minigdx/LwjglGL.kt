@@ -3,7 +3,9 @@ package com.github.dwursteisen.minigdx
 import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
+import com.github.dwursteisen.minigdx.shaders.FrameBufferReference
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
+import com.github.dwursteisen.minigdx.shaders.RenderBufferReference
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
@@ -18,6 +20,8 @@ import org.lwjgl.opengl.GL20.glUniform3i
 import org.lwjgl.opengl.GL20.glUniform4f
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
+import org.lwjgl.opengl.GL30.glBindFramebuffer
+import org.lwjgl.opengl.GL30.glBindRenderbuffer
 import org.lwjgl.opengl.GL30.glBindTexture
 import org.lwjgl.opengl.GL30.glBlendFunc
 import org.lwjgl.opengl.GL30.glBufferData
@@ -33,7 +37,11 @@ import org.lwjgl.opengl.GL30.glDrawArrays
 import org.lwjgl.opengl.GL30.glDrawElements
 import org.lwjgl.opengl.GL30.glEnable
 import org.lwjgl.opengl.GL30.glEnableVertexAttribArray
+import org.lwjgl.opengl.GL30.glFramebufferRenderbuffer
+import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 import org.lwjgl.opengl.GL30.glGenBuffers
+import org.lwjgl.opengl.GL30.glGenFramebuffers
+import org.lwjgl.opengl.GL30.glGenRenderbuffers
 import org.lwjgl.opengl.GL30.glGenTextures
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import org.lwjgl.opengl.GL30.glGetAttribLocation
@@ -43,6 +51,7 @@ import org.lwjgl.opengl.GL30.glGetShaderInfoLog
 import org.lwjgl.opengl.GL30.glGetShaderi
 import org.lwjgl.opengl.GL30.glGetString
 import org.lwjgl.opengl.GL30.glLinkProgram
+import org.lwjgl.opengl.GL30.glRenderbufferStorage
 import org.lwjgl.opengl.GL30.glShaderSource
 import org.lwjgl.opengl.GL30.glTexImage2D
 import org.lwjgl.opengl.GL30.glUniform1i
@@ -146,6 +155,38 @@ class LwjglGL : GL {
 
     override fun createBuffer(): Buffer {
         return Buffer(glGenBuffers())
+    }
+
+    override fun createFrameBuffer(): FrameBufferReference {
+        return FrameBufferReference(glGenFramebuffers())
+    }
+
+    override fun bindFrameBuffer(frameBufferReference: FrameBufferReference) {
+        glBindFramebuffer(GL.FRAMEBUFFER, frameBufferReference.reference)
+    }
+
+    override fun bindDefaultFrameBuffer() {
+        glBindFramebuffer(GL.FRAMEBUFFER, 0)
+    }
+
+    override fun createRenderBuffer(): RenderBufferReference {
+        return RenderBufferReference(glGenRenderbuffers())
+    }
+
+    override fun bindRenderBuffer(renderBufferReference: RenderBufferReference) {
+        glBindRenderbuffer(GL.RENDERBUFFER, renderBufferReference.reference)
+    }
+
+    override fun renderBufferStorage(internalformat: Int, width: Int, height: Int) {
+        glRenderbufferStorage(GL.RENDERBUFFER, internalformat, width, height)
+    }
+
+    override fun framebufferRenderbuffer(attachementType: Int, renderBufferReference: RenderBufferReference) {
+        glFramebufferRenderbuffer(GL.FRAMEBUFFER, attachementType, GL.RENDERBUFFER, renderBufferReference.reference)
+    }
+
+    override fun frameBufferTexture2D(attachmentPoint: Int, textureReference: TextureReference, level: Int) {
+        glFramebufferTexture2D(GL.FRAMEBUFFER, attachmentPoint, GL.TEXTURE_2D, textureReference.pointer, level)
     }
 
     override fun bindBuffer(target: ByteMask, buffer: Buffer) {

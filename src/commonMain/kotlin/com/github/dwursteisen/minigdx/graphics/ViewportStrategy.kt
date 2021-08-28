@@ -57,11 +57,6 @@ class FillViewportStrategy(private val logger: Logger) : ViewportStrategy {
 
     override fun update(gl: GL, width: Pixel, height: Pixel, gameWidth: Pixel, gameHeight: Pixel) {
         apply(width, height, gameWidth, gameHeight) { x, y, w, h ->
-
-            logger.info("FILL_VIEWPORT_STRATEGY") {
-                "Fill the screen '$width/$height' as a viewport '$w/$h' (offset: $x/$y)"
-            }
-
             gl.viewport(x, y, w, h)
         }
     }

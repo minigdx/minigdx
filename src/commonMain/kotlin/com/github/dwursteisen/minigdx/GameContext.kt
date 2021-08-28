@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.AssetsManager
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.graphics.FrameBuffer
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
@@ -24,6 +25,8 @@ class GameContext(
     val viewport: ViewportStrategy = platformContext.createViewportStrategy(logger)
 
     val assetsManager = AssetsManager(this)
+
+    var frameBuffers: Map<String, FrameBuffer> = emptyMap()
 
     /**
      * Size of the game screen.

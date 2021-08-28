@@ -3,7 +3,9 @@ package com.github.dwursteisen.minigdx
 import com.github.dwursteisen.minigdx.file.TextureImage
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
+import com.github.dwursteisen.minigdx.shaders.FrameBufferReference
 import com.github.dwursteisen.minigdx.shaders.PlatformShaderProgram
+import com.github.dwursteisen.minigdx.shaders.RenderBufferReference
 import com.github.dwursteisen.minigdx.shaders.Shader
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.TextureReference
@@ -179,6 +181,38 @@ class WebGL(private val gl: WebGLRenderingContextBase) : GL {
 
     override fun createTexture(): TextureReference {
         return TextureReference(gl.createTexture()!!)
+    }
+
+    override fun createFrameBuffer(): FrameBufferReference {
+        return FrameBufferReference(gl.createFramebuffer()!!)
+    }
+
+    override fun bindFrameBuffer(frameBufferReference: FrameBufferReference) {
+        gl.bindFramebuffer(GL.FRAMEBUFFER, framebuffer = frameBufferReference.reference)
+    }
+
+    override fun frameBufferTexture2D(attachmentPoint: Int, textureReference: TextureReference, level: Int) {
+        gl.framebufferTexture2D(GL.FRAMEBUFFER, attachmentPoint, GL.TEXTURE_2D, textureReference.reference, level)
+    }
+
+    override fun bindDefaultFrameBuffer() {
+        gl.bindFramebuffer(GL.FRAMEBUFFER, null)
+    }
+
+    override fun createRenderBuffer(): RenderBufferReference {
+        return RenderBufferReference(gl.createRenderbuffer()!!)
+    }
+
+    override fun bindRenderBuffer(renderBufferReference: RenderBufferReference) {
+        gl.bindRenderbuffer(GL.RENDERBUFFER, renderBufferReference.reference)
+    }
+
+    override fun renderBufferStorage(internalformat: Int, width: Int, height: Int) {
+        gl.renderbufferStorage(GL.RENDERBUFFER, internalformat, width, height)
+    }
+
+    override fun framebufferRenderbuffer(attachementType: Int, renderBufferReference: RenderBufferReference) {
+        gl.framebufferRenderbuffer(GL.FRAMEBUFFER, attachementType, GL.RENDERBUFFER, renderBufferReference.reference)
     }
 
     override fun activeTexture(byteMask: ByteMask) {

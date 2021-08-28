@@ -17,6 +17,11 @@ interface Asset {
      * - load a sound into the Audio Context
      */
     fun load(gameContext: GameContext)
+
+    /**
+     * When the asset is finally loaded, the callback is invoked.
+     */
+    fun onLoad(callback: (Asset) -> Unit) = Unit
 }
 
 /**

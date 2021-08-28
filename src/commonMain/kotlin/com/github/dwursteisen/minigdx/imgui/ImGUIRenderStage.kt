@@ -5,6 +5,8 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
+import com.github.dwursteisen.minigdx.file.Texture
+import com.github.dwursteisen.minigdx.file.get
 import com.github.dwursteisen.minigdx.render.RenderStage
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
@@ -24,6 +26,8 @@ class ImGUIRenderStage(
 
     private val guiRenderer = ImGUI(gameContext, vertex, fragment)
 
+    private val texture: Texture by gameContext.fileHandler.get("internal/widgets.png")
+
     private val inputCapture: InputCapture = ImgCapture { input }
 
     private var systems: List<ImGuiSystem> = emptyList()
@@ -39,6 +43,7 @@ class ImGUIRenderStage(
         gl.useProgram(program)
         systems.forEach {
             gui(
+                defaultTexture = texture,
                 renderer = guiRenderer,
                 inputCapture = inputCapture,
                 gameResolution = Resolution(gameContext.gameScreen.width, gameContext.gameScreen.height),

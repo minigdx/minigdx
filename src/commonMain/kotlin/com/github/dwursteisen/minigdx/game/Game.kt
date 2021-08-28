@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.game
 
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.Options
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.Color
@@ -12,8 +13,10 @@ import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
 import com.github.dwursteisen.minigdx.file.AssetsManagerSystem
+import com.github.dwursteisen.minigdx.graphics.FrameBuffer
 import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedModelRenderStage
+import com.github.dwursteisen.minigdx.render.BoundingBoxRenderStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
 import com.github.dwursteisen.minigdx.render.ModelComponentRenderStage
 import com.github.dwursteisen.minigdx.render.RenderStage
@@ -56,8 +59,19 @@ interface Game {
      */
     fun createSystems(engine: Engine): List<System>
 
+    /**
+     * Create system that are executed before the rendering systems.
+     * Will be use to prepare data before the rendering phase
+     */
     fun createPostRenderSystem(engine: Engine): List<System> {
         return listOf(AssetsManagerSystem(gameContext.assetsManager))
+    }
+
+    /**
+     * Create frame buffers, to create a shader pipeline.
+     */
+    fun createFrameBuffers(gameContext: GameContext): List<FrameBuffer> {
+        return emptyList()
     }
 
     /**
@@ -73,10 +87,14 @@ interface Game {
         }
         stages.add(ModelComponentRenderStage(gameContext))
         stages.add(AnimatedModelRenderStage(gameContext))
-        if (gameContext.options.debug) {
-            // stages.add(BoundingBoxStage(gameContext))
-        }
+        return stages
+    }
 
+    fun createDebugRenderStage(options: Options): List<RenderStage<*, *>> {
+        val stages = mutableListOf<RenderStage<*, *>>()
+        if (options.debug) {
+            stages.add(BoundingBoxRenderStage(gameContext))
+        }
         stages.add(ImGUIRenderStage(gameContext))
         return stages
     }

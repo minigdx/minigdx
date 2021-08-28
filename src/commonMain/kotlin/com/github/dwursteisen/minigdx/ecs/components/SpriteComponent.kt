@@ -5,11 +5,10 @@ import com.dwursteisen.minigdx.scene.api.sprite.SpriteAnimation
 
 class SpriteComponent(
     val animations: Map<String, SpriteAnimation> = emptyMap(),
-    val uvs: List<UV>,
+    var uvs: List<UV>,
     var currentFrame: Int = -1,
     var frameDuration: Float = 0f,
     var currentAnimation: SpriteAnimation? = animations.values.firstOrNull()
-    // TODO: Add a field with the related MeshPrimitive
 ) : Component {
 
     /**
