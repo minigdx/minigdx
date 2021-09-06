@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.EventQueue
 import com.github.dwursteisen.minigdx.ecs.systems.System
 
@@ -14,6 +15,12 @@ class Engine(val gameContext: GameContext) {
     private var systems: List<System> = listOf(eventQueue)
 
     private val waitingForUpdate = mutableListOf<() -> Unit>()
+
+    val entityFactory = EntityFactoryDelegate().let { factory ->
+        factory.gameContext = gameContext
+        factory.engine = this
+        factory
+    }
 
     interface EntityBuilder {
         fun named(name: String)
@@ -70,8 +77,7 @@ class Engine(val gameContext: GameContext) {
         systems = systems.dropLast(1) + system + entityQuery
 
         // Register the game context and the engine on the system
-        system.entityFactory.engine = this
-        system.entityFactory.gameContext = gameContext
+        system.entityFactory = entityFactory
 
         eventQueue.register(system)
     }

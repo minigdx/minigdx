@@ -29,6 +29,8 @@ class EntityFactoryDelegate : EntityFactory {
     override lateinit var engine: Engine
     override lateinit var gameContext: GameContext
 
+    private var templates = emptyMap<String, () -> Entity>()
+
     override fun create(block: (Engine.EntityBuilder) -> Unit): Entity = engine.create(block)
 
     override fun createText(textEffect: TextEffect, font: Font): Entity {
@@ -376,5 +378,19 @@ class EntityFactoryDelegate : EntityFactory {
         )
 
         gameContext.assetsManager.add(quad)
+    }
+
+    override fun registerTemplate(name: String, block: () -> Entity) {
+        templates = templates + (name to block)
+    }
+
+    override fun createFromTemplate(name: String): Entity {
+        val template = templates[name] ?: throw IllegalArgumentException(
+            "No template using the name '$name' has been registered. " +
+                "Check that this template has been registered before and that there is no spelling errors. " +
+                "Actual templates are: ${templates.keys.ifEmpty { setOf("nothing has been registered") }.joinToString(",")}."
+        )
+
+        return template()
     }
 }

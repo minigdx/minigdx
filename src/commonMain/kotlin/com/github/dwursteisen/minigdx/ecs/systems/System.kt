@@ -5,7 +5,6 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
-import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.events.EventListener
 import com.github.dwursteisen.minigdx.ecs.events.EventWithQuery
@@ -22,7 +21,7 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
 
     private val events = mutableListOf<EventWithQuery>()
 
-    val entityFactory: EntityFactory = EntityFactoryDelegate()
+    lateinit var entityFactory: EntityFactory
 
     val logger: Logger by lazy(LazyThreadSafetyMode.NONE) { gameContext?.logger ?: entityFactory.gameContext.logger }
 

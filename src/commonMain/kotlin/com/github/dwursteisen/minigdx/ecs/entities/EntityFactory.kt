@@ -85,4 +85,18 @@ interface EntityFactory {
         position: Mat4 = Mat4.identity(),
         animations: AnimationBuilder.() -> Unit
     ): Entity
+
+    /**
+     * Register a template named [name] for an entity creation.
+     *
+     * To create an entity from this template, see [createFromTemplate].
+     *
+     * Registering a new template with an already existing name will replace the previous template.
+     */
+    fun registerTemplate(name: String, block: () -> Entity)
+
+    /**
+     * Use a previously registered template named [name] to create an entity.
+     */
+    fun createFromTemplate(name: String): Entity
 }

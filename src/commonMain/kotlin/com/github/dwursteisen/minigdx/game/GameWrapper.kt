@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx.game
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
-import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.graphics.FrameBuffer
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
 
@@ -55,11 +54,7 @@ class GameWrapper(val gameContext: GameContext, var game: Game) {
 
         (renderStage + debugRenderStage).forEach { engine.addSystem(it) }
 
-        val entityFactoryDelegate = EntityFactoryDelegate()
-        entityFactoryDelegate.engine = engine
-        entityFactoryDelegate.gameContext = gameContext
-
-        game.createEntities(entityFactoryDelegate)
+        game.createEntities(engine.entityFactory)
         // Load assets that can be loaded
         gameContext.assetsManager.update()
         renderStage.forEach { it.compileShaders() }
