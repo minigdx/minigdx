@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.ecs.components
 
 import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
@@ -192,7 +193,23 @@ class BoundingBoxComponent private constructor(
             component._rawMin.set(min)
             component._rawMax.set(max)
 
-            // TODO: set fromDefaultTransformation correctly
+            val scale = scale(
+                Float3(
+                    x = max.x - min.x,
+                    y = max.y - min.y,
+                    z = max.z - min.z
+                )
+            )
+
+            val translation = translation(
+                Float3(
+                    x = (max.x - min.x) * 0.5f + min.x,
+                    y = (max.y - min.y) * 0.5f + min.y,
+                    z = (max.z - min.z) * 0.5f + min.z,
+                )
+            )
+
+            component.fromDefaultTransformation = translation * scale
             return component
         }
 
