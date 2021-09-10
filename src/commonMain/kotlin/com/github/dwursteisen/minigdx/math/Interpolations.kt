@@ -4,6 +4,7 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.interpolate
+import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Percent
@@ -57,10 +58,10 @@ object Interpolations {
     fun interpolate(target: Mat4, start: Mat4, blend: Percent): Mat4 {
         val blenderAsFloat = blend.toFloat()
         val trans = interpolate(start.translation, target.translation, blenderAsFloat)
-        val rot = slerp(Quaternion.from(start), Quaternion.from(target), blenderAsFloat)
+        val rot = slerp(Quaternion.from(rotation(start)), Quaternion.from(rotation(target)), blenderAsFloat)
         val scale = interpolate(start.scale, target.scale, blenderAsFloat)
 
-        return translation(Float3(trans.x, trans.y, trans.z)) * Mat4.from(rot) * scale(scale)
+        return translation(trans) * Mat4.from(rot) * scale(scale)
     }
 
     fun interpolate(target: Float, start: Float, blend: Percent): Float {

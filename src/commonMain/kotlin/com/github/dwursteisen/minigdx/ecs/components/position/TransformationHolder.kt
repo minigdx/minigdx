@@ -47,7 +47,7 @@ class TransformationHolder(
                 )
             )
             scale = scale(value)
-            combined = updateTransformation()
+            combined = value
         }
 
     init {
