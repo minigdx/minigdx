@@ -320,14 +320,14 @@ class TextComponent(
     internal fun computeCharacterScale(longestLine: String): Float {
         val boundingBox = owner!!.get(BoundingBoxComponent::class)
 
-        // Look for the longest line and deduce the character size in worl unit from it.
+        // Look for the longest line and deduce the character size in world unit from it.
         val numberOfCharacterByLine: NumberOfCharacter = _lineWith
         val lineInPixel: Pixel = getTextSize(longestLine, _font)
         if (longestLine.isEmpty()) {
             return 0f
         }
         val characterWidth: Float = (lineInPixel / longestLine.length).toFloat()
-        val lineInWorldUnit = boundingBox.localMax.x - boundingBox.localMin.x
+        val lineInWorldUnit = boundingBox.max.x - boundingBox.min.x
         // Characters size will be scaled to match the size in world unit.
         val scale = lineInWorldUnit / (numberOfCharacterByLine * characterWidth)
         return scale
