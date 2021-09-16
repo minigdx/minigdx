@@ -4,14 +4,14 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.lookAt
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.components.Camera
+import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 
-class CameraTrackSystem : System(EntityQuery(Camera::class)) {
+class CameraTrackSystem : System(EntityQuery(CameraComponent::class)) {
 
     override fun update(delta: Seconds, entity: Entity) {
-        entity.get(Camera::class).lookAt?.let { target ->
+        entity.get(CameraComponent::class).lookAt?.let { target ->
             val targetPosition = target.get(Position::class).translation
             val cameraPosition = entity.get(Position::class).translation
 
