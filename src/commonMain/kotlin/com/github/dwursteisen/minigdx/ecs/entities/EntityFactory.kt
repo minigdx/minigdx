@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx.ecs.entities
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.particles.ParticleConfiguration
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.file.Font
 import com.github.dwursteisen.minigdx.file.Texture
@@ -74,6 +75,11 @@ interface EntityFactory {
      * Create an entity using a [Sprite]
      */
     fun createSprite(sprite: Sprite, position: Mat4 = Mat4.identity()): Entity
+
+    /**
+     * Create an entity as a Particle generator
+     */
+    fun createParticles(particleConfiguration: ParticleConfiguration, position: Mat4 = Mat4.identity()): Entity
 
     /**
      * Create an sprite

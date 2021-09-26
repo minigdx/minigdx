@@ -305,6 +305,15 @@ open class Position(
     )
 
     /**
+     * Set the global translation, in world coordinate.
+     */
+    fun setGlobalTranslation(translation: ImmutableVector3): Position = setGlobalTranslation(
+        translation.x,
+        translation.y,
+        translation.z
+    )
+
+    /**
      * Set the local translation using the local or world scale,
      * regarding the value of [using].
      */

@@ -8,6 +8,8 @@ import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.CameraTrackSystem
+import com.github.dwursteisen.minigdx.ecs.systems.ParticlesEmitterSystem
+import com.github.dwursteisen.minigdx.ecs.systems.ParticlesUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
@@ -50,7 +52,9 @@ interface Game {
         ArmatureUpdateSystem(),
         ScriptExecutorSystem(),
         TextEffectSystem(),
-        CameraTrackSystem()
+        CameraTrackSystem(),
+        ParticlesEmitterSystem(),
+        ParticlesUpdateSystem()
     )
 
     /**
