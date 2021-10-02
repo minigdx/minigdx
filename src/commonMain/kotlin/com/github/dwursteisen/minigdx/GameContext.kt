@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx
 
 import com.github.dwursteisen.minigdx.file.AssetsManager
 import com.github.dwursteisen.minigdx.file.FileHandler
+import com.github.dwursteisen.minigdx.game.StoryboardEvent
 import com.github.dwursteisen.minigdx.graphics.FrameBuffer
 import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
@@ -27,6 +28,14 @@ class GameContext(
     val assetsManager = AssetsManager(this)
 
     var frameBuffers: Map<String, FrameBuffer> = emptyMap()
+
+    var storyboardEvent: StoryboardEvent? = null
+        get() {
+            val value = field
+            field = null
+            return value
+        }
+        internal set
 
     /**
      * Size of the game screen.
