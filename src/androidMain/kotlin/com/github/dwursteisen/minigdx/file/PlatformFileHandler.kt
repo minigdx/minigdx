@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.file
 
 import android.content.Context
+import android.media.SoundPool
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
@@ -9,6 +10,7 @@ import java.nio.ByteBuffer
 
 actual class PlatformFileHandler(
     private val context: Context,
+    private val soundPool: SoundPool,
     actual val logger: Logger
 ) {
 
@@ -58,6 +60,10 @@ actual class PlatformFileHandler(
     }
 
     actual fun readSound(filename: String): Content<Sound> {
-        TODO("Not yet implemented")
+        val assetFileDescriptor = context.assets.openFd(filename)
+        val soundId = soundPool.load(assetFileDescriptor, 1)
+        val content = Content<Sound>(filename, logger)
+        content.load(Sound(soundPool, soundId))
+        return content
     }
 }

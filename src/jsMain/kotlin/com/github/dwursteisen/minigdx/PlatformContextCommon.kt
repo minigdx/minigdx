@@ -45,7 +45,7 @@ actual open class PlatformContextCommon actual constructor(
                 "that might not support all features required (like Web GL 2, Audio API, ...)"
         )
         console.warn(
-            "Please warn your user to update their browser or switch to anoter browser " +
+            "Please warn your user to update their browser or switch to another browser " +
                 "like Firefox, Chrome or Opera."
         )
         return canvas.getContext("webgl") as WebGLRenderingContextBase

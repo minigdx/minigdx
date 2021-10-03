@@ -1,6 +1,8 @@
 package com.github.dwursteisen.minigdx
 
 import android.graphics.Point
+import android.media.AudioManager
+import android.media.SoundPool
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.FileHandlerCommon
 import com.github.dwursteisen.minigdx.file.PlatformFileHandler
@@ -22,8 +24,14 @@ actual open class PlatformContextCommon actual constructor(
     }
 
     actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
+        val sp = SoundPool(10, AudioManager.STREAM_MUSIC, 0)
+
         return FileHandlerCommon(
-            platformFileHandler = PlatformFileHandler(configuration.activity!!, logger),
+            platformFileHandler = PlatformFileHandler(
+                configuration.activity!!,
+                sp,
+                logger
+            ),
             logger = logger,
             gameContext = gameContext
         )
