@@ -198,6 +198,8 @@ class TextComponent(
         val textureHeight = _font.fontSprite.height.toFloat()
         val textureWidth = _font.fontSprite.width.toFloat()
 
+        val scaleY = scale / ((boundingBox.max.y - boundingBox.min.y) * 0.5f)
+
         textMeshData.vertices.clear()
         textMeshData.verticesOrder.clear()
 
@@ -210,12 +212,12 @@ class TextComponent(
         var startX = _horizontalAlign.getHorizontalOffset(
             getTextSize(lines[lineIndex], _font),
             scale,
-            boundingBox.min.x,
-            boundingBox.max.x
+            -1f,
+            1f
         )
 
         // HALIGN: From top
-        val startY = boundingBox.localMax.y
+        val startY = 1f
 
         var currentX = 0f
         var currentY = 0f
@@ -229,8 +231,8 @@ class TextComponent(
                 startX = _horizontalAlign.getHorizontalOffset(
                     getTextSize(lines[lineIndex], _font),
                     scale,
-                    boundingBox.min.x,
-                    boundingBox.max.x
+                    -1f,
+                    1f
                 )
 
                 currentX = 0f
@@ -251,7 +253,7 @@ class TextComponent(
             val a = Vertex(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xLeft,
-                    startY + scale * yTop,
+                    startY + scaleY * yTop,
                     alteration.z * scale
                 ),
                 DEFAULT_NORMAL,
@@ -263,7 +265,7 @@ class TextComponent(
             val b = Vertex(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xLeft,
-                    startY + scale * yBottom,
+                    startY + scaleY * yBottom,
                     alteration.z * scale
                 ),
                 DEFAULT_NORMAL,
@@ -276,7 +278,7 @@ class TextComponent(
             val c = Vertex(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xRight,
-                    startY + scale * yBottom,
+                    startY + scaleY * yBottom,
                     alteration.z * scale
                 ),
                 DEFAULT_NORMAL,
@@ -289,7 +291,7 @@ class TextComponent(
             val d = Vertex(
                 com.dwursteisen.minigdx.scene.api.model.Position(
                     startX + scale * xRight,
-                    startY + scale * yTop,
+                    startY + scaleY * yTop,
                     alteration.z * scale
                 ),
                 Normal(0f, 0f, 0f),
@@ -318,16 +320,14 @@ class TextComponent(
     }
 
     internal fun computeCharacterScale(longestLine: String): Float {
-        val boundingBox = owner!!.get(BoundingBoxComponent::class)
-
-        // Look for the longest line and deduce the character size in worl unit from it.
+        // Look for the longest line and deduce the character size in world unit from it.
         val numberOfCharacterByLine: NumberOfCharacter = _lineWith
         val lineInPixel: Pixel = getTextSize(longestLine, _font)
         if (longestLine.isEmpty()) {
             return 0f
         }
         val characterWidth: Float = (lineInPixel / longestLine.length).toFloat()
-        val lineInWorldUnit = boundingBox.localMax.x - boundingBox.localMin.x
+        val lineInWorldUnit = 2
         // Characters size will be scaled to match the size in world unit.
         val scale = lineInWorldUnit / (numberOfCharacterByLine * characterWidth)
         return scale

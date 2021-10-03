@@ -4,8 +4,10 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.Component
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.EventQueue
 import com.github.dwursteisen.minigdx.ecs.systems.System
+import com.github.dwursteisen.minigdx.game.StoryboardEvent
 
 class Engine(val gameContext: GameContext) {
 
@@ -15,7 +17,14 @@ class Engine(val gameContext: GameContext) {
 
     private val waitingForUpdate = mutableListOf<() -> Unit>()
 
+    val entityFactory = EntityFactoryDelegate().let { factory ->
+        factory.gameContext = gameContext
+        factory.engine = this
+        factory
+    }
+
     interface EntityBuilder {
+
         fun named(name: String)
         fun add(component: Component)
         fun add(components: Iterable<Component>)
@@ -70,8 +79,7 @@ class Engine(val gameContext: GameContext) {
         systems = systems.dropLast(1) + system + entityQuery
 
         // Register the game context and the engine on the system
-        system.entityFactory.engine = this
-        system.entityFactory.gameContext = gameContext
+        system.entityFactory = entityFactory
 
         eventQueue.register(system)
     }
@@ -92,9 +100,24 @@ class Engine(val gameContext: GameContext) {
     fun update(delta: Seconds) {
         waitingForUpdate.forEach { action -> action() }
         waitingForUpdate.clear()
+        var storyboardEvent: StoryboardEvent? = null
         systems.forEach {
             it.update(delta)
             it.consumeEvents()?.run { eventQueue.emit(this) }
+
+            val newStoryboardEvent = it.storyboardEvent
+            it.storyboardEvent = null
+            if (newStoryboardEvent != null && storyboardEvent != null) {
+                throw IllegalStateException(
+                    "A Storyboard event has already been emitted ('${storyboardEvent!!::class.simpleName}')." +
+                        "Only one event can be emitted at a time. " +
+                        "This new event ('${newStoryboardEvent::class.simpleName}') should not be emitted."
+                )
+            } else if (newStoryboardEvent != null) {
+                storyboardEvent = newStoryboardEvent
+            }
         }
+
+        gameContext.storyboardEvent = storyboardEvent
     }
 }

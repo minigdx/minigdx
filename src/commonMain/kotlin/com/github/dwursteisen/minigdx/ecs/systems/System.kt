@@ -5,16 +5,17 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
-import com.github.dwursteisen.minigdx.ecs.entities.EntityFactoryDelegate
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.events.EventListener
 import com.github.dwursteisen.minigdx.ecs.events.EventWithQuery
+import com.github.dwursteisen.minigdx.game.StoryboardEvent
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
 import kotlin.js.JsName
 import kotlin.reflect.KProperty
 
-abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(), gameContext: GameContext? = null) : EventListener {
+abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(), gameContext: GameContext? = null) :
+    EventListener {
 
     var entities: List<Entity> = emptyList()
 
@@ -22,7 +23,10 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
 
     private val events = mutableListOf<EventWithQuery>()
 
-    val entityFactory: EntityFactory = EntityFactoryDelegate()
+    var storyboardEvent: StoryboardEvent? = null
+        internal set
+
+    lateinit var entityFactory: EntityFactory
 
     val logger: Logger by lazy(LazyThreadSafetyMode.NONE) { gameContext?.logger ?: entityFactory.gameContext.logger }
 
@@ -107,9 +111,32 @@ abstract class System(protected val entityQuery: EntityQuery = EntityQuery.none(
         return entities.map { this.remove(it) }.any { it }
     }
 
+    /**
+     * Override this method to react to received events.
+     *
+     * Do not call this method!
+     */
     override fun onEvent(event: Event, entityQuery: EntityQuery?) = Unit
 
+    /**
+     * Emit an event to systems.
+     */
     fun emit(event: Event, target: EntityQuery? = null) = emit(EventWithQuery.of(event, target))
+
+    /**
+     * Emit a story board event.
+     */
+    fun emit(storyboardEvent: StoryboardEvent) {
+        this.storyboardEvent?.run {
+            throw IllegalStateException(
+                "A Storyboard event has already been emitted ('${this::class.simpleName}') " +
+                    "by the system ${this@System::class.simpleName}. " +
+                    "Only one event can be emitted at a time. " +
+                    "This new event ('${storyboardEvent::class.simpleName}') should not be emitted."
+            )
+        }
+        this.storyboardEvent = storyboardEvent
+    }
 
     internal fun emit(events: Iterable<EventWithQuery>) {
         this.events.addAll(events)

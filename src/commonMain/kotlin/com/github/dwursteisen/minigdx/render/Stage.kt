@@ -7,7 +7,6 @@ import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
-import com.github.dwursteisen.minigdx.ecs.components.Camera
 import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
@@ -78,7 +77,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
                     target,
                     UP
                 )
-                val projection = it.find(Camera::class)?.projection ?: it.get(CameraComponent::class).projection
+                val projection = it.get(CameraComponent::class).projection
                 projection * view
             } ?: Mat4.identity()
         }

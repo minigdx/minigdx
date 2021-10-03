@@ -8,6 +8,8 @@ import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.entities.EntityFactory
 import com.github.dwursteisen.minigdx.ecs.systems.ArmatureUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.CameraTrackSystem
+import com.github.dwursteisen.minigdx.ecs.systems.ParticlesEmitterSystem
+import com.github.dwursteisen.minigdx.ecs.systems.ParticlesUpdateSystem
 import com.github.dwursteisen.minigdx.ecs.systems.ScriptExecutorSystem
 import com.github.dwursteisen.minigdx.ecs.systems.SpriteAnimatedSystem
 import com.github.dwursteisen.minigdx.ecs.systems.System
@@ -50,7 +52,9 @@ interface Game {
         ArmatureUpdateSystem(),
         ScriptExecutorSystem(),
         TextEffectSystem(),
-        CameraTrackSystem()
+        CameraTrackSystem(),
+        ParticlesEmitterSystem(),
+        ParticlesUpdateSystem()
     )
 
     /**
@@ -58,6 +62,11 @@ interface Game {
      * Technical systems can be added, like a custom camera tracking system.
      */
     fun createSystems(engine: Engine): List<System>
+
+    /**
+     * Create the story board to change or even restart the current game.
+     */
+    fun createStoryBoard(event: StoryboardEvent): StoryboardAction = Storyboard.stayHere()
 
     /**
      * Create system that are executed before the rendering systems.
@@ -90,6 +99,9 @@ interface Game {
         return stages
     }
 
+    /**
+     * Create render stages used for debugging or ease the game creation.
+     */
     fun createDebugRenderStage(options: Options): List<RenderStage<*, *>> {
         val stages = mutableListOf<RenderStage<*, *>>()
         if (options.debug) {
@@ -99,9 +111,15 @@ interface Game {
         return stages
     }
 
+    /**
+     * Advance the game.
+     */
     fun render(engine: Engine, delta: Seconds) {
         engine.update(delta)
     }
 
+    /**
+     * Destroy the game. The method is call when the game is close.
+     */
     fun destroy(engine: Engine) = engine.destroy()
 }

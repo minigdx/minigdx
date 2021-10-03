@@ -15,6 +15,8 @@ import com.github.dwursteisen.minigdx.ecs.components.ModelComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
 import com.github.dwursteisen.minigdx.ecs.components.SpriteComponent
 import com.github.dwursteisen.minigdx.ecs.components.TextComponent
+import com.github.dwursteisen.minigdx.ecs.components.particles.ParticleConfiguration
+import com.github.dwursteisen.minigdx.ecs.components.particles.ParticleEmitterComponent
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.file.Font
@@ -28,6 +30,8 @@ class EntityFactoryDelegate : EntityFactory {
 
     override lateinit var engine: Engine
     override lateinit var gameContext: GameContext
+
+    private var templates = emptyMap<String, () -> Entity>()
 
     override fun create(block: (Engine.EntityBuilder) -> Unit): Entity = engine.create(block)
 
@@ -376,5 +380,29 @@ class EntityFactoryDelegate : EntityFactory {
         )
 
         gameContext.assetsManager.add(quad)
+    }
+
+    override fun createParticles(
+        particleConfiguration: ParticleConfiguration,
+        position: Mat4
+    ): Entity = create {
+        it.add(Position(position, position, position))
+        it.add(ParticleEmitterComponent(particleConfiguration))
+    }
+
+    override fun registerTemplate(name: String, block: () -> Entity) {
+        templates = templates + (name to block)
+    }
+
+    override fun createFromTemplate(name: String): Entity {
+        val template = templates[name] ?: throw IllegalArgumentException(
+            "No template using the name '$name' has been registered. " +
+                "Check that this template has been registered before and that there is no spelling errors. " +
+                "Actual templates are: ${
+                templates.keys.ifEmpty { setOf("nothing has been registered") }.joinToString(",")
+                }."
+        )
+
+        return template()
     }
 }

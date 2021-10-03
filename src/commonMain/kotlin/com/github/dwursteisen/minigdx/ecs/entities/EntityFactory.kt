@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx.ecs.entities
 import com.curiouscreature.kotlin.math.Mat4
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.Engine
+import com.github.dwursteisen.minigdx.ecs.components.particles.ParticleConfiguration
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.file.Font
 import com.github.dwursteisen.minigdx.file.Texture
@@ -76,6 +77,11 @@ interface EntityFactory {
     fun createSprite(sprite: Sprite, position: Mat4 = Mat4.identity()): Entity
 
     /**
+     * Create an entity as a Particle generator
+     */
+    fun createParticles(particleConfiguration: ParticleConfiguration, position: Mat4 = Mat4.identity()): Entity
+
+    /**
      * Create an sprite
      */
     fun createSprite(
@@ -85,4 +91,18 @@ interface EntityFactory {
         position: Mat4 = Mat4.identity(),
         animations: AnimationBuilder.() -> Unit
     ): Entity
+
+    /**
+     * Register a template named [name] for an entity creation.
+     *
+     * To create an entity from this template, see [createFromTemplate].
+     *
+     * Registering a new template with an already existing name will replace the previous template.
+     */
+    fun registerTemplate(name: String, block: () -> Entity)
+
+    /**
+     * Use a previously registered template named [name] to create an entity.
+     */
+    fun createFromTemplate(name: String): Entity
 }

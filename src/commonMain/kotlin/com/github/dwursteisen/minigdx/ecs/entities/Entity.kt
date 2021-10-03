@@ -122,6 +122,9 @@ class Entity(
      * Add current entity as children of the [other] entity.
      */
     fun attachTo(other: Entity?): Entity {
+        if (other == this) {
+            throw IllegalArgumentException("The entity ${this.name} can't be attached to itself.")
+        }
         detach()
         parent = other
         other?._children?.add(this)
