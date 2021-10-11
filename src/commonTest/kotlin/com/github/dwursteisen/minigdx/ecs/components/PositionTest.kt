@@ -118,6 +118,55 @@ class PositionTest {
     }
 
     @Test
+    fun rotation_add_local_rotation_y_up_to_360_degrees() {
+        val (parent, _) = createEntities()
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(180f, parent.position.rotation.x)
+        assertEquals(90f, parent.position.rotation.y)
+        assertEquals(180f, parent.position.rotation.z)
+        parent.position.addLocalRotation(y = 90f)
+        // You might expect a rotation of 180 degrees on y
+        // But 180 degrees on x and z lead to the same result!
+        assertEquals(180f, parent.position.rotation.x)
+        assertEquals(0f, parent.position.rotation.y)
+        assertEquals(180f, parent.position.rotation.z)
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(180f, parent.position.rotation.x)
+        assertEquals(-90f, parent.position.rotation.y)
+        assertEquals(180f, parent.position.rotation.z)
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(0f, parent.position.rotation.x)
+        assertEquals(0f, parent.position.rotation.y)
+        assertEquals(0f, parent.position.rotation.z)
+    }
+
+    @Test
+    fun rotation_add_local_rotation_x_up_to_360_degrees() {
+        val (parent, _) = createEntities()
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(90f, parent.position.rotation.x)
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(180f, parent.position.rotation.x)
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(-90f, parent.position.rotation.x)
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(0f, parent.position.rotation.x)
+    }
+
+    @Test
+    fun rotation_add_local_rotation_z_up_to_360_degrees() {
+        val (parent, _) = createEntities()
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(90f, parent.position.rotation.z)
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(180f, parent.position.rotation.z)
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(-90f, parent.position.rotation.z)
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(0f, parent.position.rotation.z)
+    }
+
+    @Test
     fun rotation_set_local_rotation() {
         val (parent, child) = createEntities()
         parent.position.setLocalRotation(x = 90)

@@ -332,6 +332,20 @@ open class Position(
      * regarding the value of [using].
      */
     fun setLocalTranslation(
+        translation: ImmutableVector3,
+        using: CoordinateConverter = Local
+    ): Position = setLocalTranslation(
+        translation.x,
+        translation.y,
+        translation.z,
+        using
+    )
+
+    /**
+     * Set the local translation using the local or world scale,
+     * regarding the value of [using].
+     */
+    fun setLocalTranslation(
         x: Coordinate? = null,
         y: Coordinate? = null,
         z: Coordinate? = null,
@@ -472,6 +486,7 @@ open class Position(
             globalTransformation.translation.z
         )
 
+        // FIXME: le quaternion à l'air bon, je pense donc que c'est la conversion qui est pas top.
         val localRotation = Mat4.from(localTransformationHolder.rotation)
         _localRotation.set(localRotation.rotation.x, localRotation.rotation.y, localRotation.rotation.z)
         _rotation.set(globalTransformation.rotation.x, globalTransformation.rotation.y, globalTransformation.rotation.z)

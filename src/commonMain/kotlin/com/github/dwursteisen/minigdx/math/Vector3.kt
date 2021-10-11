@@ -132,6 +132,25 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
     }
 
     /**
+     * Rotate the vector by the given quaternion
+     *
+     * @see: https://gamedev.stackexchange.com/questions/28395/rotating-vector3-by-a-quaternion
+     */
+    fun rotate(q: Quaternion): Vector3 {
+        // Extract the vector part of the quaternion
+        val u = Vector3(q.x, q.y, q.z)
+
+        // Extract the scalar part of the quaternion
+        val s = q.w;
+
+        // Do the math
+        val a = u.copy().scale(2.0f * u.dot(this))
+        val b = this.copy().scale(s * s - u.dot(u))
+        val c = u.copy().cross(this).scale(2.0f * s)
+        return this.set(a.add(b).add(c))
+    }
+
+    /**
      * Create a normal vector to the current one
      */
     fun normal(): Vector3 {
