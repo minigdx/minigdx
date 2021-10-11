@@ -141,7 +141,7 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         val u = Vector3(q.x, q.y, q.z)
 
         // Extract the scalar part of the quaternion
-        val s = q.w;
+        val s = q.w
 
         // Do the math
         val a = u.copy().scale(2.0f * u.dot(this))

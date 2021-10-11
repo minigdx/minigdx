@@ -133,7 +133,7 @@ class Entity(
 
     fun hasComponent(componentClass: KClass<out Component>): Boolean {
         val contains = componentsType.contains(componentClass)
-        if(!contains) {
+        if (!contains) {
             return getFromInFlight(componentClass).isNotEmpty()
         }
         return contains
@@ -184,7 +184,7 @@ class Entity(
     }
 
     private fun getFromInFlight(type: KClass<out Component>): Collection<Component> {
-        return _inFlightComponents.filter { component ->  type.isInstance(component) }
+        return _inFlightComponents.filter { component -> type.isInstance(component) }
     }
 
     override fun toString(): String = name
