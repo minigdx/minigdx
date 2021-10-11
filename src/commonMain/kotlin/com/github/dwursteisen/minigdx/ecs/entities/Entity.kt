@@ -16,6 +16,8 @@ class Entity(
 
     internal var componentsType: Set<KClass<out Component>> = components.map { it::class }.toSet()
 
+    private val _inFlightComponents = mutableListOf<Component>()
+
     private val _children: MutableList<Entity> = mutableListOf()
     private val _namedChildren: MutableMap<String, Entity> = mutableMapOf()
     val chidren: List<Entity> = _children
@@ -38,7 +40,9 @@ class Entity(
         return find(type) ?: throw IllegalStateException(
             "No components of type '${type.simpleName}' " +
                 "found in the entity '${this.name}'. The entity contains those components: " +
-                componentsType.map { it.simpleName }.joinToString()
+                (componentsType.map { it.simpleName } + _inFlightComponents.map { it::class.simpleName })
+                    .ifEmpty { listOf("None") }
+                    .joinToString()
         )
     }
 
@@ -49,35 +53,48 @@ class Entity(
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> find(type: KClass<T>): T? {
-        return componentsByType.get(type)?.toList()?.firstOrNull() as T?
+        return componentsByType[type]
+            ?.toList()
+            ?.firstOrNull() as T?
+            ?: getFromInFlight(type).firstOrNull() as T?
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Component> findAll(type: KClass<T>): List<T> {
-        val components = componentsByType[type]?.toList() ?: emptyList()
+        val components = componentsByType[type]
+            ?.toList()
+            ?: getFromInFlight(type)
         return components as List<T>
     }
 
     /**
      * Add all components to the entity
      */
-    fun addAll(components: Collection<Component>) = engineUpdate {
-        this.components += components
-        componentsType = componentsType + components.map { it::class }.toSet()
-        componentsByType = this.components.groupBy { it::class }
+    fun addAll(components: Collection<Component>): Entity {
+        _inFlightComponents.addAll(components)
+        return engineUpdate {
+            _inFlightComponents.removeAll(components)
+            this.components += components
+            componentsType = componentsType + components.map { it::class }.toSet()
+            componentsByType = this.components.groupBy { it::class }
 
-        components.forEach { it.onAdded(this) }
+            components.forEach { it.onAdded(this) }
+        }
     }
 
     /**
      * All the component to this entity
      */
-    fun add(component: Component) = engineUpdate {
-        components += component
-        componentsType = componentsType + component::class
-        componentsByType = components.groupBy { it::class }
+    fun add(component: Component): Entity {
+        _inFlightComponents.add(component)
+        return engineUpdate {
+            _inFlightComponents.remove(component)
+            components += component
+            componentsType = componentsType + component::class
+            componentsByType = components.groupBy { it::class }
 
-        component.onAdded(this)
+            component.onAdded(this)
+        }
     }
 
     /**
@@ -115,7 +132,11 @@ class Entity(
     }
 
     fun hasComponent(componentClass: KClass<out Component>): Boolean {
-        return componentsType.contains(componentClass)
+        val contains = componentsType.contains(componentClass)
+        if(!contains) {
+            return getFromInFlight(componentClass).isNotEmpty()
+        }
+        return contains
     }
 
     /**
@@ -152,13 +173,18 @@ class Entity(
         chidren.forEach { it.componentUpdated(componentUpdated) }
     }
 
-    private fun engineUpdate(block: () -> Unit) {
+    private fun engineUpdate(block: () -> Unit): Entity {
         // Queue the action so it will be executed during the next render loop.
         engine.queueEntityUpdate {
             engine.destroy(this)
             block()
             engine.add(this)
         }
+        return this
+    }
+
+    private fun getFromInFlight(type: KClass<out Component>): Collection<Component> {
+        return _inFlightComponents.filter { component ->  type.isInstance(component) }
     }
 
     override fun toString(): String = name
