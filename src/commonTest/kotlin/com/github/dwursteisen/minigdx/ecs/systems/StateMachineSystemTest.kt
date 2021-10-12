@@ -58,6 +58,7 @@ class StateMachineSystemTest {
         }
 
         engine.update(0f) // state initialization.
+        engine.onGameStart()
 
         system.onEvent(OffEvent())
         // Move to OffState
