@@ -48,7 +48,7 @@ abstract class StateMachineSystem(
             consumeEvents(component.state)
 
             component.state = newState
-            component.state?.configure(this@StateMachineSystem)
+            component.state?.configure(this@StateMachineSystem, this)
             component.state?.onEnter(this)
             consumeEvents(component.state)
         } else {

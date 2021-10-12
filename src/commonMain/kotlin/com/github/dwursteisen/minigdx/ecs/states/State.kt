@@ -9,15 +9,15 @@ import com.github.dwursteisen.minigdx.ecs.systems.EntityQuery
 import com.github.dwursteisen.minigdx.ecs.systems.StateMachineSystem
 import kotlin.reflect.KClass
 
-typealias Transition = (event: Event) -> State?
+typealias Transition<T> = (event: T) -> State?
 
 abstract class State {
 
-    private val eventListeners = mutableMapOf<KClass<out Event>, Transition>()
+    private val eventListeners = mutableMapOf<KClass<out Event>, Transition<Any>>()
 
     internal val events = mutableListOf<EventWithQuery>()
 
-    open fun configure() = Unit
+    open fun configure(entity: Entity) = Unit
 
     open fun onEnter(entity: Entity) = Unit
 
@@ -25,24 +25,34 @@ abstract class State {
 
     open fun onExit(entity: Entity) = Unit
 
-    fun configure(system: StateMachineSystem) {
-        configure()
+    fun configure(system: StateMachineSystem, entity: Entity) {
+        configure(entity)
         system.eventsToListen.addAll(eventListeners.keys)
     }
 
-    fun onCreate(transition: Transition) = onEvent(
+    fun onCreate(transition: Transition<OnCreate>) = onEvent(
         OnCreate::class,
         transition
     )
 
-    fun onEvent(eventClazz: KClass<out Event>, transition: Transition) {
-        eventListeners[eventClazz] = transition
+    /**
+     * Add a transaction to react to a specific event.
+     */
+    fun <T : Event> onEvent(eventClazz: KClass<T>, transition: Transition<T>) {
+        @Suppress("UNCHECKED_CAST")
+        eventListeners[eventClazz] = transition as Transition<Any>
     }
 
-    fun onEvent(event: Event): State? {
+    /**
+     * React when an event is received by calling the corresponding transition.
+     */
+    internal fun onEvent(event: Event): State? {
         return eventListeners[event::class]?.invoke(event)
     }
 
+    /**
+     * Emit an event. This event can target a group of entities
+     */
     fun emitEvents(event: Event, target: EntityQuery? = null) {
         events.add(EventWithQuery.of(event, target))
     }
