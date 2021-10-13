@@ -29,7 +29,7 @@ class ParticlesEmitterSystem : System(
         val progress = active.current.duration / active.base.duration
         val particles = active.base.emitter(entity, progress)
 
-        val generation = ParticleGeneration().apply {
+        val generation = ParticleGeneration(entity).apply {
             this.emmiterProgress = progress
             this.particlesTotal = particles
         }
@@ -40,8 +40,8 @@ class ParticlesEmitterSystem : System(
 
             val component = ParticleComponent(configuration = active.base)
 
-            active.base.particle(component, generation)
             val particle = active.base.factory(entity, generation)
+            active.base.particle(component, generation)
             particle.position.setLocalTransform(entity.position.transformation)
             particle.add(component)
         }

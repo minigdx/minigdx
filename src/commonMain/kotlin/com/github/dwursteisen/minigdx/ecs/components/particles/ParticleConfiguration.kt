@@ -6,7 +6,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.math.Vector3
 
-class ParticleGeneration {
+class ParticleGeneration(val emitter: Entity) {
 
     var particlesIndex: Long = 0L
         internal set
@@ -80,8 +80,10 @@ class ParticleConfiguration(
                 },
                 particle = { component, generation ->
                     component.run {
+
                         val progress = (360f / generation.particlesTotal.toFloat()) * generation.particlesIndex
-                        this.direction = Vector3(0f, velocity, 0f).rotate(0f, 0f, 1f, progress)
+                        this.direction = Vector3(0f, velocity, 0f)
+                            .rotate(0f, 0f, 1f, progress)
                         this.ttl = ttl
                     }
                 }
