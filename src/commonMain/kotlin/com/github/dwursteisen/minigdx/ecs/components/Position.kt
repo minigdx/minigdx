@@ -486,7 +486,6 @@ open class Position(
             globalTransformation.translation.z
         )
 
-        // FIXME: le quaternion à l'air bon, je pense donc que c'est la conversion qui est pas top.
         val localRotation = Mat4.from(localTransformationHolder.rotation)
         _localRotation.set(localRotation.rotation.x, localRotation.rotation.y, localRotation.rotation.z)
         _rotation.set(globalTransformation.rotation.x, globalTransformation.rotation.y, globalTransformation.rotation.z)
@@ -496,6 +495,7 @@ open class Position(
         _scale.set(globalTransformation.scale.x, globalTransformation.scale.y, globalTransformation.scale.z)
 
         _transformation = globalTransformation
+        _quaternion = Quaternion.from(globalTransformation)
         needsToBeUpdated = false
     }
 
