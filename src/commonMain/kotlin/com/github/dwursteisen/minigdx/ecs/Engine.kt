@@ -16,6 +16,7 @@ class Engine(val gameContext: GameContext) {
     private var systems: List<System> = listOf(eventQueue)
 
     private val waitingForUpdate = mutableListOf<() -> Unit>()
+    private val executingForUpdate = mutableListOf<() -> Unit>()
 
     val entityFactory = EntityFactoryDelegate().let { factory ->
         factory.gameContext = gameContext
@@ -98,8 +99,17 @@ class Engine(val gameContext: GameContext) {
     }
 
     fun update(delta: Seconds) {
-        waitingForUpdate.forEach { action -> action() }
+        // Copy all actions and prepare the execution
+        executingForUpdate.addAll(waitingForUpdate)
+        // The execution might trigger new updates.
+        // So the queue is cleaned before the execution
         waitingForUpdate.clear()
+        // If there is new updates, those updates will
+        // end into the 'waitingForUpdate' queue.
+        executingForUpdate.forEach { action -> action() }
+        // The execution succeed. Let's clean up the rest!
+        executingForUpdate.clear()
+
         var storyboardEvent: StoryboardEvent? = null
         systems.forEach {
             it.update(delta)
