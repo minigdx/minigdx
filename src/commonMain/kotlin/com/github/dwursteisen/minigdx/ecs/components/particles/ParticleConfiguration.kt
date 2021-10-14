@@ -59,11 +59,13 @@ class ParticleConfiguration(
             factory: Entity.(ParticleGeneration) -> Entity,
             numberOfParticles: Long = 4,
             velocity: Float = 1f,
-            ttl: Seconds = 1f
+            ttl: Seconds = 1f,
+            duration: Seconds = 2f,
+            time: Long = 1
         ): ParticleConfiguration {
             return ParticleConfiguration(
-                duration = 2f,
-                time = 1,
+                duration = duration,
+                time = time,
                 emitter = {
                     val active = this.get(ParticleEmitterActiveComponent::class)
                     if (active.current.initialized) {
@@ -84,6 +86,7 @@ class ParticleConfiguration(
                         val progress = (360f / generation.particlesTotal.toFloat()) * generation.particlesIndex
                         this.direction = Vector3(0f, velocity, 0f)
                             .rotate(0f, 0f, 1f, progress)
+
                         this.ttl = ttl
                     }
                 }
