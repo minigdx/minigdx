@@ -35,6 +35,10 @@ class ParticleConfiguration(
      */
     val emitter: Entity.(Percent) -> Long,
     /**
+     * Emit as soon as the Particle Emitter is created.
+     */
+    val emitOnStartup: Boolean,
+    /**
      * Create the particle configuration regarding the progress of the emission
      */
     val particle: (component: ParticleComponent, generation: ParticleGeneration) -> Unit,
@@ -61,9 +65,11 @@ class ParticleConfiguration(
             velocity: Float = 1f,
             ttl: Seconds = 1f,
             duration: Seconds = 2f,
-            time: Long = 1
+            time: Long = 1,
+            emitOnStartup: Boolean = false
         ): ParticleConfiguration {
             return ParticleConfiguration(
+                emitOnStartup = emitOnStartup,
                 duration = duration,
                 time = time,
                 emitter = {
@@ -86,6 +92,7 @@ class ParticleConfiguration(
                         val progress = (360f / generation.particlesTotal.toFloat()) * generation.particlesIndex
                         this.direction = Vector3(0f, velocity, 0f)
                             .rotate(0f, 0f, 1f, progress)
+                            .rotate(generation.emitter.position.quaternion)
 
                         this.ttl = ttl
                     }

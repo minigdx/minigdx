@@ -42,7 +42,7 @@ class ParticlesEmitterSystem : System(
 
             val particle = active.base.factory(entity, generation)
             active.base.particle(component, generation)
-            particle.position.setLocalTransform(entity.position.transformation)
+            particle.position.setGlobalTranslation(entity.position.translation)
             particle.add(component)
         }
     }
