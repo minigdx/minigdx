@@ -77,7 +77,7 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
      *
      * the value help you to know if vectors are
      * in the same direction (> 0),
-     * in oposite direction (< 0),
+     * in opposite direction (< 0),
      * or perpendicular (= 0)
      *
      * @see http://blog.wolfire.com/2009/07/linear-algebra-for-game-developers-part-2/
