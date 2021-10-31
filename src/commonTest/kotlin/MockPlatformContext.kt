@@ -25,4 +25,6 @@ class MockPlatformContext(override val configuration: GameConfiguration) : Platf
     override fun createOptions(): Options = Options(true)
 
     override fun start(gameFactory: (GameContext) -> Game) = Unit
+
+    override var postRenderLoop: () -> Unit = { }
 }
