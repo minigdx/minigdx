@@ -30,6 +30,8 @@ actual open class PlatformContextCommon actual constructor(
     private lateinit var canvas: HTMLCanvasElement
     private lateinit var gameContext: GameContext
 
+    override var postRenderLoop: () -> Unit = { }
+
     actual override fun createGL(): GL {
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val context = canvas.getContext("webgl2") as? WebGLRenderingContextBase // Most browsers
@@ -159,6 +161,12 @@ actual open class PlatformContextCommon actual constructor(
         }
         inputManager.reset()
 
-        window.requestAnimationFrame(::render)
+        if (!gameContext.fileHandler.isFullyLoaded()) {
+            window.requestAnimationFrame(::loading)
+        } else {
+            postRenderLoop()
+            postRenderLoop = { }
+            window.requestAnimationFrame(::render)
+        }
     }
 }

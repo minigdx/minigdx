@@ -47,4 +47,6 @@ interface PlatformContext {
      * created in by the platform.
      */
     fun start(gameFactory: (GameContext) -> Game)
+
+    var postRenderLoop: () -> Unit
 }

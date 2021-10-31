@@ -15,7 +15,7 @@ class GameScreen(val width: Pixel, val height: Pixel, val ratio: Ratio = width /
 class DeviceScreen(var width: Pixel, var height: Pixel)
 
 class GameContext(
-    platformContext: PlatformContext,
+    val platformContext: PlatformContext,
     gameResolution: Resolution
 ) {
     val gl: GL = platformContext.createGL()
@@ -88,5 +88,9 @@ class GameContext(
         logger.info("MINIGDX") { "OpenGL Version   : \t" + gl.getString(GL.VERSION) }
         logger.info("MINIGDX") { "OpenGL Shading   : \t" + gl.getString(GL.SHADING_LANGUAGE_VERSION) }
         logger.info("MINIGDX") { "OpenGL Extensions: \t" + gl.getString(GL.EXTENSIONS) }
+    }
+
+    fun postRenderLoop(block: () -> Unit) {
+        platformContext.postRenderLoop = block
     }
 }

@@ -21,6 +21,8 @@ import kotlin.math.min
 actual open class PlatformContextCommon actual constructor(actual override val configuration: GameConfiguration) :
     PlatformContext {
 
+    override var postRenderLoop: () -> Unit = {}
+
     private fun isMacOs(): Boolean {
         val osName = System.getProperty("os.name")?.toLowerCase()
         val index = osName?.indexOf("mac") ?: -1
@@ -209,6 +211,8 @@ actual open class PlatformContextCommon actual constructor(actual override val c
             GLFW.glfwSwapBuffers(window) // swap the color buffers
             GLFW.glfwPollEvents()
             inputManager.reset()
+            postRenderLoop()
+            postRenderLoop = {}
         }
         game.pause()
         game.destroy()

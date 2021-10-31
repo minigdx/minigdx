@@ -72,6 +72,8 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
     fun set(other: Vector3) = set(other.x, other.y, other.z)
 
+    fun set(other: ImmutableVector3) = set(other.x, other.y, other.z)
+
     /**
      * Dot product between another vector.
      *

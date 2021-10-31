@@ -12,7 +12,7 @@ internal class GameNode(
     var parent: GameNode? = null,
     var children: List<GameNode> = emptyList()
 ) {
-    fun bootstrap(gameContext: GameContext) {
+    fun bootstrap(gameContext: GameContext) = gameContext.postRenderLoop {
         game.createDefaultSystems(engine).forEach { engine.addSystem(it) }
         game.createSystems(engine).forEach { engine.addSystem(it) }
         game.createPostRenderSystem(engine).forEach { engine.addSystem(it) }
