@@ -33,4 +33,15 @@ class EntityTest {
         engine.update(0f)
         assertSame(expected, entity.get(Example::class))
     }
+
+    @Test
+    fun get_it_gets_components_before_update() {
+        val engine = Engine(gameContext())
+
+        val entity = Entity(engine)
+        val expected = Example()
+        entity.add(expected)
+
+        assertSame(expected, entity.get(Example::class))
+    }
 }

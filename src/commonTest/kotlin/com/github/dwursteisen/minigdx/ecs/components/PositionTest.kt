@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.components
 
 import MockPlatformContext
+import com.curiouscreature.kotlin.math.Quaternion
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Resolution
 import com.github.dwursteisen.minigdx.ecs.Engine
@@ -20,6 +21,22 @@ fun assertEquals(
     message: String = "$expected != $actual (𝝙 $delta)"
 ) {
     if (abs(expected - actual) > delta) {
+        fail(message)
+    }
+}
+
+fun assertEquals(
+    expected: Quaternion,
+    actual: Quaternion,
+    delta: Float = 0.001f,
+    message: String = "$expected != $actual (𝝙 $delta)"
+) {
+    try {
+        assertEquals(expected.x, actual.x, delta)
+        assertEquals(expected.y, actual.y, delta)
+        assertEquals(expected.z, actual.z, delta)
+        assertEquals(expected.w, actual.w, delta)
+    } catch (ex: Exception) {
         fail(message)
     }
 }
@@ -115,6 +132,45 @@ class PositionTest {
         assertEquals(90f, parent.position.rotation.x)
         assertEquals(135f, child.position.rotation.x)
         assertEquals(45f, child.position.localRotation.x)
+    }
+
+    @Test
+    fun rotation_add_local_rotation_y_up_to_360_degrees() {
+        val (parent, _) = createEntities()
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(Quaternion(0f, 0.707f, 0f, 0.707f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(Quaternion(0f, 1f, 0f, 0f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(Quaternion(0f, 0.707f, 0f, -0.707f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(y = 90f)
+        assertEquals(Quaternion(0f, 0f, 0f, -1f), parent.position.localQuaternion)
+    }
+
+    @Test
+    fun rotation_add_local_rotation_x_up_to_360_degrees() {
+        val (parent, _) = createEntities()
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(Quaternion(0.707f, 0f, 0f, 0.707f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(Quaternion(1f, 0f, 0f, 0f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(Quaternion(0.707f, 0f, 0f, -0.707f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(x = 90f)
+        assertEquals(Quaternion(0f, 0f, 0f, -1f), parent.position.localQuaternion)
+    }
+
+    @Test
+    fun rotation_add_local_rotation_z_up_to_360_degrees() {
+        val (parent, _) = createEntities()
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(Quaternion(0f, 0f, 0.707f, 0.707f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(Quaternion(0f, 0f, 1f, 0f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(Quaternion(0f, 0f, 0.707f, -0.707f), parent.position.localQuaternion)
+        parent.position.addLocalRotation(z = 90f)
+        assertEquals(Quaternion(0f, 0f, 0f, -1f), parent.position.localQuaternion)
     }
 
     @Test

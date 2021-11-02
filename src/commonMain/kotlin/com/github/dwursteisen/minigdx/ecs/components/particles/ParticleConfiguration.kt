@@ -6,7 +6,7 @@ import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.math.Vector3
 
-class ParticleGeneration {
+class ParticleGeneration(val emitter: Entity) {
 
     var particlesIndex: Long = 0L
         internal set
@@ -35,6 +35,10 @@ class ParticleConfiguration(
      */
     val emitter: Entity.(Percent) -> Long,
     /**
+     * Emit as soon as the Particle Emitter is created.
+     */
+    val emitOnStartup: Boolean,
+    /**
      * Create the particle configuration regarding the progress of the emission
      */
     val particle: (component: ParticleComponent, generation: ParticleGeneration) -> Unit,
@@ -59,11 +63,15 @@ class ParticleConfiguration(
             factory: Entity.(ParticleGeneration) -> Entity,
             numberOfParticles: Long = 4,
             velocity: Float = 1f,
-            ttl: Seconds = 1f
+            ttl: Seconds = 1f,
+            duration: Seconds = 2f,
+            time: Long = 1,
+            emitOnStartup: Boolean = false
         ): ParticleConfiguration {
             return ParticleConfiguration(
-                duration = 2f,
-                time = 1,
+                emitOnStartup = emitOnStartup,
+                duration = duration,
+                time = time,
                 emitter = {
                     val active = this.get(ParticleEmitterActiveComponent::class)
                     if (active.current.initialized) {
@@ -80,8 +88,12 @@ class ParticleConfiguration(
                 },
                 particle = { component, generation ->
                     component.run {
+
                         val progress = (360f / generation.particlesTotal.toFloat()) * generation.particlesIndex
-                        this.direction = Vector3(0f, velocity, 0f).rotate(0f, 0f, 1f, progress)
+                        this.direction = Vector3(0f, velocity, 0f)
+                            .rotate(0f, 0f, 1f, progress)
+                            .rotate(generation.emitter.position.quaternion)
+
                         this.ttl = ttl
                     }
                 }

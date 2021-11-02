@@ -3,6 +3,7 @@ package com.github.dwursteisen.minigdx.internal
 import android.content.Context
 import android.opengl.GLSurfaceView
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.PlatformContext
 import com.github.dwursteisen.minigdx.game.Game
 import com.github.dwursteisen.minigdx.game.GameWrapper
 import com.github.dwursteisen.minigdx.input.InputManager
@@ -12,6 +13,7 @@ import kotlin.math.min
 
 @ExperimentalStdlibApi
 class MiniGdxSurfaceView(
+    private val platformContext: PlatformContext,
     private val gameContext: GameContext,
     private val gameFactory: (gameContext: GameContext) -> Game,
     context: Context
@@ -38,6 +40,8 @@ class MiniGdxSurfaceView(
                     // Advance the game
                     gameWrapper.render(deltaCapped)
                     inputManager.reset()
+                    platformContext.postRenderLoop()
+                    platformContext.postRenderLoop = { }
                     time = now
                 }
 

@@ -1,6 +1,7 @@
 package com.github.dwursteisen.minigdx.ecs.systems
 
 import com.github.dwursteisen.minigdx.Seconds
+import com.github.dwursteisen.minigdx.ecs.Engine
 import com.github.dwursteisen.minigdx.ecs.components.StateMachineComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
@@ -15,8 +16,11 @@ abstract class StateMachineSystem(
 
     abstract fun initialState(entity: Entity): State
 
-    override fun onEntityAdded(entity: Entity) {
-        entity.newState(initialState(entity))
+    override fun onGameStarted(engine: Engine) {
+        entities.forEach { entity ->
+            entity.newState(initialState(entity))
+        }
+        super.onGameStarted(engine)
     }
 
     override fun update(delta: Seconds, entity: Entity) {
@@ -44,7 +48,7 @@ abstract class StateMachineSystem(
             consumeEvents(component.state)
 
             component.state = newState
-            component.state?.configure(this@StateMachineSystem)
+            component.state?.configure(this@StateMachineSystem, this)
             component.state?.onEnter(this)
             consumeEvents(component.state)
         } else {

@@ -47,4 +47,9 @@ interface PlatformContext {
      * created in by the platform.
      */
     fun start(gameFactory: (GameContext) -> Game)
+
+    /**
+     * Action to be executed after the render method.
+     */
+    var postRenderLoop: () -> Unit
 }

@@ -332,6 +332,20 @@ open class Position(
      * regarding the value of [using].
      */
     fun setLocalTranslation(
+        translation: ImmutableVector3,
+        using: CoordinateConverter = Local
+    ): Position = setLocalTranslation(
+        translation.x,
+        translation.y,
+        translation.z,
+        using
+    )
+
+    /**
+     * Set the local translation using the local or world scale,
+     * regarding the value of [using].
+     */
+    fun setLocalTranslation(
         x: Coordinate? = null,
         y: Coordinate? = null,
         z: Coordinate? = null,
@@ -481,6 +495,7 @@ open class Position(
         _scale.set(globalTransformation.scale.x, globalTransformation.scale.y, globalTransformation.scale.z)
 
         _transformation = globalTransformation
+        _quaternion = Quaternion.from(globalTransformation)
         needsToBeUpdated = false
     }
 

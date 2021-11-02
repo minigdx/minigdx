@@ -73,8 +73,8 @@ class GraphNode(
 
         // Get the T-pose
         val referencePose = scene.armatures.getValue(node.reference)
-        if (referencePose.joints.size > 100) {
-            throw IllegalArgumentException("Your armature contains more than 100 joints. MiniGDX support only 100 joints")
+        if (referencePose.joints.size > 50) {
+            throw IllegalArgumentException("Your armature contains more than 50 joints. MiniGDX support only 50 joints")
         }
 
         AnimatedModel(

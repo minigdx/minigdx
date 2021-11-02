@@ -27,7 +27,7 @@ class StateMachineSystemTest {
 
     class OnState : State() {
 
-        override fun configure() {
+        override fun configure(entity: Entity) {
             onEvent(OffEvent::class) {
                 OffState()
             }
@@ -37,7 +37,7 @@ class StateMachineSystemTest {
     }
 
     class OffState : State() {
-        override fun configure() {
+        override fun configure(entity: Entity) {
             onEvent(OnEvent::class) {
                 OnState()
             }
@@ -58,6 +58,7 @@ class StateMachineSystemTest {
         }
 
         engine.update(0f) // state initialization.
+        engine.onGameStart()
 
         system.onEvent(OffEvent())
         // Move to OffState

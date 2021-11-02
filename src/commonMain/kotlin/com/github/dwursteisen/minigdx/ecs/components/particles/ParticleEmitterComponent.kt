@@ -16,6 +16,9 @@ class ParticleEmitterComponent(
 
     override fun onAdded(entity: Entity) {
         owner = entity
+        if (particleConfiguration.emitOnStartup) {
+            emit()
+        }
     }
 
     override fun onRemoved(entity: Entity) {
