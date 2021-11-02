@@ -161,9 +161,16 @@ actual open class PlatformContextCommon actual constructor(
         }
         inputManager.reset()
 
+        // New resources has been added. The application needs
+        // to load it before continuing.
+        // It can happened when a new game is loaded for example.
         if (!gameContext.fileHandler.isFullyLoaded()) {
             window.requestAnimationFrame(::loading)
         } else {
+            // Execute a post render loop action.
+            // This action can be the creation of a new game.
+            // This game has been created and the resources just loaded.
+            // It's now possible to switch the game and render it again.
             postRenderLoop()
             postRenderLoop = { }
             window.requestAnimationFrame(::render)

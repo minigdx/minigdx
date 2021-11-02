@@ -7,7 +7,7 @@ import com.curiouscreature.kotlin.math.Float3
  * Those values can be updated by another entity, that's why
  * you can only read as you might loose your modification otherwise.
  */
-class ImmutableVector3(private val delegate: Vector3) {
+class ImmutableVector3(internal val delegate: Vector3) {
 
     constructor(x: Float = 0f, y: Float = 0f, z: Float = 0f) : this(Vector3(x, y, z))
 

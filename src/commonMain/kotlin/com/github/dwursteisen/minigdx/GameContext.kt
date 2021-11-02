@@ -90,7 +90,7 @@ class GameContext(
         logger.info("MINIGDX") { "OpenGL Extensions: \t" + gl.getString(GL.EXTENSIONS) }
     }
 
-    fun postRenderLoop(block: () -> Unit) {
+    internal fun postRenderLoop(block: () -> Unit) {
         platformContext.postRenderLoop = block
     }
 }

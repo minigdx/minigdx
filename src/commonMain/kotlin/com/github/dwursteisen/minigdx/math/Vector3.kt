@@ -36,6 +36,9 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
 
     constructor(x: Number, y: Number, z: Number) : this(x.toFloat(), y.toFloat(), z.toFloat())
 
+    /**
+     * Add values to the current vector.
+     */
     fun add(x: Number = 0f, y: Number = 0f, z: Number = 0f): Vector3 {
         this.x += x.toFloat()
         this.y += y.toFloat()
@@ -43,11 +46,31 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         return this
     }
 
+    /**
+     * Add [other] vector to the current vector.
+     */
     fun add(other: Vector3) = add(other.x, other.y, other.z)
 
+    /**
+     * @see [add]
+     */
+    fun add(other: ImmutableVector3) = add(other.x, other.y, other.z)
+
+    /**
+     * Remove [other] to the current vector.
+     */
     fun sub(other: Vector3) = add(-other.x, -other.y, -other.z)
 
+    /**
+     * @see [sub]
+     */
     fun sub(other: ImmutableVector3) = add(-other.x, -other.y, -other.z)
+
+    /**
+     * @see [sub]
+     */
+    fun sub(x: Number = 0f, y: Number = 0f, z: Number = 0f) =
+        add(x.toFloat() * -1f, y.toFloat() * -1f, z.toFloat() * -1f)
 
     /**
      * Return the negate vector:
@@ -60,9 +83,9 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         return this
     }
 
-    fun sub(x: Number = 0f, y: Number = 0f, z: Number = 0f) =
-        add(x.toFloat() * -1f, y.toFloat() * -1f, z.toFloat() * -1f)
-
+    /**
+     * Set values to the current vector.
+     */
     fun set(x: Number = this.x, y: Number = this.y, z: Number = this.z): Vector3 {
         this.x = x.toFloat()
         this.y = y.toFloat()
@@ -70,8 +93,14 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         return this
     }
 
+    /**
+     * Set values of [other] vector to the current vector.
+     */
     fun set(other: Vector3) = set(other.x, other.y, other.z)
 
+    /**
+     * @see [set]
+     */
     fun set(other: ImmutableVector3) = set(other.x, other.y, other.z)
 
     /**
@@ -88,9 +117,10 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         return x * other.x + y * other.y + z * other.z
     }
 
-    fun dot(other: ImmutableVector3): Float {
-        return x * other.x + y * other.y + z * other.z
-    }
+    /**
+     * @see [dot]
+     */
+    fun dot(other: ImmutableVector3): Float = dot(other.delegate)
 
     /**
      * Set the vector as the perpendicular vectors
@@ -104,6 +134,11 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
     }
 
     /**
+     * @see [cross]
+     */
+    fun cross(other: ImmutableVector3): Vector3 = cross(other.delegate)
+
+    /**
      * Projects this vector onto another vector
      *
      * https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/java/com/jme3/math/Vector3f.java
@@ -113,6 +148,8 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         val d = other.length2(); // |B|^2
         return set(other).scale(n / d)
     }
+
+    fun project(other: ImmutableVector3): Vector3 = project(other.delegate)
 
     /**
      * Scale the vector by the scalar value.
@@ -189,16 +226,29 @@ data class Vector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
         return x * x + y * y + z * z
     }
 
+    /**
+     * Distance from this vector to [other] vector.
+     */
     fun dist(other: Vector3): Float {
         return sqrt(dist2(other))
     }
 
+    fun dist(other: ImmutableVector3): Float = dist(other.delegate)
+
+    /**
+     * Distance from this vector to [other] vector squared.
+     * Can be use instead of [dist] to compare vector with
+     * a faster computation method.
+     *
+     */
     fun dist2(other: Vector3): Float {
         val a = other.x - x
         val b = other.y - y
         val c = other.z - z
         return a * a + b * b + c * c
     }
+
+    fun dist2(other: ImmutableVector3) = dist2(other.delegate)
 
     fun toFloat3(): Float3 = Float3(x, y, z)
 
