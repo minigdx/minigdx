@@ -13,7 +13,7 @@ typealias Seconds = Float
 /**
  * Percent: values between 0.0 and 1.0
  */
-typealias Percent = Number
+typealias Percent = Float
 
 /**
  * Bytemask: value can be changed using binary operation.

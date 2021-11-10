@@ -4,16 +4,80 @@ import com.curiouscreature.kotlin.math.Float3
 import com.curiouscreature.kotlin.math.Mat4
 import com.curiouscreature.kotlin.math.Quaternion
 import com.curiouscreature.kotlin.math.interpolate
+import com.curiouscreature.kotlin.math.pow
 import com.curiouscreature.kotlin.math.rotation
 import com.curiouscreature.kotlin.math.scale
 import com.curiouscreature.kotlin.math.translation
 import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.Seconds
+import kotlin.math.PI
 import kotlin.math.acos
 import kotlin.math.pow
 import kotlin.math.sin
 
+interface Interpolation {
+
+    fun interpolate(a: Float, b: Float, percent: Percent): Float {
+        return a + (b - a) * interpolate(percent)
+    }
+
+    // Underlying implementations are inspired of
+    // https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/math/Interpolation.java
+    fun interpolate(percent: Percent): Float
+}
+
+private class PowInterpolation(private val power: Int) : Interpolation {
+
+    override fun interpolate(percent: Percent): Float {
+        return if (percent <= 0.5f) pow(
+            (percent * 2f),
+            power.toFloat()
+        ) / 2 else pow(
+            ((percent - 1) * 2f),
+            power.toFloat()
+        ) / (if (power % 2 == 0) -2 else 2) + 1
+    }
+}
+
+private class ElasticInterpolation(
+    private val value: Float,
+    private val power: Float,
+    bounces: Int,
+    private val scale: Float
+) : Interpolation {
+
+    private val bounces: Float = bounces * PI.toFloat() * if (bounces % 2 == 0) 1f else -1f
+
+    override fun interpolate(percent: Percent): Float {
+        var a = percent
+        if (a <= 0.5f) {
+            a *= 2f
+            return pow(
+                value,
+                (power * (a - 1))
+            ) * sin(a * bounces) * scale / 2
+        }
+        a = 1 - a
+        a *= 2f
+        return 1 - pow(
+            value,
+            (power * (a - 1))
+        ) * sin(a * bounces) * scale / 2
+    }
+}
+
+private class LinearInterpolation : Interpolation {
+
+    override fun interpolate(percent: Percent): Float {
+        return percent
+    }
+}
+
 object Interpolations {
+
+    val pow: Interpolation = PowInterpolation(2)
+    val elastic: Interpolation = ElasticInterpolation(2f, 10f, 7, 1f)
+    val linear: Interpolation = LinearInterpolation()
 
     fun lerp(target: Float, current: Float, step: Float = 0.9f): Float {
         return target + step * (current - target)

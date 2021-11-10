@@ -189,11 +189,11 @@ class PositionTest {
     @Test
     fun scale_add_local_scale() {
         val (parent, child) = createEntities()
-        parent.position.addLocalScale(x = 1)
+        parent.position.addLocalScale(x = 1f)
         assertEquals(2f, parent.position.scale.x)
         assertEquals(2f, child.position.scale.x)
         assertEquals(1f, child.position.localScale.x)
-        child.position.addLocalScale(x = 1)
+        child.position.addLocalScale(x = 1f)
         assertEquals(2f, parent.position.scale.x)
         assertEquals(4f, child.position.scale.x)
         assertEquals(2f, child.position.localScale.x)
@@ -202,11 +202,11 @@ class PositionTest {
     @Test
     fun scale_set_local_scale() {
         val (parent, child) = createEntities()
-        parent.position.setLocalScale(x = 2)
+        parent.position.setLocalScale(x = 2f)
         assertEquals(2f, parent.position.scale.x)
         assertEquals(2f, child.position.scale.x)
         assertEquals(1f, child.position.localScale.x)
-        child.position.setLocalScale(x = 4)
+        child.position.setLocalScale(x = 4f)
         assertEquals(2f, parent.position.scale.x)
         assertEquals(8f, child.position.scale.x)
         assertEquals(4f, child.position.localScale.x)

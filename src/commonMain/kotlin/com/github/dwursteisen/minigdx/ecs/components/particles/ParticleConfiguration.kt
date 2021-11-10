@@ -13,10 +13,10 @@ class ParticleGeneration(val emitter: Entity) {
     var particlesTotal: Long = 0L
         internal set
 
-    var particlesIndexPercent: Percent = 0L
+    var particlesIndexPercent: Percent = 0f
         internal set
 
-    var emmiterProgress: Percent = 0L
+    var emmiterProgress: Percent = 0f
         internal set
 }
 
