@@ -24,7 +24,7 @@ import java.nio.DoubleBuffer
 
 class LwjglInput(private val logger: Logger, private val gameContext: GameContext) : InputHandler, InputManager {
 
-    private val touchManager = TouchManager(GLFW_KEY_LAST)
+    private val touchManager = TouchManager(UNKNOWN_KEY)
 
     private var window: Long = 0
 
