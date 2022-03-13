@@ -31,6 +31,8 @@ class EntityFactoryDelegate : EntityFactory {
     override lateinit var engine: Engine
     override lateinit var gameContext: GameContext
 
+    override var exploreChildren: Boolean = true
+
     private var templates = emptyMap<String, () -> Entity>()
 
     override fun create(block: (Engine.EntityBuilder) -> Unit): Entity = engine.create(block)
@@ -70,8 +72,10 @@ class EntityFactoryDelegate : EntityFactory {
             ObjectType.LIGHT -> createLight(node)
             ObjectType.MODEL -> createModel(node)
         }.also { entity ->
-            node.children.forEach {
-                createFromNode(it, entity)
+            if (exploreChildren) {
+                node.children.forEach {
+                    createFromNode(it, entity)
+                }
             }
             entity.attachTo(parent)
         }
@@ -121,8 +125,10 @@ class EntityFactoryDelegate : EntityFactory {
                 )
             )
         }
-        node.children.forEach {
-            createFromNode(it, entity)
+        if (exploreChildren) {
+            node.children.forEach {
+                createFromNode(it, entity)
+            }
         }
         return entity
     }

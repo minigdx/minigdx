@@ -5,7 +5,6 @@ import com.github.dwursteisen.minigdx.logger.Logger
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.utils.convert
 import org.lwjgl.BufferUtils
-import org.lwjgl.glfw.GLFW.GLFW_KEY_LAST
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_2
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_3
