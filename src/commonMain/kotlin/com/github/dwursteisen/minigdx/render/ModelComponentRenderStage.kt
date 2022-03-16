@@ -70,7 +70,7 @@ class ModelComponentRenderStage(
         entity.findAll(ModelComponent::class)
             .asSequence()
             // Keep only components with openGL buffers ready
-            .filter { component -> component.displayable }
+            .filter { component -> component.displayable && !component.hidden }
             .flatMap { component ->
                 component.model.primitives
             }

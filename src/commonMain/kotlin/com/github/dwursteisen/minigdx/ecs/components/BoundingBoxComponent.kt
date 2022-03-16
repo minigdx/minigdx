@@ -22,13 +22,35 @@ class BoundingBoxComponent private constructor(
     var owner: Entity? = null
 ) : Component {
 
+    /**
+     * Position of the left bottom back edge of the box.
+     * This position is not altered by any transformation
+     */
     private val _rawMin = Vector3()
+
+    /**
+     * Position of the right top front edge of the box.
+     * This position is not altered by any transformation.
+     */
     private val _rawMax = Vector3()
 
+    /**
+     * Position of the left bottom back edge of the transformed box.
+     */
     private val _min = Vector3()
+    /**
+     * Position of the right top frong edge of the transformed box.
+     */
     private val _max = Vector3()
 
+    /**
+     * Center of the transformed box
+     */
     private val _center = Vector3()
+
+    /**
+     * Size of the transformed box.
+     */
     private val _size = Vector3()
 
     val localMin: ImmutableVector3 = ImmutableVector3(_rawMin)

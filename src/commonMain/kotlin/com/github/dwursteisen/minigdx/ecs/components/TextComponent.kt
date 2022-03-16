@@ -9,6 +9,7 @@ import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.text.TextEffect
 import com.github.dwursteisen.minigdx.ecs.components.text.WriteText
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
+import com.github.dwursteisen.minigdx.ecs.entities.position
 import com.github.dwursteisen.minigdx.file.Font
 import kotlin.reflect.KClass
 
@@ -139,7 +140,8 @@ class TextComponent(
     }
 
     override fun onComponentUpdated(componentType: KClass<out Component>) {
-        if (componentType == BoundingBoxComponent::class) {
+        // Get position update if the scale of the box change.
+        if (componentType == Position::class) {
             needsToBeUpdated = true
         }
     }
@@ -194,11 +196,11 @@ class TextComponent(
      * The text will fit in the box by keeping [lineWidth] as reference.
      */
     internal fun generateVertices(scale: Float): TextMeshData {
-        val boundingBox = owner!!.get(BoundingBoxComponent::class)
         val textureHeight = _font.fontSprite.height.toFloat()
         val textureWidth = _font.fontSprite.width.toFloat()
 
-        val scaleY = scale / ((boundingBox.max.y - boundingBox.min.y) * 0.5f)
+        // Use the X scale and compensate using the Y scale.
+        val scaleY = (scale * owner!!.position.localScale.x) / owner!!.position.localScale.y
 
         textMeshData.vertices.clear()
         textMeshData.verticesOrder.clear()
@@ -320,13 +322,15 @@ class TextComponent(
     }
 
     internal fun computeCharacterScale(longestLine: String): Float {
-        // Look for the longest line and deduce the character size in world unit from it.
-        val numberOfCharacterByLine: NumberOfCharacter = _lineWith
-        val lineInPixel: Pixel = getTextSize(longestLine, _font)
+        // The line is empty, the scale will be 0
         if (longestLine.isEmpty()) {
             return 0f
         }
+        // Look for the longest line and deduce the character size in world unit from it.
+        val lineInPixel: Pixel = getTextSize(longestLine, _font)
+        val numberOfCharacterByLine: NumberOfCharacter = _lineWith
         val characterWidth: Float = (lineInPixel / longestLine.length).toFloat()
+        // the width of a box is 2 world unit
         val lineInWorldUnit = 2
         // Characters size will be scaled to match the size in world unit.
         val scale = lineInWorldUnit / (numberOfCharacterByLine * characterWidth)

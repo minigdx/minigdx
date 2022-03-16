@@ -15,6 +15,8 @@ interface EntityFactory {
     var engine: Engine
     var gameContext: GameContext
 
+    var exploreChildren: Boolean
+
     /**
      * Create an entity from scratch.
      *

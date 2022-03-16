@@ -4,10 +4,10 @@ import com.github.dwursteisen.minigdx.Percent
 import com.github.dwursteisen.minigdx.math.Vector3
 
 data class Color(
-    var red: Percent = 0.0,
-    var green: Percent = 0.0,
-    var blue: Percent = 0.0,
-    var alpha: Percent = 1.0
+    var red: Percent = 0.0f,
+    var green: Percent = 0.0f,
+    var blue: Percent = 0.0f,
+    var alpha: Percent = 1.0f
 )
 
 class LightComponent(
