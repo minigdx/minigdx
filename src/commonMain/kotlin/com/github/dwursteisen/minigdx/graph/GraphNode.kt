@@ -37,6 +37,8 @@ class GraphNode(
         GraphNode(parent, scene, it)
     }
 
+    val customProperties = node.customProperties
+
     /**
      * Get all children's node of [type].
      */
