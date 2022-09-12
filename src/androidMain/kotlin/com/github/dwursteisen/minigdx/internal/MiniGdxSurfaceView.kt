@@ -59,7 +59,6 @@ class MiniGdxSurfaceView(
                     )
                 }
 
-                @ExperimentalStdlibApi
                 override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
                     gameContext.logPlatform()
                     inputManager = gameContext.input as InputManager

@@ -1,7 +1,8 @@
 package com.github.dwursteisen.minigdx
 
 import android.graphics.Point
-import android.media.AudioManager
+import android.media.AudioAttributes
+import android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION
 import android.media.SoundPool
 import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.FileHandlerCommon
@@ -24,7 +25,14 @@ actual open class PlatformContextCommon actual constructor(
     }
 
     actual override fun createFileHandler(logger: Logger, gameContext: GameContext): FileHandler {
-        val sp = SoundPool(10, AudioManager.STREAM_MUSIC, 0)
+        val audioAttributes = AudioAttributes.Builder()
+            .setContentType(CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        val sp = SoundPool.Builder()
+            .setMaxStreams(10)
+            .setAudioAttributes(audioAttributes)
+            .build()
 
         return FileHandlerCommon(
             platformFileHandler = PlatformFileHandler(
@@ -55,7 +63,6 @@ actual open class PlatformContextCommon actual constructor(
         )
     }
 
-    @ExperimentalStdlibApi
     actual override fun start(gameFactory: (GameContext) -> Game) {
         val activity = configuration.activity!!
         val display = activity.windowManager.defaultDisplay

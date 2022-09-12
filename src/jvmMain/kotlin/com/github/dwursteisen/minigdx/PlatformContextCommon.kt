@@ -24,7 +24,7 @@ actual open class PlatformContextCommon actual constructor(actual override val c
     override var postRenderLoop: () -> Unit = {}
 
     private fun isMacOs(): Boolean {
-        val osName = System.getProperty("os.name")?.toLowerCase()
+        val osName = System.getProperty("os.name")?.lowercase()
         val index = osName?.indexOf("mac") ?: -1
         return index >= 0
     }
