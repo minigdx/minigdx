@@ -1,19 +1,17 @@
 
 
 plugins {
-    id("com.android.library")
-    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.1.0-alpha0"
+    id("com.android.library") version "7.2.2"
+    id("com.github.minigdx.gradle.plugin.developer.mpp") version "DEV-SNAPSHOT"
 }
 
-val kotlinMathVersion = "LATEST-SNAPSHOT"
-val gltfApiVersion = "LATEST-SNAPSHOT"
-val imGuiLightApiVersion = "LATEST-SNAPSHOT"
+val kotlinMathVersion = "DEV-SNAPSHOT"
+val gltfApiVersion = "DEV-SNAPSHOT"
+val imGuiLightApiVersion = "DEV-SNAPSHOT"
 val lwjglVersion = "3.2.3"
-val imguiVersion = "1.77-0.16"
 
 android {
     compileSdkVersion(29)
-    buildToolsVersion = "29.0.3"
     defaultConfig {
         minSdkVersion(13)
     }
@@ -72,13 +70,6 @@ dependencies {
     this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos")
     this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows")
     this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86")
-
-    // https://github.com/SpaiR/imgui-java
-    this.jvmMainImplementation("io.imgui.java:binding:$imguiVersion")
-    this.jvmMainImplementation("io.imgui.java:lwjgl3:$imguiVersion")
-    this.jvmMainRuntimeOnly("io.imgui.java:natives-linux:$imguiVersion")
-    this.jvmMainRuntimeOnly("io.imgui.java:natives-macos:$imguiVersion")
-    this.jvmMainRuntimeOnly("io.imgui.java:natives-windows:$imguiVersion")
 
     this.jvmMainImplementation("fr.delthas:javamp3:1.0.1")
     this.jvmMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
