@@ -1,5 +1,5 @@
 [versions]
-kotlin-coroutines = "1.6.2"
+kotlin-coroutines = "1.6.3"
 kotlin-math = "DEV-SNAPSHOT"
 imgui-light = "DEV-SNAPSHOT"
 lwjgl = "3.2.3"
