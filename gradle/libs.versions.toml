@@ -20,29 +20,6 @@ kotlin-math-js = { module = "com.github.minigdx:kotlin-math-js", version.ref = "
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 
-#lwjgl-core = { module = "org.lwjgl:lwjgl:$lwjglVersion", version.ref = "lwjgl"}
-#lwjgl-core-windows = { module = "org.lwjgl:lwjgl:$lwjglVersion:natives-windows", version.ref = "lwjgl"}
-#lwjgl-core-macos = { module = "org.lwjgl:lwjgl:$lwjglVersion:natives-macos", version.ref = "lwjgl"}
-#lwjgl-core-linux = { module = "org.lwjgl:lwjgl:$lwjglVersion:natives-linux", version.ref = "lwjgl"}
-#
-#lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw:$lwjglVersion", version.ref = "lwjgl" }
-#lwjgl-glfw-windows = { module = "org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-windows", version.ref = "lwjgl" }
-#lwjgl-glfw-macos = { module = "org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-macos", version.ref = "lwjgl" }
-#lwjgl-glfw-linux = { module = "org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-linux", version.ref = "lwjgl" }
-#
-#lwjgl-opengl = { module = "org.lwjgl:lwjgl-opengl:$lwjglVersion", version.ref = "lwjgl" }
-#lwjgl-opengl-windows = { module = "org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows", version.ref = "lwjgl" }
-#lwjgl-opengl-macos = { module = "org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos", version.ref = "lwjgl" }
-#lwjgl-opengl-linux = { module = "org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux", version.ref = "lwjgl" }
-#
-#lwjgl-openal = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion", version.ref = "lwjgl" }
-#lwjgl-openal-windows-common = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows", version.ref = "lwjgl" }
-#lwjgl-openal-windows-x86 = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86", version.ref = "lwjgl" }
-#lwjgl-openal-macos = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos", version.ref = "lwjgl" }
-#lwjgl-openal-linux-x86 = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux", version.ref = "lwjgl" }
-#lwjgl-openal-linux-arm32 = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm32", version.ref = "lwjgl" }
-#lwjgl-openal-linux-arm64 = { module = "org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm64", version.ref = "lwjgl" }
-
 lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl"}
 lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw", version.ref = "lwjgl" }
 lwjgl-opengl = { module = "org.lwjgl:lwjgl-opengl", version.ref = "lwjgl" }
