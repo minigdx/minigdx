@@ -1,10 +1,10 @@
 [versions]
 kotlin-coroutines = "1.6.3"
 kotlin-math = "1.1.0"
-imgui-light = "DEV-SNAPSHOT"
+imgui-light = "LATEST-SNAPSHOT"
 lwjgl = "3.2.3"
 android = "7.2.2"
-minigdx-gltf = "DEV-SNAPSHOT"
+minigdx-gltf = "LATEST-SNAPSHOT"
 minigdx-mpp = "1.2.0"
 javamp3 = "1.0.1"
 pngdecoder = "1.0"
