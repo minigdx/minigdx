@@ -4,6 +4,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import com.github.dwursteisen.minigdx.GameContext
+import com.github.dwursteisen.minigdx.math.ImmutableVector2
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.utils.convert
 
@@ -72,6 +73,8 @@ class AndroidInputHandler(private val gameContext: GameContext) : InputHandler, 
     fun onKeyUp(keyCode: Int) {
         touchManager.onKeyReleased(keyCode)
     }
+
+    override val currentTouch: ImmutableVector2 = ImmutableVector2(touchManager.lastTouch)
 
     override fun record() = Unit
 

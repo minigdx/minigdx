@@ -1,6 +1,6 @@
 package com.github.dwursteisen.minigdx.imgui
 
-import com.curiouscreature.kotlin.math.Mat4
+import com.curiouscreature.kotlin.math.ortho
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
@@ -10,13 +10,13 @@ import com.github.dwursteisen.minigdx.shaders.DataSource
 import com.github.dwursteisen.minigdx.shaders.ShaderProgram
 import com.github.dwursteisen.minigdx.shaders.fragment.UVFragmentShader
 import com.github.dwursteisen.minigdx.shaders.vertex.MeshVertexShader
-import com.github.minigdx.imgui.ImGUIRenderer
+import com.github.minigdx.imgui.ImGuiRenderer
 
-class ImGUI(
-    gameContext: GameContext,
+class ImGuiBatchRender(
+    private val gameContext: GameContext,
     private val vertex: MeshVertexShader,
     private val fragmentShader: UVFragmentShader
-) : ImGUIRenderer<Texture> {
+) : ImGuiRenderer<Texture> {
 
     private val gl = gameContext.gl
 
@@ -28,6 +28,23 @@ class ImGUI(
     lateinit var program: ShaderProgram
 
     override fun render(texture: Texture, vertices: FloatArray, uv: FloatArray, verticesOrder: IntArray) {
+
+        val w = gameContext.gameScreen.width
+        val h = gameContext.gameScreen.height
+        val modelViewMatrix = ortho(
+            // left
+            l = 0f,
+            // right
+            r = w.toFloat(),
+            // bottom
+            b = h.toFloat(),
+            // top
+            t = 0f,
+            // near
+            n = 10f,
+            // far
+            f = -1f
+        )
 
         gl.disable(GL.DEPTH_TEST)
         gl.enable(GL.BLEND)
@@ -68,7 +85,7 @@ class ImGUI(
         vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
         vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
 
-        vertex.uModelView.apply(program, Mat4.identity())
+        vertex.uModelView.apply(program, modelViewMatrix)
         vertex.aVertexPosition.apply(program, verticesBuffer)
         vertex.aVertexNormal.apply(program, normalsBuffer)
         vertex.aUVPosition.apply(program, verticesUVsBuffer)
