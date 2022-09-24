@@ -1,0 +1,34 @@
+[versions]
+kotlin-coroutines = "1.6.3"
+kotlin-math = "1.1.0"
+imgui-light = "LATEST-SNAPSHOT"
+lwjgl = "3.2.3"
+android = "7.2.2"
+minigdx-gltf = "LATEST-SNAPSHOT"
+minigdx-mpp = "1.2.0"
+javamp3 = "1.0.1"
+pngdecoder = "1.0"
+
+[libraries]
+minigdx-gltf-api = { module = "com.github.minigdx:gltf-api", version.ref = "minigdx-gltf" }
+minigdx-imgui-light = { module = "com.github.minigdx:minigdx-imgui-light", version.ref = "imgui-light" }
+
+kotlin-math-common = { module = "com.github.minigdx:kotlin-math", version.ref = "kotlin-math" }
+kotlin-math-jvm = { module = "com.github.minigdx:kotlin-math-jvm", version.ref = "kotlin-math" }
+kotlin-math-js = { module = "com.github.minigdx:kotlin-math-js", version.ref = "kotlin-math" }
+
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+
+lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl"}
+lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw", version.ref = "lwjgl" }
+lwjgl-opengl = { module = "org.lwjgl:lwjgl-opengl", version.ref = "lwjgl" }
+lwjgl-openal = { module = "org.lwjgl:lwjgl-openal", version.ref = "lwjgl" }
+
+misc-mp3 = { module = "fr.delthas:javamp3", version.ref = "javamp3" }
+misc-pngdecoder = {module = "org.l33tlabs.twl:pngdecoder", version.ref = "pngdecoder" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "android" }
+minigdx-mpp = { id = "com.github.minigdx.gradle.plugin.developer.mpp", version.ref = "minigdx-mpp" }
+

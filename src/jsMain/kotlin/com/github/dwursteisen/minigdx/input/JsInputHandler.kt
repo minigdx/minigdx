@@ -4,6 +4,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH1
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH2
 import com.github.dwursteisen.minigdx.input.TouchSignal.TOUCH3
+import com.github.dwursteisen.minigdx.math.ImmutableVector2
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.utils.convert
 import kotlinx.browser.document
@@ -199,6 +200,8 @@ class JsInputHandler(
             null
         }
     }
+
+    override val currentTouch: ImmutableVector2 = ImmutableVector2(mousePosition)
 
     override fun record() = Unit
 

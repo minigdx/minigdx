@@ -36,13 +36,11 @@ class FileHandlerCommon(
     }
 
     @Suppress("UNCHECKED_CAST")
-    @ExperimentalStdlibApi
     override fun <T, R : Any> get(filename: String, rClazz: KClass<R>, map: (R) -> Content<T>): Content<T> {
         return get(filename, rClazz).map(map) as Content<T>
     }
 
     @Suppress("UNCHECKED_CAST")
-    @ExperimentalStdlibApi
     override fun <T : Any> get(filename: String, clazz: KClass<T>): Content<T> {
         return assets.getOrPut(filename) { load(filename, clazz) } as Content<T>
     }

@@ -5,7 +5,7 @@ import com.github.dwursteisen.minigdx.ecs.components.ScriptComponent
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.ecs.events.Event
 import com.github.dwursteisen.minigdx.ecs.script.ScriptContext
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -47,12 +47,14 @@ class ScriptExecutorSystem : System(EntityQuery(ScriptComponent::class)) {
     private val events: MutableList<Pair<Event, EntityQuery?>> = mutableListOf()
     private val mainThread: MutableList<() -> Unit> = mutableListOf()
 
+    private val scriptScope = MainScope()
+
     override fun onEntityAdded(entity: Entity) {
         entity.findAll(ScriptComponent::class).forEach { component ->
             val scriptContext = MutexScriptContext()
             context = context + scriptContext
 
-            GlobalScope.launch {
+            scriptScope.launch {
                 component.execute(scriptContext)
                 context = context - scriptContext
                 lock.withLock {

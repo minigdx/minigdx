@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.input
 
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.logger.Logger
+import com.github.dwursteisen.minigdx.math.ImmutableVector2
 import com.github.dwursteisen.minigdx.math.Vector2
 import com.github.dwursteisen.minigdx.utils.convert
 import org.lwjgl.BufferUtils
@@ -137,4 +138,6 @@ class LwjglInput(private val logger: Logger, private val gameContext: GameContex
             null
         }
     }
+
+    override val currentTouch: ImmutableVector2 = ImmutableVector2(mousePosition)
 }

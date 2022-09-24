@@ -1,5 +1,6 @@
 package com.github.dwursteisen.minigdx.input
 
+import com.github.dwursteisen.minigdx.math.ImmutableVector2
 import com.github.dwursteisen.minigdx.math.Vector2
 
 enum class TouchSignal {
@@ -199,4 +200,19 @@ interface InputHandler {
      *          or null if outside of the game area.
      */
     fun touchIdlePosition(): Vector2? = null
+
+    /**
+     * Position of the current touch.
+     *
+     * It will be the mouse position on the web platform and desktop platform.
+     * It will be the last touch position on the mobile platform.
+     *
+     * If the mouse is outside the game screen, the position will be the last one before
+     * the mouse leave the game screen.
+     *
+     * To detect if the touch is still in the game screen, please use [touchIdlePosition] instead.
+     *
+     * @return: position of the current touch.
+     */
+    val currentTouch: ImmutableVector2
 }

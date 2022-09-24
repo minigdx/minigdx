@@ -16,7 +16,7 @@ import com.github.dwursteisen.minigdx.ecs.systems.System
 import com.github.dwursteisen.minigdx.ecs.systems.TextEffectSystem
 import com.github.dwursteisen.minigdx.file.AssetsManagerSystem
 import com.github.dwursteisen.minigdx.graphics.FrameBuffer
-import com.github.dwursteisen.minigdx.imgui.ImGUIRenderStage
+import com.github.dwursteisen.minigdx.imgui.ImGuiRenderStage
 import com.github.dwursteisen.minigdx.render.AnimatedModelRenderStage
 import com.github.dwursteisen.minigdx.render.BoundingBoxRenderStage
 import com.github.dwursteisen.minigdx.render.ClearBufferRenderStage
@@ -107,7 +107,7 @@ interface Game {
         if (options.debug) {
             stages.add(BoundingBoxRenderStage(gameContext))
         }
-        stages.add(ImGUIRenderStage(gameContext))
+        stages.add(ImGuiRenderStage(gameContext))
         return stages
     }
 

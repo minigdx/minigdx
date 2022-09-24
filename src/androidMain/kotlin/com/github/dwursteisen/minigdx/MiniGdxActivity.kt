@@ -14,7 +14,6 @@ abstract class MiniGdxActivity(
 
     private lateinit var inputHandler: AndroidInputHandler
 
-    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         GameApplicationBuilder(
             gameConfigurationFactory = {

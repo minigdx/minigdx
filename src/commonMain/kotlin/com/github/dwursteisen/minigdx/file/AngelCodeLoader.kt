@@ -2,7 +2,6 @@ package com.github.dwursteisen.minigdx.file
 
 class AngelCodeLoader : FileLoader<AngelCode> {
 
-    @ExperimentalStdlibApi
     override fun load(filename: String, handler: FileHandler): Content<AngelCode> = handler.read(filename).map {
         val groups = it.split("\r\n|\n|\r".toRegex())
             .filter { it.isNotBlank() }

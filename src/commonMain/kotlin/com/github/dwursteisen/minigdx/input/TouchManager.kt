@@ -11,6 +11,8 @@ class TouchManager(lastKeyCode: KeyCode) {
 
     private val touchSignalCache = TouchSignal.values()
 
+    internal val lastTouch: Vector2 = Vector2(0f, 0f)
+
     private val type = Array<Any?>(TouchSignal.values().size) { null }
     private val touch = Array<Vector2?>(TouchSignal.values().size) { null }
     private val justTouch = Array<Vector2?>(TouchSignal.values().size) { null }
@@ -202,12 +204,14 @@ class TouchManager(lastKeyCode: KeyCode) {
             InternalTouchEventWay.DOWN -> {
                 justTouch[event.touchSignal.ordinal] = event.position
                 touch[event.touchSignal.ordinal] = event.position
+                lastTouch.set(event.position)
             }
             InternalTouchEventWay.MOVE -> {
                 touch[event.touchSignal.ordinal]?.run {
                     x = event.position.x
                     y = event.position.y
                 }
+                lastTouch.set(event.position)
             }
             InternalTouchEventWay.UP -> {
                 touch[event.touchSignal.ordinal] = null

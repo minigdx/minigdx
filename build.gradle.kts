@@ -1,21 +1,13 @@
-
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.library")
-    id("com.github.minigdx.gradle.plugin.developer.mpp") version "1.1.0-alpha0"
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.minigdx.mpp)
 }
 
-val kotlinMathVersion = "LATEST-SNAPSHOT"
-val gltfApiVersion = "LATEST-SNAPSHOT"
-val imGuiLightApiVersion = "LATEST-SNAPSHOT"
-val lwjglVersion = "3.2.3"
-val imguiVersion = "1.77-0.16"
-
 android {
-    compileSdkVersion(29)
-    buildToolsVersion = "29.0.3"
+    compileSdk = 29
     defaultConfig {
-        minSdkVersion(13)
+        minSdk = 21
     }
     sourceSets.getByName("main") {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -23,15 +15,6 @@ android {
     }
 
     packagingOptions {
-        // exclude("META-INF/DEPENDENCIES")
-        //  exclude("META-INF/LICENSE")
-        // exclude("META-INF/LICENSE.txt")
-        // exclude("META-INF/license.txt")
-        // exclude("META-INF/NOTICE")
-        // exclude("META-INF/NOTICE.txt")
-        // exclude("META-INF/notice.txt")
-        // exclude("META-INF/ASL2.0")
-        // exclude("META-INF/*.kotlin_module")
     }
 
     // Configure only for each module that uses Java 8
@@ -41,50 +24,51 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
 }
 
 dependencies {
-    this.commonMainApi("com.github.minigdx:gltf-api:$gltfApiVersion")
-    this.commonMainApi("com.github.minigdx:kotlin-math:$kotlinMathVersion")
-    this.commonMainApi("com.github.minigdx:minigdx-imgui-light:$imGuiLightApiVersion")
-    this.commonMainApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    this.commonMainRuntimeOnly("org.jetbrains.kotlin:kotlin-reflect")
+    this.commonMainApi(libs.minigdx.gltf.api)
+    this.commonMainApi(libs.minigdx.imgui.light)
+    this.commonMainApi(libs.kotlin.math.common)
+    this.commonMainApi(libs.kotlin.coroutines)
+    this.commonMainRuntimeOnly(libs.kotlin.reflect)
 
-    this.jsMainApi("com.github.minigdx:kotlin-math-js:$kotlinMathVersion")
+    this.jsMainApi(libs.kotlin.math.js)
 
-    this.jvmMainApi("com.github.minigdx:kotlin-math-jvm:$kotlinMathVersion")
-    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion")
-    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion:natives-windows")
-    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion:natives-linux")
-    this.jvmMainImplementation("org.lwjgl:lwjgl:$lwjglVersion:natives-macos")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-windows")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-linux")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-macos")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm32")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-linux-arm64")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-macos")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows")
-    this.jvmMainImplementation("org.lwjgl:lwjgl-openal:$lwjglVersion:natives-windows-x86")
+    this.jvmMainApi(libs.kotlin.math.jvm)
 
-    // https://github.com/SpaiR/imgui-java
-    this.jvmMainImplementation("io.imgui.java:binding:$imguiVersion")
-    this.jvmMainImplementation("io.imgui.java:lwjgl3:$imguiVersion")
-    this.jvmMainRuntimeOnly("io.imgui.java:natives-linux:$imguiVersion")
-    this.jvmMainRuntimeOnly("io.imgui.java:natives-macos:$imguiVersion")
-    this.jvmMainRuntimeOnly("io.imgui.java:natives-windows:$imguiVersion")
+    this.jvmMainImplementation(libs.lwjgl.core)
+    this.jvmMainImplementation(variantOf(libs.lwjgl.core) { classifier("natives-windows") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.core) { classifier("natives-linux") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.core) { classifier("natives-macos") })
 
-    this.jvmMainImplementation("fr.delthas:javamp3:1.0.1")
-    this.jvmMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
+    this.jvmMainImplementation(libs.lwjgl.glfw)
+    this.jvmMainImplementation(variantOf(libs.lwjgl.glfw) { classifier("natives-windows") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.glfw) { classifier("natives-linux") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.glfw) { classifier("natives-macos") })
 
-    this.androidMainApi("com.github.minigdx:kotlin-math-jvm:$kotlinMathVersion")
-    this.androidMainImplementation("org.l33tlabs.twl:pngdecoder:1.0")
+    this.jvmMainImplementation(libs.lwjgl.opengl)
+    this.jvmMainImplementation(variantOf(libs.lwjgl.opengl) { classifier("natives-windows") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.opengl) { classifier("natives-linux") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.opengl) { classifier("natives-macos") })
+
+    this.jvmMainImplementation(libs.lwjgl.openal)
+    this.jvmMainImplementation(variantOf(libs.lwjgl.openal) { classifier("natives-windows") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.openal) { classifier("natives-windows-x86") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.openal) { classifier("natives-linux") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.openal) { classifier("natives-linux-arm32") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.openal) { classifier("natives-linux-arm64") })
+    this.jvmMainImplementation(variantOf(libs.lwjgl.openal) { classifier("natives-macos") })
+
+    this.jvmMainImplementation(libs.misc.mp3)
+    this.jvmMainImplementation(libs.misc.pngdecoder)
+
+    this.androidMainApi(libs.kotlin.math.jvm)
+    this.androidMainImplementation(libs.misc.pngdecoder)
 }
 
 minigdxDeveloper {

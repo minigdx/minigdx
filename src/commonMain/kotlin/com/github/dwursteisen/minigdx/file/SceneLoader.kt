@@ -13,7 +13,6 @@ class SceneLoader : FileLoader<Scene> {
         }
     }
 
-    @ExperimentalStdlibApi
     override fun load(filename: String, handler: FileHandler): Content<Scene> {
         return handler.readData(filename).map { load(filename, it) }
     }
