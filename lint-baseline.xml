@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 7.2.2" type="baseline" client="gradle" dependencies="false" name="AGP (7.2.2)" variant="all" version="7.2.2">
+
+    <issue
+        id="LintError"
+        message="Unexpected failure during lint analysis of TestUtils.kt (this is a bug in lint or one of the libraries it depends on)&#xA;&#xA;Message: () -> kotlin.String&#xA;Stack: `IllegalStateException:KtLightClassForFacadeImpl$Companion.createForFacadeNoCache(KtLightClassForFacadeImpl.kt:272)←FacadeCache$FacadeCacheData$cache$1.createValue(FacadeCache.kt:30)←FacadeCache$FacadeCacheData$cache$1.createValue(FacadeCache.kt:28)←SLRUCache.get(SLRUCache.java:47)←FacadeCache.get(FacadeCache.kt:47)←KtLightClassForFacadeImpl$Companion.createForFacade(KtLightClassForFacadeImpl.kt:282)←CliKotlinAsJavaSupport.getFacadeClassesInPackage(CliKotlinAsJavaSupport.kt:40)←LightClassUtilsKt.findFacadeClass(lightClassUtils.kt:58)`">
+        <location
+            file="src/androidTest/kotlin/TestUtils.kt"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 24 (current min is 21): `java.lang.Float#BYTES`"
+        errorLine1="            is DataSource.FloatDataSource -> java.lang.Float.BYTES"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/AndroidGL.kt"
+            line="182"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 24 (current min is 21): `java.lang.Integer#BYTES`"
+        errorLine1="            is DataSource.IntDataSource -> java.lang.Integer.BYTES"
+        errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/AndroidGL.kt"
+            line="183"
+            column="44"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 24 (current min is 21): `java.lang.Short#BYTES`"
+        errorLine1="            is DataSource.ShortDataSource -> java.lang.Short.BYTES"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/AndroidGL.kt"
+            line="184"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 24 (current min is 21): `java.lang.Integer#BYTES`"
+        errorLine1="            is DataSource.UIntDataSource -> java.lang.Integer.BYTES"
+        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/AndroidGL.kt"
+            line="185"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 24 (current min is 21): `java.lang.Double#BYTES`"
+        errorLine1="            is DataSource.DoubleDataSource -> java.lang.Double.BYTES"
+        errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/AndroidGL.kt"
+            line="186"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 29 (current min is 21): `android.view.KeyEvent#KEYCODE_PROFILE_SWITCH`"
+        errorLine1="    private val touchManager = TouchManager(KeyEvent.KEYCODE_PROFILE_SWITCH)"
+        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/input/AndroidInputHandler.kt"
+            line="13"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="ViewConstructor"
+        message="Custom view `MiniGdxSurfaceView` is missing constructor used by tools: `(Context)` or `(Context,AttributeSet)` or `(Context,AttributeSet,int)`"
+        errorLine1="class MiniGdxSurfaceView("
+        errorLine2="      ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/internal/MiniGdxSurfaceView.kt"
+            line="15"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        message="`AndroidInputHandler#onTouch` should call `View#performClick` when a click is detected"
+        errorLine1="    override fun onTouch(v: View, event: MotionEvent): Boolean {"
+        errorLine2="                 ~~~~~~~">
+        <location
+            file="src/androidMain/kotlin/com/github/dwursteisen/minigdx/input/AndroidInputHandler.kt"
+            line="31"
+            column="18"/>
+    </issue>
+
+</issues>
