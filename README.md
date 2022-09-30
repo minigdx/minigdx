@@ -44,7 +44,7 @@ https://user-images.githubusercontent.com/373097/115747845-eb6a5100-a395-11eb-8d
 | Skeleton Animation | ✅   | ✅   | ✅       | ⛔️  |
 | Keyboard Input     | ✅   | ✅   | ✅       | ⛔️  |
 | Mouse/Touch Input  | ✅   | ✅   | ✅       | ⛔️  |
-| Sound (MP3)        | ✅   | ✅   | ⛔️      | ⛔️  |
+| Sound (MP3)        | ✅   | ✅   | ✅      | ⛔️  |
 | AABB Collision  | ✅   | ✅   | ✅       | ⛔️  |
 | SAT Collision  | ✅   | ✅   | ✅       | ⛔️  |
 | Scripting  | ✅   | ✅   | ✅       | ⛔️  |
