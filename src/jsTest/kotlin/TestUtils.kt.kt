@@ -7,6 +7,7 @@ actual fun createGameConfiguration(): GameConfiguration {
     return GameConfiguration(
         "game name",
         false,
+        50,
         GameScreenConfiguration.WithCurrentScreenResolution(),
         rootPath = ""
     )

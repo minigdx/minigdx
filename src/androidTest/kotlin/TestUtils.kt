@@ -7,7 +7,8 @@ actual fun createGameConfiguration(): GameConfiguration {
     return GameConfiguration(
         "game name",
         GameScreenConfiguration.WithCurrentScreenResolution(),
-        false
+        false,
+        50
     )
 }
 

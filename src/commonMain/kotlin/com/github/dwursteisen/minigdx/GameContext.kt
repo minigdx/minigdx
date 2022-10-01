@@ -8,7 +8,27 @@ import com.github.dwursteisen.minigdx.graphics.ViewportStrategy
 import com.github.dwursteisen.minigdx.input.InputHandler
 import com.github.dwursteisen.minigdx.logger.Logger
 
-class Options(var debug: Boolean)
+class Options(
+    /**
+     * Run game in debug mode.
+     * This mode will display hitbox and another components
+     * to help to find issues within the current game.
+     */
+    var debug: Boolean,
+    /**
+     * Joint limit: the number of maximum joints that can
+     * be loaded by the game engine.
+     *
+     * The default value is set so it can be loaded on every platform:
+     * Web, desktop, Android and even Android TV. This last one has the
+     * most limitation.
+     *
+     * If you're sure that your game will be loaded on a platform that can
+     * manage more joints and if your assets require more joints, you can
+     * increase this default limit.
+     */
+    val jointLimit: Int = 50
+)
 
 class GameScreen(val width: Pixel, val height: Pixel, val ratio: Ratio = width / height.toFloat())
 
