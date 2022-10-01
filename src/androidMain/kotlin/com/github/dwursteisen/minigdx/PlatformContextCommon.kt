@@ -59,7 +59,8 @@ actual open class PlatformContextCommon actual constructor(
 
     actual override fun createOptions(): Options {
         return Options(
-            debug = configuration.debug
+            debug = configuration.debug,
+            jointLimit = configuration.jointLimit,
         )
     }
 
