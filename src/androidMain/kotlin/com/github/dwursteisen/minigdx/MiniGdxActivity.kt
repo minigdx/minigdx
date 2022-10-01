@@ -9,7 +9,8 @@ import com.github.dwursteisen.minigdx.input.AndroidInputHandler
 abstract class MiniGdxActivity(
     private val gameName: String = "missing game name",
     private val gameScreenConfiguration: GameScreenConfiguration,
-    private val debug: Boolean = false
+    private val debug: Boolean = false,
+    private val jointLimit: Int = 50,
 ) : Activity() {
 
     private lateinit var inputHandler: AndroidInputHandler
@@ -21,6 +22,7 @@ abstract class MiniGdxActivity(
                     gameName,
                     gameScreenConfiguration,
                     debug,
+                    jointLimit,
                     this
                 )
             },

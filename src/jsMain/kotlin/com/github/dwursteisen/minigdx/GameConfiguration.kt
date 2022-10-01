@@ -6,6 +6,7 @@ import org.w3c.dom.HTMLCanvasElement
 actual class GameConfiguration(
     actual val gameName: String,
     actual val debug: Boolean,
+    actual val jointLimit: Int = 50,
     /**
      * Configuration of the game screen.
      *

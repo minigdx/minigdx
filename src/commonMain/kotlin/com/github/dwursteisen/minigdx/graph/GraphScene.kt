@@ -10,9 +10,12 @@ import com.github.dwursteisen.minigdx.file.Asset
 import com.github.dwursteisen.minigdx.file.AssetsManager
 import com.github.dwursteisen.minigdx.file.Texture
 
+class GraphSceneOptions(val jointLimit: Int)
+
 class GraphScene(
     val scene: Scene,
-    internal val assetsManager: AssetsManager
+    internal val assetsManager: AssetsManager,
+    internal val options: GraphSceneOptions
 ) : Asset {
 
     internal val textureCache = mutableMapOf<Id, Texture>()

@@ -10,5 +10,6 @@ actual class GameConfiguration(
      */
     actual val gameScreenConfiguration: GameScreenConfiguration,
     actual val debug: Boolean,
+    actual val jointLimit: Int = 50,
     val activity: MiniGdxActivity? = null
 )

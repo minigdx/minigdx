@@ -9,6 +9,7 @@ actual fun createGameConfiguration(): GameConfiguration {
         "game name",
         GameScreenConfiguration.WithCurrentScreenResolution(),
         false,
+        50,
         window = Window(
             width = 1024,
             height = 1024,
