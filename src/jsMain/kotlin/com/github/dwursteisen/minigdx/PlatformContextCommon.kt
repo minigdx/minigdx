@@ -84,7 +84,7 @@ actual open class PlatformContextCommon actual constructor(
     }
 
     actual override fun createOptions(): Options {
-        return Options(configuration.debug)
+        return Options(configuration.debug, configuration.jointLimit)
     }
 
     actual override fun start(gameFactory: (GameContext) -> Game) {

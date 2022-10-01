@@ -54,7 +54,7 @@ actual open class PlatformContextCommon actual constructor(actual override val c
     }
 
     actual override fun createOptions(): Options {
-        return Options(configuration.debug)
+        return Options(configuration.debug, configuration.jointLimit)
     }
 
     /**
