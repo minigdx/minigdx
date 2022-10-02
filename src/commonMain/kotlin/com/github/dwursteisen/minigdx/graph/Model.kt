@@ -18,11 +18,11 @@ typealias C4f = FloatArray
 
 class Model(
     val primitives: List<Primitive>,
-    var displayble: Boolean = false
+    var displayable: Boolean = false
 ) : Asset {
 
     override fun load(gameContext: GameContext) {
         primitives.forEach { it.load(gameContext) }
-        displayble = true
+        displayable = true
     }
 }

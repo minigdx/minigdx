@@ -21,5 +21,5 @@ class ModelComponent(
      * ie: all open GL are set correctly.
      */
     val displayable: Boolean
-        get() = model.displayble
+        get() = model.displayable
 }
