@@ -15,7 +15,7 @@ import com.github.dwursteisen.minigdx.shaders.vertex.AnimatedMeshVertexShader
 class AnimatedModelRenderStage(gameContext: GameContext) :
     RenderStage<AnimatedMeshVertexShader, UVFragmentShader>(
         gameContext = gameContext,
-        vertex = AnimatedMeshVertexShader(),
+        vertex = AnimatedMeshVertexShader(gameContext.options.jointLimit),
         fragment = UVFragmentShader(),
         query = EntityQuery(AnimatedComponent::class)
     ) {
