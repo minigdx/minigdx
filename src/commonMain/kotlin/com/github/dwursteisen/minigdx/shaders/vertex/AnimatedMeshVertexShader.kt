@@ -8,13 +8,13 @@ import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformArrayMat4
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformMat4
 
 //language=GLSL
-private const val shader: String =
+private fun shader(maxJoints: Int): String =
     """
         #ifdef GL_ES
         precision highp float;
         #endif
 
-        const int MAX_JOINTS = 50;
+        const int MAX_JOINTS = $maxJoints;
         const int MAX_WEIGHTS = 4;
         
         uniform mat4 uModelView;
@@ -63,7 +63,7 @@ private const val shader: String =
         }
 """
 
-class AnimatedMeshVertexShader : VertexShader(shader) {
+class AnimatedMeshVertexShader(maxJoints: Int) : VertexShader(shader(maxJoints)) {
 
     val uModelView = UniformMat4("uModelView")
     val uJointTransformationMatrix = UniformArrayMat4("uJointTransformationMatrix")

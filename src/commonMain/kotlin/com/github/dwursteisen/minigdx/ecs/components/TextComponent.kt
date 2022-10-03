@@ -164,7 +164,7 @@ class TextComponent(
         // There is not vertices in the model.
         // To avoid a crash later in the code, we force to not draw the model
         if (textMeshData.vertices.isEmpty()) {
-            owner!!.get(ModelComponent::class).model.displayble = false
+            owner!!.get(ModelComponent::class).model.displayable = false
             needsToBeUpdated = false
             return
         }
