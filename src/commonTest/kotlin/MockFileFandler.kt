@@ -36,7 +36,7 @@ class MockFileFandler(override val gameContext: GameContext) : FileHandler {
         TODO("Not yet implemented")
     }
 
-    override fun decodeTextureImage(data: ByteArray): TextureImage {
+    override fun decodeTextureImage(filename: String, data: ByteArray): Content<TextureImage> {
         TODO("Not yet implemented")
     }
 

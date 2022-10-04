@@ -2,6 +2,7 @@ package com.github.dwursteisen.minigdx.file
 
 import android.content.Context
 import android.media.SoundPool
+import android.util.Base64
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
@@ -9,7 +10,6 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.Buffer
 import java.nio.ByteBuffer
-import java.util.Base64
 
 actual class PlatformFileHandler(
     private val context: Context,
@@ -38,7 +38,7 @@ actual class PlatformFileHandler(
         val content = Content<TextureImage>(filename, logger)
         val inputStream = context.assets.open(filename)
 
-        val texture = createTextureImage(stream)
+        val texture = createTextureImage(inputStream)
         content.load(texture)
         return content
     }
@@ -46,7 +46,8 @@ actual class PlatformFileHandler(
     actual fun decodeTextureImage(filename: String, data: ByteArray): Content<TextureImage> {
         val content = Content<TextureImage>(filename, logger)
 
-        val texture = createTextureImage(Base64.getDecoder().wrap(ByteArrayInputStream(data)))
+        val inputStream = ByteArrayInputStream(Base64.decode(data, Base64.DEFAULT))
+        val texture = createTextureImage(inputStream)
         content.load(texture)
         return content
     }
