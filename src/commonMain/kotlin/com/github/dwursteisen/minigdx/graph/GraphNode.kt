@@ -152,7 +152,6 @@ class GraphNode(
                     parent.assetsManager.add(texture)
                 }
                 texture.also { parent.assetsManager.add(it) }
-
             }
 
             // TODO: The loop can be optimized in one pass instead of multiple pass.
