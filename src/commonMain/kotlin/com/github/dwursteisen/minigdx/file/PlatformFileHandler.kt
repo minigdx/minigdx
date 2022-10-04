@@ -12,5 +12,7 @@ expect class PlatformFileHandler {
 
     fun readTextureImage(filename: String): Content<TextureImage>
 
+    fun decodeTextureImage(filename: String, data: ByteArray): Content<TextureImage>
+
     fun readSound(filename: String): Content<Sound>
 }

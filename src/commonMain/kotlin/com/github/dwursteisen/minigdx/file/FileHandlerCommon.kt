@@ -52,6 +52,10 @@ class FileHandlerCommon(
     override fun readTextureImage(filename: String): Content<TextureImage> =
         platformFileHandler.readTextureImage(filename)
 
+    override fun decodeTextureImage(filename: String, data: ByteArray): Content<TextureImage> {
+        return platformFileHandler.decodeTextureImage(filename, data)
+    }
+
     override fun readSound(filename: String): Content<Sound> = platformFileHandler.readSound(filename)
 
     @Suppress("UNCHECKED_CAST")

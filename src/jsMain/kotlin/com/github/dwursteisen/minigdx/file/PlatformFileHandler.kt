@@ -51,6 +51,32 @@ actual class PlatformFileHandler(
         return content
     }
 
+    actual fun decodeTextureImage(
+        filename: String,
+        data: ByteArray
+    ): Content<TextureImage> {
+        val img = Image()
+        img.src = "data:image/png;base64, ${data.decodeToString()}"
+
+        val content = Content<TextureImage>(filename, logger)
+
+        img.addEventListener(
+            "load",
+            object : EventListener {
+                override fun handleEvent(event: Event) {
+                    content.load(
+                        TextureImage(
+                            source = img,
+                            width = img.width,
+                            height = img.height
+                        )
+                    )
+                }
+            }
+        )
+        return content
+    }
+
     actual fun readSound(filename: String): Content<Sound> {
         return asyncContent(filename) { it }.flatMap { bytes ->
             val content = Content<Sound>(filename, logger)
