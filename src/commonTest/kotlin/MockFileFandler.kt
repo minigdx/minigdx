@@ -36,6 +36,10 @@ class MockFileFandler(override val gameContext: GameContext) : FileHandler {
         TODO("Not yet implemented")
     }
 
+    override fun decodeTextureImage(data: ByteArray): TextureImage {
+        TODO("Not yet implemented")
+    }
+
     override fun isFullyLoaded(): Boolean = true
 
     override fun loadingProgress(): Percent = 1.0f

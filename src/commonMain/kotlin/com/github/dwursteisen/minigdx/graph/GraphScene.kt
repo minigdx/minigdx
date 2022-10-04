@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.ecs.entities.Entity
 import com.github.dwursteisen.minigdx.file.Asset
 import com.github.dwursteisen.minigdx.file.AssetsManager
+import com.github.dwursteisen.minigdx.file.FileHandler
 import com.github.dwursteisen.minigdx.file.Texture
 
 class GraphSceneOptions(val jointLimit: Int)
@@ -15,6 +16,7 @@ class GraphSceneOptions(val jointLimit: Int)
 class GraphScene(
     val scene: Scene,
     internal val assetsManager: AssetsManager,
+    internal val fileHandler: FileHandler,
     internal val options: GraphSceneOptions
 ) : Asset {
 

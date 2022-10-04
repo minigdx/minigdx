@@ -125,16 +125,37 @@ class GraphNode(
             )
 
             val texture = parent.textureCache.getOrPut(material.id) {
-                Texture(
+                val textureImage = parent.fileHandler.decodeTextureImage(node.name, material.data)
+                // Create a place holder
+                val texture = Texture(
                     id = material.id,
-                    textureData = material.data,
-                    width = material.width,
-                    height = material.height,
+                    textureData = byteArrayOf(
+                        0xFF.toByte(), 0x00.toByte(), 0x00.toByte(), 0xFF.toByte(),
+                        0x00.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte(),
+                        0x00.toByte(), 0x00.toByte(), 0xFF.toByte(), 0xFF.toByte(),
+                        0xFF.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte()
+                    ),
+                    width = 2,
+                    height = 2,
                     hasAlpha = material.hasAlpha
-                ).also { parent.assetsManager.add(it) }
+                )
+                // When the texture is loaded, use this one instead
+                // Please note that in next version, instead of embeded datas,
+                // the material can be an URL and being lazy loaded.
+                // Which explain the use of `Content`.
+                textureImage.onLoaded { loadedTextureImage ->
+                    // The final texture is loaded.
+                    // Load this texture instead of the default one.
+                    texture.textureImage = loadedTextureImage
+                    texture.height = loadedTextureImage.height
+                    texture.width = loadedTextureImage.width
+                    parent.assetsManager.add(texture)
+                }
+                texture.also { parent.assetsManager.add(it) }
+
             }
 
-            // TODO: The loop can be optimized in one pass intead of multiple pass.
+            // TODO: The loop can be optimized in one pass instead of multiple pass.
             Primitive(
                 vertices = primitive.vertices.flatMap { v ->
                     listOf(v.position.x, v.position.y, v.position.z)

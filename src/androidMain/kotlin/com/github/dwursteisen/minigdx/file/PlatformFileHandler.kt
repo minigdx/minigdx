@@ -5,8 +5,11 @@ import android.media.SoundPool
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.logger.Logger
 import de.matthiasmann.twl.utils.PNGDecoder
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 import java.nio.Buffer
 import java.nio.ByteBuffer
+import java.util.Base64
 
 actual class PlatformFileHandler(
     private val context: Context,
@@ -35,7 +38,21 @@ actual class PlatformFileHandler(
         val content = Content<TextureImage>(filename, logger)
         val inputStream = context.assets.open(filename)
 
-        val decoder = PNGDecoder(inputStream)
+        val texture = createTextureImage(stream)
+        content.load(texture)
+        return content
+    }
+
+    actual fun decodeTextureImage(filename: String, data: ByteArray): Content<TextureImage> {
+        val content = Content<TextureImage>(filename, logger)
+
+        val texture = createTextureImage(Base64.getDecoder().wrap(ByteArrayInputStream(data)))
+        content.load(texture)
+        return content
+    }
+
+    private fun createTextureImage(stream: InputStream): TextureImage {
+        val decoder = PNGDecoder(stream)
 
         // create a byte buffer big enough to store RGBA values
         val buffer =
@@ -47,16 +64,14 @@ actual class PlatformFileHandler(
         // flip the buffer so its ready to read
         (buffer as Buffer).flip()
 
-        content.load(
-            TextureImage(
-                width = decoder.width,
-                height = decoder.height,
-                glFormat = GL.RGBA,
-                glType = GL.UNSIGNED_BYTE,
-                pixels = buffer
-            )
+        val texture = TextureImage(
+            width = decoder.width,
+            height = decoder.height,
+            glFormat = GL.RGBA,
+            glType = GL.UNSIGNED_BYTE,
+            pixels = buffer
         )
-        return content
+        return texture
     }
 
     actual fun readSound(filename: String): Content<Sound> {
