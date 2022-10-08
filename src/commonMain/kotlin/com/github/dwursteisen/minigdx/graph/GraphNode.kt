@@ -125,7 +125,18 @@ class GraphNode(
             )
 
             val texture = parent.textureCache.getOrPut(material.id) {
-                val textureImage = parent.fileHandler.decodeTextureImage(node.name, material.data)
+                val textureImage = if (material.isExternal) {
+                    // Get the path without the filename
+                    val path = parent.filename.split("/").dropLast(1).joinToString("/")
+                    val filename = if (path.isBlank()) {
+                        material.uri!!
+                    } else {
+                        path + "/" + material.uri!!
+                    }
+                    parent.fileHandler.readTextureImage(filename)
+                } else {
+                    parent.fileHandler.decodeTextureImage(node.name, material.data)
+                }
                 // Create a place holder
                 val texture = Texture(
                     id = material.id,

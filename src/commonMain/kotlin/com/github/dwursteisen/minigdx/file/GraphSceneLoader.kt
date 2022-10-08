@@ -13,6 +13,7 @@ class GraphSceneLoader : FileLoader<GraphScene> {
     override fun load(filename: String, handler: FileHandler): Content<GraphScene> {
         return sceneLoader.load(filename, handler).map { scene ->
             GraphScene(
+                filename = filename,
                 scene = scene,
                 assetsManager = handler.gameContext.assetsManager,
                 fileHandler = handler.gameContext.fileHandler,

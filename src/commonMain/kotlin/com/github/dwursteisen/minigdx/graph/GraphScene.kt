@@ -14,6 +14,7 @@ import com.github.dwursteisen.minigdx.file.Texture
 class GraphSceneOptions(val jointLimit: Int)
 
 class GraphScene(
+    val filename: String,
     val scene: Scene,
     internal val assetsManager: AssetsManager,
     internal val fileHandler: FileHandler,
