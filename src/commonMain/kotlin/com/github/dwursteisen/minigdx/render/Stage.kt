@@ -24,6 +24,7 @@ data class RenderOptions(
 )
 
 interface Stage {
+
     fun compileShaders()
 }
 
@@ -44,7 +45,7 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
 
     val gl = gameContext.gl
 
-    private val lights by interested(lightsQuery)
+    private val privateLights by interested(lightsQuery)
 
     private val cameras by interested(cameraQuery)
 
@@ -53,9 +54,9 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
             return cameras.firstOrNull()
         }
 
-    val light: Entity?
+    val lights: List<Entity>
         get() {
-            return lights.firstOrNull()
+            return privateLights.take(MAX_LIGHTS)
         }
 
     // FIXME: rollback change
@@ -104,8 +105,10 @@ abstract class RenderStage<V : VertexShader, F : FragmentShader>(
     abstract override fun update(delta: Seconds, entity: Entity)
 
     companion object {
+
         private val FRONT = Float3(0f, 0f, -1f)
         private val UP = Float3(0f, 1f, 0f)
+        const val MAX_LIGHTS = 5
     }
 }
 

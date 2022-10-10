@@ -14,10 +14,14 @@ import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL11.glTexParameteri
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL20.glUniform1f
+import org.lwjgl.opengl.GL20.glUniform1fv
+import org.lwjgl.opengl.GL20.glUniform2fv
 import org.lwjgl.opengl.GL20.glUniform2i
 import org.lwjgl.opengl.GL20.glUniform3f
+import org.lwjgl.opengl.GL20.glUniform3fv
 import org.lwjgl.opengl.GL20.glUniform3i
 import org.lwjgl.opengl.GL20.glUniform4f
+import org.lwjgl.opengl.GL20.glUniform4fv
 import org.lwjgl.opengl.GL30.glAttachShader
 import org.lwjgl.opengl.GL30.glBindBuffer
 import org.lwjgl.opengl.GL30.glBindFramebuffer
@@ -249,6 +253,22 @@ class LwjglGL : GL {
 
     override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
         glUniform4f(uniform.address, first, second, third, fourth)
+    }
+
+    override fun uniform1fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform1fv(uniform.address, floats.toFloatArray())
+    }
+
+    override fun uniform2fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform2fv(uniform.address, floats.toFloatArray())
+    }
+
+    override fun uniform3fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform3fv(uniform.address, floats.toFloatArray())
+    }
+
+    override fun uniform4fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform4fv(uniform.address, floats.toFloatArray())
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {

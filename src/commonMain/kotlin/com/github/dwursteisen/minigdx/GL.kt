@@ -78,6 +78,11 @@ interface GL {
     fun uniform3f(uniform: Uniform, first: Float, second: Float, third: Float)
     fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float)
 
+    fun uniform1fv(uniform: Uniform, floats: Array<Float>)
+    fun uniform2fv(uniform: Uniform, floats: Array<Float>)
+    fun uniform3fv(uniform: Uniform, floats: Array<Float>)
+    fun uniform4fv(uniform: Uniform, floats: Array<Float>)
+
     fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int)
 
     fun drawElements(mask: ByteMask, vertexCount: Int, type: Int, offset: Int)

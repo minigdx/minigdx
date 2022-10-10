@@ -210,6 +210,22 @@ class MockGL : GL {
         TODO("Not yet implemented")
     }
 
+    override fun uniform1fv(uniform: Uniform, floats: Array<Float>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun uniform2fv(uniform: Uniform, floats: Array<Float>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun uniform3fv(uniform: Uniform, floats: Array<Float>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun uniform4fv(uniform: Uniform, floats: Array<Float>) {
+        TODO("Not yet implemented")
+    }
+
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }

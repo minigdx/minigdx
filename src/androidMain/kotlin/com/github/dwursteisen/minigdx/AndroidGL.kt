@@ -34,12 +34,16 @@ import android.opengl.GLES20.glShaderSource
 import android.opengl.GLES20.glTexImage2D
 import android.opengl.GLES20.glTexParameteri
 import android.opengl.GLES20.glUniform1f
+import android.opengl.GLES20.glUniform1fv
 import android.opengl.GLES20.glUniform1i
 import android.opengl.GLES20.glUniform2f
+import android.opengl.GLES20.glUniform2fv
 import android.opengl.GLES20.glUniform2i
 import android.opengl.GLES20.glUniform3f
+import android.opengl.GLES20.glUniform3fv
 import android.opengl.GLES20.glUniform3i
 import android.opengl.GLES20.glUniform4f
+import android.opengl.GLES20.glUniform4fv
 import android.opengl.GLES20.glUniformMatrix4fv
 import android.opengl.GLES20.glUseProgram
 import android.opengl.GLES20.glVertexAttribPointer
@@ -285,6 +289,22 @@ class AndroidGL : GL {
 
     override fun uniform4f(uniform: Uniform, first: Float, second: Float, third: Float, fourth: Float) {
         glUniform4f(uniform.address, first, second, third, fourth)
+    }
+
+    override fun uniform1fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform1fv(uniform.address, floats.size, floats.toFloatArray().asBuffer())
+    }
+
+    override fun uniform2fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform2fv(uniform.address, floats.size, floats.toFloatArray().asBuffer())
+    }
+
+    override fun uniform3fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform3fv(uniform.address, floats.size, floats.toFloatArray().asBuffer())
+    }
+
+    override fun uniform4fv(uniform: Uniform, floats: Array<Float>) {
+        glUniform4fv(uniform.address, floats.size, floats.toFloatArray().asBuffer())
     }
 
     override fun drawArrays(mask: ByteMask, offset: Int, vertexCount: Int) {

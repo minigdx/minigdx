@@ -8,9 +8,11 @@ import com.github.dwursteisen.minigdx.math.Vector3
 import kotlin.jvm.JvmName
 
 sealed class ShaderParameter(val name: String) {
+
     abstract fun create(program: ShaderProgram)
 
     class UniformMat4(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -21,6 +23,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformArrayMat4(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -45,6 +48,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformInt(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -60,6 +64,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformVec2(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -75,6 +80,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformVec3(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -90,6 +96,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformVec4(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -102,14 +109,6 @@ sealed class ShaderParameter(val name: String) {
             color.alpha
         )
 
-        fun apply(program: ShaderProgram, color: Color, intensity: Float) = apply(
-            program,
-            color.red * intensity,
-            color.green * intensity,
-            color.blue * intensity,
-            color.alpha * intensity
-        )
-
         fun apply(program: ShaderProgram, vararg vec4: Float) {
             when (vec4.size) {
                 4 -> program.uniform4f(program.getUniform(name), vec4[0], vec4[1], vec4[2], vec4[3])
@@ -119,6 +118,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformFloat(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }
@@ -134,7 +134,68 @@ sealed class ShaderParameter(val name: String) {
         }
     }
 
+    class UniformArrayFloat(name: String) : ShaderParameter(name) {
+
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        fun apply(program: ShaderProgram, f: Array<Float>) {
+            program.uniform1fv(program.getUniform(name), f)
+        }
+
+        fun apply(program: ShaderProgram, f: List<Float>) = apply(program, f.toTypedArray())
+    }
+
+    class UniformArrayVec2(name: String) : ShaderParameter(name) {
+
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        fun apply(program: ShaderProgram, f: Array<Float>) {
+            program.uniform2fv(program.getUniform(name), f)
+        }
+
+        fun apply(program: ShaderProgram, f: List<Float>) = apply(program, f.toTypedArray())
+    }
+
+    class UniformArrayVec3(name: String) : ShaderParameter(name) {
+
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        @JvmName("applyArray")
+        fun apply(program: ShaderProgram, f: Array<Float>) {
+            program.uniform3fv(program.getUniform(name), f)
+        }
+
+        fun apply(program: ShaderProgram, f: List<Float>) = apply(program, f.toTypedArray())
+    }
+
+    class UniformArrayVec4(name: String) : ShaderParameter(name) {
+
+        override fun create(program: ShaderProgram) {
+            program.createUniform(name)
+        }
+
+        @JvmName("applyArray")
+        fun apply(program: ShaderProgram, f: Array<Float>) {
+            program.uniform4fv(program.getUniform(name), f)
+        }
+
+        @JvmName("applyColors")
+        fun apply(program: ShaderProgram, colors: List<Color>) {
+            val floats = colors.flatMap { c -> listOf(c.red, c.green, c.blue, c.alpha) }
+            apply(program, floats)
+        }
+
+        fun apply(program: ShaderProgram, f: List<Float>) = apply(program, f.toTypedArray())
+    }
+
     class AttributeVec2(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createAttrib(name)
         }
@@ -154,6 +215,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class AttributeVec3(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createAttrib(name)
         }
@@ -173,6 +235,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class AttributeVec4(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createAttrib(name)
         }
@@ -192,6 +255,7 @@ sealed class ShaderParameter(val name: String) {
     }
 
     class UniformSample2D(name: String) : ShaderParameter(name) {
+
         override fun create(program: ShaderProgram) {
             program.createUniform(name)
         }

@@ -104,6 +104,22 @@ class WebGL(private val gl: WebGLRenderingContextBase) : GL {
         gl.uniform4f(uniform.uniformLocation, first, second, third, fourth)
     }
 
+    override fun uniform1fv(uniform: Uniform, floats: Array<Float>) {
+        gl.uniform1fv(uniform.uniformLocation, floats)
+    }
+
+    override fun uniform2fv(uniform: Uniform, floats: Array<Float>) {
+        gl.uniform2fv(uniform.uniformLocation, floats)
+    }
+
+    override fun uniform3fv(uniform: Uniform, floats: Array<Float>) {
+        gl.uniform3fv(uniform.uniformLocation, floats)
+    }
+
+    override fun uniform4fv(uniform: Uniform, floats: Array<Float>) {
+        gl.uniform4fv(uniform.uniformLocation, floats)
+    }
+
     override fun attachShader(shaderProgram: ShaderProgram, shader: Shader) {
         gl.attachShader(shaderProgram.program.delegate, shader.delegate)
     }
