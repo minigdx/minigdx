@@ -93,12 +93,14 @@ class ModelComponentRenderStage(
             // If there is not light, we add a transparent light that should have no effect
             vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
             vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
+            vertex.uLightIntensity.apply(program, 0f)
         } else {
             // empiric value
-            val intensity = (currentLight.get(LightComponent::class).intensity * 777f / 1000f) / 1000f
+            val intensity = currentLight.get(LightComponent::class).intensity.toFloat()
 
             // We configure the current light
-            vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color, intensity)
+            vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color)
+            vertex.uLightIntensity.apply(program, intensity / 1000f)
             // Set the light in the projection space
             val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
             vertex.uLightPosition.apply(

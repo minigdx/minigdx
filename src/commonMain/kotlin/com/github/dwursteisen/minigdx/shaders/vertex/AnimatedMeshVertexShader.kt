@@ -21,6 +21,7 @@ private fun shader(maxJoints: Int): String =
         // Light information
         uniform vec3 uLightPosition;
         uniform vec4 uLightColor;
+        uniform float uLightIntensity;
         
         uniform mat4 uJointTransformationMatrix[MAX_JOINTS];
         
@@ -53,13 +54,22 @@ private fun shader(maxJoints: Int): String =
                 }
             }
         
-            vec3 vPosToLight = normalize(totalLocalPos.xyz - uLightPosition);
-        	float directional = max(0.0, dot(normalize(totalNormalPos.xyz), -vPosToLight));
+            // Light computation
+            vec3 n = normalize(aVertexNormal);
+            vec3 lightDir = normalize(uLightPosition - totalLocalPos.xyz);
+        	float diff = max(0.0, dot(n, lightDir));
+         
+            vec3 diffuse = diff * vec3(uLightColor);
+            
+            float distance = length(uLightPosition - totalLocalPos.xyz);
+            vec3 radiance = vec3(uLightColor) * uLightIntensity;
+            float attenuation = uLightIntensity / (distance * distance);
+            radiance = radiance * attenuation;
 
             gl_Position = uModelView * totalLocalPos;
             
             vUVPosition = aUVPosition;
-            vLighting = uLightColor + uLightColor * directional; 
+            vLighting = vec4(diffuse + attenuation * vec3(uLightColor), uLightColor.a);
         }
 """
 
@@ -75,6 +85,7 @@ class AnimatedMeshVertexShader(maxJoints: Int) : VertexShader(shader(maxJoints))
     val aJoints = AttributeVec4("aJoints")
     val aWeights = AttributeVec4("aWeights")
     val aUVPosition = AttributeVec2("aUVPosition")
+    val uLightIntensity = ShaderParameter.UniformFloat("uLightIntensity")
 
     override val parameters: List<ShaderParameter> = listOf(
         uModelView,
@@ -85,6 +96,7 @@ class AnimatedMeshVertexShader(maxJoints: Int) : VertexShader(shader(maxJoints))
         aVertexNormal,
         aUVPosition,
         aJoints,
-        aWeights
+        aWeights,
+        uLightIntensity
     )
 }
