@@ -8,6 +8,7 @@ import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GameContext
 import com.github.dwursteisen.minigdx.Seconds
 import com.github.dwursteisen.minigdx.ecs.components.CameraComponent
+import com.github.dwursteisen.minigdx.ecs.components.Color
 import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.ecs.components.ModelComponent
 import com.github.dwursteisen.minigdx.ecs.components.Position
@@ -87,27 +88,28 @@ class ModelComponentRenderStage(
     }
 
     private fun drawPrimitive(primitive: Primitive, model: Mat4) {
-        // Configure the light.
-        val currentLight = light
-        if (currentLight == null) {
-            // If there is not light, we add a transparent light that should have no effect
-            vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
-            vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
-        } else {
-            // empiric value
-            val intensity = (currentLight.get(LightComponent::class).intensity * 777f / 1000f) / 1000f
+        vertex.uLightNumber.apply(program, lights.size)
+
+        val lightIntensities = mutableListOf<Float>()
+        val lightColors = mutableListOf<Color>()
+        val lightPositions = mutableListOf<Float>()
+        lights.forEach { currentLight ->
+
+            val intensity = currentLight.get(LightComponent::class).intensity.toFloat() / 1000f
+            lightIntensities.add(intensity)
 
             // We configure the current light
-            vertex.uLightColor.apply(program, currentLight.get(LightComponent::class).color, intensity)
             // Set the light in the projection space
             val translation = (inverse(model) * currentLight.get(Position::class).transformation).translation
-            vertex.uLightPosition.apply(
-                program,
-                translation.x,
-                translation.y,
-                translation.z
-            )
+            lightPositions.addAll(listOf(translation.x, translation.y, translation.z))
+
+            val color = currentLight.get(LightComponent::class).color
+            lightColors.add(color)
         }
+
+        vertex.uLightColor.apply(program, lightColors)
+        vertex.uLightIntensity.apply(program, lightIntensities)
+        vertex.uLightPosition.apply(program, lightPositions)
 
         vertex.uModelView.apply(program, combinedMatrix * model)
         vertex.aVertexPosition.apply(program, primitive.verticesBuffer!!)

@@ -4,7 +4,11 @@ import com.github.dwursteisen.minigdx.shaders.ShaderParameter
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter.AttributeVec2
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter.AttributeVec3
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter.AttributeVec4
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformArrayFloat
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformArrayMat4
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformArrayVec3
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformArrayVec4
+import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformInt
 import com.github.dwursteisen.minigdx.shaders.ShaderParameter.UniformMat4
 
 //language=GLSL
@@ -16,11 +20,14 @@ private fun shader(maxJoints: Int): String =
 
         const int MAX_JOINTS = $maxJoints;
         const int MAX_WEIGHTS = 4;
+        const int MAX_LIGHTS = 5;
         
         uniform mat4 uModelView;
         // Light information
-        uniform vec3 uLightPosition;
-        uniform vec4 uLightColor;
+        uniform vec3 uLightPosition[MAX_LIGHTS];
+        uniform vec4 uLightColor[MAX_LIGHTS];
+        uniform float uLightIntensity[MAX_LIGHTS];
+        uniform int uLightNumber;
         
         uniform mat4 uJointTransformationMatrix[MAX_JOINTS];
         
@@ -53,13 +60,29 @@ private fun shader(maxJoints: Int): String =
                 }
             }
         
-            vec3 vPosToLight = normalize(totalLocalPos.xyz - uLightPosition);
-        	float directional = max(0.0, dot(normalize(totalNormalPos.xyz), -vPosToLight));
-
+            // Light computation
+            vec4 lightColor = vec4(0.0);
+            vec3 n = normalize(aVertexNormal);
+            
+            for (int i = 0; i < MAX_LIGHTS; i++) {
+                if(i >= uLightNumber) { break; }
+                // Light computation
+                vec3 lightDir = normalize(uLightPosition[i] - totalLocalPos.xyz);
+                float diff = max(0.0, dot(n, lightDir));
+             
+                vec3 diffuse = diff * vec3(uLightColor[i]);
+                
+                float distance = length(uLightPosition[i] - totalLocalPos.xyz);
+                vec3 radiance = vec3(uLightColor[i]) * uLightIntensity[i];
+                float attenuation = uLightIntensity[i] / (distance * distance);
+                radiance = radiance * attenuation;
+                lightColor += vec4(diffuse + attenuation * vec3(uLightColor[i]), uLightColor[i].a);
+            }
+            
             gl_Position = uModelView * totalLocalPos;
             
             vUVPosition = aUVPosition;
-            vLighting = uLightColor + uLightColor * directional; 
+            vLighting = lightColor;
         }
 """
 
@@ -67,8 +90,10 @@ class AnimatedMeshVertexShader(maxJoints: Int) : VertexShader(shader(maxJoints))
 
     val uModelView = UniformMat4("uModelView")
     val uJointTransformationMatrix = UniformArrayMat4("uJointTransformationMatrix")
-    val uLightPosition = ShaderParameter.UniformVec3("uLightPosition")
-    val uLightColor = ShaderParameter.UniformVec4("uLightColor")
+    val uLightPosition = UniformArrayVec3("uLightPosition")
+    val uLightColor = UniformArrayVec4("uLightColor")
+    val uLightIntensity = UniformArrayFloat("uLightIntensity")
+    val uLightNumber = UniformInt("uLightNumber")
 
     val aVertexPosition = AttributeVec3("aVertexPosition")
     val aVertexNormal = AttributeVec3("aVertexNormal")
@@ -81,10 +106,12 @@ class AnimatedMeshVertexShader(maxJoints: Int) : VertexShader(shader(maxJoints))
         uJointTransformationMatrix,
         uLightColor,
         uLightPosition,
+        uLightIntensity,
+        uLightNumber,
         aVertexPosition,
         aVertexNormal,
         aUVPosition,
         aJoints,
-        aWeights
+        aWeights,
     )
 }

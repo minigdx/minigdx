@@ -10,13 +10,28 @@ class SpriteLoader : FileLoader<Sprite> {
         return sceneLoader.load(filename, handler).map { graphScene ->
             val spriteFromScene = graphScene.sprites.values.first()
             val material = graphScene.scene.materials[spriteFromScene.materialReference]!!
+
             val spriteSheet = Texture(
-                spriteFromScene.materialReference,
-                material.data,
-                material.width,
-                material.height,
-                material.hasAlpha
+                id = spriteFromScene.materialReference,
+                textureData = byteArrayOf(
+                    0xFF.toByte(), 0x00.toByte(), 0x00.toByte(), 0xFF.toByte(),
+                    0x00.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte(),
+                    0x00.toByte(), 0x00.toByte(), 0xFF.toByte(), 0xFF.toByte(),
+                    0xFF.toByte(), 0xFF.toByte(), 0x00.toByte(), 0xFF.toByte()
+                ),
+                width = 2,
+                height = 2,
+                hasAlpha = material.hasAlpha
             )
+            handler.decodeTextureImage(filename, material.data).onLoaded { loadedTextureImage ->
+                // The final texture is loaded.
+                // Load this texture instead of the default one.
+                spriteSheet.textureImage = loadedTextureImage
+                spriteSheet.height = loadedTextureImage.height
+                spriteSheet.width = loadedTextureImage.width
+                handler.gameContext.assetsManager.add(spriteSheet)
+            }
+
             val animations = spriteFromScene.animations
             val uvs = spriteFromScene.uvs
 

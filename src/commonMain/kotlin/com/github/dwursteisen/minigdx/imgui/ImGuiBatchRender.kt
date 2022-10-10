@@ -3,7 +3,6 @@ package com.github.dwursteisen.minigdx.imgui
 import com.curiouscreature.kotlin.math.ortho
 import com.github.dwursteisen.minigdx.GL
 import com.github.dwursteisen.minigdx.GameContext
-import com.github.dwursteisen.minigdx.ecs.components.LightComponent
 import com.github.dwursteisen.minigdx.file.Texture
 import com.github.dwursteisen.minigdx.shaders.Buffer
 import com.github.dwursteisen.minigdx.shaders.DataSource
@@ -81,9 +80,7 @@ class ImGuiBatchRender(
         // ---- shader configuration ---- //
 
         // Configure the light.
-
-        vertex.uLightColor.apply(program, LightComponent.TRANSPARENT_COLOR)
-        vertex.uLightPosition.apply(program, LightComponent.ORIGIN)
+        vertex.uLightNumber.apply(program, 0)
 
         vertex.uModelView.apply(program, modelViewMatrix)
         vertex.aVertexPosition.apply(program, verticesBuffer)
