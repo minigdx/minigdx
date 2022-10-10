@@ -3,6 +3,8 @@ package com.github.dwursteisen.minigdx
 import android.opengl.GLES20.glActiveTexture
 import android.opengl.GLES20.glAttachShader
 import android.opengl.GLES20.glBindBuffer
+import android.opengl.GLES20.glBindFramebuffer
+import android.opengl.GLES20.glBindRenderbuffer
 import android.opengl.GLES20.glBindTexture
 import android.opengl.GLES20.glBlendFunc
 import android.opengl.GLES20.glBufferData
@@ -19,7 +21,11 @@ import android.opengl.GLES20.glDrawArrays
 import android.opengl.GLES20.glDrawElements
 import android.opengl.GLES20.glEnable
 import android.opengl.GLES20.glEnableVertexAttribArray
+import android.opengl.GLES20.glFramebufferRenderbuffer
+import android.opengl.GLES20.glFramebufferTexture2D
 import android.opengl.GLES20.glGenBuffers
+import android.opengl.GLES20.glGenFramebuffers
+import android.opengl.GLES20.glGenRenderbuffers
 import android.opengl.GLES20.glGenTextures
 import android.opengl.GLES20.glGenerateMipmap
 import android.opengl.GLES20.glGetAttribLocation
@@ -30,6 +36,7 @@ import android.opengl.GLES20.glGetShaderiv
 import android.opengl.GLES20.glGetString
 import android.opengl.GLES20.glGetUniformLocation
 import android.opengl.GLES20.glLinkProgram
+import android.opengl.GLES20.glRenderbufferStorage
 import android.opengl.GLES20.glShaderSource
 import android.opengl.GLES20.glTexImage2D
 import android.opengl.GLES20.glTexParameteri
@@ -219,35 +226,39 @@ class AndroidGL : GL {
     }
 
     override fun createFrameBuffer(): FrameBufferReference {
-        TODO("Not yet implemented")
+        val ints = intArrayOf(0)
+        glGenFramebuffers(1, ints, 0)
+        return FrameBufferReference(reference = ints[0])
     }
 
     override fun bindFrameBuffer(frameBufferReference: FrameBufferReference) {
-        TODO("Not yet implemented")
+        glBindFramebuffer(GL.FRAMEBUFFER, frameBufferReference.reference)
     }
 
     override fun frameBufferTexture2D(attachmentPoint: Int, textureReference: TextureReference, level: Int) {
-        TODO("Not yet implemented")
+        glFramebufferTexture2D(GL.FRAMEBUFFER, attachmentPoint, GL.TEXTURE_2D, textureReference.pointer, level)
     }
 
     override fun bindDefaultFrameBuffer() {
-        TODO("Not yet implemented")
+        glBindFramebuffer(GL.FRAMEBUFFER, 0)
     }
 
     override fun createRenderBuffer(): RenderBufferReference {
-        TODO("Not yet implemented")
+        val ints = intArrayOf(0)
+        glGenRenderbuffers(1, ints, 0)
+        return RenderBufferReference(reference = ints[0])
     }
 
     override fun bindRenderBuffer(renderBufferReference: RenderBufferReference) {
-        TODO("Not yet implemented")
+        glBindRenderbuffer(GL.RENDERBUFFER, renderBufferReference.reference)
     }
 
     override fun renderBufferStorage(internalformat: Int, width: Int, height: Int) {
-        TODO("Not yet implemented")
+        glRenderbufferStorage(GL.RENDERBUFFER, internalformat, width, height)
     }
 
     override fun framebufferRenderbuffer(attachementType: Int, renderBufferReference: RenderBufferReference) {
-        TODO("Not yet implemented")
+        glFramebufferRenderbuffer(GL.FRAMEBUFFER, attachementType, GL.RENDERBUFFER, renderBufferReference.reference)
     }
 
     override fun activeTexture(byteMask: ByteMask) {
